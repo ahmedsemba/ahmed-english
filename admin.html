@@ -1,27 +1,22 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>تسجيل</title>
-<style>body{font-family:Tahoma;background:#f0f4ff;padding:20px}.box{max-width:400px;margin:auto;background:#fff;padding:25px;border-radius:15px}input{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;box-sizing:border-box}button{width:100%;padding:12px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:16px}</style>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>الادمن</title>
+<style>body{font-family:Tahoma;background:#f1f5f9;padding:20px}.card{background:#fff;padding:15px;margin:10px 0;border-radius:12px;display:flex;justify-content:space-between;flex-wrap:wrap}.btn{background:#16a34a;color:#fff;border:none;padding:8px 15px;border-radius:8px;cursor:pointer}</style>
 </head>
-<body><div class="box">
-<h2 style="text-align:center">تسجيل طالب جديد</h2>
-<input id="name" placeholder="اسم الطالب">
-<input id="phone" placeholder="تليفون الطالب">
-<input id="parent" placeholder="تليفون ولي الامر">
-<input id="user" placeholder="اليوزر انجليزي">
-<input id="pass" type="password" placeholder="الباسورد">
-<button id="btn" onclick="register()">تسجيل</button>
-<div id="msg" style="display:none;background:#d1fae5;padding:10px;margin-top:10px;text-align:center;border-radius:8px"></div>
-</div>
+<body>
+<h2>لوحة التحكم</h2><button onclick="loadData()" style="padding:10px 20px;background:#2563eb;color:#fff;border:none;border-radius:8px">🔄 تحديث</button>
+<div id="list">جاري التحميل...</div>
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwMUKltPbOsqEN1LKoY_rtzfWVyy26KWUg22P2l2VIYUJ--iSPzwOB0tB1gfi5n8DHl/exec";
-async function register(){
-  let data={action:'register', name:document.getElementById('name').value, phone:document.getElementById('phone').value, parent:document.getElementById('parent').value, user:document.getElementById('user').value.trim(), pass:document.getElementById('pass').value.trim()};
-  if(!data.name||!data.user||!data.pass){alert('اكمل البيانات');return;}
-  document.getElementById('btn').textContent='جاري التسجيل...';
-  await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:new URLSearchParams(data)});
-  document.getElementById('msg').style.display='block';
-  document.getElementById('msg').textContent='تم التسجيل! تابع مع الادمن للموافقة';
-  document.getElementById('btn').textContent='تم ✅';
+async function loadData(){
+  document.getElementById('list').innerHTML='جاري التحميل...';
+  let res=await fetch(SCRIPT_URL); let data=await res.json(); let html='';
+  for(let i=1;i<data.length;i++){let r=data[i]; if(!r[0])continue;
+    if(r[6]=='approved'){html+=`<div class="card"><div><b>${r[0]}</b> - ${r[3]} - <span style="color:green">موافق: ${r[5]}</span></div></div>`;}
+    else{html+=`<div class="card"><div><b>${r[0]}</b><br>يوزر:${r[3]} | ${r[1]}</div><div><input id="code_${r[3]}" placeholder="الكود" style="padding:8px;border-radius:6px;border:1px solid #ccc"><button class="btn" onclick="approve('${r[3]}')">موافقة</button></div></div>`;}
+  }
+  document.getElementById('list').innerHTML=html||'لا يوجد طلاب';
 }
+async function approve(user){let code=document.getElementById('code_'+user).value; if(!code){alert('اكتب الكود');return;} await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:new URLSearchParams({action:'approve',user:user,code:code})}); alert('تم'); loadData();}
+loadData();
 </script></body></html>
