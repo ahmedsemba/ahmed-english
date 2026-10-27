@@ -1,48 +1,80 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>منصة أحمد السيد - لغة انجليزية</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة أحمد السيد</title>
 <style>
-body{font-family:Cairo, Tahoma; background:#f1f5f9; margin:0; padding:0;}
-.header{background:#1e3a8a; color:white; padding:20px; text-align:center;}
-.container{max-width:900px; margin:20px auto; padding:10px;}
-.card{background:white; padding:20px; border-radius:12px; margin-bottom:20px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
-.btn{background:#1e40af; color:white; padding:12px 20px; border:none; border-radius:8px; font-size:16px; cursor:pointer; width:100%;}
-h2{color:#1e3a8a;}
+body{font-family:Tahoma;background:#0f172a;margin:0;text-align:center;color:white}
+.box{background:white;color:#1e293b;max-width:450px;margin:30px auto;padding:20px;border-radius:15px}
+input{width:90%;padding:11px;margin:6px 0;border:1px solid #ccc;border-radius:7px}
+.btn{background:#1e40af;color:white;padding:12px;border:none;border-radius:7px;width:95%;cursor:pointer;font-size:17px}
+.tab{display:flex;justify-content:center;gap:10px;margin-bottom:15px}
+.tab button{padding:8px 15px;border:none;border-radius:5px;cursor:pointer}
+.active{background:#1e3a8a;color:white}
+#meeting{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:black;z-index:999}
 </style>
 </head>
 <body>
+<h1 style="padding:20px;background:#1e3a8a;margin:0">منصة مستر أحمد السيد</h1>
 
-<div class="header">
-<h1>منصة مستر أحمد السيد - اللغة الإنجليزية</h1>
-<p>تعليم - امتحانات - حصص مباشرة</p>
+<div class="box" id="mainBox">
+<div class="tab">
+<button id="t1" class="active" onclick="show('reg')">تسجيل جديد</button>
+<button id="t2" onclick="show('login')">دخول الحصة</button>
 </div>
 
-<div class="container">
-
-<!-- الحصة المباشرة - شغالة أدمن بدون لوجن -->
-<div class="card" style="border:2px solid #1e3a8a; text-align:center;">
-<h2>🔴 الحصة المباشرة الآن</h2>
-<p>ادخل كأدمن مباشرة - بدون تسجيل دخول</p>
-<iframe src="https://meet.ffmuc.net/AhmedSama2020Live" 
-allow="camera; microphone; fullscreen; display-capture; autoplay" 
-style="width:100%; height:650px; border:0; border-radius:10px;">
-</iframe>
-<p style="color:green; font-weight:bold;">✅ لو انت اول واحد دخلت فانت الأدمن تلقائياً</p>
+<div id="regDiv">
+<h3>تسجيل طالب جديد</h3>
+<input id="r_name" placeholder="الاسم بالكامل">
+<input id="r_phone" placeholder="رقم تليفون الطالب">
+<input id="r_parent" placeholder="رقم ولي الأمر">
+<input id="r_user" placeholder="اسم يوزر انجليزي - مثلا Ahmed123">
+<input id="r_pass" type="password" placeholder="باسورد">
+<button class="btn" onclick="register()">تسجيل</button>
+<p id="r_msg" style="color:green"></p>
 </div>
 
-<!-- قسم الامتحانات -->
-<div class="card">
-<h2>📝 بنك الامتحانات</h2>
-<p>اختار المرحلة وابدأ الامتحان</p>
-<button class="btn">الصف الثالث الثانوي</button><br><br>
-<button class="btn">الصف الثاني الثانوي</button><br><br>
-<button class="btn">الصف الأول الثانوي</button>
+<div id="loginDiv" style="display:none">
+<h3>دخول الحصة</h3>
+<input id="l_user" placeholder="اليوزر">
+<input id="l_pass" type="password" placeholder="الباسورد">
+<input id="l_code" placeholder="الكود الخاص اللي بعتهولك المستر">
+<button class="btn" onclick="login()">دخول الميتنج 🔴</button>
+<p id="l_msg" style="color:red"></p>
+</div>
 </div>
 
+<div id="meeting">
+<div style="background:#1e3a8a;padding:10px;display:flex;justify-content:space-between"><span id="showName"></span><button onclick="location.reload()" style="background:red;color:white;border:none;padding:8px 12px;border-radius:5px">خروج</button></div>
+<iframe id="jitsiFrame" src="" allow="camera; microphone; fullscreen; display-capture; autoplay" style="width:100%;height:92%;border:0"></iframe>
 </div>
 
+<script>
+function show(type){
+ document.getElementById('regDiv').style.display=type=='reg'?'block':'none';
+ document.getElementById('loginDiv').style.display=type=='login'?'block':'none';
+ document.getElementById('t1').className=type=='reg'?'active':'';
+ document.getElementById('t2').className=type=='login'?'active':'';
+}
+function register(){
+ let data={name:r_name.value, phone:r_phone.value, parent:r_parent.value, user:r_user.value, pass:r_pass.value, code:"", status:"pending"};
+ if(!data.name||!data.user||!data.pass){alert("اكمل البيانات");return;}
+ let db=JSON.parse(localStorage.getItem('pendingDB')||'[]');
+ db.push(data);
+ localStorage.setItem('pendingDB', JSON.stringify(db));
+ r_msg.innerText="تم التسجيل! انتظر المستر يبعتلك الكود على الواتساب";
+ r_name.value="";r_phone.value="";r_parent.value="";r_user.value="";r_pass.value="";
+}
+function login(){
+ let u=l_user.value.trim(), p=l_pass.value.trim(), c=l_code.value.trim();
+ let approved=JSON.parse(localStorage.getItem('approvedDB')||'[]');
+ let found=approved.find(s=>s.user==u && s.pass==p && s.code==c);
+ if(!found){l_msg.innerText="بيانات غلط او الكود لسه متعملش";return;}
+ showName.innerText="أهلا: "+found.name;
+ mainBox.style.display="none";
+ meeting.style.display="block";
+ jitsiFrame.src="https://meet.ffmuc.net/AhmedSama2020Live#userInfo.displayName='"+found.name+"'";
+}
+</script>
 </body>
 </html>
