@@ -1,22 +1,78 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>الادمن</title>
-<style>body{font-family:Tahoma;background:#f1f5f9;padding:20px}.card{background:#fff;padding:15px;margin:10px 0;border-radius:12px;display:flex;justify-content:space-between;flex-wrap:wrap}.btn{background:#16a34a;color:#fff;border:none;padding:8px 15px;border-radius:8px;cursor:pointer}</style>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة تحكم الادمن - مستر أحمد</title>
+<style>
+body{font-family:Cairo,sans-serif;background:#f1f5f9;padding:20px}
+.card{background:white;padding:20px;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,0.1);max-width:900px;margin:auto}
+h2{text-align:center;color:#1e40af}
+table{width:100%;border-collapse:collapse;margin-top:20px}
+th,td{border:1px solid #ddd;padding:10px;text-align:center;font-size:13px}
+th{background:#1e40af;color:white}
+button{padding:6px 12px;border:none;border-radius:6px;cursor:pointer}
+.btn-approve{background:#22c55e;color:white;font-weight:bold}
+.refresh{background:#2563eb;color:white;width:100%;padding:12px;font-size:16px;margin-top:10px;border-radius:8px}
+</style>
 </head>
 <body>
-<h2>لوحة التحكم</h2><button onclick="loadData()" style="padding:10px 20px;background:#2563eb;color:#fff;border:none;border-radius:8px">🔄 تحديث</button>
-<div id="list">جاري التحميل...</div>
+<div class="card">
+<h2>لوحة تحكم الطلاب - مستر أحمد</h2>
+<button class="refresh" onclick="loadStudents()">🔄 تحديث البيانات</button>
+<table id="studentsTable">
+<thead>
+<tr><th>الاسم</th><th>اليوزر</th><th>الكود</th><th>الحالة</th><th>تحكم</th></tr>
+</thead>
+<tbody></tbody>
+</table>
+<p id="msg" style="text-align:center;margin-top:15px"></p>
+</div>
+
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwMUKltPbOsqEN1LKoY_rtzfWVyy26KWUg22P2l2VIYUJ--iSPzwOB0tB1gfi5n8DHl/exec";
-async function loadData(){
-  document.getElementById('list').innerHTML='جاري التحميل...';
-  let res=await fetch(SCRIPT_URL); let data=await res.json(); let html='';
-  for(let i=1;i<data.length;i++){let r=data[i]; if(!r[0])continue;
-    if(r[6]=='approved'){html+=`<div class="card"><div><b>${r[0]}</b> - ${r[3]} - <span style="color:green">موافق: ${r[5]}</span></div></div>`;}
-    else{html+=`<div class="card"><div><b>${r[0]}</b><br>يوزر:${r[3]} | ${r[1]}</div><div><input id="code_${r[3]}" placeholder="الكود" style="padding:8px;border-radius:6px;border:1px solid #ccc"><button class="btn" onclick="approve('${r[3]}')">موافقة</button></div></div>`;}
+
+async function loadStudents(){
+  const tbody = document.querySelector("#studentsTable tbody");
+  const msg = document.getElementById("msg");
+  tbody.innerHTML = "<tr><td colspan=5>جاري التحميل...</td></tr>";
+  try{
+    const res = await fetch(SCRIPT_URL+"?action=getStudents");
+    const data = await res.json();
+    tbody.innerHTML = "";
+    if(data.length==0){ tbody.innerHTML="<tr><td colspan=5>لا يوجد طلاب</td></tr>"; return; }
+    data.reverse().forEach(st=>{
+      const tr = document.createElement("tr");
+      const username = st.username || st.اليوزر || "";
+      const status = st.status || st.الحالة || "pending";
+      tr.innerHTML = `
+        <td>${st.name||st.الاسم||""}</td>
+        <td>${username}</td>
+        <td>${st.code||st.الكود||""}</td>
+        <td>${status}</td>
+        <td>${status=="pending" ? `<button class="btn-approve" onclick="updateStatus('${username}','approved')">موافقة ✅</button>` : `تمت الموافقة`}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    msg.textContent = "تم التحميل - عدد الطلاب: " + data.length;
+  }catch(e){
+    tbody.innerHTML = "<tr><td colspan=5>خطأ، تأكد من النت واعمل تحديث</td></tr>";
   }
-  document.getElementById('list').innerHTML=html||'لا يوجد طلاب';
 }
-async function approve(user){let code=document.getElementById('code_'+user).value; if(!code){alert('اكتب الكود');return;} await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:new URLSearchParams({action:'approve',user:user,code:code})}); alert('تم'); loadData();}
-loadData();
-</script></body></html>
+
+async function updateStatus(username, status){
+  if(!confirm("تأكيد الموافقة على "+username+" ؟")) return;
+  document.getElementById("msg").textContent = "جاري الموافقة...";
+  await fetch(SCRIPT_URL, {
+    method:"POST",
+    mode:"no-cors",
+    body:JSON.stringify({action:"updateStatus", username:username, status:status})
+  });
+  alert("تمت الموافقة بنجاح! خلي الطالب يدخل دلوقتي بالكود");
+  setTimeout(loadStudents, 1500);
+}
+
+loadStudents();
+</script>
+</body>
+</html>
