@@ -1,189 +1,48 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>منصة احمد السيد انجليزي</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة أحمد السيد - لغة انجليزية</title>
 <style>
-body{font-family:Tahoma;background:#eef3ff;margin:0;padding:15px}
-.card{background:white;max-width:460px;margin:20px auto;padding:25px;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,0.12)}
-.header{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:15px}
-.header img{width:65px;height:65px;border-radius:50%;border:2px solid #2563eb;object-fit:cover}
-.header h2{margin:0;font-size:20px;color:#1e3a8a}
-input,button,select{width:100%;padding:12px;margin:7px 0;border-radius:9px;border:1px solid #ccc;box-sizing:border-box}
-button{background:#2563eb;color:white;border:none;font-weight:bold;cursor:pointer}
-button:hover{background:#1d4ed8}
-.smallBtn{width:auto;padding:6px 10px;font-size:12px;margin:2px}
-.delBtn{background:#ef4444}
-.codeBtn{background:#10b981}
-.resetBtn{background:#f59e0b}
-.student-item{background:#f8fafc;padding:12px;border-radius:10px;margin:10px 0;border:1px solid #e5e7eb}
-.footer{text-align:center;margin-top:15px;padding:12px;background:#1e3a8a;color:white;border-radius:10px;font-weight:bold}
-.hidden{display:none}
+body{font-family:Cairo, Tahoma; background:#f1f5f9; margin:0; padding:0;}
+.header{background:#1e3a8a; color:white; padding:20px; text-align:center;}
+.container{max-width:900px; margin:20px auto; padding:10px;}
+.card{background:white; padding:20px; border-radius:12px; margin-bottom:20px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+.btn{background:#1e40af; color:white; padding:12px 20px; border:none; border-radius:8px; font-size:16px; cursor:pointer; width:100%;}
+h2{color:#1e3a8a;}
 </style>
 </head>
 <body>
 
-<div id="loginPage" class="card">
-<div class="header"><img src="logo.webp"><h2>منصة احمد السيد انجليزي</h2></div>
-<input id="loginName" placeholder="Username انجليزي">
-<input id="loginPass" type="password" placeholder="Password">
-<button onclick="login()">دخول</button>
-<button onclick="showRegister()" style="background:#10b981">تسجيل طالب جديد</button>
-<button onclick="showAdmin()" style="background:#6b7280">دخول الادمن</button>
-<div class="footer">للتواصل والاشتراك<br>01116811324</div>
+<div class="header">
+<h1>منصة مستر أحمد السيد - اللغة الإنجليزية</h1>
+<p>تعليم - امتحانات - حصص مباشرة</p>
 </div>
 
-<div id="registerPage" class="card hidden">
-<div class="header"><img src="logo.webp"><h2>منصة احمد السيد انجليزي</h2></div>
-<h3>تسجيل طالب جديد</h3>
-<input id="r_username" placeholder="Username انجليزي فقط (ahmed2026)">
-<input id="r_fullname" placeholder="الاسم الكامل">
-<select id="r_grade"><option value="">اختر الصف</option><option>الاول الابتدائي</option><option>الثاني الابتدائي</option><option>الثالث الابتدائي</option><option>الرابع الابتدائي</option><option>الخامس الابتدائي</option><option>السادس الابتدائي</option><option>الاول الاعدادي</option><option>الثاني الاعدادي</option><option>الثالث الاعدادي</option></select>
-<input id="r_phone" placeholder="رقم تليفون الطالب">
-<input id="r_parent" placeholder="رقم تليفون ولي الامر">
-<input id="r_pass" type="password" placeholder="Password انجليزي/ارقام/رموز">
-<button onclick="saveStudent()">حفظ</button>
-<button onclick="showLogin()" style="background:#6b7280">رجوع</button>
-<div class="footer">للتواصل والاشتراك<br>01116811324</div>
-</div>
+<div class="container">
 
-<div id="studentHome" class="card hidden">
-<div class="header"><img src="logo.webp"><h2>منصة احمد السيد انجليزي</h2></div>
-<h3 id="welcome"></h3>
-<p style="font-size:13px;color:#555">ادخل الكود الخاص اللي وصلك واتساب (كل كود لمرة واحدة فقط)</p>
-<input id="classCode" placeholder="الكود الخاص بك">
-<button onclick="joinClass()">دخول الحصة المباشرة</button>
-<button onclick="showLogin()" style="background:#6b7280">خروج</button>
-<div class="footer">للتواصل والاشتراك<br>01116811324</div>
-</div>
-
-<div id="livePage" class="card hidden" style="max-width:900px">
-<h3>الحصة المباشرة - منصة احمد السيد انجليزي</h3>
-<div id="jitsiContainer"></div>
-<input id="chatInput" placeholder="اكتب سؤالك...">
-<button onclick="sendChat()">ارسال</button>
-<div id="chatBox" style="height:120px;overflow:auto;background:#f9f9f9;padding:10px;margin-top:10px"></div>
-<button onclick="leaveClass()" style="background:#ef4444">انهاء الحصة</button>
-</div>
-
-<div id="adminPage" class="card hidden" style="max-width:700px">
-<div class="header"><img src="logo.webp"><h2>لوحة الادمن - احمد السيد</h2></div>
-<input id="adminPass" type="password" placeholder="باسورد الادمن">
-<button onclick="checkAdmin()">دخول</button>
-<div id="adminContent" class="hidden">
-<h4>الطلاب المسجلين (الكود الخاص لكل طالب):</h4>
-<div id="allStudents"></div>
-<button onclick="showLogin()" style="background:#6b7280;margin-top:15px">خروج</button>
-</div>
-</div>
-
-<script src="https://meet.jit.si/external_api.js"></script>
-<script>
-const ADMIN_PASS="Ahmed@salwa2020";
-let students=JSON.parse(localStorage.getItem('students_final')||'[]');
-let loggedUser=null;
-
-function hideAll(){document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'))}
-function showRegister(){hideAll();document.getElementById('registerPage').classList.remove('hidden')}
-function showLogin(){hideAll();document.getElementById('loginPage').classList.remove('hidden');loggedUser=null}
-function showAdmin(){hideAll();document.getElementById('adminPage').classList.remove('hidden')}
-function isEnglishUsername(s){return /^[a-zA-Z0-9_\.]+$/.test(s)}
-function isEnglishPassword(s){return /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+$/.test(s)&&s.length>=4}
-
-function saveStudent(){
-let username=document.getElementById('r_username').value.trim();
-let fullname=document.getElementById('r_fullname').value.trim();
-let grade=document.getElementById('r_grade').value;
-let phone=document.getElementById('r_phone').value.trim();
-let parent=document.getElementById('r_parent').value.trim();
-let pass=document.getElementById('r_pass').value.trim();
-if(!username||!fullname||!grade||!pass){alert('اكمل البيانات');return}
-if(!isEnglishUsername(username)){alert('Username لازم انجليزي فقط');return}
-if(!isEnglishPassword(pass)){alert('Password لازم انجليزي/ارقام/رموز');return}
-if(students.some(s=>s.username.toLowerCase()==username.toLowerCase())){alert('Username موجود قبل كده');return}
-students.push({username,fullname,grade,phone,parent,pass,personalCode:"",codeUsed:true,joined:false});
-localStorage.setItem('students_final',JSON.stringify(students));
-alert('تم الحفظ! كلم مستر احمد على 01116811324 عشان يفعل لك كود الحصة');
-showLogin();
-}
-function login(){
-let n=document.getElementById('loginName').value.trim(),p=document.getElementById('loginPass').value.trim();
-let found=students.find(s=>s.username==n&&s.pass==p);
-if(found){loggedUser=found;hideAll();document.getElementById('studentHome').classList.remove('hidden');document.getElementById('welcome').innerText='اهلا يا '+found.fullname+' ('+found.grade+')';}
-else alert('Username او Password غلط');
-}
-function checkAdmin(){
-if(document.getElementById('adminPass').value===ADMIN_PASS){
-document.getElementById('adminContent').classList.remove('hidden');renderStudents();
-}else alert('باسورد الادمن غلط');
-}
-function renderStudents(){
-let div=document.getElementById('allStudents');
-if(students.length==0){div.innerHTML='<p>لسه مفيش طلاب</p>';return}
-let html='';
-students.forEach((s,i)=>{
-let status = !s.personalCode ? 'لم ينشأ كود' : (s.codeUsed ? 'الكود مستخدم / منتهي' : 'كود فعال - لم يدخل بعد');
-let joinedText = s.joined ? ' (دخل الحصة)' : '';
-html+=`<div class="student-item">
-<div style="text-align:right;font-size:13px"><b>${s.username}</b> - ${s.fullname} ${joinedText}<br>
-${s.grade} | ${s.phone}<br>
-<small>كود: <b style="color:#2563eb">${s.personalCode||'---'}</b> - ${status}</small>
-</div>
-<div style="display:flex;flex-direction:column">
-<button class="smallBtn codeBtn" onclick="genCode(${i})">انشاء كود جديد</button>
-<button class="smallBtn resetBtn" onclick="resetCode(${i})">تفعيل الكود</button>
-<button class="smallBtn delBtn" onclick="deleteStudent(${i})">مسح الطالب</button>
-</div>
-</div>`;
-});
-div.innerHTML=html;
-}
-function genCode(idx){
-let code = students[idx].username.toUpperCase().substring(0,4) + Math.floor(1000+Math.random()*9000);
-students[idx].personalCode=code;
-students[idx].codeUsed=false;
-students[idx].joined=false;
-localStorage.setItem('students_final',JSON.stringify(students));
-renderStudents();
-alert('كود الطالب '+students[idx].username+' هو: '+code+'\nابعتهوله على الواتساب');
-}
-function resetCode(idx){
-students[idx].codeUsed=false;
-localStorage.setItem('students_final',JSON.stringify(students));
-renderStudents();
-}
-function deleteStudent(idx){
-if(confirm('تمسح '+students[idx].username+' ؟')){
-students.splice(idx,1);
-localStorage.setItem('students_final',JSON.stringify(students));
-renderStudents();
-}
-}
-function joinClass(){
-if(!loggedUser){alert('سجل دخول الاول');return}
-let entered=document.getElementById('classCode').value.trim().toUpperCase();
-let realStudent = students.find(s=>s.username===loggedUser.username);
-if(!realStudent.personalCode){alert('لسه معندكش كود، كلم مستر احمد على 01116811324');return}
-if(entered!==realStudent.personalCode){alert('الكود ده مش بتاعك او غلط، كل طالب ليه كود خاص');return}
-if(realStudent.codeUsed){alert('الكود ده تم استخدامه قبل كده، كلم مستر احمد يبعتلك كود جديد');return}
-// نجح الدخول - نعلم انه استخدم
-realStudent.codeUsed=true;
-realStudent.joined=true;
-localStorage.setItem('students_final',JSON.stringify(students));
-hideAll();document.getElementById('livePage').classList.remove('hidden');
-let domain="meet.jit.si";
-let options={roomName:"AhmedElSayed_"+realStudent.username+"_"+entered,width:"100%",height:550,parentNode:document.getElementById('jitsiContainer'),configOverwrite:{prejoinPageEnabled:false},userInfo:{displayName:realStudent.fullname+' - '+realStudent.grade}};
-new JitsiMeetExternalAPI(domain,options);
-}
-function leaveClass(){location.reload()}
-function sendChat(){let t=document.getElementById('chatInput').value;if(t){document.getElementById('chatBox').innerHTML+=`<div><b>انت:</b> ${t}</div>`;document.getElementById('chatInput').value='';}}
-</script>
-<div style="background:white; padding:15px; border-radius:10px; text-align:center; margin-top:20px; border:2px solid #1e3a8a;">
-<h2 style="color:#1e40af;">الحصة المباشرة - منصة أحمد السيد</h2>
-<iframe src="https://meet.jit.si/AhmedElSayedSama2020" 
+<!-- الحصة المباشرة - شغالة أدمن بدون لوجن -->
+<div class="card" style="border:2px solid #1e3a8a; text-align:center;">
+<h2>🔴 الحصة المباشرة الآن</h2>
+<p>ادخل كأدمن مباشرة - بدون تسجيل دخول</p>
+<iframe src="https://meet.ffmuc.net/AhmedSama2020Live" 
 allow="camera; microphone; fullscreen; display-capture; autoplay" 
-style="width:100%; height:600px; border:0;">
+style="width:100%; height:650px; border:0; border-radius:10px;">
 </iframe>
+<p style="color:green; font-weight:bold;">✅ لو انت اول واحد دخلت فانت الأدمن تلقائياً</p>
 </div>
+
+<!-- قسم الامتحانات -->
+<div class="card">
+<h2>📝 بنك الامتحانات</h2>
+<p>اختار المرحلة وابدأ الامتحان</p>
+<button class="btn">الصف الثالث الثانوي</button><br><br>
+<button class="btn">الصف الثاني الثانوي</button><br><br>
+<button class="btn">الصف الأول الثانوي</button>
+</div>
+
+</div>
+
 </body>
 </html>
