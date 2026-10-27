@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>منصة مستر أحمد - تسجيل الطلاب</title>
 <style>
-body{font-family:Tahoma;background:#f0f4ff;padding:20px}
-.box{background:white;max-width:400px;margin:auto;padding:20px;border-radius:15px;box-shadow:0 4px 15px #0002}
-input{width:100%;padding:12px;margin:8px 0;border:1px solid #ccc;border-radius:8px;box-sizing:border-box}
-button{width:100%;padding:12px;background:#007bff;color:white;border:none;border-radius:8px;font-size:16px;cursor:pointer;margin-top:10px}
-button:disabled{background:gray}
-h2{text-align:center}
-#msg{text-align:center;margin-top:10px;font-weight:bold}
-.tabs{display:flex;gap:10px;margin-bottom:15px}
-.tabs button{width:50%}
+body{font-family:Tahoma;background:#eef2ff;padding:15px}
+.box{background:white;max-width:420px;margin:30px auto;padding:25px;border-radius:16px;box-shadow:0 5px 20px #0001}
+input{width:100%;padding:12px;margin:8px 0;border:1px solid #ccc;border-radius:10px;box-sizing:border-box;font-size:15px}
+button{width:100%;padding:12px;background:#007bff;color:white;border:none;border-radius:10px;font-size:16px;cursor:pointer;margin-top:10px;font-weight:bold}
+button:disabled{background:#aaa}
+h2{text-align:center;margin-bottom:20px}
+#msg{text-align:center;margin-top:15px;font-weight:bold;min-height:20px}
+.tabs{display:flex;gap:10px;margin-bottom:20px}
+.tabs button{width:50%;padding:10px}
 .active-tab{background:#28a745 !important}
 </style>
 </head>
@@ -48,6 +48,7 @@ h2{text-align:center}
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwl26WrcmIqU8LHtxS0__fqg-Tb1sw52L3-e7Lk0k3SBGnDVGEGAnxBvFOZLu2wJ5SJ/exec";
 
 function showTab(t){
+  document.getElementById('msg').innerHTML='';
   if(t=='reg'){
     document.getElementById('reg-form').style.display='block';
     document.getElementById('login-form').style.display='none';
@@ -65,19 +66,20 @@ async function register(){
   const msg=document.getElementById('msg');
   const btn=document.getElementById('btnReg');
   const data={
-    name:document.getElementById('name').value,
-    phone:document.getElementById('phone').value,
-    parentPhone:document.getElementById('parent').value,
-    username:document.getElementById('user').value,
-    password:document.getElementById('pass').value,
-    code:document.getElementById('code').value
+    name:document.getElementById('name').value.trim(),
+    phone:document.getElementById('phone').value.trim(),
+    parentPhone:document.getElementById('parent').value.trim(),
+    username:document.getElementById('user').value.trim(),
+    password:document.getElementById('pass').value.trim(),
+    code:document.getElementById('code').value.trim()
   };
-  if(!data.name||!data.username||!data.password){msg.innerHTML='اكمل البيانات';return;}
-  btn.disabled=true; msg.innerHTML='جاري التسجيل...';
+  if(!data.name||!data.username||!data.password){msg.innerHTML='❌ اكمل البيانات';msg.style.color='red';return;}
+  btn.disabled=true; msg.innerHTML='جاري التسجيل...'; msg.style.color='#333';
   try{
     await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(data)});
     msg.innerHTML='تم التسجيل ✅ بانتظار موافقة الادمن';
     msg.style.color='green';
+    document.getElementById('name').value='';document.getElementById('user').value='';document.getElementById('pass').value='';
   }catch(e){msg.innerHTML='خطأ: '+e.message; msg.style.color='red';}
   btn.disabled=false;
 }
@@ -87,8 +89,8 @@ async function login(){
   const btn=document.getElementById('btnLogin');
   const user=document.getElementById('l_user').value.trim();
   const pass=document.getElementById('l_pass').value.trim();
-  if(!user||!pass){msg.innerHTML='اكتب اليوزر والباسورد';return;}
-  btn.disabled=true; msg.innerHTML='جاري الدخول...';
+  if(!user||!pass){msg.innerHTML='اكتب اليوزر والباسورد';msg.style.color='red';return;}
+  btn.disabled=true; msg.innerHTML='جاري الدخول...'; msg.style.color='#333';
   try{
     const res=await fetch(SCRIPT_URL);
     const data=await res.json();
@@ -98,8 +100,11 @@ async function login(){
         found=true;
         let status=data[i][6];
         if(status=='approved'){
-          msg.innerHTML='تم الدخول بنجاح ✅ اهلا '+data[i][0];
+          localStorage.setItem('student_name', data[i][0]);
+          localStorage.setItem('student_user', user);
+          msg.innerHTML='تم الدخول بنجاح ✅ اهلا '+data[i][0]+' - جاري التحويل...';
           msg.style.color='green';
+          setTimeout(()=>{ window.location.href='dashboard.html'; }, 1000);
         }else{
           msg.innerHTML='حسابك بانتظار موافقة الادمن ⏳';
           msg.style.color='orange';
@@ -108,7 +113,7 @@ async function login(){
       }
     }
     if(!found){msg.innerHTML='اليوزر او الباسورد غلط ❌'; msg.style.color='red';}
-  }catch(e){msg.innerHTML='خطأ: '+e.message;}
+  }catch(e){msg.innerHTML='خطأ: '+e.message; msg.style.color='red';}
   btn.disabled=false;
 }
 </script>
