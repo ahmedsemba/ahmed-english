@@ -1,32 +1,27 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>أدمن</title>
-<style>body{font-family:Tahoma;background:#f1f5f9;padding:15px}input{padding:8px;margin:3px;border:1px solid #ccc;border-radius:5px}.btn{background:#1e40af;color:white;padding:8px 12px;border:none;border-radius:5px;cursor:pointer}table{width:100%;background:white;border-collapse:collapse;margin-top:15px}td,th{border:1px solid #ddd;padding:6px;font-size:13px}</style>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>تسجيل</title>
+<style>body{font-family:Tahoma;background:#f0f4ff;padding:20px}.box{max-width:400px;margin:auto;background:#fff;padding:25px;border-radius:15px}input{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;box-sizing:border-box}button{width:100%;padding:12px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:16px}</style>
 </head>
-<body>
-<div id="loginAdmin" style="text-align:center;margin-top:80px"><h2>دخول الأدمن</h2><input id="ap" type="password" placeholder="باسورد الأدمن"><br><br><button class="btn" onclick="loginA()">دخول</button><p>الافتراضي: Ahmed2020</p></div>
-<div id="panel" style="display:none">
-<h2>لوحة تحكم مستر أحمد</h2>
-<button class="btn" style="background:green" onclick="window.open('https://meet.ffmuc.net/AhmedSama2020Live','_blank')">دخول الميتنج كأدمن 🔴 (اضغط هنا عشان تفتح الحصة وتشوف الطلبة)</button>
-<h3>طلبات تسجيل جديدة</h3>
-<table id="tblPending"></table>
-<h3>الطلبة المقبولين + الأكواد</h3>
-<table id="tblApproved"></table>
-<p style="color:#64748b">بعد ما تعمل كود للطالب، انسخه وابعتهوله واتساب. الطالب هيدخل باليوزر + الباسورد + الكود ده.</p>
+<body><div class="box">
+<h2 style="text-align:center">تسجيل طالب جديد</h2>
+<input id="name" placeholder="اسم الطالب">
+<input id="phone" placeholder="تليفون الطالب">
+<input id="parent" placeholder="تليفون ولي الامر">
+<input id="user" placeholder="اليوزر انجليزي">
+<input id="pass" type="password" placeholder="الباسورد">
+<button id="btn" onclick="register()">تسجيل</button>
+<div id="msg" style="display:none;background:#d1fae5;padding:10px;margin-top:10px;text-align:center;border-radius:8px"></div>
 </div>
 <script>
-function loginA(){if(ap.value=="Ahmed2020"){loginAdmin.style.display="none";panel.style.display="block";render();}else alert("غلط")}
-function render(){
- let p=JSON.parse(localStorage.getItem('pendingDB')||'[]');
- let a=JSON.parse(localStorage.getItem('approvedDB')||'[]');
- let t1=tblPending; t1.innerHTML="<tr><th>الاسم</th><th>التليفون</th><th>ولي الأمر</th><th>اليوزر</th><th>كود</th><th>قبول</th><th>حذف</th></tr>";
- p.forEach((s,i)=>{t1.innerHTML+=`<tr><td>${s.name}</td><td>${s.phone}</td><td>${s.parent}</td><td>${s.user}</td><td><input id='code${i}' placeholder='مثلا SAMA50'></td><td><button onclick='approve(${i})'>قبول</button></td><td><button onclick='delP(${i})'>X</button></td></tr>`});
- let t2=tblApproved; t2.innerHTML="<tr><th>الاسم</th><th>اليوزر</th><th>الباسورد</th><th>الكود</th><th>حذف</th></tr>";
- a.forEach((s,i)=>{t2.innerHTML+=`<tr><td>${s.name}</td><td>${s.user}</td><td>${s.pass}</td><td style='color:green;font-weight:bold'>${s.code}</td><td><button onclick='delA(${i})'>X</button></td></tr>`});
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwMUKltPbOsqEN1LKoY_rtzfWVyy26KWUg22P2l2VIYUJ--iSPzwOB0tB1gfi5n8DHl/exec";
+async function register(){
+  let data={action:'register', name:document.getElementById('name').value, phone:document.getElementById('phone').value, parent:document.getElementById('parent').value, user:document.getElementById('user').value.trim(), pass:document.getElementById('pass').value.trim()};
+  if(!data.name||!data.user||!data.pass){alert('اكمل البيانات');return;}
+  document.getElementById('btn').textContent='جاري التسجيل...';
+  await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:new URLSearchParams(data)});
+  document.getElementById('msg').style.display='block';
+  document.getElementById('msg').textContent='تم التسجيل! تابع مع الادمن للموافقة';
+  document.getElementById('btn').textContent='تم ✅';
 }
-function approve(i){let p=JSON.parse(localStorage.getItem('pendingDB')||'[]');let a=JSON.parse(localStorage.getItem('approvedDB')||'[]');let code=document.getElementById('code'+i).value;if(!code){alert("اكتب الكود الأول");return;}p[i].code=code;a.push(p[i]);p.splice(i,1);localStorage.setItem('pendingDB',JSON.stringify(p));localStorage.setItem('approvedDB',JSON.stringify(a));render();}
-function delP(i){let p=JSON.parse(localStorage.getItem('pendingDB')||'[]');p.splice(i,1);localStorage.setItem('pendingDB',JSON.stringify(p));render();}
-function delA(i){let a=JSON.parse(localStorage.getItem('approvedDB')||'[]');a.splice(i,1);localStorage.setItem('approvedDB',JSON.stringify(a));render();}
-</script>
-</body>
-</html>
+</script></body></html>
