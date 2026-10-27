@@ -1,70 +1,24 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ادمن - طلاب مستر أحمد</title>
-<style>
-body{font-family:Tahoma;background:#f2f2f2;padding:15px}
-.card{background:white;padding:15px;border-radius:12px;box-shadow:0 2px 10px #0001;margin-bottom:12px}
-button{padding:8px 15px;border:none;border-radius:8px;cursor:pointer}
-.btn-refresh{background:#007bff;color:white;width:100%;font-size:16px;margin-bottom:15px}
-.btn-approve{background:#28a745;color:white}
-.btn-reject{background:#dc3545;color:white}
-.status-pending{color:orange;font-weight:bold}
-.status-approved{color:green;font-weight:bold}
-</style>
-</head>
+<head><meta charset="UTF-8"><title>ادمن</title></head>
 <body>
-<h2>لوحة تحكم الطلاب</h2>
-<button class="btn-refresh" onclick="loadStudents()">🔄 تحديث البيانات</button>
-<div id="students">جاري التحميل...</div>
-
+<h2>لوحة الادمن</h2>
+<div id="list">جاري التحميل...</div>
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwl26WrcmIqU8LHtxS0__fqg-Tb1sw52L3-e7Lk0k3SBGnDVGEGAnxBvFOZLu2wJ5SJ/exec";
-
-async function loadStudents(){
-  document.getElementById('students').innerHTML = 'جاري التحميل...';
-  try{
-    const res = await fetch(SCRIPT_URL);
-    const data = await res.json();
-    let html = '';
-    // data[0] هو الهيدر
-    for(let i=1; i<data.length; i++){
-      let row = data[i];
-      let name = row[0], phone = row[1], parent = row[2], username = row[3], code = row[5], status = row[6];
-      if(!username) continue;
-      html += `
-      <div class="card">
-        <b>الاسم:</b> ${name}<br>
-        <b>اليوزر:</b> ${username}<br>
-        <b>الهاتف:</b> ${phone}<br>
-        <b>ولي الامر:</b> ${parent}<br>
-        <b>الكود:</b> ${code}<br>
-        <b>الحالة:</b> <span class="${status=='approved'?'status-approved':'status-pending'}">${status}</span><br><br>
-        ${status!='approved' ? `<button class="btn-approve" onclick="updateStatus('${username}')">✅ موافقة</button>` : 'تمت الموافقة ✅' }
-      </div>`;
-    }
-    document.getElementById('students').innerHTML = html || 'لا يوجد طلاب';
-  }catch(e){
-    document.getElementById('students').innerHTML = 'خطأ في التحميل: ' + e.message;
-  }
+const URL="https://script.google.com/macros/s/AKfycbw3tS1p1G7srl_kZD3VH1wl24syiafZkJIN8HeOHepjjQYwf-cMrgglcO6eG1S1UusP/exec";
+async function load(){
+let r=await fetch(URL);let d=await r.json();
+let h='';
+for(let i=1;i<d.length;i++){
+h+=`<div>${d[i][0]} - ${d[i][3]} - ${d[i][6]} <button onclick="approve('${d[i][3]}')">موافقة</button></div><hr>`;
 }
-
-async function updateStatus(username){
-  if(!confirm('تأكيد الموافقة على '+username+' ؟')) return;
-  try{
-    await fetch(SCRIPT_URL, {
-      method:'POST',
-      body: JSON.stringify({action:'updateStatus', username: username})
-    });
-    alert('تمت الموافقة ✅');
-    loadStudents();
-  }catch(e){
-    alert('حصل خطأ: ' + e.message);
-  }
+document.getElementById('list').innerHTML=h;
 }
-loadStudents();
+async function approve(u){
+await fetch(URL,{method:'POST',body:JSON.stringify({action:'approve',username:u})});
+alert('تمت الموافقة');load();
+}
+load();
 </script>
 </body>
 </html>
