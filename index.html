@@ -52,13 +52,13 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 <input id="adminPass" type="password" placeholder="Ahmed@salwa2020"><button onclick="loginAdmin()">دخول</button>
 <div id="adminArea" style="display:none">
 <div class="card" style="background:#0f172a;border:2px solid #10b981">
-<h4>🔴 تحديث الحصة الحالية</h4>
+<h4>🔴 تحديث الحصة الحالية (لينك واحد بس)</h4>
 <input id="lessonTitle" placeholder="عنوان الحصة - مثلا: يونت 1">
-<input id="meetLink" placeholder="لينك جوجل ميت">
-<input id="ytLink" placeholder="لينك يوتيوب - مثلا: https://youtube.com/watch?v=...">
+<input id="meetLink" placeholder="لينك جوجل ميت (سيبه فاضي لو هتحط يوتيوب)">
+<input id="ytLink" placeholder="لينك يوتيوب (سيبه فاضي لو هتحط ميتنج)">
 <select id="lessonGrade"><option>للكل</option><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select>
 <button onclick="addLesson()" style="background:#10b981">✅ نشر وتحديث</button>
-<p style="font-size:11px;color:#94a3b8">الجديد هيمسح القديم تلقائيا ويظهر لينك واحد بس</p>
+<p style="font-size:11px;color:#94a3b8">حط لينك واحد بس: يا جوجل ميت يا يوتيوب - الجديد هيمسح القديم</p>
 </div>
 <h4>المنتظرين</h4><div id="pendingList"></div>
 <h4>المقبولين</h4><div id="approvedList"></div>
@@ -78,7 +78,6 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
 window.showTab = (t)=>{
  document.querySelectorAll('[id^=tab-]').forEach(e=>e.style.display='none');
  document.getElementById('tab-'+t).style.display='block';
@@ -113,8 +112,10 @@ window.loginStudent = async ()=>{
  let html=''; 
  snapL.forEach(d=>{
   const l=d.data();
-  let ytEmbed = '';
-  let ytButton = '';
+  let content = `<div class='lesson'><h2>${l.title}</h2><p>${l.grade}</p>`;
+  if(l.meetLink){
+    content += `<a class='meetBtn' target='_blank' href='${l.meetLink}'>🎥 ادخل جوجل ميت الآن</a>`;
+  }
   if(l.ytLink){
     let videoId = '';
     try{
@@ -123,17 +124,12 @@ window.loginStudent = async ()=>{
       else { videoId = l.ytLink.split('/').pop(); }
     }catch(e){}
     if(videoId){
-      ytEmbed = `<div style="margin-top:15px"><iframe width="100%" height="220" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="border-radius:12px"></iframe></div>`;
-      ytButton = `<a class='ytBtn' target='_blank' href='${l.ytLink}'>▶️ اضغط لمشاهدة الحصة</a>`;
-    } else {
-      ytButton = `<a class='ytBtn' target='_blank' href='${l.ytLink}'>▶️ اضغط لمشاهدة الحصة</a>`;
+      content += `<div style="margin-top:15px"><iframe width="100%" height="220" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="border-radius:12px"></iframe></div>`;
     }
+    content += `<a class='ytBtn' target='_blank' href='${l.ytLink}'>▶️ اضغط لمشاهدة الحصة</a>`;
   }
-  html = `<div class='lesson'><h2>${l.title}</h2><p>${l.grade}</p>
-  ${l.meetLink?`<a class='meetBtn' target='_blank' href='${l.meetLink}'>🎥 ادخل جوجل ميت الآن</a>`:''}
-  ${ytButton}
-  ${ytEmbed}
-  </div>`;
+  content += `</div>`;
+  html = content;
  });
  document.getElementById('lessonsList').innerHTML=html||'<p>لا يوجد حصة حالية</p>';
 }
@@ -158,13 +154,16 @@ window.approve = async (id)=>{ await updateDoc(doc(db,'students',id),{status:'ap
 window.blockStudent = async (id)=>{ if(!confirm('هتحظر الطالب ده؟')) return; await updateDoc(doc(db,'students',id),{status:'pending'}); loadAdmin(); }
 window.deleteStudent = async (id)=>{ if(!confirm('متأكد هتمسح الطالب نهائيا؟')) return; await deleteDoc(doc(db,'students',id)); loadAdmin(); }
 window.addLesson = async ()=>{
- const title=document.getElementById('lessonTitle').value;
- const meetLink=document.getElementById('meetLink').value;
- const ytLink=document.getElementById('ytLink').value;
+ const title=document.getElementById('lessonTitle').value.trim();
+ const meetLink=document.getElementById('meetLink').value.trim();
+ const ytLink=document.getElementById('ytLink').value.trim();
  const grade=document.getElementById('lessonGrade').value;
- if(!title||!meetLink){alert('اكتب العنوان ولينك الميتنج');return}
+ // التعديل المهم: يا ميتنج يا يوتيوب
+ if(!title){alert('اكتب عنوان الحصة');return}
+ if(!meetLink && !ytLink){alert('حط لينك واحد على الأقل: يا جوجل ميت يا يوتيوب');return}
  await setDoc(doc(db,'lessons','current'),{title,meetLink,ytLink,grade,created:Date.now()});
- alert('تم النشر! الطلاب شايفين لينك واحد بس');
+ alert('تم النشر! الطالب هيشوف لينك واحد بس');
+ document.getElementById('lessonTitle').value='';document.getElementById('meetLink').value='';document.getElementById('ytLink').value='';
 }
 </script>
 </body>
