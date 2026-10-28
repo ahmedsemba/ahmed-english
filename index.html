@@ -1,1 +1,32 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>منصة مستر أحمد</title><style>body{font-family:Tahoma;background:#f1f5f9;padding:15px}.card{background:white;max-width:400px;margin:30px auto;padding:20px;border-radius:15px}input,select,button{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid #ddd;box-sizing:border-box}button{border:none;font-weight:bold;cursor:pointer}.tabs{display:flex;gap:8px}.tabs button{flex:1;background:#e2e8f0}.active{background:#0ea5e9!important;color:white}.hide{display:none}</style></head><body><div class="card"><h3 style="text-align:center">منصة مستر أحمد</h3><div class="tabs"><button id="b1" class="active" onclick="show('reg')">تسجيل جديد</button><button id="b2" onclick="show('log')">دخول</button></div><div id="reg"><input id="name" placeholder="الاسم ثلاثي"><input id="phone" placeholder="رقم الطالب"><input id="parentPhone" placeholder="رقم ولي الأمر"><select id="grade"><option>1 ابتدائي</option><option>2 ابتدائي</option><option>3 ابتدائي</option><option>4 ابتدائي</option><option>5 ابتدائي</option><option>6 ابتدائي</option><option>1 اعدادي</option><option>2 اعدادي</option><option>3 اعدادي</option></select><input id="pass" placeholder="باسورد"><button style="background:#22c55e;color:white" onclick="reg()" id="rBtn">تسجيل ودخول للملازم</button></div><div id="log" class="hide"><input id="l_phone" placeholder="رقمك"><input id="l_pass" type="password" placeholder="الباسورد"><button style="background:#0ea5e9;color:white" onclick="loginStudent()" id="lBtn">دخول للملازم</button><p id="lMsg" style="color:red;text-align:center"></p><hr><input id="adminU" placeholder="admin"><input id="adminP" type="password" placeholder="Ahmed@2020#"><button style="background:#0f172a;color:white" onclick="adminLogin()">دخول كأدمن</button></div></div><script>const URL="https://script.google.com/macros/s/AKfycbxphrGy0FMcFrWkpncd22onELVP0Koq9ORTh4toMAqsCMEl3WIV4viiN2sLK0pPci7t/exec";function show(t){document.getElementById('reg').classList.toggle('hide',t!='reg');document.getElementById('log').classList.toggle('hide',t!='log');document.getElementById('b1').classList.toggle('active',t=='reg');document.getElementById('b2').classList.toggle('active',t=='log');}function reg(){let n=document.getElementById('name').value.trim(),p=document.getElementById('phone').value.trim(),pp=document.getElementById('parentPhone').value.trim(),g=document.getElementById('grade').value,ps=document.getElementById('pass').value.trim();if(!n||!p||!ps) return alert('كمل البيانات');document.getElementById('rBtn').innerText='جاري...';localStorage.setItem('student_name',n);localStorage.setItem('isAdmin','0');let data={action:'register',name:n,phone:p,parentPhone:pp,grade:g,password:ps};fetch(URL,{method:'POST',mode:'no-cors',body:JSON.stringify(data)}).then(()=>{}).catch(()=>{});setTimeout(()=>{location.href='dashboard.html?v=999';},800);}async function loginStudent(){let ph=document.getElementById('l_phone').value.trim(),ps=document.getElementById('l_pass').value.trim();if(!ph||!ps) return alert('اكتب رقمك والباسورد');document.getElementById('lBtn').innerText='جاري...';try{let r=await fetch(URL+'?action=login&phone='+encodeURIComponent(ph)+'&password='+encodeURIComponent(ps));let j=await r.json();if(j.found){localStorage.setItem('student_name',j.name);localStorage.setItem('isAdmin','0');location.href='dashboard.html?v=999';return;}}catch(e){}localStorage.setItem('student_name',ph);localStorage.setItem('isAdmin','0');location.href='dashboard.html?v=999';}function adminLogin(){let u=document.getElementById('adminU').value,p=document.getElementById('adminP').value;if(u=='admin'&&p=='Ahmed@2020#'){localStorage.setItem('student_name','مستر أحمد');localStorage.setItem('isAdmin','1');location.href='dashboard.html?v=999';}else alert('غلط');}</script></body></html>
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>منصة مستر احمد</title>
+<style>body{font-family:Tahoma;background:#f1f5f9;padding:20px}.card{background:#fff;max-width:380px;margin:auto;padding:20px;border-radius:15px}input,button{width:100%;padding:14px;margin:8px 0;border-radius:10px;border:1px solid #ddd;box-sizing:border-box}button{background:#22c55e;color:#fff;font-weight:bold;border:none;font-size:16px}</style>
+</head>
+<body>
+<div class="card">
+<h2 style="text-align:center">منصة مستر احمد</h2>
+<input id="n" placeholder="اسمك - سما احمد محمد">
+<input id="p" placeholder="رقمك - 01095558173">
+<button onclick="go()">دخول للملازم فورا</button>
+<p style="text-align:center;margin-top:10px"><a href="#" onclick="admin()">دخول كأدمن</a></p>
+</div>
+<script>
+function go(){
+ if(!n.value){alert('اكتب اسمك');return;}
+ localStorage.setItem('student_name',n.value);
+ localStorage.setItem('isAdmin','0');
+ location.href='dashboard.html';
+}
+function admin(){
+ let u=prompt('يوزر الادمن'); let ps=prompt('باسورد الادمن');
+ if(u=='admin' && ps=='Ahmed@2020#'){
+   localStorage.setItem('student_name','مستر احمد');
+   localStorage.setItem('isAdmin','1');
+   location.href='dashboard.html';
+ } else alert('غلط');
+}
+</script>
+</body>
+</html>
