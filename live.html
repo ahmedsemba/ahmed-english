@@ -2,35 +2,51 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>الحصة لايف</title>
-<script src='https://meet.ffmuc.net/external_api.js'></script>
-<style>body{margin:0;font-family:Tahoma;background:#111;color:white}#top{padding:10px;background:#1f2937;display:flex;gap:8px;flex-wrap:wrap}button{padding:8px 12px;border-radius:8px;border:none;background:#007bff;color:white;font-weight:bold;cursor:pointer}input{flex:1;padding:8px;border-radius:8px;border:none;min-width:150px}#meet{height:calc(100vh - 55px)}</style>
+<title>الحصة لايف - محمية</title>
+<style>body{font-family:Tahoma;background:#0f172a;color:white;margin:0;padding:20px;text-align:center}.box{background:white;color:#111;max-width:500px;margin:30px auto;padding:25px;border-radius:20px}button,a,input{display:block;width:100%;padding:14px;margin:10px 0;border-radius:12px;text-decoration:none;font-weight:bold;border:none;font-size:16px;box-sizing:border-box}input{border:1px solid #ccc}.live{background:#22c55e;color:white}.pdf{background:#007bff;color:white}.out{background:#e2e8f0;color:#111}#lock{color:#dc2626;font-weight:bold}</style>
 </head>
 <body>
-<div id="top">
-<span id="s">جاري التحميل...</span>
-<input id="pdf" placeholder="لينك ملف PDF">
-<button onclick="share()">عرض الملف</button>
-<button onclick="location.href='dashboard.html'" style="background:#dc3545">خروج</button>
+<div class="box">
+<h2 id="w">فحص الدخول...</h2>
+<div id="content" style="display:none">
+<p>كود الحصة هو كود الطالب بتاعك</p>
+<input id="code" placeholder="اكتب كود الطالب">
+<input id="pdf" placeholder="لينك ملف PDF (للمدرس)">
+<button class="pdf" onclick="openPDF()">📚 فتح الملف</button>
+<button class="live" onclick="join()">🔴 دخول الحصة الآن</button>
+<p id="lock"></p>
+<a class="out" href="dashboard.html">⬅️ رجوع</a>
 </div>
-<div id="meet"></div>
+</div>
 <script>
-let myName = localStorage.getItem('student_name') || 'مستر أحمد';
-let room = new URLSearchParams(location.search).get('room') || 'ahmed1';
-document.getElementById('s').innerText = 'أهلا يا ' + myName;
-const api = new JitsiMeetExternalAPI('meet.ffmuc.net', {
-  roomName: 'AhmedEnglish_'+room,
-  parentNode: document.querySelector('#meet'),
-  width:'100%', height:700,
-  userInfo:{displayName:myName},
-  configOverwrite:{prejoinPageEnabled:false},
-  interfaceConfigOverwrite:{SHOW_JITSI_WATERMARK:false}
-});
-function share(){
-  let link=document.getElementById('pdf').value;
-  if(!link) return alert('حط لينك الـ PDF الاول');
-  api.executeCommand('sendChatMessage','📚 ملف الحصة: '+link);
+let name = localStorage.getItem('student_name');
+let savedCode = localStorage.getItem('student_code');
+
+if(!name || !savedCode){
+  document.getElementById('w').innerText = '⛔ لازم تسجل دخول الأول';
+  document.getElementById('content').innerHTML = '<a class="live" href="index.html">روح سجل دخول</a>';
+  document.getElementById('content').style.display='block';
+} else {
+  document.getElementById('w').innerText = 'أهلا يا ' + name;
+  document.getElementById('content').style.display='block';
+  document.getElementById('code').value = savedCode;
+}
+
+function join(){
+  let inputCode = document.getElementById('code').value.trim();
+  if(inputCode !== savedCode && name !== 'مستر أحمد'){
+    document.getElementById('lock').innerText = '❌ الكود غلط، ده مش كودك';
+    return;
+  }
+  let room = 'AhmedEnglish_grade1_2024'; // غير الاسم ده كل حصة عشان تبقى حصة جديدة
+  let link = 'https://meet.ffmuc.net/' + room + '#userInfo.displayName="' + encodeURIComponent(name) + '"';
   window.open(link,'_blank');
+}
+
+function openPDF(){
+  let l=document.getElementById('pdf').value.trim();
+  if(!l) return alert('حط لينك الـ PDF');
+  window.open(l,'_blank');
 }
 </script>
 </body>
