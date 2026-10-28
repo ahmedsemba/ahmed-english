@@ -7,6 +7,7 @@
 <style>
 *{font-family:'Cairo',sans-serif;box-sizing:border-box}body{margin:0;background:#0f172a;color:#fff}
 header{background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:20px;text-align:center}
+.sub-banner{background:#f59e0b;color:#000;padding:12px 15px;border-radius:12px;margin-top:12px;font-weight:900;font-size:14px;display:inline-block;line-height:1.6}
 .container{max-width:900px;margin:auto;padding:15px}.card{background:#1e293b;border-radius:16px;padding:20px;margin-bottom:15px}
 input,select,button,textarea{width:100%;padding:12px;border-radius:10px;border:none;margin-top:10px;font-size:15px}
 input,select,textarea{background:#0f172a;color:#fff;border:1px solid #334155}
@@ -20,39 +21,57 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 </style>
 </head>
 <body>
-<header><h1>منصة مستر أحمد السيد 📚</h1><p>من الأول الابتدائي للثالث الإعدادي</p></header>
+<header>
+<h1>منصة مستر أحمد السيد 📚</h1>
+<p>من الأول الابتدائي للثالث الإعدادي</p>
+<div class="sub-banner">
+📞 للاشتراك يرجي ارسال سعر الحصه انستا أو اتصالات كاش<br>
+<a href="https://wa.me/201116811324?text=السلام%20عليكم%20يا%20مستر%20احمد%20عايز%20اشترك%20في%20المنصة" target="_blank" style="color:#000;text-decoration:none;font-weight:900;font-size:18px;background:#fff;padding:6px 18px;border-radius:25px;display:inline-block;margin-top:8px">📲 01116811324 - دوس للواتساب</a>
+</div>
+</header>
+
 <div class="container">
 <div class="tabs">
 <div class="tab active" onclick="showTab('student')">دخول الطلاب</div>
 <div class="tab" onclick="showTab('register')">تسجيل</div>
 <div class="tab" onclick="showTab('admin')">لوحة المستر</div>
 </div>
+
 <div id="tab-register" class="card" style="display:none">
 <h3>تسجيل طالب جديد</h3>
-<input id="name" placeholder="الاسم ثلاثي"><input id="phone" placeholder="رقم الواتساب"><input id="parentPhone" placeholder="رقم ولي الأمر">
+<input id="name" placeholder="الاسم ثلاثي">
+<input id="phone" placeholder="رقم الواتساب">
+<input id="parentPhone" placeholder="رقم ولي الأمر">
 <select id="grade"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select>
 <button onclick="registerStudent()">تسجيل</button><p id="regMsg"></p>
 </div>
+
 <div id="tab-student" class="card">
 <h3>دخول الطالب</h3>
-<input id="loginPhone" placeholder="رقم الواتساب"><button onclick="loginStudent()">دخول</button><p id="loginMsg"></p>
+<input id="loginPhone" placeholder="رقم الواتساب">
+<button onclick="loginStudent()">دخول</button><p id="loginMsg"></p>
 <div id="studentArea" style="display:none"><h2 id="welcome"></h2><div id="lessonsList"></div></div>
 </div>
+
 <div id="tab-admin" class="card" style="display:none">
 <h3>لوحة المستر 🔒</h3>
-<input id="adminPass" type="password" placeholder="Ahmed@salwa2020"><button onclick="loginAdmin()">دخول</button>
+<input id="adminPass" type="password" placeholder="Ahmed@salwa2020">
+<button onclick="loginAdmin()">دخول</button>
 <div id="adminArea" style="display:none">
 <div class="card" style="background:#0f172a;border:2px solid #10b981">
 <h4>🔴 تحديث لينك الحصة (واحد بس ظاهر)</h4>
-<input id="lessonTitle" placeholder="عنوان الحصة"><input id="meetLink" placeholder="لينك جوجل ميت"><input id="ytLink" placeholder="يوتيوب اختياري">
+<input id="lessonTitle" placeholder="عنوان الحصة">
+<input id="meetLink" placeholder="لينك جوجل ميت">
+<input id="ytLink" placeholder="يوتيوب اختياري">
 <select id="lessonGrade"><option>للكل</option><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select>
 <button onclick="addLesson()" style="background:#10b981">✅ نشر</button>
 </div>
-<h4>المنتظرين - دوس موافقة عشان يشوف اللينك</h4><div id="pendingList"></div>
+<h4>المنتظرين</h4><div id="pendingList"></div>
 <h4>المقبولين - تقدر تحذف اللي مدفعش</h4><div id="approvedList"></div>
 </div>
 </div>
 </div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, setDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -66,6 +85,7 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
 window.showTab = (t)=>{
  document.querySelectorAll('[id^=tab-]').forEach(e=>e.style.display='none');
  document.getElementById('tab-'+t).style.display='block';
@@ -114,21 +134,15 @@ async function loadAdmin(){
  snap.forEach(d=>{
   const s=d.data(); const id=d.id;
   if(s.status=='pending'){
-   pending.innerHTML+=`<div class="student-row"><div><b>⏳ ${s.name}</b> - ${s.phone}<br><small>${s.grade} | ولي الأمر: ${s.parentPhone||'-'}</small></div><div style="display:flex;gap:5px"><button class="btn-small" onclick="approve('${id}')" style="background:#10b981">✔️ موافقة</button><button class="btn-small" onclick="deleteStudent('${id}')" style="background:#ef4444">🗑️ حذف</button></div></div>`;
+   pending.innerHTML+=`<div class="student-row"><div><b>⏳ ${s.name}</b> - ${s.phone}<br><small>${s.grade}</small></div><div style="display:flex;gap:5px"><button class="btn-small" onclick="approve('${id}')" style="background:#10b981">✔️ موافقة</button><button class="btn-small" onclick="deleteStudent('${id}')" style="background:#ef4444">🗑️ حذف</button></div></div>`;
   } else {
-   approved.innerHTML+=`<div class="student-row"><div><b>✅ ${s.name}</b> - ${s.phone}<br><small>${s.grade}</small></div><div style="display:flex;gap:5px"><span style="color:#10b981">✔️ مقبول</span><button class="btn-small" onclick="blockStudent('${id}')" style="background:#f59e0b">🚫 حظر</button><button class="btn-small" onclick="deleteStudent('${id}')" style="background:#ef4444">🗑️ مسح</button></div></div>`;
+   approved.innerHTML+=`<div class="student-row"><div><b>✅ ${s.name}</b> - ${s.phone}<br><small>${s.grade}</small></div><div style="display:flex;gap:5px"><span style="color:#10b981">✔️</span><button class="btn-small" onclick="blockStudent('${id}')" style="background:#f59e0b">🚫 حظر</button><button class="btn-small" onclick="deleteStudent('${id}')" style="background:#ef4444">🗑️ مسح</button></div></div>`;
   }
  });
 }
 window.approve = async (id)=>{ await updateDoc(doc(db,'students',id),{status:'approved'}); loadAdmin(); }
-window.blockStudent = async (id)=>{ 
- if(!confirm('هتحظر الطالب ده؟ هيرجع منتظر ولازم توافق تاني')) return;
- await updateDoc(doc(db,'students',id),{status:'pending'}); loadAdmin(); 
-}
-window.deleteStudent = async (id)=>{
- if(!confirm('متأكد هتمسح الطالب نهائيا؟ مش هيقدر يدخل تاني')) return;
- await deleteDoc(doc(db,'students',id)); loadAdmin();
-}
+window.blockStudent = async (id)=>{ if(!confirm('هتحظر الطالب ده؟')) return; await updateDoc(doc(db,'students',id),{status:'pending'}); loadAdmin(); }
+window.deleteStudent = async (id)=>{ if(!confirm('متأكد هتمسح الطالب نهائيا؟')) return; await deleteDoc(doc(db,'students',id)); loadAdmin(); }
 window.addLesson = async ()=>{
  const title=document.getElementById('lessonTitle').value;
  const meetLink=document.getElementById('meetLink').value;
@@ -136,7 +150,7 @@ window.addLesson = async ()=>{
  const grade=document.getElementById('lessonGrade').value;
  if(!title||!meetLink){alert('اكتب العنوان واللينك');return}
  await setDoc(doc(db,'lessons','current'),{title,meetLink,ytLink,grade,created:Date.now()});
- alert('تم النشر - لينك واحد بس ظاهر للطلاب');
+ alert('تم النشر');
 }
 </script>
 </body>
