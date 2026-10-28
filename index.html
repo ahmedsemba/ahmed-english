@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>منصة مستر أحمد السنبا - انجليزي العبور</title>
+<title>منصة مستر أحمد السيد - انجليزي العبور</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',Tahoma}
-body{min-height:100vh;background:linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.8)),url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800') center/cover fixed;color:white}
+body{min-height:100vh;background:linear-gradient(rgba(0,0,0,0.72),rgba(0,0,0,0.82)),url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800') center/cover fixed;color:white}
 .top-badge{background:#dc2626;color:white;padding:10px 28px;border-radius:30px;display:inline-block;font-weight:800}
 .top-badge.live{background:#16a34a}
 .container{max-width:500px;margin:0 auto;padding:15px;padding-bottom:70px}
@@ -19,7 +19,6 @@ body{min-height:100vh;background:linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.8)
 .wa-btn{display:block;background:#16a34a;color:white;text-decoration:none;padding:12px;border-radius:12px;margin:8px 0;text-align:center;font-weight:800}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}
 .card{border-radius:20px;padding:22px 10px;text-align:center;cursor:pointer;min-height:145px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.15)}
-.card-purple{background:linear-gradient(135deg,rgba(88,28,135,0.9),rgba(126,34,206,0.8))}
 .card-dark{background:linear-gradient(135deg,rgba(30,41,59,0.95),rgba(51,65,85,0.9))}
 .card-green{background:linear-gradient(135deg,rgba(20,83,45,0.9),rgba(34,197,94,0.6))}
 .card-blue{background:linear-gradient(135deg,rgba(30,58,138,0.9),rgba(59,130,246,0.8))}
@@ -41,7 +40,7 @@ body{min-height:100vh;background:linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.8)
 <div style="text-align:center;margin:18px 0">
 <span class="top-badge" id="topBadge">مفيش غرفة</span>
 <div class="logo">🎓</div>
-<div class="title">منصة مستر أحمد السنبا<br><span style="font-size:17px;opacity:0.9">انجليزي العبور</span></div>
+<div class="title">منصة مستر أحمد السيد<br><span style="font-size:17px;opacity:0.9">انجليزي العبور</span></div>
 </div>
 
 <div class="payment-box">
@@ -54,15 +53,13 @@ body{min-height:100vh;background:linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.8)
 <div class="pay-item" style="border-color:#a855f7">
 <p style="color:#d8b4fe;font-weight:800">🏦 انستا باي - InstaPay</p>
 <p class="pay-number">01116811324</p>
-<p style="font-size:11px;opacity:0.7;text-align:center">نفس الرقم - اختار محفظة اتصالات كاش من انستا باي</p>
 </div>
 </div>
 
 <div class="grid">
-<div class="card card-purple" onclick="openModal('teacherModal')"><div style="font-size:40px">📝</div><h3>تسجيل معلم جديد</h3></div>
-<div class="card card-dark" onclick="openModal('adminModal')"><div style="font-size:40px">👑</div><h3>دخول الإدارة</h3><p style="font-size:11px;opacity:0.7">الموافقة على الطلبة</p></div>
-<div class="card card-green" onclick="openModal('createModal')"><div style="font-size:40px">🎥</div><h3>إنشاء غرفة للمعلم</h3></div>
-<div class="card card-blue" onclick="openModal('studentModal')"><div style="font-size:40px">🎒</div><h3>بوابة الطالب</h3><p style="font-size:11px;opacity:0.7">تسجيل + دخول بكود</p></div>
+<div class="card card-dark" onclick="openModal('adminModal')"><div style="font-size:42px">👑</div><h3>دخول الإدارة</h3></div>
+<div class="card card-green" onclick="openModal('adminModal')"><div style="font-size:42px">🎥</div><h3>إنشاء غرفة للمعلم</h3></div>
+<div class="card card-blue" style="grid-column: span 2; min-height:110px" onclick="openModal('studentModal')"><div style="font-size:42px">🎒</div><h3>بوابة الطالب - تسجيل + دخول بكود</h3></div>
 </div>
 </div>
 
@@ -82,16 +79,15 @@ body{min-height:100vh;background:linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.8)
 <div id="regTab" style="display:none">
 <h3>📝 تسجيل اشتراك جديد</h3>
 <input id="sName" placeholder="اسم الطالب ثلاثي">
-<input id="sPhone" placeholder="رقم واتساب الطالب 01xxxxxxxxx">
+<input id="sPhone" placeholder="رقم واتساب الطالب">
 <button onclick="registerStudent()" style="background:#16a34a">إرسال طلب اشتراك ⏳</button>
-<p style="font-size:11px;color:#64748b;margin-top:8px;text-align:center">بعد التسجيل، كودك هيبقى قيد المراجعة لحد ما تأكد الدفع على 01116811324</p>
 </div>
 <button onclick="closeModal('studentModal')" style="background:#64748b">اغلاق</button>
 </div></div>
 
 <div id="adminModal" class="modal"><div class="modal-box">
-<h3>👑 لوحة الإدارة - مستر أحمد</h3>
-<input id="adminCode" type="password" placeholder="كود الإدارة SEMBA-ADMIN-2025">
+<h3>👑 لوحة الإدارة - مستر أحمد السيد</h3>
+<input id="adminCode" type="password" placeholder="اكتب كود الإدارة">
 <button onclick="loginAdmin()">دخول</button>
 <div id="adminArea" style="display:none;margin-top:15px">
 <h4>📋 طلبات جديدة</h4>
@@ -109,13 +105,10 @@ body{min-height:100vh;background:linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.8)
 <button onclick="closeModal('adminModal')" style="background:#64748b">اغلاق</button>
 </div></div>
 
-<div id="createModal" class="modal"><div class="modal-box"><h3>🎥 إنشاء غرفة</h3><p style="font-size:12px;color:#64748b">افتح لوحة الإدارة لإنشاء الغرفة</p><button onclick="closeModal('createModal');openModal('adminModal')" style="background:#16a34a">فتح الإدارة</button><button onclick="closeModal('createModal')" style="background:#64748b">اغلاق</button></div></div>
-<div id="teacherModal" class="modal"><div class="modal-box"><h3>تسجيل معلم</h3><p>المنصة خاصة بمستر أحمد السنبا</p><a href="https://wa.me/201116811324" class="wa-btn">تواصل 01116811324</a><button onclick="closeModal('teacherModal')" style="background:#64748b">اغلاق</button></div></div>
-
 <script>
-const ADMIN_CODE="SEMBA-ADMIN-2025";
-const ROOM_KEY="semba_live_room_v2";
-const STUDENTS_KEY="semba_students_v3";
+const ADMIN_CODE="Ahmed@2020";
+const ROOM_KEY="semba_live_room_v4";
+const STUDENTS_KEY="semba_students_v4";
 let students=JSON.parse(localStorage.getItem(STUDENTS_KEY)||"[]");
 function openModal(id){document.getElementById(id).classList.add('active'); if(id==='studentModal') checkRoom();}
 function closeModal(id){document.getElementById(id).classList.remove('active');}
@@ -125,11 +118,11 @@ function registerStudent(){
  let phone=document.getElementById('sPhone').value.trim();
  if(!name||!phone) return alert('اكتب الاسم ورقم الواتساب');
  let id='STU'+Date.now();
- let code=name.split(' ')[0].toUpperCase().replace(/[^A-Z\u0600-\u06FF]/g,'').substring(0,6)+'-'+Math.floor(Math.random()*9000+1000);
+ let code=name.split(' ')[0].toUpperCase().substring(0,6)+'-'+Math.floor(Math.random()*9000+1000);
  let obj={id:id,name:name,phone:phone,code:code,status:'pending',date:new Date().toLocaleString('ar-EG')};
  students.push(obj);
  localStorage.setItem(STUDENTS_KEY,JSON.stringify(students));
- alert('تم إرسال طلبك! كودك: '+code+'\nحالتك: قيد المراجعة ⏳\nتواصل واتساب 01116811324 لتأكيد الدفع');
+ alert('تم إرسال طلبك! كودك: '+code);
  let waText=`طلب اشتراك جديد%0Aالاسم: ${name}%0Aالرقم: ${phone}%0Aالكود: ${code}`;
  window.open('https://wa.me/201116811324?text='+waText,'_blank');
  switchTab('login');
@@ -137,28 +130,28 @@ function registerStudent(){
 function loginStudent(){
  let code=document.getElementById('studentCodeInput').value.trim().toUpperCase();
  let found=students.find(s=>s.code===code);
- if(!found){document.getElementById('loginMsg').innerText='الكود غير موجود، سجل اشتراك جديد';return;}
+ if(!found){document.getElementById('loginMsg').innerText='الكود غير موجود';return;}
  if(found.status==='pending'){document.getElementById('loginMsg').innerHTML='كودك قيد المراجعة ⏳<br>ابعت سكرين الدفع واتساب 01116811324';return;}
  if(found.status==='approved'){
-  document.getElementById('loginMsg').innerHTML='أهلا '+found.name+' ✅ كودك مفعل';
+  document.getElementById('loginMsg').innerHTML='أهلا '+found.name+' ✅';
   document.getElementById('liveArea').style.display='block';
   checkRoom();
  }
 }
 function loginAdmin(){
- if(document.getElementById('adminCode').value.toUpperCase()!==ADMIN_CODE) return alert('كود غلط');
+ if(document.getElementById('adminCode').value!==ADMIN_CODE) return alert('كود الإدارة غلط');
  document.getElementById('adminArea').style.display='block';
  renderAdmin();
 }
 function renderAdmin(){
  let pending=students.filter(s=>s.status==='pending');
  let approved=students.filter(s=>s.status==='approved');
- document.getElementById('pendingList').innerHTML=pending.length?pending.map(s=>`<div class="student-item"><b>${s.name}</b> - ${s.phone}<br>كود: ${s.code} <span class="badge-p">منتظر</span><br><button onclick="approveStudent('${s.id}')" style="background:#16a34a;padding:6px;font-size:12px;margin-top:5px">موافقة ✅</button> <button onclick="rejectStudent('${s.id}')" style="background:#dc2626;padding:6px;font-size:12px">رفض</button> <a href="https://wa.me/2${s.phone.replace(/^0/,'')}?text=تم تفعيل كودك: ${s.code}" target="_blank" style="font-size:11px"> واتساب</a></div>`).join(''):'<p style="font-size:12px;color:#64748b">مفيش طلبات</p>';
+ document.getElementById('pendingList').innerHTML=pending.length?pending.map(s=>`<div class="student-item"><b>${s.name}</b> - ${s.phone}<br>كود: ${s.code} <span class="badge-p">منتظر</span><br><button onclick="approveStudent('${s.id}')" style="background:#16a34a;padding:6px;font-size:12px;margin-top:5px">موافقة ✅</button> <button onclick="rejectStudent('${s.id}')" style="background:#dc2626;padding:6px;font-size:12px">رفض</button></div>`).join(''):'<p style="font-size:12px;color:#64748b">مفيش طلبات</p>';
  document.getElementById('approvedList').innerHTML=approved.length?approved.map(s=>`<div class="student-item"><b>${s.name}</b> - ${s.phone}<br>كود: ${s.code} <span class="badge-a">مفعل</span></div>`).join(''):'<p style="font-size:12px;color:#64748b">مفيش مفعلين</p>';
  let room=JSON.parse(localStorage.getItem(ROOM_KEY)||'null');
  document.getElementById('currentRoomInfo').innerText=room?'الغرفة: '+room.title+' LIVE':'مفيش غرفة';
 }
-function approveStudent(id){let s=students.find(x=>x.id===id);if(s){s.status='approved';localStorage.setItem(STUDENTS_KEY,JSON.stringify(students));renderAdmin();alert('تم تفعيل '+s.name);}}
+function approveStudent(id){let s=students.find(x=>x.id===id);if(s){s.status='approved';localStorage.setItem(STUDENTS_KEY,JSON.stringify(students));renderAdmin();}}
 function rejectStudent(id){students=students.filter(x=>x.id!==id);localStorage.setItem(STUDENTS_KEY,JSON.stringify(students));renderAdmin();}
 function createRoomFromAdmin(){let meet=document.getElementById('meetLink').value.trim();let title=document.getElementById('lessonTitle').value||'حصة انجليزي';if(!meet.includes('meet.google')) return alert('حط لينك Meet صحيح');localStorage.setItem(ROOM_KEY,JSON.stringify({title:title,meet:meet}));alert('تم إنشاء الغرفة');location.reload();}
 function checkRoom(){let room=JSON.parse(localStorage.getItem(ROOM_KEY)||'null');if(room){document.getElementById('topBadge').innerText='🔴 لايف الآن';document.getElementById('topBadge').classList.add('live');document.getElementById('liveTitle').innerText=room.title;}}
