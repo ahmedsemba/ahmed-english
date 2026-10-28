@@ -1,18 +1,170 @@
-<div class="whatsapp-box">
-<p style="color:#facc15;text-align:center;font-weight:800;font-size:15px;margin-bottom:12px">💳 طرق الدفع - للاشتراك</p>
-
-<div style="background:rgba(0,0,0,0.4);border-radius:12px;padding:12px;margin-bottom:10px;border:1px solid #22c55e">
-<p style="color:#4ade80;font-weight:800;font-size:14px">📱 اتصالات كاش</p>
-<p style="font-size:20px;font-weight:800;letter-spacing:1px;direction:ltr;text-align:center;margin:5px 0">01116811324</p>
-<p style="font-size:11px;opacity:0.7;text-align:center">حول المبلغ وابعت سكرين شوت على الواتساب</p>
-<a href="https://wa.me/201116811324?text=حولت%20اتصالات%20كاش%20على%2001116811324%20-%20عايز%20افعل%20الكود" class="wa-btn" style="background:#16a34a;margin-top:8px">ابعت سكرين الدفع واتساب 📸</a>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة مستر أحمد السنبا - انجليزي العبور</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',Tahoma}
+body{min-height:100vh;background:linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.8)),url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800') center/cover fixed;color:white}
+.top-badge{background:#dc2626;color:white;padding:10px 28px;border-radius:30px;display:inline-block;font-weight:800}
+.top-badge.live{background:#16a34a}
+.container{max-width:500px;margin:0 auto;padding:15px;padding-bottom:70px}
+.logo{width:90px;height:90px;background:linear-gradient(135deg,#f59e0b,#ef4444);border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:45px;margin:15px auto 10px}
+.title{font-size:28px;font-weight:800;text-align:center;line-height:1.2}
+.payment-box{background:rgba(255,255,255,0.13);backdrop-filter:blur(12px);border-radius:18px;padding:16px;margin:20px 0;border:1px solid rgba(255,255,255,0.2)}
+.pay-item{background:rgba(0,0,0,0.45);border-radius:12px;padding:12px;margin:10px 0;border:1px solid rgba(255,255,255,0.15)}
+.pay-number{font-size:22px;font-weight:800;letter-spacing:1px;direction:ltr;text-align:center;margin:6px 0}
+.wa-btn{display:block;background:#16a34a;color:white;text-decoration:none;padding:12px;border-radius:12px;margin:8px 0;text-align:center;font-weight:800}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}
+.card{border-radius:20px;padding:22px 10px;text-align:center;cursor:pointer;min-height:145px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.15)}
+.card-purple{background:linear-gradient(135deg,rgba(88,28,135,0.9),rgba(126,34,206,0.8))}
+.card-dark{background:linear-gradient(135deg,rgba(30,41,59,0.95),rgba(51,65,85,0.9))}
+.card-green{background:linear-gradient(135deg,rgba(20,83,45,0.9),rgba(34,197,94,0.6))}
+.card-blue{background:linear-gradient(135deg,rgba(30,58,138,0.9),rgba(59,130,246,0.8))}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:999;align-items:center;justify-content:center;padding:15px;overflow:auto}
+.modal.active{display:flex}
+.modal-box{background:white;color:#1e293b;border-radius:22px;padding:22px;width:100%;max-width:430px;max-height:92vh;overflow:auto}
+.modal-box input{width:100%;padding:12px;border:2px solid #e2e8f0;border-radius:12px;margin:7px 0;font-size:15px}
+.modal-box button{width:100%;padding:12px;background:#2563eb;color:white;border:none;border-radius:12px;font-weight:800;margin-top:8px;cursor:pointer}
+.tab{display:flex;gap:8px;margin-bottom:15px}
+.tab button{flex:1;background:#f1f5f9;color:#64748b;padding:10px}
+.tab button.active{background:#2563eb;color:white}
+.student-item{background:#f8fafc;border:1px solid #e2e8f0;padding:10px;border-radius:10px;margin:8px 0;font-size:13px}
+.badge-p{color:#d97706;background:#fef3c7;padding:2px 8px;border-radius:20px;font-size:11px}
+.badge-a{color:#15803d;background:#dcfce7;padding:2px 8px;border-radius:20px;font-size:11px}
+</style>
+</head>
+<body>
+<div class="container">
+<div style="text-align:center;margin:18px 0">
+<span class="top-badge" id="topBadge">مفيش غرفة</span>
+<div class="logo">🎓</div>
+<div class="title">منصة مستر أحمد السنبا<br><span style="font-size:17px;opacity:0.9">انجليزي العبور</span></div>
 </div>
 
-<div style="background:rgba(0,0,0,0.4);border-radius:12px;padding:12px;border:1px solid #a855f7">
-<p style="color:#d8b4fe;font-weight:800;font-size:14px">🏦 انستا باي - InstaPay</p>
-<p style="font-size:20px;font-weight:800;letter-spacing:1px;direction:ltr;text-align:center;margin:5px 0">01116811324</p>
+<div class="payment-box">
+<p style="color:#facc15;text-align:center;font-weight:800;font-size:15px;margin-bottom:12px">💳 طرق الدفع - للاشتراك</p>
+<div class="pay-item" style="border-color:#22c55e">
+<p style="color:#4ade80;font-weight:800">📱 اتصالات كاش</p>
+<p class="pay-number">01116811324</p>
+<a href="https://wa.me/201116811324?text=حولت%20اتصالات%20كاش%20على%2001116811324%20عايز%20افعل%20الكود" target="_blank" class="wa-btn">ابعت سكرين الدفع واتساب 📸</a>
+</div>
+<div class="pay-item" style="border-color:#a855f7">
+<p style="color:#d8b4fe;font-weight:800">🏦 انستا باي - InstaPay</p>
+<p class="pay-number">01116811324</p>
 <p style="font-size:11px;opacity:0.7;text-align:center">نفس الرقم - اختار محفظة اتصالات كاش من انستا باي</p>
 </div>
-
-<p style="text-align:center;font-size:11px;margin-top:10px;opacity:0.6">بعد الدفع، سجل بياناتك تحت وهيجيلك كود مفعل خلال دقائق</p>
 </div>
+
+<div class="grid">
+<div class="card card-purple" onclick="openModal('teacherModal')"><div style="font-size:40px">📝</div><h3>تسجيل معلم جديد</h3></div>
+<div class="card card-dark" onclick="openModal('adminModal')"><div style="font-size:40px">👑</div><h3>دخول الإدارة</h3><p style="font-size:11px;opacity:0.7">الموافقة على الطلبة</p></div>
+<div class="card card-green" onclick="openModal('createModal')"><div style="font-size:40px">🎥</div><h3>إنشاء غرفة للمعلم</h3></div>
+<div class="card card-blue" onclick="openModal('studentModal')"><div style="font-size:40px">🎒</div><h3>بوابة الطالب</h3><p style="font-size:11px;opacity:0.7">تسجيل + دخول بكود</p></div>
+</div>
+</div>
+
+<div id="studentModal" class="modal"><div class="modal-box">
+<div class="tab"><button id="tabLogin" class="active" onclick="switchTab('login')">دخول بكود</button><button id="tabReg" onclick="switchTab('reg')">تسجيل جديد</button></div>
+<div id="loginTab">
+<h3>🔑 دخول الطالب</h3>
+<input id="studentCodeInput" placeholder="اكتب كودك المفعل">
+<button onclick="loginStudent()">دخول الحصة 🚀</button>
+<p id="loginMsg" style="font-size:12px;margin-top:10px;text-align:center;color:#dc2626"></p>
+<div id="liveArea" style="display:none;margin-top:15px;border-top:1px solid #e2e8f0;padding-top:15px">
+<span style="background:#dc2626;color:white;padding:5px 12px;border-radius:20px;font-size:11px">🔴 لايف الآن</span>
+<h4 id="liveTitle" style="margin-top:8px"></h4>
+<button onclick="joinMeet()" style="background:#dc2626">انضم Google Meet 🚀</button>
+</div>
+</div>
+<div id="regTab" style="display:none">
+<h3>📝 تسجيل اشتراك جديد</h3>
+<input id="sName" placeholder="اسم الطالب ثلاثي">
+<input id="sPhone" placeholder="رقم واتساب الطالب 01xxxxxxxxx">
+<button onclick="registerStudent()" style="background:#16a34a">إرسال طلب اشتراك ⏳</button>
+<p style="font-size:11px;color:#64748b;margin-top:8px;text-align:center">بعد التسجيل، كودك هيبقى قيد المراجعة لحد ما تأكد الدفع على 01116811324</p>
+</div>
+<button onclick="closeModal('studentModal')" style="background:#64748b">اغلاق</button>
+</div></div>
+
+<div id="adminModal" class="modal"><div class="modal-box">
+<h3>👑 لوحة الإدارة - مستر أحمد</h3>
+<input id="adminCode" type="password" placeholder="كود الإدارة SEMBA-ADMIN-2025">
+<button onclick="loginAdmin()">دخول</button>
+<div id="adminArea" style="display:none;margin-top:15px">
+<h4>📋 طلبات جديدة</h4>
+<div id="pendingList"></div>
+<hr style="margin:12px 0">
+<h4>✅ مفعلين</h4>
+<div id="approvedList"></div>
+<hr style="margin:12px 0">
+<p id="currentRoomInfo" style="font-weight:bold"></p>
+<input id="meetLink" placeholder="لينك Google Meet">
+<input id="lessonTitle" placeholder="عنوان الحصة">
+<button onclick="createRoomFromAdmin()" style="background:#16a34a">إنشاء غرفة 🔴</button>
+<button onclick="clearRoom()" style="background:#dc2626">إنهاء الغرفة</button>
+</div>
+<button onclick="closeModal('adminModal')" style="background:#64748b">اغلاق</button>
+</div></div>
+
+<div id="createModal" class="modal"><div class="modal-box"><h3>🎥 إنشاء غرفة</h3><p style="font-size:12px;color:#64748b">افتح لوحة الإدارة لإنشاء الغرفة</p><button onclick="closeModal('createModal');openModal('adminModal')" style="background:#16a34a">فتح الإدارة</button><button onclick="closeModal('createModal')" style="background:#64748b">اغلاق</button></div></div>
+<div id="teacherModal" class="modal"><div class="modal-box"><h3>تسجيل معلم</h3><p>المنصة خاصة بمستر أحمد السنبا</p><a href="https://wa.me/201116811324" class="wa-btn">تواصل 01116811324</a><button onclick="closeModal('teacherModal')" style="background:#64748b">اغلاق</button></div></div>
+
+<script>
+const ADMIN_CODE="SEMBA-ADMIN-2025";
+const ROOM_KEY="semba_live_room_v2";
+const STUDENTS_KEY="semba_students_v3";
+let students=JSON.parse(localStorage.getItem(STUDENTS_KEY)||"[]");
+function openModal(id){document.getElementById(id).classList.add('active'); if(id==='studentModal') checkRoom();}
+function closeModal(id){document.getElementById(id).classList.remove('active');}
+function switchTab(t){document.getElementById('loginTab').style.display=t==='login'?'block':'none';document.getElementById('regTab').style.display=t==='reg'?'block':'none';document.getElementById('tabLogin').classList.toggle('active',t==='login');document.getElementById('tabReg').classList.toggle('active',t==='reg');}
+function registerStudent(){
+ let name=document.getElementById('sName').value.trim();
+ let phone=document.getElementById('sPhone').value.trim();
+ if(!name||!phone) return alert('اكتب الاسم ورقم الواتساب');
+ let id='STU'+Date.now();
+ let code=name.split(' ')[0].toUpperCase().replace(/[^A-Z\u0600-\u06FF]/g,'').substring(0,6)+'-'+Math.floor(Math.random()*9000+1000);
+ let obj={id:id,name:name,phone:phone,code:code,status:'pending',date:new Date().toLocaleString('ar-EG')};
+ students.push(obj);
+ localStorage.setItem(STUDENTS_KEY,JSON.stringify(students));
+ alert('تم إرسال طلبك! كودك: '+code+'\nحالتك: قيد المراجعة ⏳\nتواصل واتساب 01116811324 لتأكيد الدفع');
+ let waText=`طلب اشتراك جديد%0Aالاسم: ${name}%0Aالرقم: ${phone}%0Aالكود: ${code}`;
+ window.open('https://wa.me/201116811324?text='+waText,'_blank');
+ switchTab('login');
+}
+function loginStudent(){
+ let code=document.getElementById('studentCodeInput').value.trim().toUpperCase();
+ let found=students.find(s=>s.code===code);
+ if(!found){document.getElementById('loginMsg').innerText='الكود غير موجود، سجل اشتراك جديد';return;}
+ if(found.status==='pending'){document.getElementById('loginMsg').innerHTML='كودك قيد المراجعة ⏳<br>ابعت سكرين الدفع واتساب 01116811324';return;}
+ if(found.status==='approved'){
+  document.getElementById('loginMsg').innerHTML='أهلا '+found.name+' ✅ كودك مفعل';
+  document.getElementById('liveArea').style.display='block';
+  checkRoom();
+ }
+}
+function loginAdmin(){
+ if(document.getElementById('adminCode').value.toUpperCase()!==ADMIN_CODE) return alert('كود غلط');
+ document.getElementById('adminArea').style.display='block';
+ renderAdmin();
+}
+function renderAdmin(){
+ let pending=students.filter(s=>s.status==='pending');
+ let approved=students.filter(s=>s.status==='approved');
+ document.getElementById('pendingList').innerHTML=pending.length?pending.map(s=>`<div class="student-item"><b>${s.name}</b> - ${s.phone}<br>كود: ${s.code} <span class="badge-p">منتظر</span><br><button onclick="approveStudent('${s.id}')" style="background:#16a34a;padding:6px;font-size:12px;margin-top:5px">موافقة ✅</button> <button onclick="rejectStudent('${s.id}')" style="background:#dc2626;padding:6px;font-size:12px">رفض</button> <a href="https://wa.me/2${s.phone.replace(/^0/,'')}?text=تم تفعيل كودك: ${s.code}" target="_blank" style="font-size:11px"> واتساب</a></div>`).join(''):'<p style="font-size:12px;color:#64748b">مفيش طلبات</p>';
+ document.getElementById('approvedList').innerHTML=approved.length?approved.map(s=>`<div class="student-item"><b>${s.name}</b> - ${s.phone}<br>كود: ${s.code} <span class="badge-a">مفعل</span></div>`).join(''):'<p style="font-size:12px;color:#64748b">مفيش مفعلين</p>';
+ let room=JSON.parse(localStorage.getItem(ROOM_KEY)||'null');
+ document.getElementById('currentRoomInfo').innerText=room?'الغرفة: '+room.title+' LIVE':'مفيش غرفة';
+}
+function approveStudent(id){let s=students.find(x=>x.id===id);if(s){s.status='approved';localStorage.setItem(STUDENTS_KEY,JSON.stringify(students));renderAdmin();alert('تم تفعيل '+s.name);}}
+function rejectStudent(id){students=students.filter(x=>x.id!==id);localStorage.setItem(STUDENTS_KEY,JSON.stringify(students));renderAdmin();}
+function createRoomFromAdmin(){let meet=document.getElementById('meetLink').value.trim();let title=document.getElementById('lessonTitle').value||'حصة انجليزي';if(!meet.includes('meet.google')) return alert('حط لينك Meet صحيح');localStorage.setItem(ROOM_KEY,JSON.stringify({title:title,meet:meet}));alert('تم إنشاء الغرفة');location.reload();}
+function checkRoom(){let room=JSON.parse(localStorage.getItem(ROOM_KEY)||'null');if(room){document.getElementById('topBadge').innerText='🔴 لايف الآن';document.getElementById('topBadge').classList.add('live');document.getElementById('liveTitle').innerText=room.title;}}
+function joinMeet(){let r=JSON.parse(localStorage.getItem(ROOM_KEY));if(r) window.open(r.meet,'_blank');}
+function clearRoom(){localStorage.removeItem(ROOM_KEY);location.reload();}
+checkRoom();
+</script>
+</body>
+</html>
