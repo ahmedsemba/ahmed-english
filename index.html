@@ -25,58 +25,31 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 <div class="tab" onclick="showTab('register')">تسجيل</div>
 <div class="tab" onclick="showTab('admin')">لوحة المستر</div>
 </div>
-
 <div id="tab-register" class="card" style="display:none">
 <h3>تسجيل طالب جديد</h3>
-<input id="name" placeholder="الاسم ثلاثي">
-<input id="phone" placeholder="رقم الواتساب">
-<input id="parentPhone" placeholder="رقم ولي الأمر">
-<select id="grade">
-<option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option>
-<option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option>
-<option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option>
-<option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option>
-<option>الصف الثالث الإعدادي</option>
-</select>
+<input id="name" placeholder="الاسم ثلاثي"><input id="phone" placeholder="رقم الواتساب"><input id="parentPhone" placeholder="رقم ولي الأمر">
+<select id="grade"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select>
 <button onclick="registerStudent()">تسجيل</button><p id="regMsg"></p>
 </div>
-
 <div id="tab-student" class="card">
 <h3>دخول الطالب</h3>
-<input id="loginPhone" placeholder="رقم الواتساب">
-<button onclick="loginStudent()">دخول</button><p id="loginMsg"></p>
-<div id="studentArea" style="display:none">
-<h2 id="welcome"></h2>
-<div id="lessonsList" style="text-align:center"></div>
+<input id="loginPhone" placeholder="رقم الواتساب"><button onclick="loginStudent()">دخول</button><p id="loginMsg"></p>
+<div id="studentArea" style="display:none"><h2 id="welcome"></h2><div id="lessonsList"></div></div>
 </div>
-</div>
-
 <div id="tab-admin" class="card" style="display:none">
 <h3>لوحة المستر 🔒</h3>
-<input id="adminPass" type="password" placeholder="الباسورد 12345">
-<button onclick="loginAdmin()">دخول</button>
+<input id="adminPass" type="password" placeholder="الباسورد الجديد"><button onclick="loginAdmin()">دخول</button>
 <div id="adminArea" style="display:none">
 <div class="card" style="background:#0f172a;border:2px solid #10b981">
-<h4>🔴 تحديث لينك الحصة الحالية (القديم هيتمسح)</h4>
-<input id="lessonTitle" placeholder="عنوان الحصة - مثلا: الوحدة الثانية الدرس الأول">
-<input id="meetLink" placeholder="لينك جوجل ميت">
-<input id="ytLink" placeholder="لينك يوتيوب (اختياري)">
-<select id="lessonGrade">
-<option>للكل</option><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option>
-<option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option>
-<option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option>
-<option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option>
-<option>الصف الثالث الإعدادي</option>
-</select>
-<button onclick="addLesson()" style="background:#10b981">✅ نشر وتحديث للطلاب</button>
-<p style="font-size:12px;color:#94a3b8">ملاحظة: اللينك الجديد هيمسح القديم تلقائيا ويظهر واحد بس للطالب.</p>
+<h4>🔴 تحديث لينك الحصة (القديم هيتمسح ويبقى واحد بس)</h4>
+<input id="lessonTitle" placeholder="عنوان الحصة"><input id="meetLink" placeholder="لينك جوجل ميت"><input id="ytLink" placeholder="لينك يوتيوب اختياري">
+<select id="lessonGrade"><option>للكل</option><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select>
+<button onclick="addLesson()" style="background:#10b981">✅ نشر وتحديث</button>
 </div>
-<h4>الطلاب المنتظرين (لازم توافق عليهم عشان يشوفوا اللينك)</h4><div id="pendingList"></div>
-<h4>الطلاب المقبولين</h4><div id="approvedList"></div>
+<h4>المنتظرين</h4><div id="pendingList"></div><h4>المقبولين</h4><div id="approvedList"></div>
 </div>
 </div>
 </div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, setDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -90,7 +63,6 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
 window.showTab = (t)=>{
  document.querySelectorAll('[id^=tab-]').forEach(e=>e.style.display='none');
  document.getElementById('tab-'+t).style.display='block';
@@ -104,33 +76,35 @@ window.registerStudent = async ()=>{
  const grade=document.getElementById('grade').value;
  if(!name||!phone){alert('اكمل البيانات');return}
  await addDoc(collection(db,'students'),{name,phone,parentPhone,grade,status:'pending',created:Date.now()});
- document.getElementById('regMsg').innerHTML='✅ تم التسجيل! انتظر موافقة المستر عشان تشوف لينك الحصة';
+ document.getElementById('regMsg').innerHTML='✅ تم التسجيل!';
 }
 window.loginStudent = async ()=>{
+ const loginMsg=document.getElementById('loginMsg');
+ const studentArea=document.getElementById('studentArea');
+ const welcome=document.getElementById('welcome');
+ const lessonsList=document.getElementById('lessonsList');
+ // اهم اصلاح: نمسح كل حاجة قديمة اول ما نحاول ندخل
+ studentArea.style.display='none'; welcome.innerText=''; lessonsList.innerHTML=''; loginMsg.innerText='';
  const phone=document.getElementById('loginPhone').value.trim();
+ if(!phone){loginMsg.innerText='اكتب الرقم';return}
  const q=query(collection(db,'students'),where('phone','==',phone));
  const snap=await getDocs(q);
- if(snap.empty){document.getElementById('loginMsg').innerText='❌ الرقم مش متسجل';return}
+ if(snap.empty){loginMsg.innerText='❌ الرقم مش متسجل'; return}
  const data=snap.docs[0].data();
- if(data.status!=='approved'){document.getElementById('loginMsg').innerText='⏳ لسه المستر موافقش عليك - مش هتشوف اللينك الا بعد الموافقة';return}
- document.getElementById('studentArea').style.display='block';
- document.getElementById('welcome').innerText=`أهلا يا ${data.name} ❤️`;
- loadCurrentLesson();
-}
-async function loadCurrentLesson(){
- const snap=await getDocs(collection(db,'lessons'));
- let html=''; 
- snap.forEach(d=>{
+ if(data.status!=='approved'){loginMsg.innerText='⏳ لسه المستر موافقش عليك - مش هتشوف اللينك الا بعد الموافقة'; return}
+ // لو مقبول بس اللي هيوصل هنا
+ studentArea.style.display='block';
+ welcome.innerText=`أهلا يا ${data.name} ❤️`;
+ const snapL=await getDocs(collection(db,'lessons'));
+ let html=''; snapL.forEach(d=>{
   const l=d.data();
-  html=`<div class='lesson'><h2>${l.title}</h2><p>${l.grade}</p>
-  <a class='meetBtn' target='_blank' href='${l.meetLink}'>🎥 ادخل جوجل ميت الآن</a>
-  ${l.ytLink?`<br><a style='color:#f87171' target='_blank' href='${l.ytLink}'>شاهد على يوتيوب</a>`:''}
-  </div>`;
+  html=`<div class='lesson'><h2>${l.title}</h2><p>${l.grade}</p><a class='meetBtn' target='_blank' href='${l.meetLink}'>🎥 ادخل جوجل ميت الآن</a>${l.ytLink?`<br><a style='color:#f87171' target='_blank' href='${l.ytLink}'>شاهد يوتيوب</a>`:''}</div>`;
  });
- document.getElementById('lessonsList').innerHTML=html||'<p>لا يوجد حصة حالية - انتظر المستر ينشر اللينك</p>';
+ document.getElementById('lessonsList').innerHTML=html||'<p>لا يوجد حصة حالية</p>';
 }
 window.loginAdmin = async ()=>{
- if(document.getElementById('adminPass').value!=='12345'){alert('غلط');return}
+ // الباسورد الجديد
+ if(document.getElementById('adminPass').value!=='Ahmed@salwa2020'){alert('الباسورد غلط');return}
  document.getElementById('adminArea').style.display='block'; loadAdmin();
 }
 async function loadAdmin(){
@@ -140,7 +114,7 @@ async function loadAdmin(){
  snap.forEach(d=>{
   const s=d.data(); const id=d.id;
   const row=`<div style='display:flex;justify-content:space-between;background:#0f172a;padding:10px;border-radius:10px;margin-top:8px'><div><b>${s.name}</b> - ${s.phone}<br><small>${s.grade}</small></div>
-  ${s.status=='pending'?`<button onclick="approve('${id}')" style='width:auto;background:#10b981'>موافقة</button>`:`<span>✅ مقبول</span>`}</div>`;
+  ${s.status=='pending'?`<button onclick="approve('${id}')" style='width:auto;background:#10b981'>موافقة</button>`:`<span>✅</span>`}</div>`;
   if(s.status=='pending') pending.innerHTML+=row; else approved.innerHTML+=row;
  });
 }
@@ -151,11 +125,8 @@ window.addLesson = async ()=>{
  const ytLink=document.getElementById('ytLink').value;
  const grade=document.getElementById('lessonGrade').value;
  if(!title||!meetLink){alert('اكتب العنوان واللينك');return}
- // هيمسح كل الحصص القديمة ويحط الجديدة بس
- const old=await getDocs(collection(db,'lessons'));
- // هنستخدم doc واحد ثابت اسمه current
  await setDoc(doc(db,'lessons','current'),{title,meetLink,ytLink,grade,created:Date.now()});
- alert('تم التحديث! الطلاب دلوقتي شايفين لينك واحد بس');
+ alert('تم! دلوقتي الطالب هيشوف لينك واحد بس');
 }
 </script>
 </body>
