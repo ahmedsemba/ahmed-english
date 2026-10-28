@@ -2,41 +2,36 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>لايف مستر أحمد</title>
-<style>body{font-family:system-ui;background:#0f0f1a;color:#fff;margin:0}.card{max-width:500px;margin:50px auto;background:#1e1e34;padding:28px;border-radius:20px;text-align:center}input{width:90%;padding:14px;border-radius:12px;border:0;margin:10px 0;font-size:16px;text-align:center}.btn{width:90%;padding:14px;background:#5b5bf6;color:#fff;border:0;border-radius:12px;font-weight:bold;font-size:18px;cursor:pointer;margin-top:10px}.btn2{background:#22c55e}.hint{color:#888;font-size:13px;margin-top:12px}</style>
+<title>لايف</title>
+<style>body{font-family:system-ui;background:#0f0f1a;color:#fff;margin:0}.card{max-width:500px;margin:50px auto;background:#1e1e34;padding:28px;border-radius:20px;text-align:center}input{width:90%;padding:14px;border-radius:12px;border:0;margin:10px 0;text-align:center}.btn{width:90%;padding:14px;background:#5b5bf6;color:#fff;border:0;border-radius:12px;font-weight:bold;cursor:pointer}</style>
 </head>
 <body>
 <div class="card">
-<h2>🔴 دخول الحصة التفاعلية</h2>
-<p style="color:#aaa">من غير تسجيل، من غير Log-in</p>
-<input id="codeIn" placeholder="اكتب كودك EN-....">
-<button class="btn" onclick="join()">دخول الغرفة الآن</button>
-<p id="err" style="color:#ff6b6b;display:none;margin-top:10px"></p>
-<p class="hint">كودك هو: <b id="hintCode"></b></p>
-<p class="hint">لو انت المستر اكتب: <b>MR-AHMED-2026</b></p>
-<div style="margin-top:20px;background:#111122;padding:12px;border-radius:10px;font-size:13px;color:#aaa;text-align:right">
-✅ مميزات الغرفة:<br>
-- تقدر تكتم كل الطلبة مرة واحدة<br>
-- تقدر تعمل شير للملزمة PDF<br>
-- تقدر تبعت الملزمة في الشات<br>
-- مفيش تسجيل تلقائي
-</div>
+<h2>🔴 دخول الحصة</h2>
+<input id="codeIn" placeholder="اكتب كودك">
+<button class="btn" onclick="join()">دخول</button>
+<p id="err" style="color:#ff6b6b;display:none"></p>
+<p style="color:#888;font-size:13px;margin-top:10px">كودك: <b id="h"></b></p>
 </div>
 <script>
-document.getElementById('hintCode').innerText=localStorage.getItem('st_code')||'لسه مسجلتش';
+document.getElementById('h').innerText=localStorage.getItem('st_code')||'';
 function join(){
  let entered=document.getElementById('codeIn').value.trim();
  let my=localStorage.getItem('st_code');
- let isTeacher = entered==='MR-AHMED-2026';
+ let isTeacher = entered==='Ahmed@1983';
  let blocked=JSON.parse(localStorage.getItem('blocked_codes')||'[]');
- if(blocked.includes(my) && !isTeacher){let e=document.getElementById('err'); e.style.display='block'; e.innerText='🚫 كودك موقوف، كلم المستر'; return;}
- if(entered!==my && !isTeacher){let e=document.getElementById('err'); e.style.display='block'; e.innerText='الكود غلط، اكتب كودك انت'; return;}
- 
- let room = localStorage.getItem('live_room') || 'AhmedSemba-English-2026';
- let name = isTeacher ? 'المستر احمد' : (localStorage.getItem('st_name')||'طالب');
- // ده سيرفر مفتوح 100% مش بيطلب تسجيل
- let url = `https://meet.ffmuc.net/${room}#userInfo.displayName="${encodeURIComponent(name)}"`;
- window.open(url, '_blank');
+ if(blocked.includes(my) && !isTeacher){let e=document.getElementById('err');e.style.display='block';e.innerText='🚫 كودك موقوف';return;}
+ if(entered!==my && !isTeacher){let e=document.getElementById('err');e.style.display='block';e.innerText='الكود غلط';return;}
+ // تسجيل حضور
+ if(!isTeacher){
+  let att=JSON.parse(localStorage.getItem('attendance')||'[]');
+  att.push({name:localStorage.getItem('st_name'),code:my,time:new Date().toLocaleString('ar-EG'),grade:localStorage.getItem('st_grade')});
+  localStorage.setItem('attendance',JSON.stringify(att));
+ }
+ let room=localStorage.getItem('live_room')||'AhmedSemba-English-2026';
+ let name=isTeacher?'المستر احمد':localStorage.getItem('st_name');
+ let url=`https://meet.ffmuc.net/${room}#userInfo.displayName="${encodeURIComponent(name)}"`;
+ window.open(url,'_blank');
 }
 </script>
 </body>
