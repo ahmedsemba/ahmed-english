@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة مستر انجليزي العبور</title>
+<style>
+*{box-sizing:border-box;font-family:system-ui}
+body{margin:0;background:#0a3d8a;min-height:100vh;color:#fff}
+.container{max-width:480px;margin:0 auto;padding:18px}
+.logo-box{text-align:center;padding:20px 0}
+.logo-box img{width:140px;height:140px;border-radius:50%;background:#fff;padding:6px}
+.card{background:#fff;color:#222;border-radius:20px;padding:20px;margin-top:10px}
+input,select,button{width:100%;padding:14px;border-radius:12px;border:1px solid #ddd;font-size:16px;margin-top:10px}
+button{background:#0a3d8a;color:#fff;border:0;font-weight:bold}
+button.sec{background:#f1f5ff;color:#0a3d8a}
+.hidden{display:none}
+.grades{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grade-card{background:linear-gradient(135deg,#0a3d8a,#1d6bff);color:#fff;padding:18px;border-radius:16px;text-align:center;cursor:pointer;font-weight:bold}
+.video-box iframe{width:100%;height:200px;border-radius:10px;border:0}
+.badge{background:#0a3d8a;color:#fff;padding:4px 10px;border-radius:20px;font-size:12px}
+.pdf-item{display:flex;justify-content:space-between;align-items:center;background:#f1f5ff;padding:12px;border-radius:12px;margin:8px 0}
+.code-item{background:#f8fafc;padding:10px;border-radius:10px;margin:6px 0;display:flex;justify-content:space-between;align-items:center;font-family:monospace;border:1px solid #e2e8f0}
+.live-box iframe{width:100%;height:420px;border:0;border-radius:14px}
+</style>
+</head>
+<body>
+<div class="container">
+<div id="loginPage">
+<div class="logo-box">
+<img src="https://via.placeholder.com/140?text=E">
+<h1>منصة مستر انجليزي العبور</h1>
+</div>
+<div class="card">
+<h3 style="text-align:center">ادخل كود الطالب 🔑</h3>
+<input id="codeInput" placeholder="مثال: AHMED-1234">
+<button onclick="login()">دخول المنصة</button>
+<div id="loginMsg" style="color:red;text-align:center;margin-top:8px"></div>
+<p style="text-align:center;font-size:11px;color:#999;margin-top:10px">كودك الخاص: SEMBA-ADMIN-2025 للمستر<br>كود تجريبي: DEMO-1234</p>
+</div>
+</div>
+<div id="gradesPage" class="hidden">
+<div class="logo-box"><h2 id="welcomeName">أهلاً يا بطل! 👋</h2><p>اختار صفك الدراسي</p></div>
+<div class="card"><div class="grades" id="gradesGrid"></div><button class="sec" onclick="logout()">خروج</button></div>
+</div>
+<div id="classPage" class="hidden">
+<div style="display:flex;justify-content:space-between"><button class="sec" style="width:auto" onclick="backToGrades()">⬅ رجوع</button><span id="currentGradeLabel" class="badge">الصف</span></div>
+<div class="card"><h3>🎥 فيديوهات</h3><div id="videosList"></div><h3>📚 ملازم</h3><div id="pdfsList"></div><h3>🔴 لايف</h3><button onclick="openLive()">دخول اللايف جوه الأبلكيشن</button><div id="liveContainer" class="hidden live-box" style="margin-top:12px"></div></div>
+</div>
+<div id="adminPage" class="hidden">
+<h2 style="text-align:center">لوحة تحكم المستر ⚙️</h2>
+<div class="card">
+<h4>➕ فيديو يوتيوب</h4><select id="vGrade"></select><input id="vTitle" placeholder="عنوان الفيديو"><input id="vLink" placeholder="لينك يوتيوب"><button onclick="addVideo()">حفظ الفيديو</button><hr>
+<h4>📄 ملزمة PDF</h4><select id="pGrade"></select><input id="pTitle" placeholder="اسم الملزمة"><input id="pLink" placeholder="لينك Drive"><button onclick="addPdf()">حفظ الملزمة</button><hr>
+<h4>🔑 توليد كود طالب</h4><input id="studentName" placeholder="اسم الطالب"><select id="sGrade"></select><button onclick="generateCode()">توليد كود جديد</button><div id="lastCode" style="background:#fff3cd;padding:12px;border-radius:12px;margin:10px 0" class="hidden"></div><h4>📋 كل الأكواد</h4><div id="codesList"></div><button class="sec" onclick="logout()">خروج</button></div>
+</div>
+</div>
+<script>
+let DB=JSON.parse(localStorage.getItem('MR_ENGLISH_DB')||'null')||{videos:[{grade:"الصف الأول الإعدادي",title:"Unit 1 Lesson 1&2",link:"https://www.youtube.com/watch?v=dQw4w9WgXcQ"}],pdfs:[],codes:[{code:"SEMBA-ADMIN-2025",name:"المستر",grade:"ADMIN",firstUse:null,expire:null,isAdmin:true},{code:"DEMO-1234",name:"طالب تجريبي",grade:"الصف الأول الإعدادي",firstUse:null,expire:null,isAdmin:false}]};
+const grades=["الصف الأول الابتدائي","الصف الثاني الابتدائي","الصف الثالث الابتدائي","الصف الرابع الابتدائي","الصف الخامس الابتدائي","الصف السادس الابتدائي","الصف الأول الإعدادي","الصف الثاني الإعدادي","الصف الثالث الإعدادي"];
+function save(){localStorage.setItem('MR_ENGLISH_DB',JSON.stringify(DB))}
+function login(){const c=document.getElementById('codeInput').value.trim().toUpperCase();const f=DB.codes.find(x=>x.code===c);const m=document.getElementById('loginMsg');if(!f){m.innerText="الكود غلط";return}if(f.isAdmin){showPage('adminPage');renderAdmin();return}const now=new Date();if(!f.firstUse){f.firstUse=now.toISOString();let e=new Date();e.setDate(e.getDate()+30);f.expire=e.toISOString();save()}if(f.expire&&new Date(f.expire)<now){m.innerText="الكود انتهى";return}localStorage.setItem('CURRENT_CODE',c);document.getElementById('welcomeName').innerText=`أهلاً يا ${f.name} 👋`;showPage('gradesPage');renderGrades()}
+function showPage(id){['loginPage','gradesPage','classPage','adminPage'].forEach(p=>document.getElementById(p).classList.add('hidden'));document.getElementById(id).classList.remove('hidden')}
+function renderGrades(){document.getElementById('gradesGrid').innerHTML=grades.map(g=>`<div class="grade-card" onclick="openGrade('${g}')">${g}</div>`).join('')}
+let currentGrade="";function openGrade(g){currentGrade=g;document.getElementById('currentGradeLabel').innerText=g;renderClass();showPage('classPage')}function backToGrades(){showPage('gradesPage')}
+function renderClass(){const vids=DB.videos.filter(v=>v.grade===currentGrade);document.getElementById('videosList').innerHTML=vids.length?vids.map(v=>{let id=v.link.split('v=')[1]?.split('&')[0]||v.link.split('/').pop();return `<div style="background:#f8fafc;padding:10px;border-radius:12px;margin:8px 0"><span class="badge">${v.title}</span><iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe></div>`}).join(''):'<p style="color:#666;text-align:center">لسه مفيش فيديوهات</p>';const pdfs=DB.pdfs.filter(p=>p.grade===currentGrade);document.getElementById('pdfsList').innerHTML=pdfs.length?pdfs.map(p=>`<div class="pdf-item"><span>${p.title}</span><a href="${p.link}" target="_blank" style="background:#0a3d8a;color:#fff;padding:8px 14px;border-radius:8px;text-decoration:none">فتح</a></div>`).join(''):'<p style="color:#666;text-align:center">لسه مفيش ملازم</p>'}
+function openLive(){const room="mr-english-elobour-"+currentGrade.replace(/\s/g,'');document.getElementById('liveContainer').classList.remove('hidden');document.getElementById('liveContainer').innerHTML=`<iframe src="https://meet.jit.si/${room}" allow="camera; microphone; fullscreen"></iframe>`}
+function renderAdmin(){document.getElementById('pGrade').innerHTML=grades.map(g=>`<option>${g}</option>`).join('');document.getElementById('sGrade').innerHTML=grades.map(g=>`<option>${g}</option>`).join('');document.getElementById('vGrade').innerHTML=grades.map(g=>`<option>${g}</option>`).join('');document.getElementById('codesList').innerHTML=DB.codes.map(c=>{let exp=c.expire?new Date(c.expire).toLocaleDateString('ar-EG'):'لم يستخدم';return `<div class="code-item"><div><b>${c.code}</b><br><small>${c.name} - ${c.grade} - ${exp}</small></div><button style="width:auto;padding:6px;background:#ef4444" onclick="deleteCode('${c.code}')">حذف</button></div>`}).join('')}
+function addVideo(){let g=document.getElementById('vGrade').value,t=document.getElementById('vTitle').value,l=document.getElementById('vLink').value;if(!t||!l)return alert('كمل البيانات');DB.videos.push({grade:g,title:t,link:l});save();alert('تم ✅');}
+function addPdf(){let g=document.getElementById('pGrade').value,t=document.getElementById('pTitle').value,l=document.getElementById('pLink').value;if(!t||!l)return alert('كمل');DB.pdfs.push({grade:g,title:t,link:l});save();alert('تم ✅')}
+function generateCode(){let name=document.getElementById('studentName').value||"طالب";let grade=document.getElementById('sGrade').value;let rand=Math.random().toString(36).substring(2,6).toUpperCase();let code=name.substring(0,3).toUpperCase()+"-"+rand+"-"+Math.floor(Math.random()*9000+1000);DB.codes.push({code,name,grade,firstUse:null,expire:null,isAdmin:false});save();renderAdmin();document.getElementById('lastCode').classList.remove('hidden');document.getElementById('lastCode').innerHTML=`كود <b>${name}</b>:<br><b style="font-size:22px">${code}</b>`}
+function deleteCode(code){if(!confirm('حذف؟'))return;DB.codes=DB.codes.filter(c=>c.code!==code);save();renderAdmin()}
+function logout(){localStorage.removeItem('CURRENT_CODE');showPage('loginPage')}
+let cur=localStorage.getItem('CURRENT_CODE');if(cur){let f=DB.codes.find(x=>x.code===cur);if(f){document.getElementById('welcomeName').innerText=`أهلاً يا ${f.name}`;renderGrades();showPage('gradesPage')}}
+</script>
+</body>
+</html>
