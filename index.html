@@ -15,6 +15,8 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 .tab.active{background:#4f46e5}.tabs{display:flex;gap:6px;margin-bottom:15px}
 .lesson{background:#0f172a;border:1px solid #334155;padding:18px;border-radius:12px;margin-top:12px;text-align:center}
 .meetBtn{background:#10b981;display:block;text-decoration:none;padding:14px;border-radius:10px;color:#fff;font-weight:900;font-size:18px;margin-top:10px}
+.student-row{display:flex;justify-content:space-between;align-items:center;background:#0f172a;padding:12px;border-radius:10px;margin-top:10px;gap:8px;flex-wrap:wrap}
+.btn-small{width:auto;padding:6px 12px;font-size:12px;border-radius:8px}
 </style>
 </head>
 <body>
@@ -38,21 +40,22 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 </div>
 <div id="tab-admin" class="card" style="display:none">
 <h3>لوحة المستر 🔒</h3>
-<input id="adminPass" type="password" placeholder="الباسورد الجديد"><button onclick="loginAdmin()">دخول</button>
+<input id="adminPass" type="password" placeholder="Ahmed@salwa2020"><button onclick="loginAdmin()">دخول</button>
 <div id="adminArea" style="display:none">
 <div class="card" style="background:#0f172a;border:2px solid #10b981">
-<h4>🔴 تحديث لينك الحصة (القديم هيتمسح ويبقى واحد بس)</h4>
-<input id="lessonTitle" placeholder="عنوان الحصة"><input id="meetLink" placeholder="لينك جوجل ميت"><input id="ytLink" placeholder="لينك يوتيوب اختياري">
+<h4>🔴 تحديث لينك الحصة (واحد بس ظاهر)</h4>
+<input id="lessonTitle" placeholder="عنوان الحصة"><input id="meetLink" placeholder="لينك جوجل ميت"><input id="ytLink" placeholder="يوتيوب اختياري">
 <select id="lessonGrade"><option>للكل</option><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select>
-<button onclick="addLesson()" style="background:#10b981">✅ نشر وتحديث</button>
+<button onclick="addLesson()" style="background:#10b981">✅ نشر</button>
 </div>
-<h4>المنتظرين</h4><div id="pendingList"></div><h4>المقبولين</h4><div id="approvedList"></div>
+<h4>المنتظرين - دوس موافقة عشان يشوف اللينك</h4><div id="pendingList"></div>
+<h4>المقبولين - تقدر تحذف اللي مدفعش</h4><div id="approvedList"></div>
 </div>
 </div>
 </div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, setDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, setDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyA3EUyPGWQXi3yEV50QYYCtCASKV-MEE5I",
   authDomain: "ahmed-elsayed-bf13d.firebaseapp.com",
@@ -83,7 +86,6 @@ window.loginStudent = async ()=>{
  const studentArea=document.getElementById('studentArea');
  const welcome=document.getElementById('welcome');
  const lessonsList=document.getElementById('lessonsList');
- // اهم اصلاح: نمسح كل حاجة قديمة اول ما نحاول ندخل
  studentArea.style.display='none'; welcome.innerText=''; lessonsList.innerHTML=''; loginMsg.innerText='';
  const phone=document.getElementById('loginPhone').value.trim();
  if(!phone){loginMsg.innerText='اكتب الرقم';return}
@@ -91,8 +93,7 @@ window.loginStudent = async ()=>{
  const snap=await getDocs(q);
  if(snap.empty){loginMsg.innerText='❌ الرقم مش متسجل'; return}
  const data=snap.docs[0].data();
- if(data.status!=='approved'){loginMsg.innerText='⏳ لسه المستر موافقش عليك - مش هتشوف اللينك الا بعد الموافقة'; return}
- // لو مقبول بس اللي هيوصل هنا
+ if(data.status!=='approved'){loginMsg.innerText='⏳ لسه موافقناش عليك'; return}
  studentArea.style.display='block';
  welcome.innerText=`أهلا يا ${data.name} ❤️`;
  const snapL=await getDocs(collection(db,'lessons'));
@@ -103,7 +104,6 @@ window.loginStudent = async ()=>{
  document.getElementById('lessonsList').innerHTML=html||'<p>لا يوجد حصة حالية</p>';
 }
 window.loginAdmin = async ()=>{
- // الباسورد الجديد
  if(document.getElementById('adminPass').value!=='Ahmed@salwa2020'){alert('الباسورد غلط');return}
  document.getElementById('adminArea').style.display='block'; loadAdmin();
 }
@@ -113,12 +113,22 @@ async function loadAdmin(){
  pending.innerHTML='';approved.innerHTML='';
  snap.forEach(d=>{
   const s=d.data(); const id=d.id;
-  const row=`<div style='display:flex;justify-content:space-between;background:#0f172a;padding:10px;border-radius:10px;margin-top:8px'><div><b>${s.name}</b> - ${s.phone}<br><small>${s.grade}</small></div>
-  ${s.status=='pending'?`<button onclick="approve('${id}')" style='width:auto;background:#10b981'>موافقة</button>`:`<span>✅</span>`}</div>`;
-  if(s.status=='pending') pending.innerHTML+=row; else approved.innerHTML+=row;
+  if(s.status=='pending'){
+   pending.innerHTML+=`<div class="student-row"><div><b>⏳ ${s.name}</b> - ${s.phone}<br><small>${s.grade} | ولي الأمر: ${s.parentPhone||'-'}</small></div><div style="display:flex;gap:5px"><button class="btn-small" onclick="approve('${id}')" style="background:#10b981">✔️ موافقة</button><button class="btn-small" onclick="deleteStudent('${id}')" style="background:#ef4444">🗑️ حذف</button></div></div>`;
+  } else {
+   approved.innerHTML+=`<div class="student-row"><div><b>✅ ${s.name}</b> - ${s.phone}<br><small>${s.grade}</small></div><div style="display:flex;gap:5px"><span style="color:#10b981">✔️ مقبول</span><button class="btn-small" onclick="blockStudent('${id}')" style="background:#f59e0b">🚫 حظر</button><button class="btn-small" onclick="deleteStudent('${id}')" style="background:#ef4444">🗑️ مسح</button></div></div>`;
+  }
  });
 }
 window.approve = async (id)=>{ await updateDoc(doc(db,'students',id),{status:'approved'}); loadAdmin(); }
+window.blockStudent = async (id)=>{ 
+ if(!confirm('هتحظر الطالب ده؟ هيرجع منتظر ولازم توافق تاني')) return;
+ await updateDoc(doc(db,'students',id),{status:'pending'}); loadAdmin(); 
+}
+window.deleteStudent = async (id)=>{
+ if(!confirm('متأكد هتمسح الطالب نهائيا؟ مش هيقدر يدخل تاني')) return;
+ await deleteDoc(doc(db,'students',id)); loadAdmin();
+}
 window.addLesson = async ()=>{
  const title=document.getElementById('lessonTitle').value;
  const meetLink=document.getElementById('meetLink').value;
@@ -126,7 +136,7 @@ window.addLesson = async ()=>{
  const grade=document.getElementById('lessonGrade').value;
  if(!title||!meetLink){alert('اكتب العنوان واللينك');return}
  await setDoc(doc(db,'lessons','current'),{title,meetLink,ytLink,grade,created:Date.now()});
- alert('تم! دلوقتي الطالب هيشوف لينك واحد بس');
+ alert('تم النشر - لينك واحد بس ظاهر للطلاب');
 }
 </script>
 </body>
