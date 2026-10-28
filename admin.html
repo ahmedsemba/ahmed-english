@@ -1,24 +1,87 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head><meta charset="UTF-8"><title>ادمن</title></head>
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>لوحة الادمن - مستر أحمد</title>
+<style>
+body{font-family:Tahoma;background:#f1f5f9;margin:0;padding:15px}
+.header{background:#0f172a;color:white;padding:15px;border-radius:15px;text-align:center}
+.live-box{background:#ffffff;border:2px solid #22c55e;padding:15px;border-radius:15px;margin:15px 0}
+.card{background:white;padding:12px;border-radius:12px;margin:8px 0;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 5px rgba(0,0,0,.05)}
+input{width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;margin:6px 0;box-sizing:border-box}
+button{padding:10px 14px;border-radius:8px;border:none;font-weight:bold;cursor:pointer}
+.start{background:#22c55e;color:white;width:100%;font-size:17px}
+.copy{background:#0f172a;color:white;width:100%;margin-top:6px}
+.btn-approve{background:#22c55e;color:white}
+.btn-code{background:#007bff;color:white}
+.status{font-size:11px;padding:3px 8px;border-radius:20px}
+.approved{background:#dcfce7;color:#166534}.pending{background:#fef9c3;color:#854d0e}
+</style>
+</head>
 <body>
-<h2>لوحة الادمن</h2>
+
+<div class="header">
+<h2 style="margin:0">لوحة تحكم مستر أحمد 👨‍🏫</h2>
+</div>
+
+<div class="live-box">
+<h3 style="margin:0 0 10px;color:#166534">🔴 الحصة الأونلاين</h3>
+<label>اسم غرفة اليوم:</label>
+<input id="room" value="grade1_live">
+<label>لينك الـ PDF اللي هتشرحه:</label>
+<input id="pdf" placeholder="https://...pdf">
+<button class="start" onclick="startLive()">▶️ ابدأ الحصة الآن كـ مدرس</button>
+<button class="copy" onclick="copyStudentLink()">📋 نسخ لينك دخول الطلبة وابعته واتساب</button>
+<p style="font-size:12px;color:#64748b;margin:6px 0 0">انت هتدخل كمدرس، الطلبة هتدخل من نفس الغرفة وتشوفهم جوه وتقدر تعمل Mute لاي حد.</p>
+</div>
+
+<div style="display:flex;justify-content:space-between;align-items:center">
+<h3 style="margin:0">الطلبة</h3>
+<button onclick="loadStudents()" style="background:white">🔄 تحديث</button>
+</div>
 <div id="list">جاري التحميل...</div>
+
 <script>
-const URL="https://script.google.com/macros/s/AKfycbw3tS1p1G7srl_kZD3VH1wl24syiafZkJIN8HeOHepjjQYwf-cMrgglcO6eG1S1UusP/exec";
-async function load(){
-let r=await fetch(URL);let d=await r.json();
-let h='';
-for(let i=1;i<d.length;i++){
-h+=`<div>${d[i][0]} - ${d[i][3]} - ${d[i][6]} <button onclick="approve('${d[i][3]}')">موافقة</button></div><hr>`;
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3tS1p1G7srl_kZD3VH1wl24syiafZkJIN8HeOHepjjQYwf-cMrgglcO6eG1S1UusP/exec";
+
+function startLive(){
+  let room = document.getElementById('room').value.trim() || 'grade1';
+  let pdf = document.getElementById('pdf').value.trim();
+  if(pdf) localStorage.setItem('last_pdf', pdf);
+  // ده لينك دخولك انت كمدرس
+  let link = 'https://meet.ffmuc.net/AhmedEnglish_'+room+'#userInfo.displayName="مستر أحمد - المدرس"';
+  window.open(link,'_blank');
 }
-document.getElementById('list').innerHTML=h;
+function copyStudentLink(){
+  let room = document.getElementById('room').value.trim() || 'grade1';
+  let link = 'https://ahmedsemba.github.io/ahmed-english/live.html?room='+encodeURIComponent(room);
+  navigator.clipboard.writeText(link);
+  alert('تم نسخ لينك الطلبة:\n'+link+'\nابعته في جروب الواتساب، الطلبة هتدوس وتدخل معاك لايف');
 }
-async function approve(u){
-await fetch(URL,{method:'POST',body:JSON.stringify({action:'approve',username:u})});
-alert('تمت الموافقة');load();
+
+async function loadStudents(){
+  document.getElementById('list').innerHTML='جاري التحميل...';
+  try{
+    let res = await fetch(SCRIPT_URL+"?action=getStudents");
+    let students = await res.json();
+    let html="";
+    students.reverse().forEach(s=>{
+      let isPending = (s.status||"").toLowerCase().includes("pend") || (s.status||"").includes("منتظر");
+      html+=`<div class="card"><div><b>${s.name}</b><br><small>${s.phone} ${s.code?'| كود: '+s.code:''}</small><br><span class="status ${isPending?'pending':'approved'}">${s.status||'pending'}</span></div><div>${isPending?`<button class="btn-approve" onclick="approve(${s.row},'${s.phone}')">موافقة</button>`:`<button class="btn-code" onclick="navigator.clipboard.writeText('${s.code}');alert('تم النسخ')">نسخ الكود</button>`}</div></div>`;
+    });
+    document.getElementById('list').innerHTML=html||'مفيش طلبة';
+  }catch(e){ document.getElementById('list').innerHTML='خطأ في تحميل الشيت'; }
 }
-load();
+async function approve(row, phone){
+  if(!confirm('توافق؟')) return;
+  let res = await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify({action:"approve",row:row})});
+  let data = await res.json();
+  alert('كود الطالب: '+data.code);
+  let msg=`مبروك تم قبولك ✅ كودك: ${data.code} ادخل من: https://ahmedsemba.github.io/ahmed-english/`;
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,'_blank');
+  loadStudents();
+}
+loadStudents();
 </script>
 </body>
 </html>
