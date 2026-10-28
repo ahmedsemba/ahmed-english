@@ -11,7 +11,7 @@
 <p style="text-align:center;color:#666">سجل مرة واحدة وهيتعملك كود خاص بيك</p>
 <input id="name" placeholder="اسمك ثلاثي">
 <input id="phone" placeholder="رقم الواتساب 01xxxxxxxxx">
-<select id="grade"><option value="">اختر صفك</option><option>1 اعدادي</option><option>2 اعدادي</option><option>3 اعدادي</option><option>1 ثانوي</option><option>2 ثانوي</option><option>3 ثانوي</option></select>
+<select id="grade"><option value="">اختر صفك</option><option>1 ابتدائي</option><option>2 ابتدائي</option><option>3 ابتدائي</option><option>4 ابتدائي</option><option>5 ابتدائي</option><option>6 ابتدائي</option><option>1 اعدادي</option><option>2 اعدادي</option><option>3 اعدادي</option></select>
 <button class="btn" onclick="reg()">تسجيل وانشاء كودي</button>
 </div>
 <div class="card" id="home" style="display:none">
@@ -27,7 +27,7 @@ function reg(){
 let nm=document.getElementById('name').value.trim();
 let ph=document.getElementById('phone').value.trim();
 let gr=document.getElementById('grade').value;
-if(!nm||ph.length<11){alert('اكمل بياناتك');return}
+if(!nm||ph.length<11||!gr){alert('اكمل بياناتك واختار صفك');return}
 let code=localStorage.getItem('st_code'); if(!code){code=genCode(ph); localStorage.setItem('st_code',code);}
 localStorage.setItem('st_name',nm); localStorage.setItem('st_phone',ph); localStorage.setItem('st_grade',gr);
 show();
