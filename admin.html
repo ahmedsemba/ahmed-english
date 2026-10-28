@@ -1,30 +1,62 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>تحكم المستر</title>
-<style>body{font-family:system-ui;background:#f5f7ff;margin:0;padding:15px}.card{max-width:600px;margin:15px auto;background:#fff;padding:20px;border-radius:16px}input{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid #ddd;box-sizing:border-box}.btn{width:100%;padding:12px;background:#5b5bf6;color:#fff;border:0;border-radius:10px;font-weight:bold;margin-top:6px;cursor:pointer}.item{display:flex;justify-content:space-between;background:#f8f8ff;padding:10px;border-radius:10px;margin:6px 0}</style>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>تحكم المستر - لايف تفاعلي</title>
+<style>body{font-family:system-ui;background:#f5f7ff;margin:0;padding:15px}.card{max-width:650px;margin:15px auto;background:#fff;padding:20px;border-radius:16px;box-shadow:0 5px 20px rgba(0,0,0,.06)}input{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid #ddd;box-sizing:border-box}.btn{width:100%;padding:12px;background:#5b5bf6;color:#fff;border:0;border-radius:10px;font-weight:bold;margin-top:6px;cursor:pointer}.btn2{width:48%;display:inline-block}.item{display:flex;justify-content:space-between;background:#f8f8ff;padding:10px;border-radius:10px;margin:6px 0}</style>
 </head>
 <body>
 <div class="card">
-<h2>⚙️ تحكم - نظام الكود الثابت</h2>
-<label>رابط لايف يوتيوب</label><input id="link" placeholder="https://youtube.com/watch?v=...">
-<button class="btn" onclick="saveLink()">حفظ رابط اللايف</button>
+<h2>⚙️ لوحة تحكم المستر - لايف تفاعلي</h2>
+
+<label>1- اسم غرفة اللايف (ثبتها)</label>
+<input id="room" placeholder="AhmedSemba-English-Live-2026">
+<button class="btn" onclick="saveRoom()">حفظ اسم الغرفة</button>
+
 <hr>
-<label>اعمل بلوك لكود طالب مدفعش</label>
+<h3>📋 اعطاء كود لطالب جديد</h3>
+<input id="stName" placeholder="اسم الطالب">
+<input id="stPhone" placeholder="رقم واتساب 01xxxxxxxxx">
+<button class="btn" style="background:#22c55e" onclick="genCode()">✨ توليد كود خاص جديد</button>
+<div id="newCodeBox" style="display:none;background:#0f172a;color:#22c55e;padding:12px;border-radius:10px;text-align:center;font-size:20px;font-weight:bold;margin-top:10px"></div>
+<button class="btn" style="display:none;background:#fff;color:#5b5bf6;border:2px solid #5b5bf6" id="copyBtn" onclick="copyNew()">📋 نسخ الكود وارساله للطالب</button>
+
+<hr>
+<h3>🚫 بلوك / فك بلوك</h3>
 <input id="blockCode" placeholder="اكتب كود الطالب EN-...">
-<button class="btn" style="background:#e11d48" onclick="block()">🚫 بلوك</button>
-<button class="btn" style="background:#22c55e" onclick="unblock()">✅ فك البلوك</button>
-<p id="msg" style="text-align:center;color:green"></p>
-<h3>الاكواد الموقوفة حاليا:</h3>
+<div style="display:flex;gap:6px">
+<button class="btn btn2" style="background:#e11d48" onclick="block()">بلوك</button>
+<button class="btn btn2" style="background:#22c55e" onclick="unblock()">فك البلوك</button>
+</div>
+<p id="msg" style="text-align:center;color:green;font-weight:bold"></p>
+<h4>الاكواد الموقوفة:</h4>
 <div id="list"></div>
-<button class="btn" style="background:#111" onclick="window.open('live.html','_blank')">شوف صفحة الطالب</button>
+
+<hr>
+<button class="btn" style="background:#111;font-size:18px;padding:16px" onclick="openAsTeacher()">🔴 افتح غرفة اللايف كمدرس (موديريتور)</button>
+<p style="font-size:12px;color:#888;text-align:center">كود دخول المدرس هو: MR-AHMED-2026</p>
 </div>
 <script>
-document.getElementById('link').value=localStorage.getItem('live_link')||'';
-function saveLink(){localStorage.setItem('live_link',document.getElementById('link').value); document.getElementById('msg').innerText='اتحفظ';}
+document.getElementById('room').value=localStorage.getItem('live_room')||'AhmedSemba-English-Live-2026';
+function saveRoom(){localStorage.setItem('live_room',document.getElementById('room').value); document.getElementById('msg').innerText='✅ اسم الغرفة اتحفظ';}
+function genCode(){
+ let name=document.getElementById('stName').value.trim();
+ let phone=document.getElementById('stPhone').value.trim();
+ if(!name||phone.length<11){alert('اكتب اسم ورقم الطالب');return}
+ let code=`EN-${phone.slice(-4)}-${Math.floor(1000+Math.random()*9000)}`;
+ document.getElementById('newCodeBox').style.display='block';
+ document.getElementById('newCodeBox').innerText=code;
+ document.getElementById('copyBtn').style.display='block';
+ document.getElementById('blockCode').value=code;
+ // نحفظه في ليستة مؤقتة
+ let all=JSON.parse(localStorage.getItem('all_codes')||'[]');
+ all.push({name,phone,code});
+ localStorage.setItem('all_codes',JSON.stringify(all));
+}
+function copyNew(){navigator.clipboard.writeText(document.getElementById('newCodeBox').innerText); alert('اتنسخ - ابعته للطالب على الواتس');}
 function getBlocked(){return JSON.parse(localStorage.getItem('blocked_codes')||'[]');}
-function block(){let c=document.getElementById('blockCode').value.trim(); let b=getBlocked(); if(c&&!b.includes(c)){b.push(c); localStorage.setItem('blocked_codes',JSON.stringify(b));} render(); document.getElementById('msg').innerText='اتعمله بلوك';}
-function unblock(){let c=document.getElementById('blockCode').value.trim(); let b=getBlocked().filter(x=>x!==c); localStorage.setItem('blocked_codes',JSON.stringify(b)); render(); document.getElementById('msg').innerText='اتفك البلوك';}
-function render(){let b=getBlocked(); document.getElementById('list').innerHTML=b.length?b.map(x=>`<div class=item><span>${x}</span><span>🚫</span></div>`).join(''):'<p style="color:#888">مفيش حد معموله بلوك</p>';}
+function block(){let c=document.getElementById('blockCode').value.trim(); let b=getBlocked(); if(c&&!b.includes(c)){b.push(c); localStorage.setItem('blocked_codes',JSON.stringify(b));} render(); document.getElementById('msg').innerText='🚫 اتعمله بلوك';}
+function unblock(){let c=document.getElementById('blockCode').value.trim(); let b=getBlocked().filter(x=>x!==c); localStorage.setItem('blocked_codes',JSON.stringify(b)); render(); document.getElementById('msg').innerText='✅ اتفك البلوك';}
+function render(){let b=getBlocked(); document.getElementById('list').innerHTML=b.length?b.map(x=>`<div class=item><span>${x}</span><span>🚫</span></div>`).join(''):'<p style="color:#888">مفيش حد موقوف</p>';}
+function openAsTeacher(){window.open('live.html','_blank')}
 render();
 </script>
 </body>
