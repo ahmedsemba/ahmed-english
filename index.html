@@ -15,7 +15,8 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 .tab{flex:1;text-align:center;padding:12px;background:#1e293b;border-radius:10px;cursor:pointer;font-size:13px}
 .tab.active{background:#4f46e5}.tabs{display:flex;gap:6px;margin-bottom:15px}
 .lesson{background:#0f172a;border:1px solid #334155;padding:18px;border-radius:12px;margin-top:12px;text-align:center}
-.meetBtn{background:#10b981;display:block;text-decoration:none;padding:14px;border-radius:10px;color:#fff;font-weight:900;font-size:18px;margin-top:10px}
+.meetBtn{background:#10b981;display:block;text-decoration:none;padding:14px;border-radius:10px;color:#fff;font-weight:900;font-size:18px;margin-top:12px}
+.ytBtn{background:#ef4444;display:block;text-decoration:none;padding:14px;border-radius:10px;color:#fff;font-weight:900;font-size:18px;margin-top:12px}
 .student-row{display:flex;justify-content:space-between;align-items:center;background:#0f172a;padding:12px;border-radius:10px;margin-top:10px;gap:8px;flex-wrap:wrap}
 .btn-small{width:auto;padding:6px 12px;font-size:12px;border-radius:8px}
 </style>
@@ -29,49 +30,41 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 <a href="https://wa.me/201116811324?text=السلام%20عليكم%20يا%20مستر%20احمد%20عايز%20اشترك%20في%20المنصة" target="_blank" style="color:#000;text-decoration:none;font-weight:900;font-size:18px;background:#fff;padding:6px 18px;border-radius:25px;display:inline-block;margin-top:8px">📲 01116811324 - دوس للواتساب</a>
 </div>
 </header>
-
 <div class="container">
 <div class="tabs">
 <div class="tab active" onclick="showTab('student')">دخول الطلاب</div>
 <div class="tab" onclick="showTab('register')">تسجيل</div>
 <div class="tab" onclick="showTab('admin')">لوحة المستر</div>
 </div>
-
 <div id="tab-register" class="card" style="display:none">
 <h3>تسجيل طالب جديد</h3>
-<input id="name" placeholder="الاسم ثلاثي">
-<input id="phone" placeholder="رقم الواتساب">
-<input id="parentPhone" placeholder="رقم ولي الأمر">
+<input id="name" placeholder="الاسم ثلاثي"><input id="phone" placeholder="رقم الواتساب"><input id="parentPhone" placeholder="رقم ولي الأمر">
 <select id="grade"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select>
 <button onclick="registerStudent()">تسجيل</button><p id="regMsg"></p>
 </div>
-
 <div id="tab-student" class="card">
 <h3>دخول الطالب</h3>
-<input id="loginPhone" placeholder="رقم الواتساب">
-<button onclick="loginStudent()">دخول</button><p id="loginMsg"></p>
+<input id="loginPhone" placeholder="رقم الواتساب"><button onclick="loginStudent()">دخول</button><p id="loginMsg"></p>
 <div id="studentArea" style="display:none"><h2 id="welcome"></h2><div id="lessonsList"></div></div>
 </div>
-
 <div id="tab-admin" class="card" style="display:none">
 <h3>لوحة المستر 🔒</h3>
-<input id="adminPass" type="password" placeholder="Ahmed@salwa2020">
-<button onclick="loginAdmin()">دخول</button>
+<input id="adminPass" type="password" placeholder="Ahmed@salwa2020"><button onclick="loginAdmin()">دخول</button>
 <div id="adminArea" style="display:none">
 <div class="card" style="background:#0f172a;border:2px solid #10b981">
-<h4>🔴 تحديث لينك الحصة (واحد بس ظاهر)</h4>
-<input id="lessonTitle" placeholder="عنوان الحصة">
+<h4>🔴 تحديث الحصة الحالية</h4>
+<input id="lessonTitle" placeholder="عنوان الحصة - مثلا: يونت 1">
 <input id="meetLink" placeholder="لينك جوجل ميت">
-<input id="ytLink" placeholder="يوتيوب اختياري">
+<input id="ytLink" placeholder="لينك يوتيوب - مثلا: https://youtube.com/watch?v=...">
 <select id="lessonGrade"><option>للكل</option><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select>
-<button onclick="addLesson()" style="background:#10b981">✅ نشر</button>
+<button onclick="addLesson()" style="background:#10b981">✅ نشر وتحديث</button>
+<p style="font-size:11px;color:#94a3b8">الجديد هيمسح القديم تلقائيا ويظهر لينك واحد بس</p>
 </div>
 <h4>المنتظرين</h4><div id="pendingList"></div>
-<h4>المقبولين - تقدر تحذف اللي مدفعش</h4><div id="approvedList"></div>
+<h4>المقبولين</h4><div id="approvedList"></div>
 </div>
 </div>
 </div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, setDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -99,7 +92,7 @@ window.registerStudent = async ()=>{
  const grade=document.getElementById('grade').value;
  if(!name||!phone){alert('اكمل البيانات');return}
  await addDoc(collection(db,'students'),{name,phone,parentPhone,grade,status:'pending',created:Date.now()});
- document.getElementById('regMsg').innerHTML='✅ تم التسجيل!';
+ document.getElementById('regMsg').innerHTML='✅ تم التسجيل! انتظر موافقة المستر';
 }
 window.loginStudent = async ()=>{
  const loginMsg=document.getElementById('loginMsg');
@@ -113,13 +106,34 @@ window.loginStudent = async ()=>{
  const snap=await getDocs(q);
  if(snap.empty){loginMsg.innerText='❌ الرقم مش متسجل'; return}
  const data=snap.docs[0].data();
- if(data.status!=='approved'){loginMsg.innerText='⏳ لسه موافقناش عليك'; return}
+ if(data.status!=='approved'){loginMsg.innerText='⏳ لسه المستر موافقش عليك'; return}
  studentArea.style.display='block';
  welcome.innerText=`أهلا يا ${data.name} ❤️`;
  const snapL=await getDocs(collection(db,'lessons'));
- let html=''; snapL.forEach(d=>{
+ let html=''; 
+ snapL.forEach(d=>{
   const l=d.data();
-  html=`<div class='lesson'><h2>${l.title}</h2><p>${l.grade}</p><a class='meetBtn' target='_blank' href='${l.meetLink}'>🎥 ادخل جوجل ميت الآن</a>${l.ytLink?`<br><a style='color:#f87171' target='_blank' href='${l.ytLink}'>شاهد يوتيوب</a>`:''}</div>`;
+  let ytEmbed = '';
+  let ytButton = '';
+  if(l.ytLink){
+    let videoId = '';
+    try{
+      if(l.ytLink.includes('v=')){ videoId = l.ytLink.split('v=')[1].split('&')[0]; }
+      else if(l.ytLink.includes('youtu.be/')){ videoId = l.ytLink.split('youtu.be/')[1].split('?')[0]; }
+      else { videoId = l.ytLink.split('/').pop(); }
+    }catch(e){}
+    if(videoId){
+      ytEmbed = `<div style="margin-top:15px"><iframe width="100%" height="220" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="border-radius:12px"></iframe></div>`;
+      ytButton = `<a class='ytBtn' target='_blank' href='${l.ytLink}'>▶️ اضغط لمشاهدة الحصة</a>`;
+    } else {
+      ytButton = `<a class='ytBtn' target='_blank' href='${l.ytLink}'>▶️ اضغط لمشاهدة الحصة</a>`;
+    }
+  }
+  html = `<div class='lesson'><h2>${l.title}</h2><p>${l.grade}</p>
+  ${l.meetLink?`<a class='meetBtn' target='_blank' href='${l.meetLink}'>🎥 ادخل جوجل ميت الآن</a>`:''}
+  ${ytButton}
+  ${ytEmbed}
+  </div>`;
  });
  document.getElementById('lessonsList').innerHTML=html||'<p>لا يوجد حصة حالية</p>';
 }
@@ -148,9 +162,9 @@ window.addLesson = async ()=>{
  const meetLink=document.getElementById('meetLink').value;
  const ytLink=document.getElementById('ytLink').value;
  const grade=document.getElementById('lessonGrade').value;
- if(!title||!meetLink){alert('اكتب العنوان واللينك');return}
+ if(!title||!meetLink){alert('اكتب العنوان ولينك الميتنج');return}
  await setDoc(doc(db,'lessons','current'),{title,meetLink,ytLink,grade,created:Date.now()});
- alert('تم النشر');
+ alert('تم النشر! الطلاب شايفين لينك واحد بس');
 }
 </script>
 </body>
