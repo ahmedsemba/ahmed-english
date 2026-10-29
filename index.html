@@ -13,16 +13,18 @@ header h1{margin:0;font-size:26px}.header-line{font-size:15px;font-weight:700;ma
 input,select,button,textarea{width:100%;padding:11px;border-radius:10px;border:none;margin-top:8px;font-size:14px}
 input,select,textarea{background:#0f172a;color:#fff;border:1px solid #334155}
 button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
-.tab{flex:1;text-align:center;padding:10px;background:#1e293b;border-radius:10px;cursor:pointer;font-size:12px}.tab.active{background:#4f46e5}.tabs{display:flex;gap:5px;margin-bottom:12px}
+.tab{flex:1;text-align:center;padding:10px;background:#1e293b;border-radius:10px;cursor:pointer;font-size:11px}.tab.active{background:#4f46e5}.tabs{display:flex;gap:5px;margin-bottom:12px}
 .lesson{background:#0f172a;border:1px solid #334155;padding:14px;border-radius:12px;margin-top:10px;text-align:center}
 .meetBtn{background:#10b981;display:block;text-decoration:none;padding:12px;border-radius:10px;color:#fff;font-weight:900;margin-top:10px}
 .ytBtn{background:#ef4444;display:block;text-decoration:none;padding:12px;border-radius:10px;color:#fff;font-weight:900;margin-top:10px}
-.student-row{display:flex;justify-content:space-between;align-items:center;background:#0f172a;padding:10px;border-radius:10px;margin-top:8px;gap:6px;flex-wrap:wrap}
-.btn-small{width:auto;padding:5px 10px;font-size:11px;border-radius:7px}
+.student-row{background:#0f172a;padding:12px;border-radius:12px;margin-top:10px;border:1px solid #334155}
+.btn-small{width:auto;padding:5px 10px;font-size:11px;border-radius:7px;display:inline-block;margin:2px}
 .subTab{padding:8px 12px;background:#0f172a;border-radius:8px;cursor:pointer;display:inline-block;margin:4px;font-size:12px}.subTab.active{background:#f59e0b;color:#000;font-weight:900}
 .qBlock{background:#0f172a;border:1px solid #8b5cf6;border-radius:12px;padding:12px;margin-top:10px}
 .opt{border:2px solid #334155;padding:10px;border-radius:10px;margin-top:6px;cursor:pointer;text-align:right}
 .opt.correct{border-color:#10b981;background:#10b98122}.opt.wrong{border-color:#ef4444;background:#ef444422}
+.evalBox{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.evalBox input{margin:0;padding:8px;font-size:12px}
 </style>
 </head>
 <body>
@@ -37,14 +39,22 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 <div class="tabs">
 <div class="tab active" onclick="showTab('student')">دخول الطلاب</div>
 <div class="tab" onclick="showTab('register')">تسجيل</div>
+<div class="tab" onclick="showTab('parent')">ولي أمر</div>
 <div class="tab" onclick="showTab('admin')">لوحة المستر</div>
 </div>
 
 <div id="tab-register" class="card" style="display:none">
 <h3>تسجيل جديد</h3>
-<input id="name" placeholder="الاسم ثلاثي"><input id="phone" placeholder="رقم الواتساب"><input id="parentPhone" placeholder="رقم ولي الأمر">
+<input id="name" placeholder="الاسم ثلاثي"><input id="phone" placeholder="رقم الواتساب للطالب"><input id="parentPhone" placeholder="رقم ولي الأمر (مهم لمتابعة ولي الأمر)">
 <select id="grade"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select>
 <button onclick="registerStudent()">تسجيل</button><p id="regMsg"></p>
+</div>
+
+<div id="tab-parent" class="card" style="display:none">
+<h3>دخول ولي الأمر 🔍</h3>
+<p style="font-size:12px;color:#94a3b8">اكتب رقمك اللي سجله ابنك عند التسجيل</p>
+<input id="parentLoginPhone" placeholder="رقم تليفون ولي الأمر"><button onclick="loginParent()" style="background:#f59e0b;color:#000">دخول</button><p id="parentMsg"></p>
+<div id="parentArea" style="display:none"></div>
 </div>
 
 <div id="tab-student" class="card">
@@ -79,7 +89,7 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 <button onclick="addLesson()" style="background:#10b981">نشر</button><button onclick="clearLesson()" style="background:#ef4444;margin-top:5px">إنهاء الحصة الآن</button>
 </div>
 
-<div id="admin-students" style="display:none"><h4>المنتظرين</h4><div id="pendingList"></div><h4>المقبولين</h4><div id="approvedList"></div></div>
+<div id="admin-students" style="display:none"><h4>المنتظرين</h4><div id="pendingList"></div><h4>المقبولين + التقييم</h4><div id="approvedList"></div></div>
 
 <div id="admin-schedule" style="display:none" class="card">
 <h4>📅 تعديل الجدول</h4>
@@ -94,7 +104,7 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 <select id="examGrade"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option><option>للكل</option></select>
 <div id="qForm"></div>
 <button onclick="addQuestionBlock()" style="background:#334155;margin-top:8px">+ إضافة سؤال آخر (حتى 5)</button>
-<button onclick="publishExam()" style="background:#8b5cf6;margin-top:10px">🚀 نشر الامتحان للصف المختار</button>
+<button onclick="publishExam()" style="background:#8b5cf6;margin-top:10px">🚀 نشر الامتحان</button>
 <div id="examsListAdmin" style="margin-top:12px"></div>
 </div>
 
@@ -122,7 +132,7 @@ window.showTab=(t)=>{
  document.querySelectorAll('[id^=tab-]').forEach(e=>e.style.display='none');
  document.getElementById('tab-'+t).style.display='block';
  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
- const m={student:0,register:1,admin:2}; document.querySelectorAll('.tab')[m[t]].classList.add('active');
+ const m={student:0,register:1,parent:2,admin:3}; document.querySelectorAll('.tab')[m[t]].classList.add('active');
 }
 window.showAdminTab=(t)=>{
  ['lessons','students','schedule','exams','receipts','results'].forEach(x=>{
@@ -134,7 +144,7 @@ window.showAdminTab=(t)=>{
 window.registerStudent=async()=>{
  const name=document.getElementById('name').value.trim();const phone=document.getElementById('phone').value.trim();const parentPhone=document.getElementById('parentPhone').value.trim();const grade=document.getElementById('grade').value;
  if(!name||!phone){alert('اكمل البيانات');return}
- await addDoc(collection(db,'students'),{name,phone,parentPhone,grade,status:'pending',created:Date.now()});
+ await addDoc(collection(db,'students'),{name,phone,parentPhone,grade,status:'pending',created:Date.now(),eval_interaction:'',eval_homework:'',eval_class:'',eval_platform_note:''});
  document.getElementById('regMsg').innerHTML='✅ تم التسجيل';
 }
 window.loginStudent=async()=>{
@@ -145,6 +155,28 @@ window.loginStudent=async()=>{
  currentStudent={id:d.id,...data};
  document.getElementById('studentArea').style.display='block';document.getElementById('welcome').innerText=`أهلا يا ${data.name}`;
  loadStudentSchedule();loadStudentLesson();loadStudentExams();
+}
+window.loginParent=async()=>{
+ const pPhone=document.getElementById('parentLoginPhone').value.trim();if(!pPhone){alert('اكتب الرقم');return}
+ const q=query(collection(db,'students'),where('parentPhone','==',pPhone));const snap=await getDocs(q);
+ if(snap.empty){document.getElementById('parentMsg').innerText='❌ الرقم مش متسجل عندنا كولي أمر';return}
+ // جلب نتائج المنصة لكل طالب
+ const resSnap=await getDocs(collection(db,'results'));
+ let resultsMap={}; resSnap.forEach(r=>{const rd=r.data(); if(!resultsMap[rd.studentId]) resultsMap[rd.studentId]=[]; resultsMap[rd.studentId].push(rd);});
+ let html=''; snap.forEach(d=>{
+  const s=d.data(); const rList=resultsMap[d.id]||[]; let platformText='لم يحل بعد'; if(rList.length>0){const last=rList[rList.length-1]; platformText=`${last.score}/${last.total} - ${last.examTitle}`;}
+  html+=`<div class='card' style='background:#0f172a;border:2px solid #f59e0b'>
+  <h3>👦 ${s.name}</h3><p>📚 ${s.grade}</p><p>📱 الطالب: ${s.phone}</p>
+  <hr>
+  <h4>📊 تقييم مستر أحمد:</h4>
+  <p>📌 نسبة التفاعل: <b>${s.eval_interaction||'--'} %</b></p>
+  <p>📖 حل الواجب السابق: <b>${s.eval_homework||'--'} %</b></p>
+  <p>💬 حل الأسئلة في الحصة: <b>${s.eval_class||'--'} %</b></p>
+  <p>💻 حل أسئلة المنصة: <b>${platformText}</b></p>
+  ${s.eval_platform_note?`<p>📝 ملاحظة: ${s.eval_platform_note}</p>`:''}
+  </div>`;
+ });
+ document.getElementById('parentArea').innerHTML=html; document.getElementById('parentArea').style.display='block'; document.getElementById('parentMsg').innerText=`✅ لقينا ${snap.size} طالب`;
 }
 async function loadStudentSchedule(){
  const snap=await getDocs(collection(db,'settings'));let txt='لا يوجد جدول حاليا';snap.forEach(doc=>{if(doc.id==='schedule'){txt=doc.data().text.replace(/\n/g,'<br>');}});document.getElementById('studentSchedule').innerHTML=txt;
@@ -163,7 +195,7 @@ async function loadStudentLesson(){
 window.uploadReceipt=async()=>{
  const f=document.getElementById('receiptFile').files[0];if(!f){alert('اختار صورة');return}
  const reader=new FileReader();reader.onload=async(e)=>{
-  await addDoc(collection(db,'receipts'),{studentId:currentStudent.id,studentName:currentStudent.name,grade:currentStudent.grade,image:e.target.result,created:Date.now(),status:'new'});
+  await addDoc(collection(db,'receipts'),{studentId:currentStudent.id,studentName:currentStudent.name,grade:currentStudent.grade,image:e.target.result,created:Date.now()});
   document.getElementById('receiptMsg').innerText='✅ تم رفع الإيصال';
  };reader.readAsDataURL(f);
 }
@@ -214,7 +246,7 @@ window.addQuestionBlock=()=>{
  questionsCount++; const div=document.createElement('div'); div.className='qBlock'; div.id='qb-'+questionsCount;
  div.innerHTML=`
  <b>سؤال ${questionsCount}</b>
- <input id='q-${questionsCount}' placeholder='رأس السؤال: What is past of go?'>
+ <input id='q-${questionsCount}' placeholder='رأس السؤال'>
  <input id='q${questionsCount}-o1' placeholder='إجابة 1'>
  <input id='q${questionsCount}-o2' placeholder='إجابة 2'>
  <input id='q${questionsCount}-o3' placeholder='إجابة 3'>
@@ -232,12 +264,46 @@ window.publishExam=async()=>{
  }
  if(qs.length===0){alert('اكتب سؤال واحد على الأقل');return}
  await addDoc(collection(db,'exams'),{title,grade,questions:qs,created:Date.now()});
- alert('✅ تم نشر الامتحان لـ '+grade+' - '+qs.length+' أسئلة');initQForm();document.getElementById('examTitle').value='';loadExamsAdmin();
+ alert('✅ تم نشر الامتحان لـ '+grade);initQForm();document.getElementById('examTitle').value='';loadExamsAdmin();
 }
 window.loginAdmin=async()=>{if(document.getElementById('adminPass').value!=='Ahmed@salwa2020'){alert('غلط');return}document.getElementById('adminArea').style.display='block';loadAdmin();}
 async function loadAdmin(){
- const snap=await getDocs(collection(db,'students'));const pending=document.getElementById('pendingList');const approved=document.getElementById('approvedList');pending.innerHTML='';approved.innerHTML='';
- snap.forEach(d=>{const s=d.data();const id=d.id;if(s.status=='pending'){pending.innerHTML+=`<div class="student-row"><div>⏳ ${s.name} - ${s.phone}<br><small>${s.grade}</small></div><div><button class="btn-small" onclick="approve('${id}')" style="background:#10b981">موافقة</button><button class="btn-small" onclick="deleteStudent('${id}')" style="background:#ef4444">حذف</button></div></div>`;}else{approved.innerHTML+=`<div class="student-row"><div>✅ ${s.name} - ${s.phone}<br><small>${s.grade}</small></div><div><button class="btn-small" onclick="blockStudent('${id}')" style="background:#f59e0b">حظر</button><button class="btn-small" onclick="deleteStudent('${id}')" style="background:#ef4444">مسح</button></div></div>`;}});
+ const snap=await getDocs(collection(db,'students'));
+ const pending=document.getElementById('pendingList');const approved=document.getElementById('approvedList');pending.innerHTML='';approved.innerHTML='';
+ // جلب نتائج المنصة لحساب درجة المنصة
+ const resSnap=await getDocs(collection(db,'results')); let resultsMap={}; resSnap.forEach(r=>{const rd=r.data(); if(!resultsMap[rd.studentId]) resultsMap[rd.studentId]=[]; resultsMap[rd.studentId].push(rd);});
+ snap.forEach(d=>{
+  const s=d.data();const id=d.id;
+  const platformList=resultsMap[id]||[]; let platformTxt='لم يحل بعد'; if(platformList.length>0){const last=platformList[platformList.length-1]; platformTxt=`${last.score}/${last.total}`;}
+  if(s.status=='pending'){
+   pending.innerHTML+=`<div class="student-row"><div>⏳ ${s.name} - ${s.phone}<br><small>${s.grade} | ولي أمر: ${s.parentPhone||'--'}</small></div><div><button class="btn-small" onclick="approve('${id}')" style="background:#10b981">موافقة</button><button class="btn-small" onclick="deleteStudent('${id}')" style="background:#ef4444">حذف</button></div></div>`;
+  }else{
+   approved.innerHTML+=`<div class="student-row">
+   <div style='width:100%'><b>✅ ${s.name} - ${s.phone}</b><br><small>${s.grade} | ولي أمر: ${s.parentPhone||'--'}</small>
+   <div style='margin-top:8px;padding:10px;background:#1e293b;border-radius:10px'>
+   <b>📊 تقييم الطالب</b>
+   <div class='evalBox'>
+   <div><small>تفاعل الحصة %</small><input id='inter-${id}' value='${s.eval_interaction||''}' placeholder='مثال: 85'></div>
+   <div><small>الواجب السابق %</small><input id='home-${id}' value='${s.eval_homework||''}' placeholder='مثال: 90'></div>
+   <div><small>أسئلة الحصة %</small><input id='class-${id}' value='${s.eval_class||''}' placeholder='مثال: 75'></div>
+   <div><small>أسئلة المنصة</small><input value='${platformTxt}' disabled style='background:#334155'><small style='color:#94a3b8'>تلقائي من الامتحانات</small></div>
+   </div>
+   <textarea id='note-${id}' placeholder='ملاحظة لولي الأمر (اختياري)' style='margin-top:6px'>${s.eval_platform_note||''}</textarea>
+   <button class='btn-small' onclick="saveEval('${id}')" style='background:#10b981;width:100%;margin-top:6px;padding:10px'>💾 حفظ التقييم</button>
+   </div>
+   </div>
+   <div style='margin-top:6px'><button class="btn-small" onclick="blockStudent('${id}')" style="background:#f59e0b">حظر</button><button class="btn-small" onclick="deleteStudent('${id}')" style="background:#ef4444">مسح</button></div>
+   </div>`;
+  }
+ });
+}
+window.saveEval=async(id)=>{
+ const inter=document.getElementById(`inter-${id}`).value.trim();
+ const home=document.getElementById(`home-${id}`).value.trim();
+ const cls=document.getElementById(`class-${id}`).value.trim();
+ const note=document.getElementById(`note-${id}`).value.trim();
+ await updateDoc(doc(db,'students',id),{eval_interaction:inter,eval_homework:home,eval_class:cls,eval_platform_note:note});
+ alert('✅ تم حفظ تقييم الطالب - ولي الأمر هيشوفه فوراً');
 }
 window.approve=async(id)=>{await updateDoc(doc(db,'students',id),{status:'approved'});loadAdmin();}
 window.blockStudent=async(id)=>{await updateDoc(doc(db,'students',id),{status:'pending'});loadAdmin();}
