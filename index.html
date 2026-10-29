@@ -115,15 +115,16 @@ window.loginStudent = async ()=>{
  welcome.innerText=`أهلا يا ${data.name} ❤️`;
  const snapL=await getDocs(collection(db,'lessons'));
  let html=''; 
+ let found=false;
  snapL.forEach(d=>{
   const l=d.data();
-  // --- شرط الساعتين ---
+  if(l.grade && l.grade !== 'للكل' && l.grade !== data.grade){ return; }
   const TWO_HOURS = 2 * 60 * 60 * 1000;
   const now = Date.now();
   const created = l.created || 0;
   if(now - created > TWO_HOURS){
-    html = `<div class='lesson expired'>⏰ انتهت مدة الحصة<br><small style="font-size:13px">الحصة كانت: ${l.title}</small></div>`;
-    return;
+    html = `<div class='lesson expired'>⏰ انتهت مدة الحصة<br><small>الحصة كانت: ${l.title}</small></div>`;
+    found=true; return;
   }
   let remaining = Math.ceil((TWO_HOURS - (now - created)) / 60000);
   let content = `<div class='lesson'><h2>${l.title}</h2><p>${l.grade}</p><p style="color:#f59e0b;font-size:13px">⏳ متبقي ${remaining} دقيقة وتنتهي</p>`;
@@ -143,9 +144,10 @@ window.loginStudent = async ()=>{
     content += `<a class='ytBtn' target='_blank' href='${l.ytLink}'>▶️ اضغط لمشاهدة الحصة</a>`;
   }
   content += `</div>`;
-  html = content;
+  html = content; found=true;
  });
- document.getElementById('lessonsList').innerHTML=html||'<p>لا يوجد حصة حالية</p>';
+ if(!found) html = '<p>لا يوجد حصة حالية لصفك</p>';
+ document.getElementById('lessonsList').innerHTML=html;
 }
 window.loginAdmin = async ()=>{
  if(document.getElementById('adminPass').value!=='Ahmed@salwa2020'){alert('الباسورد غلط');return}
