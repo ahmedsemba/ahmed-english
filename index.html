@@ -25,8 +25,11 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 </style>
 </head>
 <body>
-<header>
-<h1>منصة مستر أحمد السيد انجليزي</h1>
+<header style="display:flex;flex-direction:column;align-items:center;gap:10px">
+<div style="display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap">
+<img src="logo.png" alt="logo" style="width:70px;height:70px;border-radius:50%;border:3px solid #fff;background:#fff;object-fit:cover">
+<h1 style="margin:0">منصة مستر أحمد السيد انجليزي</h1>
+</div>
 <div class="header-line">من الصف الأول الابتدائي الي الثالث الإعدادي</div>
 <div class="header-line">خبره أكثر من ٢٠ عام بمجال التدريس</div>
 <div class="header-line">الحصص بسعر مناسب للجميع</div>
@@ -60,8 +63,8 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 <div class="card" style="background:#0f172a;border:2px solid #10b981">
 <h4>🔴 تحديث الحصة الحالية - بتختفي بعد ساعتين</h4>
 <input id="lessonTitle" placeholder="عنوان الحصة - مثلا: يونت 1">
-<input id="meetLink" placeholder="لينك جوجل ميت (سيبه فاضي لو هتحط يوتيوب)">
-<input id="ytLink" placeholder="لينك يوتيوب (سيبه فاضي لو هتحط ميتنج)">
+<input id="meetLink" placeholder="لينك جوجل ميت">
+<input id="ytLink" placeholder="لينك يوتيوب">
 <select id="lessonGrade"><option>للكل</option><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select>
 <button onclick="addLesson()" style="background:#10b981">✅ نشر (هيختفي بعد ساعتين)</button>
 </div>
@@ -114,8 +117,7 @@ window.loginStudent = async ()=>{
  studentArea.style.display='block';
  welcome.innerText=`أهلا يا ${data.name} ❤️`;
  const snapL=await getDocs(collection(db,'lessons'));
- let html=''; 
- let found=false;
+ let html=''; let found=false;
  snapL.forEach(d=>{
   const l=d.data();
   if(l.grade && l.grade !== 'للكل' && l.grade !== data.grade){ return; }
@@ -128,9 +130,7 @@ window.loginStudent = async ()=>{
   }
   let remaining = Math.ceil((TWO_HOURS - (now - created)) / 60000);
   let content = `<div class='lesson'><h2>${l.title}</h2><p>${l.grade}</p><p style="color:#f59e0b;font-size:13px">⏳ متبقي ${remaining} دقيقة وتنتهي</p>`;
-  if(l.meetLink){
-    content += `<a class='meetBtn' target='_blank' href='${l.meetLink}'>🎥 ادخل جوجل ميت الآن</a>`;
-  }
+  if(l.meetLink){ content += `<a class='meetBtn' target='_blank' href='${l.meetLink}'>🎥 ادخل جوجل ميت الآن</a>`; }
   if(l.ytLink){
     let videoId = '';
     try{
@@ -138,9 +138,7 @@ window.loginStudent = async ()=>{
       else if(l.ytLink.includes('youtu.be/')){ videoId = l.ytLink.split('youtu.be/')[1].split('?')[0]; }
       else { videoId = l.ytLink.split('/').pop(); }
     }catch(e){}
-    if(videoId){
-      content += `<div style="margin-top:15px"><iframe width="100%" height="240" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="border-radius:12px"></iframe></div>`;
-    }
+    if(videoId){ content += `<div style="margin-top:15px"><iframe width="100%" height="240" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="border-radius:12px"></iframe></div>`; }
     content += `<a class='ytBtn' target='_blank' href='${l.ytLink}'>▶️ اضغط لمشاهدة الحصة</a>`;
   }
   content += `</div>`;
@@ -175,7 +173,7 @@ window.addLesson = async ()=>{
  const ytLink=document.getElementById('ytLink').value.trim();
  const grade=document.getElementById('lessonGrade').value;
  if(!title){alert('اكتب عنوان الحصة');return}
- if(!meetLink && !ytLink){alert('حط لينك واحد على الأقل: يا جوجل ميت يا يوتيوب');return}
+ if(!meetLink && !ytLink){alert('حط لينك واحد على الأقل');return}
  await setDoc(doc(db,'lessons','current'),{title,meetLink,ytLink,grade,created:Date.now()});
  alert('تم النشر! هيختفي تلقائي بعد ساعتين');
  document.getElementById('lessonTitle').value='';document.getElementById('meetLink').value='';document.getElementById('ytLink').value='';
