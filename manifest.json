@@ -1,9 +1,21 @@
 {
   "name": "منصة مستر أحمد السيد",
   "short_name": "مستر أحمد",
-  "start_url": "/",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#0f172a",
+  "background_color": "#4f46e5",
   "theme_color": "#4f46e5",
-  "icons": [{"src": "logo.png","sizes": "512x512","type": "image/png"}]
+  "description": "منصة مستر أحمد السيد - من الأول للثالث الإعدادي",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
