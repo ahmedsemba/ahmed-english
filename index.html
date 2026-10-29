@@ -2,12 +2,14 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>منصة مستر أحمد السيد</title>
+<title>منصة مستر أحمد السيد انجليزي</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&display=swap" rel="stylesheet">
 <style>
 *{font-family:'Cairo',sans-serif;box-sizing:border-box}body{margin:0;background:#0f172a;color:#fff}
-header{background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:20px;text-align:center}
-.sub-banner{background:#f59e0b;color:#000;padding:12px 15px;border-radius:12px;margin-top:12px;font-weight:900;font-size:14px;display:inline-block;line-height:1.6}
+header{background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:22px;text-align:center;line-height:1.8}
+header h1{margin:0;font-size:28px}
+.header-line{font-size:17px;font-weight:700;margin-top:6px}
+.sub-banner{background:#f59e0b;color:#000;padding:12px 15px;border-radius:12px;margin-top:14px;font-weight:900;font-size:14px;display:inline-block;line-height:1.6}
 .container{max-width:900px;margin:auto;padding:15px}.card{background:#1e293b;border-radius:16px;padding:20px;margin-bottom:15px}
 input,select,button,textarea{width:100%;padding:12px;border-radius:10px;border:none;margin-top:10px;font-size:15px}
 input,select,textarea{background:#0f172a;color:#fff;border:1px solid #334155}
@@ -23,8 +25,10 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 </head>
 <body>
 <header>
-<h1>منصة مستر أحمد السيد 📚</h1>
-<p>من الأول الابتدائي للثالث الإعدادي</p>
+<h1>منصة مستر أحمد السيد انجليزي</h1>
+<div class="header-line">من الصف الأول الابتدائي الي الثالث الإعدادي</div>
+<div class="header-line">خبره أكثر من ٢٠ عام بمجال التدريس</div>
+<div class="header-line">الحصص بسعر مناسب للجميع</div>
 <div class="sub-banner">
 📞 للاشتراك يرجي ارسال سعر الحصه انستا أو اتصالات كاش<br>
 <a href="https://wa.me/201116811324?text=السلام%20عليكم%20يا%20مستر%20احمد%20عايز%20اشترك%20في%20المنصة" target="_blank" style="color:#000;text-decoration:none;font-weight:900;font-size:18px;background:#fff;padding:6px 18px;border-radius:25px;display:inline-block;margin-top:8px">📲 01116811324 - دوس للواتساب</a>
@@ -49,7 +53,8 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 </div>
 <div id="tab-admin" class="card" style="display:none">
 <h3>لوحة المستر 🔒</h3>
-<input id="adminPass" type="password" placeholder="Ahmed@salwa2020"><button onclick="loginAdmin()">دخول</button>
+<input id="adminPass" type="password" placeholder="•••••••• اكتب الباسورد">
+<button onclick="loginAdmin()">دخول</button>
 <div id="adminArea" style="display:none">
 <div class="card" style="background:#0f172a;border:2px solid #10b981">
 <h4>🔴 تحديث الحصة الحالية (لينك واحد بس)</h4>
@@ -58,7 +63,6 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 <input id="ytLink" placeholder="لينك يوتيوب (سيبه فاضي لو هتحط ميتنج)">
 <select id="lessonGrade"><option>للكل</option><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select>
 <button onclick="addLesson()" style="background:#10b981">✅ نشر وتحديث</button>
-<p style="font-size:11px;color:#94a3b8">حط لينك واحد بس: يا جوجل ميت يا يوتيوب - الجديد هيمسح القديم</p>
 </div>
 <h4>المنتظرين</h4><div id="pendingList"></div>
 <h4>المقبولين</h4><div id="approvedList"></div>
@@ -124,7 +128,7 @@ window.loginStudent = async ()=>{
       else { videoId = l.ytLink.split('/').pop(); }
     }catch(e){}
     if(videoId){
-      content += `<div style="margin-top:15px"><iframe width="100%" height="220" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="border-radius:12px"></iframe></div>`;
+      content += `<div style="margin-top:15px"><iframe width="100%" height="240" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="border-radius:12px"></iframe></div>`;
     }
     content += `<a class='ytBtn' target='_blank' href='${l.ytLink}'>▶️ اضغط لمشاهدة الحصة</a>`;
   }
@@ -158,7 +162,6 @@ window.addLesson = async ()=>{
  const meetLink=document.getElementById('meetLink').value.trim();
  const ytLink=document.getElementById('ytLink').value.trim();
  const grade=document.getElementById('lessonGrade').value;
- // التعديل المهم: يا ميتنج يا يوتيوب
  if(!title){alert('اكتب عنوان الحصة');return}
  if(!meetLink && !ytLink){alert('حط لينك واحد على الأقل: يا جوجل ميت يا يوتيوب');return}
  await setDoc(doc(db,'lessons','current'),{title,meetLink,ytLink,grade,created:Date.now()});
