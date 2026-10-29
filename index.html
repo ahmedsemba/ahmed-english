@@ -11,6 +11,8 @@
 header{background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:22px;text-align:center}
 header h1{margin:0;font-size:26px}.header-line{font-size:15px;font-weight:700;margin-top:4px}
 .sub-banner{background:#f59e0b;color:#000;padding:10px 14px;border-radius:12px;margin-top:12px;font-weight:900;font-size:13px;display:inline-block}
+#installBtn{display:none;background:#10b981;color:#fff;padding:14px 22px;border-radius:14px;font-weight:900;margin-top:14px;width:auto;border:none;font-size:15px;cursor:pointer;animation: pulse 2s infinite;box-shadow:0 4px 15px rgba(16,185,129,0.4)}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
 .container{max-width:900px;margin:auto;padding:12px}.card{background:#1e293b;border-radius:14px;padding:16px;margin-bottom:12px}
 input,select,button,textarea{width:100%;padding:11px;border-radius:10px;border:none;margin-top:8px;font-size:14px}
 input,select,textarea{background:#0f172a;color:#fff;border:1px solid #334155}
@@ -38,7 +40,9 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 <img src="logo.png" alt="logo" style="width:60px;height:60px;border-radius:50%;border:2px solid #fff;background:#fff;object-fit:cover">
 <h1>منصة مستر أحمد السيد</h1></div>
 <div class="header-line">من الأول الابتدائي للثالث الإعدادي - خبرة 20 عام</div>
-<div class="sub-banner">📲 للاشتراك: 01116811324 واتساب</div>
+<div class="sub-banner">📲 للاشتراك: 01116811324 واتساب</div><br>
+<button id="installBtn">📲 ثبت التطبيق على موبايلك والكمبيوتر</button>
+<div id="iosHint" style="display:none;background:#fff;color:#000;padding:10px;border-radius:10px;margin-top:12px;font-size:12px;font-weight:700">📱 للآيفون: دوس مشاركة ⎙ ثم "إضافة إلى الشاشة الرئيسية"</div>
 </header>
 <div class="container">
 <div class="tabs">
@@ -184,7 +188,33 @@ async function loadResults(){const snap=await getDocs(collection(db,'results'));
 </script>
 
 <script>
+// PWA Install Logic - يخليه ينزل كتطبيق موبايل وكمبيوتر
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js'); }
+let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
+const iosHint = document.getElementById('iosHint');
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = 'inline-block';
+});
+installBtn.addEventListener('click', async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      installBtn.textContent = '✅ تم التثبيت';
+      setTimeout(()=>installBtn.style.display='none',2000);
+    }
+    deferredPrompt = null;
+  } else {
+     alert('على الكمبيوتر: دوس على علامة التثبيت ⊞ فوق في شريط العنوان. على الموبايل: دوس 3 نقط واختار "تثبيت التطبيق"');
+  }
+});
+window.addEventListener('appinstalled', () => { installBtn.style.display = 'none'; });
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+const isInStandalone = window.matchMedia('(display-mode: standalone)').matches;
+if (isIOS && !isInStandalone) { iosHint.style.display = 'block'; }
 </script>
 </body>
 </html>
