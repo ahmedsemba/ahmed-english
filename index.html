@@ -2,35 +2,34 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>منصة مستر أحمد السيد انجليزي</title>
+<title>منصة مستر أحمد السيد</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&display=swap" rel="stylesheet">
 <style>
 *{font-family:'Cairo',sans-serif;box-sizing:border-box}body{margin:0;background:#0f172a;color:#fff}
 header{background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:22px;text-align:center}
-header h1{margin:0;font-size:26px}
-.header-line{font-size:15px;font-weight:700;margin-top:4px}
+header h1{margin:0;font-size:26px}.header-line{font-size:15px;font-weight:700;margin-top:4px}
 .sub-banner{background:#f59e0b;color:#000;padding:10px 14px;border-radius:12px;margin-top:12px;font-weight:900;font-size:13px;display:inline-block}
 .container{max-width:900px;margin:auto;padding:12px}.card{background:#1e293b;border-radius:14px;padding:16px;margin-bottom:12px}
 input,select,button,textarea{width:100%;padding:11px;border-radius:10px;border:none;margin-top:8px;font-size:14px}
 input,select,textarea{background:#0f172a;color:#fff;border:1px solid #334155}
 button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
-.tab{flex:1;text-align:center;padding:10px;background:#1e293b;border-radius:10px;cursor:pointer;font-size:12px}
-.tab.active{background:#4f46e5}.tabs{display:flex;gap:5px;margin-bottom:12px}
+.tab{flex:1;text-align:center;padding:10px;background:#1e293b;border-radius:10px;cursor:pointer;font-size:12px}.tab.active{background:#4f46e5}.tabs{display:flex;gap:5px;margin-bottom:12px}
 .lesson{background:#0f172a;border:1px solid #334155;padding:14px;border-radius:12px;margin-top:10px;text-align:center}
 .meetBtn{background:#10b981;display:block;text-decoration:none;padding:12px;border-radius:10px;color:#fff;font-weight:900;margin-top:10px}
 .ytBtn{background:#ef4444;display:block;text-decoration:none;padding:12px;border-radius:10px;color:#fff;font-weight:900;margin-top:10px}
 .student-row{display:flex;justify-content:space-between;align-items:center;background:#0f172a;padding:10px;border-radius:10px;margin-top:8px;gap:6px;flex-wrap:wrap}
 .btn-small{width:auto;padding:5px 10px;font-size:11px;border-radius:7px}
-.subTab{padding:8px 12px;background:#0f172a;border-radius:8px;cursor:pointer;display:inline-block;margin:4px;font-size:12px}
-.subTab.active{background:#f59e0b;color:#000;font-weight:900}
+.subTab{padding:8px 12px;background:#0f172a;border-radius:8px;cursor:pointer;display:inline-block;margin:4px;font-size:12px}.subTab.active{background:#f59e0b;color:#000;font-weight:900}
+.qBlock{background:#0f172a;border:1px solid #8b5cf6;border-radius:12px;padding:12px;margin-top:10px}
+.opt{border:2px solid #334155;padding:10px;border-radius:10px;margin-top:6px;cursor:pointer;text-align:right}
+.opt.correct{border-color:#10b981;background:#10b98122}.opt.wrong{border-color:#ef4444;background:#ef444422}
 </style>
 </head>
 <body>
 <header>
 <div style="display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap">
 <img src="logo.png" alt="logo" style="width:60px;height:60px;border-radius:50%;border:2px solid #fff;background:#fff;object-fit:cover">
-<h1>منصة مستر أحمد السيد</h1>
-</div>
+<h1>منصة مستر أحمد السيد</h1></div>
 <div class="header-line">من الأول الابتدائي للثالث الإعدادي - خبرة 20 عام</div>
 <div class="sub-banner">📲 للاشتراك: 01116811324 واتساب</div>
 </header>
@@ -56,7 +55,7 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 <div class="card" style="background:#0f172a"><h4>📅 جدول الحصص الثابت</h4><div id="studentSchedule"></div></div>
 <div id="lessonsList"></div>
 <div class="card" style="background:#0f172a"><h4>🧾 رفع إيصال الدفع</h4><input type="file" id="receiptFile" accept="image/*"><button onclick="uploadReceipt()" style="background:#f59e0b;color:#000">رفع الإيصال</button><p id="receiptMsg"></p></div>
-<div class="card" style="background:#0f172a"><h4>📝 امتحانات صفك</h4><div id="studentExams"></div></div>
+<div class="card" style="background:#0f172a"><h4>📝 امتحانات صفك</h4><div id="studentExams"></div><div id="examSolveArea"></div></div>
 </div>
 </div>
 
@@ -83,31 +82,24 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 <div id="admin-students" style="display:none"><h4>المنتظرين</h4><div id="pendingList"></div><h4>المقبولين</h4><div id="approvedList"></div></div>
 
 <div id="admin-schedule" style="display:none" class="card">
-<h4>📅 تعديل الجدول - سهل</h4>
-<p style="font-size:12px;color:#94a3b8">اكتب كل صف وميعاده واحفظ</p>
-<textarea id="scheduleText" rows="8" placeholder="مثال:
-الصف السادس: السبت 7 م
-الصف الثالث الإعدادي: الأحد 8 م
-الصف الخامس: الاثنين 6 م"></textarea>
+<h4>📅 تعديل الجدول</h4>
+<textarea id="scheduleText" rows="7" placeholder="الصف السادس: السبت 7 م
+الصف الثالث الإعدادي: الأحد 8 م"></textarea>
 <button onclick="saveSchedule()" style="background:#f59e0b;color:#000">💾 حفظ الجدول</button><p id="scheduleMsg"></p>
 </div>
 
 <div id="admin-exams" style="display:none" class="card">
-<h4>📝 إضافة امتحان لصف معين</h4>
+<h4>📝 إضافة امتحان جديد - 5 أسئلة</h4>
 <input id="examTitle" placeholder="عنوان الامتحان: Unit 1">
 <select id="examGrade"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option><option>للكل</option></select>
-<textarea id="examQs" rows="10" placeholder="اكتب الأسئلة بهذا الشكل:
-س: What is past of go? | goed, went, gone | 1
-س: Where do you live? | ... | ...
-(السؤال | الاختيارات بفاصلة | رقم الإجابة الصحيحة من 0)
-مثال: سؤال | اختيار1, اختيار2, اختيار3 | 1 معناها الاختيار الثاني هو الصح"></textarea>
-<button onclick="addExam()" style="background:#8b5cf6">نشر الامتحان</button>
-<div id="examsListAdmin" style="margin-top:10px"></div>
+<div id="qForm"></div>
+<button onclick="addQuestionBlock()" style="background:#334155;margin-top:8px">+ إضافة سؤال آخر (حتى 5)</button>
+<button onclick="publishExam()" style="background:#8b5cf6;margin-top:10px">🚀 نشر الامتحان للصف المختار</button>
+<div id="examsListAdmin" style="margin-top:12px"></div>
 </div>
 
-<div id="admin-receipts" style="display:none"><h4>🧾 الإيصالات المرفوعة</h4><div id="receiptsList"></div></div>
-<div id="admin-results" style="display:none"><h4>📊 نتائج الطلاب</h4><div id="resultsList"></div></div>
-
+<div id="admin-receipts" style="display:none"><h4>🧾 الإيصالات</h4><div id="receiptsList"></div></div>
+<div id="admin-results" style="display:none"><h4>📊 النتائج</h4><div id="resultsList"></div></div>
 </div>
 </div>
 </div>
@@ -125,7 +117,7 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-let currentStudent=null;
+let currentStudent=null; let questionsCount=0;
 window.showTab=(t)=>{
  document.querySelectorAll('[id^=tab-]').forEach(e=>e.style.display='none');
  document.getElementById('tab-'+t).style.display='block';
@@ -137,13 +129,13 @@ window.showAdminTab=(t)=>{
   document.getElementById('admin-'+x).style.display=x===t?'block':'none';
   document.getElementById('atab-'+x).classList.toggle('active',x===t);
  });
- if(t==='students') loadAdmin(); if(t==='schedule') loadScheduleAdmin(); if(t==='exams') loadExamsAdmin(); if(t==='receipts') loadReceipts(); if(t==='results') loadResults();
+ if(t==='students') loadAdmin(); if(t==='schedule') loadScheduleAdmin(); if(t==='exams'){initQForm(); loadExamsAdmin();} if(t==='receipts') loadReceipts(); if(t==='results') loadResults();
 }
 window.registerStudent=async()=>{
  const name=document.getElementById('name').value.trim();const phone=document.getElementById('phone').value.trim();const parentPhone=document.getElementById('parentPhone').value.trim();const grade=document.getElementById('grade').value;
  if(!name||!phone){alert('اكمل البيانات');return}
  await addDoc(collection(db,'students'),{name,phone,parentPhone,grade,status:'pending',created:Date.now()});
- document.getElementById('regMsg').innerHTML='✅ تم التسجيل!';
+ document.getElementById('regMsg').innerHTML='✅ تم التسجيل';
 }
 window.loginStudent=async()=>{
  const phone=document.getElementById('loginPhone').value.trim();if(!phone){document.getElementById('loginMsg').innerText='اكتب الرقم';return}
@@ -155,9 +147,7 @@ window.loginStudent=async()=>{
  loadStudentSchedule();loadStudentLesson();loadStudentExams();
 }
 async function loadStudentSchedule(){
- const snap=await getDocs(collection(db,'settings'));let txt='لا يوجد جدول حاليا';snap.forEach(doc=>{
-  if(doc.id==='schedule'){txt=doc.data().text.replace(/\n/g,'<br>');}
- });document.getElementById('studentSchedule').innerHTML=txt;
+ const snap=await getDocs(collection(db,'settings'));let txt='لا يوجد جدول حاليا';snap.forEach(doc=>{if(doc.id==='schedule'){txt=doc.data().text.replace(/\n/g,'<br>');}});document.getElementById('studentSchedule').innerHTML=txt;
 }
 async function loadStudentLesson(){
  const snapL=await getDocs(collection(db,'lessons'));let html='';let found=false;
@@ -174,23 +164,75 @@ window.uploadReceipt=async()=>{
  const f=document.getElementById('receiptFile').files[0];if(!f){alert('اختار صورة');return}
  const reader=new FileReader();reader.onload=async(e)=>{
   await addDoc(collection(db,'receipts'),{studentId:currentStudent.id,studentName:currentStudent.name,grade:currentStudent.grade,image:e.target.result,created:Date.now(),status:'new'});
-  document.getElementById('receiptMsg').innerText='✅ تم رفع الإيصال، انتظر التأكيد';
+  document.getElementById('receiptMsg').innerText='✅ تم رفع الإيصال';
  };reader.readAsDataURL(f);
 }
 async function loadStudentExams(){
  const snap=await getDocs(collection(db,'exams'));let html='';snap.forEach(d=>{
   const ex=d.data();if(ex.grade && ex.grade!=='للكل' && ex.grade!==currentStudent.grade) return;
-  html+=`<div class='lesson'><b>${ex.title}</b><br><small>${ex.grade}</small><br><button class='btn-small' style='background:#8b5cf6;width:100%;margin-top:8px;padding:10px' onclick="openExam('${d.id}')">📝 ابدأ الامتحان</button></div>`;
+  html+=`<div class='lesson'><b>${ex.title}</b><br><small>${ex.grade} - ${ex.questions.length} أسئلة</small><br><button class='btn-small' style='background:#8b5cf6;width:100%;margin-top:8px;padding:10px' onclick="openExam('${d.id}')">📝 ابدأ الامتحان</button></div>`;
  });if(!html) html='لا يوجد امتحانات لصفك حاليا';document.getElementById('studentExams').innerHTML=html;
 }
+let currentExam=null; let currentAnswers=[];
 window.openExam=async(id)=>{
- const snap=await getDocs(collection(db,'exams'));let ex=null;snap.forEach(d=>{if(d.id===id) ex=d.data();});if(!ex) return;
- let score=0;let qHtml='';ex.questions.forEach((q,i)=>{
-  let ans=prompt(`س${i+1}: ${q.q}\n${q.options.map((o,idx)=>`${idx}: ${o}`).join('\n')}\nاكتب رقم الإجابة:`);
-  if(ans!==null && parseInt(ans)===q.correct) score++;
+ const snap=await getDocs(collection(db,'exams'));snap.forEach(d=>{if(d.id===id) currentExam={id:d.id,...d.data()};});
+ if(!currentExam) return;
+ currentAnswers=new Array(currentExam.questions.length).fill(null);
+ let html=`<div class='card' style='background:#0f172a;border:2px solid #8b5cf6'><h3>${currentExam.title}</h3>`;
+ currentExam.questions.forEach((q,i)=>{
+  html+=`<div class='qBlock'><b>${i+1}. ${q.q}</b>`;
+  q.options.forEach((opt,j)=>{
+   html+=`<div class='opt' id='opt-${i}-${j}' onclick='selectOpt(${i},${j})'>${opt}</div>`;
+  });
+  html+=`</div>`;
  });
- alert(`نتيجتك: ${score}/${ex.questions.length}`);
- await addDoc(collection(db,'results'),{studentId:currentStudent.id,studentName:currentStudent.name,grade:currentStudent.grade,examTitle:ex.title,score,total:ex.questions.length,created:Date.now()});
+ html+=`<button onclick='submitExam()' style='background:#10b981;margin-top:12px'>إرسال الإجابات</button><div id='examResult'></div></div>`;
+ document.getElementById('examSolveArea').innerHTML=html;
+ window.scrollTo(0,document.getElementById('examSolveArea').offsetTop);
+}
+window.selectOpt=(qi,oi)=>{currentAnswers[qi]=oi; document.querySelectorAll(`[id^=opt-${qi}-]`).forEach(e=>e.style.background=''); document.getElementById(`opt-${qi}-${oi}`).style.background='#334155';}
+window.submitExam=async()=>{
+ let score=0; let resultHtml='';
+ currentExam.questions.forEach((q,i)=>{
+  const correct=q.correct; const chosen=currentAnswers[i];
+  if(chosen===correct) score++;
+  resultHtml+=`<div class='qBlock'><b>${i+1}. ${q.q}</b><br>`;
+  q.options.forEach((opt,j)=>{
+   let cls=''; if(j===correct) cls='correct'; else if(j===chosen && chosen!==correct) cls='wrong';
+   resultHtml+=`<div class='opt ${cls}'>${opt} ${j===correct?'✅':''} ${j===chosen && j!==correct?'❌':''}</div>`;
+  });
+  resultHtml+=`</div>`;
+ });
+ let msg= score===currentExam.questions.length ? `🦁 برافو عليك يا بطل! جبت ${score}/${currentExam.questions.length}` : score>=currentExam.questions.length/2 ? `👏 عاش يا بطل! جبت ${score}/${currentExam.questions.length}` : `💪 حاول تاني يا بطل، جبت ${score}/${currentExam.questions.length}`;
+ resultHtml=`<div class='card' style='background:#1e293b;border:2px solid ${score===currentExam.questions.length?'#10b981':'#f59e0b'};margin-top:12px'><h2>${msg}</h2></div>`+resultHtml;
+ document.getElementById('examResult').innerHTML=resultHtml;
+ await addDoc(collection(db,'results'),{studentId:currentStudent.id,studentName:currentStudent.name,grade:currentStudent.grade,examTitle:currentExam.title,score,total:currentExam.questions.length,created:Date.now()});
+}
+function initQForm(){questionsCount=0;document.getElementById('qForm').innerHTML='';addQuestionBlock();}
+window.addQuestionBlock=()=>{
+ if(questionsCount>=5){alert('أقصى عدد 5 أسئلة');return}
+ questionsCount++; const div=document.createElement('div'); div.className='qBlock'; div.id='qb-'+questionsCount;
+ div.innerHTML=`
+ <b>سؤال ${questionsCount}</b>
+ <input id='q-${questionsCount}' placeholder='رأس السؤال: What is past of go?'>
+ <input id='q${questionsCount}-o1' placeholder='إجابة 1'>
+ <input id='q${questionsCount}-o2' placeholder='إجابة 2'>
+ <input id='q${questionsCount}-o3' placeholder='إجابة 3'>
+ <input id='q${questionsCount}-o4' placeholder='إجابة 4'>
+ <select id='q${questionsCount}-correct'><option value=''>اختار الإجابة الصحيحة</option><option value='0'>الإجابة 1 هي الصح</option><option value='1'>الإجابة 2 هي الصح</option><option value='2'>الإجابة 3 هي الصح</option><option value='3'>الإجابة 4 هي الصح</option></select>
+ `;
+ document.getElementById('qForm').appendChild(div);
+}
+window.publishExam=async()=>{
+ const title=document.getElementById('examTitle').value.trim();const grade=document.getElementById('examGrade').value;if(!title){alert('عنوان الامتحان');return}
+ let qs=[]; for(let i=1;i<=questionsCount;i++){
+  const q=document.getElementById(`q-${i}`)?.value.trim();const o1=document.getElementById(`q${i}-o1`)?.value.trim();const o2=document.getElementById(`q${i}-o2`)?.value.trim();const o3=document.getElementById(`q${i}-o3`)?.value.trim();const o4=document.getElementById(`q${i}-o4`)?.value.trim();const corr=document.getElementById(`q${i}-correct`)?.value;
+  if(!q||!o1||!o2||corr==='') continue;
+  qs.push({q,options:[o1,o2,o3,o4].filter(x=>x),correct:parseInt(corr)});
+ }
+ if(qs.length===0){alert('اكتب سؤال واحد على الأقل');return}
+ await addDoc(collection(db,'exams'),{title,grade,questions:qs,created:Date.now()});
+ alert('✅ تم نشر الامتحان لـ '+grade+' - '+qs.length+' أسئلة');initQForm();document.getElementById('examTitle').value='';loadExamsAdmin();
 }
 window.loginAdmin=async()=>{if(document.getElementById('adminPass').value!=='Ahmed@salwa2020'){alert('غلط');return}document.getElementById('adminArea').style.display='block';loadAdmin();}
 async function loadAdmin(){
@@ -204,23 +246,11 @@ window.addLesson=async()=>{const title=document.getElementById('lessonTitle').va
 window.clearLesson=async()=>{if(!confirm('إنهاء الحصة الآن؟')) return;await deleteDoc(doc(db,'lessons','current'));alert('تم إنهاء الحصة');}
 async function loadScheduleAdmin(){const snap=await getDocs(collection(db,'settings'));snap.forEach(d=>{if(d.id==='schedule') document.getElementById('scheduleText').value=d.data().text||'';});}
 window.saveSchedule=async()=>{const txt=document.getElementById('scheduleText').value;await setDoc(doc(db,'settings','schedule'),{text:txt});document.getElementById('scheduleMsg').innerText='✅ تم حفظ الجدول';}
-window.addExam=async()=>{
- const title=document.getElementById('examTitle').value.trim();const grade=document.getElementById('examGrade').value;const raw=document.getElementById('examQs').value.trim();if(!title||!raw){alert('اكمل');return}
- const lines=raw.split('\n');const questions=[];
- lines.forEach(line=>{
-  // صيغة: سؤال | اخ1, اخ2, اخ3 | رقم الصح
-  const parts=line.split('|');if(parts.length<3) return;
-  const q=parts[0].replace('س:','').trim();const opts=parts[1].split(',').map(s=>s.trim());const correct=parseInt(parts[2].trim());
-  questions.push({q,options:opts,correct});
- });
- await addDoc(collection(db,'exams'),{title,grade,questions,created:Date.now()});
- alert('تم نشر الامتحان لـ '+grade);document.getElementById('examTitle').value='';document.getElementById('examQs').value='';loadExamsAdmin();
-}
 async function loadExamsAdmin(){const snap=await getDocs(collection(db,'exams'));let html='';snap.forEach(d=>{const e=d.data();html+=`<div class="student-row"><div>${e.title} - ${e.grade} (${e.questions.length} سؤال)</div><button class="btn-small" onclick="deleteExam('${d.id}')" style="background:#ef4444">حذف</button></div>`;});document.getElementById('examsListAdmin').innerHTML=html;}
 window.deleteExam=async(id)=>{if(!confirm('حذف الامتحان؟')) return;await deleteDoc(doc(db,'exams',id));loadExamsAdmin();}
-async function loadReceipts(){const snap=await getDocs(collection(db,'receipts'));let html='';snap.forEach(d=>{const r=d.data();html+=`<div class="card" style="background:#0f172a"><b>${r.studentName} - ${r.grade}</b><br><img src="${r.image}" style="width:100%;max-width:300px;border-radius:10px;margin-top:8px"><br><small>${new Date(r.created).toLocaleString('ar-EG')}</small><br><button class="btn-small" onclick="deleteReceipt('${d.id}')" style="background:#10b981;margin-top:5px">تم التأكيد - حذف</button></div>`;});if(!html) html='لا يوجد إيصالات';document.getElementById('receiptsList').innerHTML=html;}
+async function loadReceipts(){const snap=await getDocs(collection(db,'receipts'));let html='';snap.forEach(d=>{const r=d.data();html+=`<div class="card" style="background:#0f172a"><b>${r.studentName} - ${r.grade}</b><br><img src="${r.image}" style="width:100%;max-width:300px;border-radius:10px;margin-top:8px"><br><small>${new Date(r.created).toLocaleString('ar-EG')}</small><br><button class="btn-small" onclick="deleteReceipt('${d.id}')" style="background:#10b981;margin-top:5px">تم التأكيد</button></div>`;});if(!html) html='لا يوجد إيصالات';document.getElementById('receiptsList').innerHTML=html;}
 window.deleteReceipt=async(id)=>{await deleteDoc(doc(db,'receipts',id));loadReceipts();}
-async function loadResults(){const snap=await getDocs(collection(db,'results'));let html='';snap.forEach(d=>{const r=d.data();html+=`<div class="student-row"><div><b>${r.studentName}</b> - ${r.grade}<br>${r.examTitle}: ${r.score}/${r.total}</div><small>${new Date(r.created).toLocaleDateString()}</small></div>`;});if(!html) html='لا يوجد نتائج بعد';document.getElementById('resultsList').innerHTML=html;}
+async function loadResults(){const snap=await getDocs(collection(db,'results'));let html='';snap.forEach(d=>{const r=d.data();html+=`<div class="student-row"><div><b>${r.studentName}</b> - ${r.grade}<br>${r.examTitle}: ${r.score}/${r.total}</div><small>${new Date(r.created).toLocaleDateString()}</small></div>`;});if(!html) html='لا يوجد نتائج';document.getElementById('resultsList').innerHTML=html;}
 </script>
 </body>
 </html>
