@@ -17,14 +17,14 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 .lesson{background:#0f172a;border:1px solid #334155;padding:14px;border-radius:12px;margin-top:10px;text-align:center}
 .meetBtn{background:#10b981;display:block;text-decoration:none;padding:12px;border-radius:10px;color:#fff;font-weight:900;margin-top:10px}
 .ytBtn{background:#ef4444;display:block;text-decoration:none;padding:12px;border-radius:10px;color:#fff;font-weight:900;margin-top:10px}
+.driveBtn{background:#0ea5e9;display:block;text-decoration:none;padding:12px;border-radius:10px;color:#fff;font-weight:900;margin-top:8px}
 .student-row{background:#0f172a;padding:12px;border-radius:12px;margin-top:10px;border:1px solid #334155}
 .btn-small{width:auto;padding:5px 10px;font-size:11px;border-radius:7px;display:inline-block;margin:2px}
-.subTab{padding:8px 12px;background:#0f172a;border-radius:8px;cursor:pointer;display:inline-block;margin:4px;font-size:12px}.subTab.active{background:#f59e0b;color:#000;font-weight:900}
+.subTab{padding:8px 12px;background:#0f172a;border-radius:8px;cursor:pointer;display:inline-block;margin:4px;font-size:11px}.subTab.active{background:#f59e0b;color:#000;font-weight:900}
 .qBlock{background:#0f172a;border:1px solid #8b5cf6;border-radius:12px;padding:12px;margin-top:10px}
 .opt{border:2px solid #334155;padding:10px;border-radius:10px;margin-top:6px;cursor:pointer;text-align:right}
 .opt.correct{border-color:#10b981;background:#10b98122}.opt.wrong{border-color:#ef4444;background:#ef444422}
-.evalBox{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
-.evalBox input{margin:0;padding:8px;font-size:12px}
+.evalBox{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}.evalBox input{margin:0;padding:8px;font-size:12px}
 </style>
 </head>
 <body>
@@ -45,14 +45,13 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 
 <div id="tab-register" class="card" style="display:none">
 <h3>تسجيل جديد</h3>
-<input id="name" placeholder="الاسم ثلاثي"><input id="phone" placeholder="رقم الواتساب للطالب"><input id="parentPhone" placeholder="رقم ولي الأمر (مهم لمتابعة ولي الأمر)">
+<input id="name" placeholder="الاسم ثلاثي"><input id="phone" placeholder="رقم الواتساب للطالب"><input id="parentPhone" placeholder="رقم ولي الأمر (مهم)">
 <select id="grade"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select>
 <button onclick="registerStudent()">تسجيل</button><p id="regMsg"></p>
 </div>
 
 <div id="tab-parent" class="card" style="display:none">
 <h3>دخول ولي الأمر 🔍</h3>
-<p style="font-size:12px;color:#94a3b8">اكتب رقمك اللي سجله ابنك عند التسجيل</p>
 <input id="parentLoginPhone" placeholder="رقم تليفون ولي الأمر"><button onclick="loginParent()" style="background:#f59e0b;color:#000">دخول</button><p id="parentMsg"></p>
 <div id="parentArea" style="display:none"></div>
 </div>
@@ -64,6 +63,7 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 <h2 id="welcome"></h2>
 <div class="card" style="background:#0f172a"><h4>📅 جدول الحصص الثابت</h4><div id="studentSchedule"></div></div>
 <div id="lessonsList"></div>
+<div class="card" style="background:#0f172a;border:2px solid #0ea5e9"><h4>📄 ملازم ومذكرات صفك</h4><div id="studentMaterials"></div></div>
 <div class="card" style="background:#0f172a"><h4>🧾 رفع إيصال الدفع</h4><input type="file" id="receiptFile" accept="image/*"><button onclick="uploadReceipt()" style="background:#f59e0b;color:#000">رفع الإيصال</button><p id="receiptMsg"></p></div>
 <div class="card" style="background:#0f172a"><h4>📝 امتحانات صفك</h4><div id="studentExams"></div><div id="examSolveArea"></div></div>
 </div>
@@ -75,7 +75,8 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 <div id="adminArea" style="display:none">
 <div style="margin:10px 0">
 <span class="subTab active" onclick="showAdminTab('lessons')" id="atab-lessons">الحصة</span>
-<span class="subTab" onclick="showAdminTab('students')" id="atab-students">الطلاب</span>
+<span class="subTab" onclick="showAdminTab('students')" id="atab-students">الطلاب + التقييم</span>
+<span class="subTab" onclick="showAdminTab('materials')" id="atab-materials">الملازم</span>
 <span class="subTab" onclick="showAdminTab('schedule')" id="atab-schedule">الجدول</span>
 <span class="subTab" onclick="showAdminTab('exams')" id="atab-exams">الامتحانات</span>
 <span class="subTab" onclick="showAdminTab('receipts')" id="atab-receipts">الإيصالات</span>
@@ -91,19 +92,27 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 
 <div id="admin-students" style="display:none"><h4>المنتظرين</h4><div id="pendingList"></div><h4>المقبولين + التقييم</h4><div id="approvedList"></div></div>
 
+<div id="admin-materials" style="display:none" class="card">
+<h4>📄 إضافة ملزمة جديدة (جوجل درايف)</h4>
+<input id="matTitle" placeholder="عنوان الملزمة: مذكرة Unit 1">
+<input id="matLink" placeholder="لينك جوجل درايف - مثال: https://drive.google.com/...">
+<select id="matGrade"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option><option>للكل</option></select>
+<button onclick="addMaterial()" style="background:#0ea5e9">📤 نشر الملزمة</button>
+<div id="materialsListAdmin" style="margin-top:12px"></div>
+<p style="font-size:11px;color:#94a3b8;margin-top:10px">الطريقة: ارفع الملف على درايف > كليك يمين > Share > Anyone with the link > انسخ اللينك وحطه هنا</p>
+</div>
+
 <div id="admin-schedule" style="display:none" class="card">
 <h4>📅 تعديل الجدول</h4>
-<textarea id="scheduleText" rows="7" placeholder="الصف السادس: السبت 7 م
-الصف الثالث الإعدادي: الأحد 8 م"></textarea>
+<textarea id="scheduleText" rows="7"></textarea>
 <button onclick="saveSchedule()" style="background:#f59e0b;color:#000">💾 حفظ الجدول</button><p id="scheduleMsg"></p>
 </div>
 
 <div id="admin-exams" style="display:none" class="card">
 <h4>📝 إضافة امتحان جديد - 5 أسئلة</h4>
-<input id="examTitle" placeholder="عنوان الامتحان: Unit 1">
-<select id="examGrade"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option><option>للكل</option></select>
+<input id="examTitle" placeholder="عنوان الامتحان"><select id="examGrade"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option><option>للكل</option></select>
 <div id="qForm"></div>
-<button onclick="addQuestionBlock()" style="background:#334155;margin-top:8px">+ إضافة سؤال آخر (حتى 5)</button>
+<button onclick="addQuestionBlock()" style="background:#334155;margin-top:8px">+ إضافة سؤال آخر</button>
 <button onclick="publishExam()" style="background:#8b5cf6;margin-top:10px">🚀 نشر الامتحان</button>
 <div id="examsListAdmin" style="margin-top:12px"></div>
 </div>
@@ -135,11 +144,11 @@ window.showTab=(t)=>{
  const m={student:0,register:1,parent:2,admin:3}; document.querySelectorAll('.tab')[m[t]].classList.add('active');
 }
 window.showAdminTab=(t)=>{
- ['lessons','students','schedule','exams','receipts','results'].forEach(x=>{
+ ['lessons','students','materials','schedule','exams','receipts','results'].forEach(x=>{
   document.getElementById('admin-'+x).style.display=x===t?'block':'none';
   document.getElementById('atab-'+x).classList.toggle('active',x===t);
  });
- if(t==='students') loadAdmin(); if(t==='schedule') loadScheduleAdmin(); if(t==='exams'){initQForm(); loadExamsAdmin();} if(t==='receipts') loadReceipts(); if(t==='results') loadResults();
+ if(t==='students') loadAdmin(); if(t==='materials') loadMaterialsAdmin(); if(t==='schedule') loadScheduleAdmin(); if(t==='exams'){initQForm(); loadExamsAdmin();} if(t==='receipts') loadReceipts(); if(t==='results') loadResults();
 }
 window.registerStudent=async()=>{
  const name=document.getElementById('name').value.trim();const phone=document.getElementById('phone').value.trim();const parentPhone=document.getElementById('parentPhone').value.trim();const grade=document.getElementById('grade').value;
@@ -154,25 +163,22 @@ window.loginStudent=async()=>{
  const d=snap.docs[0];const data=d.data();if(data.status!=='approved'){document.getElementById('loginMsg').innerText='⏳ لسه موافقناش';return}
  currentStudent={id:d.id,...data};
  document.getElementById('studentArea').style.display='block';document.getElementById('welcome').innerText=`أهلا يا ${data.name}`;
- loadStudentSchedule();loadStudentLesson();loadStudentExams();
+ loadStudentSchedule();loadStudentLesson();loadStudentMaterials();loadStudentExams();
 }
 window.loginParent=async()=>{
  const pPhone=document.getElementById('parentLoginPhone').value.trim();if(!pPhone){alert('اكتب الرقم');return}
  const q=query(collection(db,'students'),where('parentPhone','==',pPhone));const snap=await getDocs(q);
- if(snap.empty){document.getElementById('parentMsg').innerText='❌ الرقم مش متسجل عندنا كولي أمر';return}
- // جلب نتائج المنصة لكل طالب
- const resSnap=await getDocs(collection(db,'results'));
- let resultsMap={}; resSnap.forEach(r=>{const rd=r.data(); if(!resultsMap[rd.studentId]) resultsMap[rd.studentId]=[]; resultsMap[rd.studentId].push(rd);});
+ if(snap.empty){document.getElementById('parentMsg').innerText='❌ الرقم مش متسجل';return}
+ const resSnap=await getDocs(collection(db,'results')); let resultsMap={}; resSnap.forEach(r=>{const rd=r.data(); if(!resultsMap[rd.studentId]) resultsMap[rd.studentId]=[]; resultsMap[rd.studentId].push(rd);});
  let html=''; snap.forEach(d=>{
   const s=d.data(); const rList=resultsMap[d.id]||[]; let platformText='لم يحل بعد'; if(rList.length>0){const last=rList[rList.length-1]; platformText=`${last.score}/${last.total} - ${last.examTitle}`;}
   html+=`<div class='card' style='background:#0f172a;border:2px solid #f59e0b'>
-  <h3>👦 ${s.name}</h3><p>📚 ${s.grade}</p><p>📱 الطالب: ${s.phone}</p>
-  <hr>
-  <h4>📊 تقييم مستر أحمد:</h4>
-  <p>📌 نسبة التفاعل: <b>${s.eval_interaction||'--'} %</b></p>
-  <p>📖 حل الواجب السابق: <b>${s.eval_homework||'--'} %</b></p>
-  <p>💬 حل الأسئلة في الحصة: <b>${s.eval_class||'--'} %</b></p>
-  <p>💻 حل أسئلة المنصة: <b>${platformText}</b></p>
+  <h3>👦 ${s.name}</h3><p>📚 ${s.grade}</p>
+  <hr><h4>📊 تقييم مستر أحمد:</h4>
+  <p>📌 تفاعل الحصة: <b>${s.eval_interaction||'--'} %</b></p>
+  <p>📖 الواجب السابق: <b>${s.eval_homework||'--'} %</b></p>
+  <p>💬 أسئلة الحصة: <b>${s.eval_class||'--'} %</b></p>
+  <p>💻 أسئلة المنصة: <b>${platformText}</b></p>
   ${s.eval_platform_note?`<p>📝 ملاحظة: ${s.eval_platform_note}</p>`:''}
   </div>`;
  });
@@ -192,8 +198,15 @@ async function loadStudentLesson(){
   c+=`</div>`;html=c;found=true;
  });if(!found) html='<p>لا يوجد حصة حالية لصفك</p>';document.getElementById('lessonsList').innerHTML=html;
 }
+async function loadStudentMaterials(){
+ const snap=await getDocs(collection(db,'materials'));let html='';snap.forEach(d=>{
+  const m=d.data();if(m.grade && m.grade!=='للكل' && m.grade!==currentStudent.grade) return;
+  html+=`<div class='lesson'><b>📄 ${m.title}</b><br><small>${m.grade}</small><a class='driveBtn' href='${m.link}' target='_blank'>⬇️ تحميل / مشاهدة الملزمة</a></div>`;
+ });if(!html) html='<p>لا يوجد ملازم لصفك حاليا</p>';document.getElementById('studentMaterials').innerHTML=html;
+}
 window.uploadReceipt=async()=>{
  const f=document.getElementById('receiptFile').files[0];if(!f){alert('اختار صورة');return}
+ if(f.size>900000){alert('الصورة كبيرة جدا - صورها سكرين شوت اصغر');return}
  const reader=new FileReader();reader.onload=async(e)=>{
   await addDoc(collection(db,'receipts'),{studentId:currentStudent.id,studentName:currentStudent.name,grade:currentStudent.grade,image:e.target.result,created:Date.now()});
   document.getElementById('receiptMsg').innerText='✅ تم رفع الإيصال';
@@ -220,7 +233,6 @@ window.openExam=async(id)=>{
  });
  html+=`<button onclick='submitExam()' style='background:#10b981;margin-top:12px'>إرسال الإجابات</button><div id='examResult'></div></div>`;
  document.getElementById('examSolveArea').innerHTML=html;
- window.scrollTo(0,document.getElementById('examSolveArea').offsetTop);
 }
 window.selectOpt=(qi,oi)=>{currentAnswers[qi]=oi; document.querySelectorAll(`[id^=opt-${qi}-]`).forEach(e=>e.style.background=''); document.getElementById(`opt-${qi}-${oi}`).style.background='#334155';}
 window.submitExam=async()=>{
@@ -242,17 +254,9 @@ window.submitExam=async()=>{
 }
 function initQForm(){questionsCount=0;document.getElementById('qForm').innerHTML='';addQuestionBlock();}
 window.addQuestionBlock=()=>{
- if(questionsCount>=5){alert('أقصى عدد 5 أسئلة');return}
+ if(questionsCount>=5){alert('أقصى عدد 5');return}
  questionsCount++; const div=document.createElement('div'); div.className='qBlock'; div.id='qb-'+questionsCount;
- div.innerHTML=`
- <b>سؤال ${questionsCount}</b>
- <input id='q-${questionsCount}' placeholder='رأس السؤال'>
- <input id='q${questionsCount}-o1' placeholder='إجابة 1'>
- <input id='q${questionsCount}-o2' placeholder='إجابة 2'>
- <input id='q${questionsCount}-o3' placeholder='إجابة 3'>
- <input id='q${questionsCount}-o4' placeholder='إجابة 4'>
- <select id='q${questionsCount}-correct'><option value=''>اختار الإجابة الصحيحة</option><option value='0'>الإجابة 1 هي الصح</option><option value='1'>الإجابة 2 هي الصح</option><option value='2'>الإجابة 3 هي الصح</option><option value='3'>الإجابة 4 هي الصح</option></select>
- `;
+ div.innerHTML=`<b>سؤال ${questionsCount}</b><input id='q-${questionsCount}' placeholder='رأس السؤال'><input id='q${questionsCount}-o1' placeholder='إجابة 1'><input id='q${questionsCount}-o2' placeholder='إجابة 2'><input id='q${questionsCount}-o3' placeholder='إجابة 3'><input id='q${questionsCount}-o4' placeholder='إجابة 4'><select id='q${questionsCount}-correct'><option value=''>اختار الصح</option><option value='0'>الإجابة 1</option><option value='1'>الإجابة 2</option><option value='2'>الإجابة 3</option><option value='3'>الإجابة 4</option></select>`;
  document.getElementById('qForm').appendChild(div);
 }
 window.publishExam=async()=>{
@@ -264,13 +268,19 @@ window.publishExam=async()=>{
  }
  if(qs.length===0){alert('اكتب سؤال واحد على الأقل');return}
  await addDoc(collection(db,'exams'),{title,grade,questions:qs,created:Date.now()});
- alert('✅ تم نشر الامتحان لـ '+grade);initQForm();document.getElementById('examTitle').value='';loadExamsAdmin();
+ alert('✅ تم نشر الامتحان');initQForm();document.getElementById('examTitle').value='';loadExamsAdmin();
+}
+window.addMaterial=async()=>{
+ const title=document.getElementById('matTitle').value.trim();const link=document.getElementById('matLink').value.trim();const grade=document.getElementById('matGrade').value;
+ if(!title||!link){alert('اكتب العنوان واللينك');return}
+ if(!link.includes('drive.google.com')){alert('حط لينك جوجل درايف');return}
+ await addDoc(collection(db,'materials'),{title,link,grade,created:Date.now()});
+ alert('✅ تم نشر الملزمة');document.getElementById('matTitle').value='';document.getElementById('matLink').value='';loadMaterialsAdmin();
 }
 window.loginAdmin=async()=>{if(document.getElementById('adminPass').value!=='Ahmed@salwa2020'){alert('غلط');return}document.getElementById('adminArea').style.display='block';loadAdmin();}
 async function loadAdmin(){
  const snap=await getDocs(collection(db,'students'));
  const pending=document.getElementById('pendingList');const approved=document.getElementById('approvedList');pending.innerHTML='';approved.innerHTML='';
- // جلب نتائج المنصة لحساب درجة المنصة
  const resSnap=await getDocs(collection(db,'results')); let resultsMap={}; resSnap.forEach(r=>{const rd=r.data(); if(!resultsMap[rd.studentId]) resultsMap[rd.studentId]=[]; resultsMap[rd.studentId].push(rd);});
  snap.forEach(d=>{
   const s=d.data();const id=d.id;
@@ -283,12 +293,12 @@ async function loadAdmin(){
    <div style='margin-top:8px;padding:10px;background:#1e293b;border-radius:10px'>
    <b>📊 تقييم الطالب</b>
    <div class='evalBox'>
-   <div><small>تفاعل الحصة %</small><input id='inter-${id}' value='${s.eval_interaction||''}' placeholder='مثال: 85'></div>
-   <div><small>الواجب السابق %</small><input id='home-${id}' value='${s.eval_homework||''}' placeholder='مثال: 90'></div>
-   <div><small>أسئلة الحصة %</small><input id='class-${id}' value='${s.eval_class||''}' placeholder='مثال: 75'></div>
-   <div><small>أسئلة المنصة</small><input value='${platformTxt}' disabled style='background:#334155'><small style='color:#94a3b8'>تلقائي من الامتحانات</small></div>
+   <div><small>تفاعل الحصة %</small><input id='inter-${id}' value='${s.eval_interaction||''}' placeholder='85'></div>
+   <div><small>الواجب السابق %</small><input id='home-${id}' value='${s.eval_homework||''}' placeholder='90'></div>
+   <div><small>أسئلة الحصة %</small><input id='class-${id}' value='${s.eval_class||''}' placeholder='75'></div>
+   <div><small>أسئلة المنصة</small><input value='${platformTxt}' disabled style='background:#334155'></div>
    </div>
-   <textarea id='note-${id}' placeholder='ملاحظة لولي الأمر (اختياري)' style='margin-top:6px'>${s.eval_platform_note||''}</textarea>
+   <textarea id='note-${id}' placeholder='ملاحظة لولي الأمر'>${s.eval_platform_note||''}</textarea>
    <button class='btn-small' onclick="saveEval('${id}')" style='background:#10b981;width:100%;margin-top:6px;padding:10px'>💾 حفظ التقييم</button>
    </div>
    </div>
@@ -303,7 +313,7 @@ window.saveEval=async(id)=>{
  const cls=document.getElementById(`class-${id}`).value.trim();
  const note=document.getElementById(`note-${id}`).value.trim();
  await updateDoc(doc(db,'students',id),{eval_interaction:inter,eval_homework:home,eval_class:cls,eval_platform_note:note});
- alert('✅ تم حفظ تقييم الطالب - ولي الأمر هيشوفه فوراً');
+ alert('✅ تم حفظ التقييم');
 }
 window.approve=async(id)=>{await updateDoc(doc(db,'students',id),{status:'approved'});loadAdmin();}
 window.blockStudent=async(id)=>{await updateDoc(doc(db,'students',id),{status:'pending'});loadAdmin();}
@@ -314,6 +324,8 @@ async function loadScheduleAdmin(){const snap=await getDocs(collection(db,'setti
 window.saveSchedule=async()=>{const txt=document.getElementById('scheduleText').value;await setDoc(doc(db,'settings','schedule'),{text:txt});document.getElementById('scheduleMsg').innerText='✅ تم حفظ الجدول';}
 async function loadExamsAdmin(){const snap=await getDocs(collection(db,'exams'));let html='';snap.forEach(d=>{const e=d.data();html+=`<div class="student-row"><div>${e.title} - ${e.grade} (${e.questions.length} سؤال)</div><button class="btn-small" onclick="deleteExam('${d.id}')" style="background:#ef4444">حذف</button></div>`;});document.getElementById('examsListAdmin').innerHTML=html;}
 window.deleteExam=async(id)=>{if(!confirm('حذف الامتحان؟')) return;await deleteDoc(doc(db,'exams',id));loadExamsAdmin();}
+async function loadMaterialsAdmin(){const snap=await getDocs(collection(db,'materials'));let html='';snap.forEach(d=>{const m=d.data();html+=`<div class="student-row"><div><b>${m.title}</b><br><small>${m.grade}</small><br><a href='${m.link}' target='_blank' style='color:#0ea5e9'>${m.link.substring(0,40)}...</a></div><button class="btn-small" onclick="deleteMaterial('${d.id}')" style="background:#ef4444">حذف</button></div>`;});if(!html) html='لا يوجد ملازم';document.getElementById('materialsListAdmin').innerHTML=html;}
+window.deleteMaterial=async(id)=>{if(!confirm('حذف الملزمة؟')) return;await deleteDoc(doc(db,'materials',id));loadMaterialsAdmin();}
 async function loadReceipts(){const snap=await getDocs(collection(db,'receipts'));let html='';snap.forEach(d=>{const r=d.data();html+=`<div class="card" style="background:#0f172a"><b>${r.studentName} - ${r.grade}</b><br><img src="${r.image}" style="width:100%;max-width:300px;border-radius:10px;margin-top:8px"><br><small>${new Date(r.created).toLocaleString('ar-EG')}</small><br><button class="btn-small" onclick="deleteReceipt('${d.id}')" style="background:#10b981;margin-top:5px">تم التأكيد</button></div>`;});if(!html) html='لا يوجد إيصالات';document.getElementById('receiptsList').innerHTML=html;}
 window.deleteReceipt=async(id)=>{await deleteDoc(doc(db,'receipts',id));loadReceipts();}
 async function loadResults(){const snap=await getDocs(collection(db,'results'));let html='';snap.forEach(d=>{const r=d.data();html+=`<div class="student-row"><div><b>${r.studentName}</b> - ${r.grade}<br>${r.examTitle}: ${r.score}/${r.total}</div><small>${new Date(r.created).toLocaleDateString()}</small></div>`;});if(!html) html='لا يوجد نتائج';document.getElementById('resultsList').innerHTML=html;}
