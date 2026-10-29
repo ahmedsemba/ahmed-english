@@ -19,6 +19,7 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 .lesson{background:#0f172a;border:1px solid #334155;padding:18px;border-radius:12px;margin-top:12px;text-align:center}
 .meetBtn{background:#10b981;display:block;text-decoration:none;padding:14px;border-radius:10px;color:#fff;font-weight:900;font-size:18px;margin-top:12px}
 .ytBtn{background:#ef4444;display:block;text-decoration:none;padding:14px;border-radius:10px;color:#fff;font-weight:900;font-size:18px;margin-top:12px}
+.expired{background:#334155;color:#94a3b8;padding:20px;border-radius:12px;font-size:18px;font-weight:900}
 .student-row{display:flex;justify-content:space-between;align-items:center;background:#0f172a;padding:12px;border-radius:10px;margin-top:10px;gap:8px;flex-wrap:wrap}
 .btn-small{width:auto;padding:6px 12px;font-size:12px;border-radius:8px}
 </style>
@@ -57,12 +58,12 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 <button onclick="loginAdmin()">دخول</button>
 <div id="adminArea" style="display:none">
 <div class="card" style="background:#0f172a;border:2px solid #10b981">
-<h4>🔴 تحديث الحصة الحالية (لينك واحد بس)</h4>
+<h4>🔴 تحديث الحصة الحالية - بتختفي بعد ساعتين</h4>
 <input id="lessonTitle" placeholder="عنوان الحصة - مثلا: يونت 1">
 <input id="meetLink" placeholder="لينك جوجل ميت (سيبه فاضي لو هتحط يوتيوب)">
 <input id="ytLink" placeholder="لينك يوتيوب (سيبه فاضي لو هتحط ميتنج)">
 <select id="lessonGrade"><option>للكل</option><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select>
-<button onclick="addLesson()" style="background:#10b981">✅ نشر وتحديث</button>
+<button onclick="addLesson()" style="background:#10b981">✅ نشر (هيختفي بعد ساعتين)</button>
 </div>
 <h4>المنتظرين</h4><div id="pendingList"></div>
 <h4>المقبولين</h4><div id="approvedList"></div>
@@ -116,7 +117,16 @@ window.loginStudent = async ()=>{
  let html=''; 
  snapL.forEach(d=>{
   const l=d.data();
-  let content = `<div class='lesson'><h2>${l.title}</h2><p>${l.grade}</p>`;
+  // --- شرط الساعتين ---
+  const TWO_HOURS = 2 * 60 * 60 * 1000;
+  const now = Date.now();
+  const created = l.created || 0;
+  if(now - created > TWO_HOURS){
+    html = `<div class='lesson expired'>⏰ انتهت مدة الحصة<br><small style="font-size:13px">الحصة كانت: ${l.title}</small></div>`;
+    return;
+  }
+  let remaining = Math.ceil((TWO_HOURS - (now - created)) / 60000);
+  let content = `<div class='lesson'><h2>${l.title}</h2><p>${l.grade}</p><p style="color:#f59e0b;font-size:13px">⏳ متبقي ${remaining} دقيقة وتنتهي</p>`;
   if(l.meetLink){
     content += `<a class='meetBtn' target='_blank' href='${l.meetLink}'>🎥 ادخل جوجل ميت الآن</a>`;
   }
@@ -165,7 +175,7 @@ window.addLesson = async ()=>{
  if(!title){alert('اكتب عنوان الحصة');return}
  if(!meetLink && !ytLink){alert('حط لينك واحد على الأقل: يا جوجل ميت يا يوتيوب');return}
  await setDoc(doc(db,'lessons','current'),{title,meetLink,ytLink,grade,created:Date.now()});
- alert('تم النشر! الطالب هيشوف لينك واحد بس');
+ alert('تم النشر! هيختفي تلقائي بعد ساعتين');
  document.getElementById('lessonTitle').value='';document.getElementById('meetLink').value='';document.getElementById('ytLink').value='';
 }
 </script>
