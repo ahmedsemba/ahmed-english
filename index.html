@@ -251,23 +251,41 @@ async function loadGeminiKey(){
   const snap=await getDocs(collection(db,'settings'));
   snap.forEach(d=>{ if(d.id==='gemini'){ document.getElementById('geminiKeyInput').value=d.data().key; document.getElementById('currentKeyShow').innerText=d.data().key.substring(0,15)+'...'; } });
 }
+// --- FIXED FOR AQ. KEYS ---
 window.sendChat=async()=>{
   const input=document.getElementById('chatInput'); const imgFile=document.getElementById('chatImg').files[0]; const text=input.value.trim();
   if(!text && !imgFile){alert('اكتب سؤال');return}
   const history=document.getElementById('chatHistory');
   history.innerHTML+=`<div class="chatMsg chatUser">👦 ${text}${imgFile?` <br>📷 [صورة]` : ''}</div>`;
   input.value=''; document.getElementById('chatMsg').innerText='⏳ يفكر...';
-  let imgBase64=''; if(imgFile){ const reader=new FileReader(); imgBase64=await new Promise(res=>{ reader.onload=e=>res(e.target.result.split(',')[1]); reader.readAsDataURL(imgFile); }); }
+  let imgBase64=''; let mime='image/jpeg';
+  if(imgFile){ 
+    mime=imgFile.type;
+    const reader=new FileReader(); 
+    imgBase64=await new Promise(res=>{ reader.onload=e=>res(e.target.result.split(',')[1]); reader.readAsDataURL(imgFile); }); 
+  }
   try{
     const settingsSnap=await getDocs(collection(db,'settings')); let apiKey='';
     settingsSnap.forEach(d=>{ if(d.id==='gemini') apiKey=d.data().key; });
-    if(!apiKey){ history.innerHTML+=`<div class="chatMsg chatAI">🤖 لسه المفتاح مش محفوظ. يا مستر احفظ المفتاح في إعدادات اسألني.</div>`; document.getElementById('chatMsg').innerText=''; return; }
-    const geminiUrl=`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-    let parts=[{text: text||'اشرح هذه الصورة بالعربي ببساطة'}]; if(imgBase64) parts.push({inline_data:{mime_type:imgFile.type,data:imgBase64}});
-    const resp=await fetch(geminiUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts}]})});
+    if(!apiKey){ history.innerHTML+=`<div class="chatMsg chatAI">🤖 لسه المفتاح مش محفوظ. احفظه في إعدادات اسألني.</div>`; document.getElementById('chatMsg').innerText=''; return; }
+    const geminiUrl=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`;
+    let parts=[{text: text||'اشرح هذه الصورة بالعربي ببساطة'}]; 
+    if(imgBase64) parts.push({inline_data:{mime_type:mime,data:imgBase64}});
+    const resp=await fetch(geminiUrl,{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-goog-api-key': apiKey
+      },
+      body:JSON.stringify({contents:[{parts}]})
+    });
     const data=await resp.json();
-    const aiText=data.candidates?.[0]?.content?.parts?.[0]?.text || 'حصل خطأ، جرب تاني - تأكد المفتاح صحيح';
-    history.innerHTML+=`<div class="chatMsg chatAI">🤖 ${aiText}</div>`;
+    if(data.error){ 
+      history.innerHTML+=`<div class="chatMsg chatAI">❌ خطأ: ${data.error.message}<br>تأكد انك فعلت الـ API من جوجل.</div>`;
+    } else {
+      const aiText=data.candidates?.[0]?.content?.parts?.[0]?.text || 'معلش جرب تاني';
+      history.innerHTML+=`<div class="chatMsg chatAI">🤖 ${aiText}</div>`;
+    }
   }catch(e){ history.innerHTML+=`<div class="chatMsg chatAI">❌ خطأ: ${e.message}</div>`; }
   document.getElementById('chatMsg').innerText=''; history.scrollTop=history.scrollHeight; document.getElementById('chatImg').value='';
 }
