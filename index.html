@@ -2,10 +2,11 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>منصة مستر أحمد السيد</title>
+<title>منصة مستر أحمد السيد انجليزي</title>
 <style>
 *{font-family:'Cairo',sans-serif;box-sizing:border-box}body{margin:0;background:#0f172a;color:#fff}
-header{background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:20px;text-align:center}
+header{background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:22px;text-align:center}
+header h1{margin:0;font-size:28px;font-weight:900}header .subtitle{font-size:15px;margin-top:6px;opacity:0.95}header .exp{font-size:13px;margin-top:4px;background:rgba(255,255,255,0.2);display:inline-block;padding:4px 12px;border-radius:20px}
 .container{max-width:900px;margin:auto;padding:12px}.card{background:#1e293b;border-radius:14px;padding:16px;margin-bottom:12px}
 input,select,button,textarea{width:100%;padding:11px;border-radius:10px;border:none;margin-top:8px;font-size:14px}
 input,select,textarea{background:#0f172a;color:#fff;border:1px solid #334155}
@@ -13,19 +14,23 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 .tab{flex:1;text-align:center;padding:10px;background:#1e293b;border-radius:10px;cursor:pointer;font-size:11px}.tab.active{background:#4f46e5}.tabs{display:flex;gap:5px;margin-bottom:12px}
 .lesson{background:#0f172a;border:1px solid #334155;padding:14px;border-radius:12px;margin-top:10px;text-align:center}
 .student-row{background:#0f172a;padding:12px;border-radius:12px;margin-top:10px;border:1px solid #334155}
-.btn-small{width:auto;padding:5px 10px;font-size:11px;border-radius:7px;display:inline-block;margin:2px}
+.btn-small{width:auto;padding:6px 12px;font-size:11px;border-radius:7px;display:inline-block;margin:2px;font-weight:900}
 .subTab{padding:8px 12px;background:#0f172a;border-radius:8px;cursor:pointer;display:inline-block;margin:4px;font-size:11px}.subTab.active{background:#f59e0b;color:#000;font-weight:900}
 .gradeTab{padding:8px 10px;background:#1e293b;border-radius:8px;cursor:pointer;display:inline-block;margin:3px;font-size:11px;border:1px solid #334155}.gradeTab.active{background:#4f46e5;color:#fff}
 .star{font-size:22px;cursor:pointer;color:#334155}.star.active{color:#f59e0b}
 .hwImg{width:100%;max-width:200px;border-radius:10px;margin:4px;border:2px solid #334155}
 .certCard{background:linear-gradient(135deg,#fff 0%,#fef9c3 100%);color:#000;padding:28px;border-radius:20px;border:5px solid #f59e0b;text-align:center;margin-top:15px}
 .searchBox{background:#1e293b;border:2px solid #4f46e5;margin-bottom:10px}
-.evalLine{margin-top:10px;background:#1e293b;padding:8px;border-radius:8px}
+.evalLine{margin-top:8px;background:#1e293b;padding:8px;border-radius:8px}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&display=swap" rel="stylesheet">
 </head>
 <body>
-<header><h1>منصة مستر أحمد السيد</h1></header>
+<header>
+<h1>منصة مستر أحمد السيد انجليزي</h1>
+<div class="subtitle">(من الصف الأول الابتدائي للصف الثالث الإعدادي)</div>
+<div class="exp">خبرة أكثر من 20 عام ⭐</div>
+</header>
 <div class="container">
 <div class="tabs">
 <div class="tab active" onclick="showTab('student')">دخول الطلاب</div>
@@ -54,7 +59,7 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 <div id="evalDisplay" class="card" style="background:#0f172a;border:2px solid #f59e0b"></div>
 <div id="certArea"></div>
 <div id="lessonsList"></div>
-<div class="card" style="background:#0f172a;border:2px solid #f59e0b"><h4>📸 رفع الواجب (4 صور)</h4><input type="file" id="hwFiles" accept="image/*" multiple><button onclick="uploadHomework()" style="background:#f59e0b;color:#000">رفع الواجب</button><p id="hwMsg"></p><div id="myHomeworks"></div></div>
+<div class="card" style="background:#0f172a;border:2px solid #f59e0b"><h4>📸 رفع الواجب</h4><input type="file" id="hwFiles" accept="image/*" multiple><button onclick="uploadHomework()" style="background:#f59e0b;color:#000">رفع الواجب</button><p id="hwMsg"></p><div id="myHomeworks"></div></div>
 </div>
 </div>
 
@@ -75,6 +80,7 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 <div id="gradeFilter"></div>
 <div id="studentsCounter" style="background:#4f46e5;padding:8px;border-radius:8px;margin-top:8px;font-weight:900;text-align:center"></div>
 <div id="pendingList"></div><h4 id="approvedTitle">المقبولين</h4><div id="approvedList"></div>
+<h4 id="blockedTitle" style="color:#ef4444;margin-top:15px">🚫 المحظورين</h4><div id="blockedList"></div>
 </div>
 
 <div id="admin-homeworks" style="display:none">
@@ -104,33 +110,29 @@ function starsHtml(val){ let h=''; for(let i=1;i<=5;i++){ h+= (i<=val?'⭐':'☆
 function editableStars(studentId,type,val){
  let h=`<div>`; for(let i=1;i<=5;i++){ h+=`<span class="star ${i<=val?'active':''}" onclick="setEval('${studentId}','${type}',${i})">★</span>`; } h+=` <small>(${val}/5)</small></div>`; return h;
 }
-
-window.setEval=async(id,type,val)=>{
- await updateDoc(doc(db,'students',id),{[type]:val});
- loadAdminFiltered();
-}
+window.setEval=async(id,type,val)=>{ await updateDoc(doc(db,'students',id),{[type]:val}); loadAdminFiltered(); }
 
 window.loginStudent=async()=>{
  const phone=document.getElementById('loginPhone').value.trim();
  const q=query(collection(db,'students'),where('phone','==',phone));const snap=await getDocs(q);
  if(snap.empty){document.getElementById('loginMsg').innerText='❌ مش متسجل';return}
- const d=snap.docs[0];const data=d.data();if(data.status!=='approved'){document.getElementById('loginMsg').innerText='⏳ لسه موافقناش';return}
+ const d=snap.docs[0];const data=d.data();
+ if(data.status==='pending'){document.getElementById('loginMsg').innerText='⏳ لسه موافقناش';return}
+ if(data.status==='blocked'){document.getElementById('loginMsg').innerText='🚫 تم حظرك، تواصل مع المستر للدفع: 01116811324';return}
  currentStudent={id:d.id,...data};
  document.getElementById('studentArea').style.display='block';
  document.getElementById('welcome').innerText=`أهلا يا ${data.name}`;
- // عرض التقييمات
  const inter = data.eval_interaction||0, hw=data.eval_homework||0, month=data.eval_month||0;
  document.getElementById('evalDisplay').innerHTML=`<h4>📊 تقييمك في الحصة السابقة</h4>
- <div class="evalLine">تفاعل وحل أسئلة الحصة: ${starsHtml(inter)} (${inter}/5)</div>
- <div class="evalLine">حل واجب ومنصة: ${starsHtml(hw)} (${hw}/5)</div>
- <div class="evalLine">امتحان الشهر: ${starsHtml(month)} (${month}/5)</div>`;
- // شهادة
+ <div class="evalLine">تفاعل الحصة: ${starsHtml(inter)} (${inter}/5)</div>
+ <div class="evalLine">واجب ومنصة: ${starsHtml(hw)} (${hw}/5)</div>
+ <div class="evalLine">شهر: ${starsHtml(month)} (${month}/5)</div>`;
  if(month>=5){
   const today=new Date().toLocaleDateString('ar-EG');
   document.getElementById('certArea').innerHTML=`<div class="certCard">
    <h2 style="color:#7c3aed">🏆 درع التفوق والتميز</h2>
    <p style="font-size:18px">تُمنح هذه الشهادة بكل فخر واعتزاز للطالب المجتهد</p>
-   <h2 style="color:#000">/ ${data.name} /</h2>
+   <h2>/ ${data.name} /</h2>
    <p>إجلالاً لجهوده المتميزة وتفوقه الباهر في امتحان الشهر ، وثمرةً لحرصه على الفهم والتحصيل العلمي الراقي.</p>
    <p>استمر في هذا التميز، فالمستقبل الواعد بانتظارك!</p>
    <p style="margin-top:15px;font-weight:900">مستر / أحمد السيد<br>التاريخ: ${today}</p>
@@ -144,19 +146,19 @@ window.loginParent=async()=>{
  const q=query(collection(db,'students'),where('parentPhone','==',pPhone));const snap=await getDocs(q);
  let html=''; snap.forEach(d=>{
   const s=d.data();
+  let statusText = s.status==='blocked'?'🚫 محظور - تواصل مع المستر':s.status==='pending'?'⏳ انتظار':'✅ مقبول';
   html+=`<div class='card' style='background:#0f172a;border:2px solid #f59e0b'>
-   <h3>👦 ${s.name}</h3><p>${s.grade}</p>
+   <h3>👦 ${s.name} - ${statusText}</h3><p>${s.grade}</p>
    <div class="evalLine">تفاعل: ${starsHtml(s.eval_interaction||0)}</div>
    <div class="evalLine">واجب: ${starsHtml(s.eval_homework||0)}</div>
    <div class="evalLine">شهر: ${starsHtml(s.eval_month||0)}</div>
-   ${s.eval_month>=5?'<div style="background:#10b981;color:#fff;padding:6px;border-radius:8px;margin-top:6px;text-align:center">🏆 حاصل على درع التفوق</div>':''}
    </div>`;
  });
  document.getElementById('parentArea').innerHTML=html; document.getElementById('parentArea').style.display='block';
 }
 
 async function loadStudentLesson(){
- const snapL=await getDocs(collection(db,'lessons'));let html=''; snapL.forEach(docD=>{ const l=docD.data();if(l.grade && l.grade!=='للكل' && l.grade!==currentStudent.grade) return; const TWO=2*60*60*1000;if(Date.now()-(l.created||0)>TWO){html=`<div class='lesson'>⏰ انتهت الحصة</div>`;return;} html=`<div class='lesson'><h3>${l.title}</h3>${l.meetLink?`<a class='meetBtn' style='background:#10b981;display:block;padding:12px;border-radius:10px;color:#fff;text-decoration:none;margin-top:10px' target='_blank' href='${l.meetLink}'>🎥 ادخل ميت</a>`:''}</div>`; }); document.getElementById('lessonsList').innerHTML=html;
+ const snapL=await getDocs(collection(db,'lessons'));let html=''; snapL.forEach(docD=>{ const l=docD.data();if(l.grade && l.grade!=='للكل' && l.grade!==currentStudent.grade) return; const TWO=2*60*60*1000;if(Date.now()-(l.created||0)>TWO){html=`<div class='lesson'>⏰ انتهت الحصة</div>`;return;} html=`<div class='lesson'><h3>${l.title}</h3>${l.meetLink?`<a target='_blank' href='${l.meetLink}' style='background:#10b981;display:block;padding:12px;border-radius:10px;color:#fff;text-decoration:none;margin-top:10px'>🎥 ادخل ميت</a>`:''}</div>`; }); document.getElementById('lessonsList').innerHTML=html;
 }
 
 window.uploadHomework=async()=>{
@@ -166,7 +168,6 @@ window.uploadHomework=async()=>{
  await addDoc(collection(db,'homeworks'),{studentId:currentStudent.id,studentName:currentStudent.name,grade:currentStudent.grade,images,created:Date.now(),voiceNotes:[],corrected:false,correctedAt:0});
  document.getElementById('hwMsg').innerText='✅ تم'; loadMyHomeworks();
 }
-
 async function loadMyHomeworks(){
  if(!currentStudent) return;
  const snap=await getDocs(query(collection(db,'homeworks'),where('studentId','==',currentStudent.id)));
@@ -174,7 +175,7 @@ async function loadMyHomeworks(){
  snap.forEach(d=>{
   const h=d.data();
   if(h.corrected){
-   if(now - (h.correctedAt||0) > WEEK) return; // يختفي بعد أسبوع
+   if(now - (h.correctedAt||0) > WEEK) return;
    html+=`<div class="card" style="background:#1e293b;border:2px solid #10b981"><b>✅ تم تصحيح واجبك</b><br><small>${new Date(h.correctedAt).toLocaleDateString('ar-EG')}</small><br>`;
    h.images.forEach(img=>{html+=`<img src="${img}" class="hwImg">`;});
    if(h.voiceNotes) h.voiceNotes.forEach(v=>{ html+=`<div><audio controls src="${v.audio}" style="width:100%;margin-top:4px"></audio></div>`; });
@@ -189,21 +190,16 @@ window.filterHWGrade=(g)=>{ currentHWGrade=g; loadHomeworksAdmin(); }
 async function loadHomeworksAdmin(){
  const allStudentsSnap = await getDocs(collection(db,'students'));
  const allHWSnap = await getDocs(collection(db,'homeworks'));
- let studentCountMap={}; let hwCountMap={};
- GRADES.forEach(g=>{studentCountMap[g]=0; hwCountMap[g]=0;});
- allStudentsSnap.forEach(d=>{ const g=d.data().grade; if(studentCountMap[g]!==undefined) studentCountMap[g]++; });
+ let hwCountMap={}; GRADES.forEach(g=>{hwCountMap[g]=0;});
  allHWSnap.forEach(d=>{ if(!d.data().corrected){ const g=d.data().grade; if(hwCountMap[g]!==undefined) hwCountMap[g]++; }});
-
  const filterDiv = document.getElementById('hwGradeFilter');
  let fHtml=`<span class="gradeTab ${currentHWGrade==='الكل'?'active':''}" onclick="filterHWGrade('الكل')">الكل</span>`;
  GRADES.forEach(g=>{ fHtml+=`<span class="gradeTab ${currentHWGrade===g?'active':''}" onclick="filterHWGrade('${g}')">${g.replace('الصف ','')} (${hwCountMap[g]||0})</span>`; });
  filterDiv.innerHTML=fHtml;
-
  const searchTerm = document.getElementById('hwSearch')?.value.trim().toLowerCase()||'';
  let filtered=[]; allHWSnap.forEach(d=>{ if(!d.data().corrected) filtered.push({id:d.id,data:d.data()}); });
  if(currentHWGrade!=='الكل') filtered = filtered.filter(x=>x.data.grade===currentHWGrade);
  if(searchTerm) filtered = filtered.filter(x=>x.data.studentName.toLowerCase().includes(searchTerm));
-
  document.getElementById('hwCounter').innerText=`📸 واجبات منتظرة: ${filtered.length}`;
  let html=''; filtered.forEach(item=>{
   const h=item.data; const id=item.id;
@@ -211,10 +207,9 @@ async function loadHomeworksAdmin(){
   h.images.forEach((img,i)=>{ html+=`<div style="display:inline-block;margin:4px;text-align:center"><img src="${img}" class="hwImg"><br><button class="btn-small" style="background:#ef4444" onclick="startVoice('${id}',${i})">🎙️ فويس ${i+1}</button></div>`; });
   html+=`</div>`;
   if(h.voiceNotes) h.voiceNotes.forEach(v=>{html+=`<audio controls src="${v.audio}" style="width:100%"></audio>`;});
-  html+=`<button class="btn-small" style="background:#10b981;width:100%;padding:10px;margin-top:8px" onclick="markCorrected('${id}')">✅ تم التصحيح (هيختفي من عندك ويظهر للطالب أسبوع)</button></div>`;
+  html+=`<button class="btn-small" style="background:#10b981;width:100%;padding:10px;margin-top:8px" onclick="markCorrected('${id}')">✅ تم التصحيح</button></div>`;
  });
- if(!html) html='<p>لا يوجد واجبات منتظرة ✅</p>';
- document.getElementById('homeworksList').innerHTML=html;
+ document.getElementById('homeworksList').innerHTML=html||'<p>لا يوجد واجبات</p>';
 }
 window.markCorrected=async(id)=>{ await updateDoc(doc(db,'homeworks',id),{corrected:true,correctedAt:Date.now()}); loadHomeworksAdmin(); }
 let mediaRecorder=null; let audioChunks=[];
@@ -227,11 +222,10 @@ window.startVoice=async(hwId, imgIndex)=>{
   const reader=new FileReader();
   reader.onload=async(e)=>{
    const snap=await getDocs(collection(db,'homeworks')); snap.forEach(async d=>{if(d.id===hwId){ let voices=d.data().voiceNotes||[]; voices=voices.filter(v=>v.index!==imgIndex); voices.push({index:imgIndex,audio:e.target.result}); await updateDoc(doc(db,'homeworks',d.id),{voiceNotes:voices}); }});
-   alert('✅ تم حفظ الفويس'); loadHomeworksAdmin();
+   alert('✅ تم'); loadHomeworksAdmin();
   }; reader.readAsDataURL(blob);
  };
- mediaRecorder.start(); alert('🎙️ بيسجل دلوقتي - دوس OK عشان توقف');
- if(confirm('وقف التسجيل؟')){mediaRecorder.stop(); stream.getTracks().forEach(t=>t.stop());}
+ mediaRecorder.start(); alert('🎙️ بيسجل - دوس OK للوقف'); if(confirm('وقف؟')){mediaRecorder.stop(); stream.getTracks().forEach(t=>t.stop());}
 }
 
 window.filterGrade=(g)=>{ currentGradeFilter=g; loadAdminFiltered(); }
@@ -239,40 +233,41 @@ async function loadAdmin(){ loadAdminFiltered(); }
 async function loadAdminFiltered(){
  const allStudentsSnap = await getDocs(collection(db,'students'));
  const allHWSnap = await getDocs(collection(db,'homeworks'));
- let studentCountMap={}; let hwCountMap={};
- GRADES.forEach(g=>{studentCountMap[g]=0; hwCountMap[g]=0;});
+ let studentCountMap={}; let hwCountMap={}; GRADES.forEach(g=>{studentCountMap[g]=0; hwCountMap[g]=0;});
  allStudentsSnap.forEach(d=>{ const g=d.data().grade; if(studentCountMap[g]!==undefined) studentCountMap[g]++; });
  allHWSnap.forEach(d=>{ if(!d.data().corrected){ const g=d.data().grade; if(hwCountMap[g]!==undefined) hwCountMap[g]++; }});
-
  const filterDiv=document.getElementById('gradeFilter'); 
  let html=`<span class="gradeTab ${currentGradeFilter==='الكل'?'active':''}" onclick="filterGrade('الكل')">الكل (${allStudentsSnap.size})</span>`;
  GRADES.forEach(g=>{ html+=`<span class="gradeTab ${currentGradeFilter===g?'active':''}" onclick="filterGrade('${g}')">${g.replace('الصف ','')} (${studentCountMap[g]}👦|${hwCountMap[g]}📸)</span>`; });
  filterDiv.innerHTML=html;
-
  const searchTerm = document.getElementById('studentSearch')?.value.trim().toLowerCase()||'';
  let students=[]; allStudentsSnap.forEach(d=>{ students.push({id:d.id,data:d.data()}); });
  if(currentGradeFilter!=='الكل') students = students.filter(s=>s.data.grade===currentGradeFilter);
  if(searchTerm) students = students.filter(s=>s.data.name.toLowerCase().includes(searchTerm));
-
- const pending=document.getElementById('pendingList');const approved=document.getElementById('approvedList');
- pending.innerHTML='';approved.innerHTML='';
+ const pending=document.getElementById('pendingList');const approved=document.getElementById('approvedList');const blocked=document.getElementById('blockedList');
+ pending.innerHTML='';approved.innerHTML='';blocked.innerHTML='';
  students.forEach(item=>{
   const s=item.data; const id=item.id;
-  if(s.status=='pending'){ pending.innerHTML+=`<div class="student-row"><div>⏳ ${s.name} - ${s.phone}<br><small>${s.grade}</small></div><div><button class="btn-small" onclick="approve('${id}')" style="background:#10b981">موافقة</button></div></div>`; }
-  else{
+  if(s.status=='pending'){
+   pending.innerHTML+=`<div class="student-row"><div>⏳ ${s.name} - ${s.phone}<br><small>${s.grade}</small></div><div><button class="btn-small" onclick="approve('${id}')" style="background:#10b981">موافقة</button><button class="btn-small" onclick="deleteStudent('${id}')" style="background:#ef4444">حذف</button></div></div>`;
+  } else if(s.status=='blocked'){
+   blocked.innerHTML+=`<div class="student-row" style="border:2px solid #ef4444"><div><b>🚫 ${s.name}</b> - ${s.phone}<br><small>${s.grade}</small></div><div style="margin-top:6px"><button class="btn-small" onclick="approve('${id}')" style="background:#10b981">✅ فك الحظر (دفع)</button><button class="btn-small" onclick="deleteStudent('${id}')" style="background:#ef4444">🗑️ حذف نهائي</button></div></div>`;
+  } else {
    approved.innerHTML+=`<div class="student-row" style="border:2px solid #f59e0b">
-   <div style='width:100%'><b>✅ ${s.name}</b><br><small>${s.phone} - ${s.grade}</small>
-   <div class="evalLine">تفاعل الحصة: ${editableStars(id,'eval_interaction',s.eval_interaction||0)}</div>
-   <div class="evalLine">واجب ومنصة: ${editableStars(id,'eval_homework',s.eval_homework||0)}</div>
-   <div class="evalLine">امتحان الشهر: ${editableStars(id,'eval_month',s.eval_month||0)} ${s.eval_month>=5?'<span style="background:#10b981;padding:2px 6px;border-radius:6px;font-size:10px">هيظهر له شهادة 🏆</span>':''}</div>
+   <div style='width:100%'><b>✅ ${s.name}</b> - ${s.phone}<br><small>${s.grade}</small>
+   <div class="evalLine">تفاعل: ${editableStars(id,'eval_interaction',s.eval_interaction||0)}</div>
+   <div class="evalLine">واجب: ${editableStars(id,'eval_homework',s.eval_homework||0)}</div>
+   <div class="evalLine">شهر: ${editableStars(id,'eval_month',s.eval_month||0)}</div>
+   <div style="margin-top:10px;display:flex;gap:6px"><button class="btn-small" onclick="blockStudent('${id}')" style="background:#f97316;flex:1">🚫 حظر</button><button class="btn-small" onclick="deleteStudent('${id}')" style="background:#ef4444;flex:1">🗑️ حذف</button></div>
    </div></div>`;
   }
  });
  document.getElementById('studentsCounter').innerText=`${currentGradeFilter}: ${students.length} طالب`;
- document.getElementById('approvedTitle').innerText=`المقبولين - ${currentGradeFilter}`;
 }
 window.approve=async(id)=>{await updateDoc(doc(db,'students',id),{status:'approved'});loadAdminFiltered();}
-window.addLesson=async()=>{const title=document.getElementById('lessonTitle').value.trim();const meetLink=document.getElementById('meetLink').value.trim();const ytLink=document.getElementById('ytLink').value.trim();const grade=document.getElementById('lessonGrade').value;if(!title){alert('عنوان');return}await setDoc(doc(db,'lessons','current'),{title,meetLink,ytLink,grade,created:Date.now()});alert('تم النشر');}
+window.blockStudent=async(id)=>{ if(!confirm('حظر الطالب؟ مش هيدخل تاني')) return; await updateDoc(doc(db,'students',id),{status:'blocked'});loadAdminFiltered();}
+window.deleteStudent=async(id)=>{ if(!confirm('حذف نهائي؟')) return; await deleteDoc(doc(db,'students',id));loadAdminFiltered();}
+window.addLesson=async()=>{const title=document.getElementById('lessonTitle').value.trim();const meetLink=document.getElementById('meetLink').value.trim();const ytLink=document.getElementById('ytLink').value.trim();const grade=document.getElementById('lessonGrade').value;if(!title){alert('عنوان');return}await setDoc(doc(db,'lessons','current'),{title,meetLink,ytLink,grade,created:Date.now()});alert('تم');}
 window.clearLesson=async()=>{await deleteDoc(doc(db,'lessons','current'));alert('تم');}
 window.loginAdmin=async()=>{if(document.getElementById('adminPass').value!=='Ahmed@salwa2020'){alert('غلط');return}document.getElementById('adminArea').style.display='block';loadAdmin();}
 </script>
