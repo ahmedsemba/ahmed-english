@@ -8,9 +8,8 @@
 <style>
 *{font-family:'Cairo',sans-serif;box-sizing:border-box}body{margin:0;background:#0f172a;color:#fff}
 header{background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:22px;text-align:center}
-header h1{margin:0;font-size:26px}.header-line{font-size:15px;font-weight:700;margin-top:4px}
-.sub-banner{background:#f59e0b;color:#000;padding:10px 14px;border-radius:12px;margin-top:12px;font-weight:900;font-size:13px;display:inline-block}
-#installBtn{background:#10b981;color:#fff;padding:14px 22px;border-radius:14px;font-weight:900;margin-top:14px;width:auto;border:none;font-size:15px;cursor:pointer}
+header h1{margin:0;font-size:26px}.sub-banner{background:#f59e0b;color:#000;padding:10px 14px;border-radius:12px;margin-top:12px;font-weight:900;font-size:13px;display:inline-block}
+#installBtn{background:#10b981;color:#fff;padding:14px 22px;border-radius:14px;font-weight:900;margin-top:14px;width:auto;border:none;font-size:15px}
 .container{max-width:900px;margin:auto;padding:12px}.card{background:#1e293b;border-radius:14px;padding:16px;margin-bottom:12px}
 input,select,button,textarea{width:100%;padding:11px;border-radius:10px;border:none;margin-top:8px;font-size:14px}
 input,select,textarea{background:#0f172a;color:#fff;border:1px solid #334155}
@@ -24,22 +23,22 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 .btn-small{width:auto;padding:5px 10px;font-size:11px;border-radius:7px;display:inline-block;margin:2px}
 .subTab{padding:8px 12px;background:#0f172a;border-radius:8px;cursor:pointer;display:inline-block;margin:4px;font-size:11px}.subTab.active{background:#f59e0b;color:#000;font-weight:900}
 .gradeTab{padding:8px 10px;background:#1e293b;border-radius:8px;cursor:pointer;display:inline-block;margin:3px;font-size:11px;border:1px solid #334155}.gradeTab.active{background:#4f46e5;color:#fff;font-weight:900}
-.qBlock{background:#0f172a;border:1px solid #8b5cf6;border-radius:12px;padding:12px;margin-top:10px;text-align:right}
-.opt{border:2px solid #334155;padding:10px;border-radius:10px;margin-top:6px;cursor:pointer;text-align:right}
+.qBlock{background:#0f172a;border:1px solid #8b5cf6;border-radius:12px;padding:12px;margin-top:10px}
+.opt{border:2px solid #334155;padding:10px;border-radius:10px;margin-top:6px;cursor:pointer}
 .evalBox{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}.evalBox input{margin:0;padding:8px;font-size:12px}
 .mat-frame{width:100%;height:700px;border:none;border-radius:12px;margin-top:10px;background:#fff}
 .para-area{width:100%;height:180px;background:#fff;color:#000;border-radius:10px;padding:12px;font-size:14px}
 .attBox{background:#1e293b;padding:10px;border-radius:10px;margin-top:10px;border:1px dashed #f59e0b}
 .certCard{background:linear-gradient(135deg,#fff 0%,#fef9c3 100%);color:#000;padding:24px;border-radius:20px;border:4px solid #f59e0b;text-align:center;margin-top:15px}
-.certTitle{font-size:26px;font-weight:900;color:#7c3aed;margin:0}.certName{font-size:20px;font-weight:900;color:#000;margin:12px 0}
 .hwImg{width:100%;max-width:200px;border-radius:10px;margin:4px;border:2px solid #334155}
+.correctedBadge{background:#10b981;color:#fff;padding:4px 8px;border-radius:8px;font-size:11px;font-weight:900;display:inline-block;margin-top:6px}
+.searchBox{background:#1e293b;border:2px solid #4f46e5;margin-bottom:10px}
 </style>
 </head>
 <body>
 <header>
 <h1>منصة مستر أحمد السيد</h1>
-<div class="header-line">من الأول الابتدائي للثالث الإعدادي</div>
-<a href="https://wa.me/201116811324" target="_blank" style="text-decoration:none"><div class="sub-banner">📲 للاشتراك: 01116811324 واتساب</div></a><br>
+<div class="sub-banner">📲 للاشتراك: 01116811324 واتساب</div><br>
 <button id="installBtn">📲 ثبت المنصة كتطبيق</button>
 </header>
 <div class="container">
@@ -91,17 +90,27 @@ button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}
 <span class="subTab" onclick="showAdminTab('receipts')" id="atab-receipts">الإيصالات</span>
 <span class="subTab" onclick="showAdminTab('results')" id="atab-results">النتائج</span>
 </div>
+
 <div id="admin-lessons" class="card" style="background:#0f172a;border:2px solid #10b981"><h4>🔴 نشر حصة</h4><input id="lessonTitle" placeholder="عنوان الحصة"><input id="meetLink" placeholder="لينك ميت"><input id="ytLink" placeholder="لينك يوتيوب"><select id="lessonGrade"><option>للكل</option><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select><button onclick="addLesson()" style="background:#10b981">نشر</button><button onclick="clearLesson()" style="background:#ef4444;margin-top:5px">إنهاء الحصة</button></div>
-<div id="admin-students" style="display:none"><h4>اختر الصف</h4><div id="gradeFilter"></div><div id="pendingList"></div><h4 id="approvedTitle">المقبولين</h4><div id="approvedList"></div></div>
+
+<div id="admin-students" style="display:none">
+<h4>الطلاب - متقسمة بالصفوف</h4>
+<input id="studentSearch" class="searchBox" placeholder="🔍 بحث بالاسم..." oninput="loadAdminFiltered()">
+<div id="gradeFilter"></div>
+<div id="studentsCounter" style="background:#4f46e5;padding:8px;border-radius:8px;margin-top:8px;font-weight:900;text-align:center"></div>
+<div id="pendingList"></div><h4 id="approvedTitle">المقبولين</h4><div id="approvedList"></div>
+</div>
 
 <div id="admin-homeworks" style="display:none">
 <h4>📸 الواجبات - متقسمة بالصفوف</h4>
+<input id="hwSearch" class="searchBox" placeholder="🔍 بحث باسم الطالب..." oninput="loadHomeworksAdmin()">
 <div id="hwGradeFilter" style="margin-bottom:12px"></div>
+<div id="hwCounter" style="background:#f59e0b;color:#000;padding:8px;border-radius:8px;margin-bottom:8px;font-weight:900;text-align:center"></div>
 <div id="homeworksList"></div>
 </div>
 
 <div id="admin-materials" style="display:none" class="card"><h4>📄 إضافة ملزمة</h4><input id="matTitle" placeholder="عنوان الملزمة"><input id="matLink" placeholder="لينك درايف"><select id="matGrade"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option><option>للكل</option></select><button onclick="addMaterial()" style="background:#0ea5e9">نشر الملزمة</button><div id="materialsListAdmin" style="margin-top:12px"></div></div>
-<div id="admin-schedule" style="display:none" class="card"><h4>📅 الجدول لكل صف</h4><select id="scheduleGrade" onchange="loadScheduleAdmin()"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select><input id="scheduleDay" placeholder="اليوم: السبت والأربعاء"><input id="scheduleTime" placeholder="الساعة: 4 مساء - 6 مساء"><textarea id="scheduleText" rows="2" placeholder="ملاحظات"></textarea><button onclick="saveSchedule()" style="background:#f59e0b;color:#000">💾 حفظ جدول هذا الصف</button><p id="scheduleMsg"></p><hr><div id="allSchedulesList"></div></div>
+<div id="admin-schedule" style="display:none" class="card"><h4>📅 الجدول لكل صف</h4><select id="scheduleGrade" onchange="loadScheduleAdmin()"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select><input id="scheduleDay" placeholder="اليوم"><input id="scheduleTime" placeholder="الساعة"><textarea id="scheduleText" rows="2" placeholder="ملاحظات"></textarea><button onclick="saveSchedule()" style="background:#f59e0b;color:#000">💾 حفظ</button><p id="scheduleMsg"></p><div id="allSchedulesList"></div></div>
 <div id="admin-exams" style="display:none" class="card"><h4>📝 إضافة امتحان</h4><input id="examTitle" placeholder="عنوان الامتحان"><select id="examGrade"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option><option>للكل</option></select><div id="qForm"></div><div style="display:flex;gap:6px"><button onclick="addQuestionBlock()" style="background:#334155;flex:1">+ اختيارى</button><button onclick="addParagraphBlock()" style="background:#f59e0b;color:#000;flex:1">+ براجراف</button></div><button onclick="publishExam()" style="background:#8b5cf6;margin-top:10px">نشر</button><div id="examsListAdmin" style="margin-top:12px"></div></div>
 <div id="admin-receipts" style="display:none"><h4>🧾 الإيصالات</h4><div id="receiptsList"></div></div>
 <div id="admin-results" style="display:none"><h4>📊 النتائج</h4><div id="resultsList"></div></div>
@@ -119,40 +128,59 @@ const GRADES=["الصف الأول الابتدائي","الصف الثاني ا
 function extractDriveId(url){ try{let id=''; if(url.includes('/d/')){id=url.split('/d/')[1].split('/')[0];} else if(url.includes('id=')){id=url.split('id=')[1].split('&')[0];} return id;}catch{return '';} }
 window.showTab=(t)=>{ document.querySelectorAll('[id^=tab-]').forEach(e=>e.style.display='none'); document.getElementById('tab-'+t).style.display='block'; document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active')); const m={student:0,register:1,parent:2,admin:3}; document.querySelectorAll('.tab')[m[t]].classList.add('active'); }
 window.showAdminTab=(t)=>{ ['lessons','students','homeworks','materials','schedule','exams','receipts','results'].forEach(x=>{ document.getElementById('admin-'+x).style.display=x===t?'block':'none'; document.getElementById('atab-'+x).classList.toggle('active',x===t); }); if(t==='students') loadAdmin(); if(t==='homeworks') loadHomeworksAdmin(); if(t==='materials') loadMaterialsAdmin(); if(t==='schedule') loadScheduleAdmin(); if(t==='exams'){initQForm(); loadExamsAdmin();} if(t==='receipts') loadReceipts(); if(t==='results') loadResults(); }
-window.registerStudent=async()=>{ const name=document.getElementById('name').value.trim();const phone=document.getElementById('phone').value.trim();const parentPhone=document.getElementById('parentPhone').value.trim();const grade=document.getElementById('grade').value; if(!name||!phone){alert('اكمل البيانات');return} await addDoc(collection(db,'students'),{name,phone,parentPhone,grade,status:'pending',created:Date.now(),eval_interaction:'',eval_homework:'',eval_class:'',eval_month:'',eval_platform_note:''}); document.getElementById('regMsg').innerHTML='✅ تم التسجيل'; }
-window.loginStudent=async()=>{ const phone=document.getElementById('loginPhone').value.trim();if(!phone){document.getElementById('loginMsg').innerText='اكتب الرقم';return} const q=query(collection(db,'students'),where('phone','==',phone));const snap=await getDocs(q); if(snap.empty){document.getElementById('loginMsg').innerText='❌ مش متسجل';return} const d=snap.docs[0];const data=d.data();if(data.status!=='approved'){document.getElementById('loginMsg').innerText='⏳ لسه موافقناش';return} currentStudent={id:d.id,...data}; document.getElementById('studentArea').style.display='block';document.getElementById('welcome').innerText=`أهلا يا ${data.name}`; checkCertificate(); loadStudentSchedule();loadStudentLesson();loadStudentMaterials();loadStudentExams();loadMyHomeworks(); }
-function checkCertificate(){ const m = parseInt(currentStudent.eval_month||0); if(m>=90){ document.getElementById('certArea').innerHTML = `<div class="certCard"><p class="certTitle">🏆 درع التفوق</p><p class="certName">/ ${currentStudent.name} /</p></div>`; } else { document.getElementById('certArea').innerHTML=''; } }
-window.loginParent=async()=>{ const pPhone=document.getElementById('parentLoginPhone').value.trim();if(!pPhone){alert('اكتب الرقم');return} const q=query(collection(db,'students'),where('parentPhone','==',pPhone));const snap=await getDocs(q); if(snap.empty){document.getElementById('parentMsg').innerText='❌ الرقم مش متسجل';return} let html=''; snap.forEach(d=>{ const s=d.data(); html+=`<div class='card' style='background:#0f172a;border:2px solid #f59e0b'><h3>👦 ${s.name}</h3><p>📚 ${s.grade}</p><p>تفاعل: ${s.eval_interaction||'--'}% - واجب: ${s.eval_homework||'--'}% - شهر: ${s.eval_month||'--'}%</p></div>`; }); document.getElementById('parentArea').innerHTML=html; document.getElementById('parentArea').style.display='block'; }
-async function loadStudentSchedule(){ if(!currentStudent) return; const grade = currentStudent.grade; const snap = await getDocs(collection(db,'schedules')); let txt='لم يتم تحديد موعد لصفك بعد'; snap.forEach(d=>{ if(d.id===grade){ const s=d.data(); txt = `📚 ${s.grade}<br>📅 ${s.day||''}<br>⏰ ${s.time||''}<br>${s.notes||''}`; } }); document.getElementById('studentSchedule').innerHTML=txt; }
-async function loadStudentLesson(){ const snapL=await getDocs(collection(db,'lessons'));let html='';let found=false; snapL.forEach(docD=>{ const l=docD.data();if(l.grade && l.grade!=='للكل' && l.grade!==currentStudent.grade){return;} const TWO=2*60*60*1000;const now=Date.now();if(now-(l.created||0)>TWO){html=`<div class='lesson'>⏰ انتهت الحصة: ${l.title}</div>`;found=true;return;} let rem=Math.ceil((TWO-(now-(l.created||0)))/60000);let c=`<div class='lesson'><h3>${l.title}</h3><small>${l.grade} - متبقي ${rem} د</small>`; if(l.meetLink) c+=`<a class='meetBtn' target='_blank' href='${l.meetLink}'>🎥 ادخل ميت</a>`; if(l.ytLink){let id='';try{if(l.ytLink.includes('v=')) id=l.ytLink.split('v=')[1].split('&')[0];else if(l.ytLink.includes('youtu.be/')) id=l.ytLink.split('youtu.be/')[1].split('?')[0];}catch{} if(id) c+=`<div style='margin-top:12px'><iframe width='100%' height='400' src='https://www.youtube.com/embed/${id}' frameborder='0' allowfullscreen style='border-radius:14px'></iframe></div>`;c+=`<a class='ytBtn' target='_blank' href='${l.ytLink}'>▶️ يوتيوب</a>`;} c+=`</div>`;html=c;found=true; });if(!found) html='<p>لا يوجد حصة حالية</p>';document.getElementById('lessonsList').innerHTML=html; }
-async function loadStudentMaterials(){ const snap=await getDocs(collection(db,'materials'));let html='';snap.forEach(d=>{ const m=d.data();if(m.grade && m.grade!=='للكل' && m.grade!==currentStudent.grade) return; const fileId=extractDriveId(m.link); if(fileId){ const preview=`https://drive.google.com/file/d/${fileId}/preview`; html+=`<div class='lesson'><b>📄 ${m.title}</b><br><small>${m.grade}</small><iframe class='mat-frame' src='${preview}' allowfullscreen></iframe></div>`; }else{ html+=`<div class='lesson'><b>📄 ${m.title}</b><br><small>${m.grade}</small><a class='driveBtn' href='${m.link}' target='_blank'>⬇️ فتح</a></div>`; } });if(!html) html='<p>لا يوجد ملازم</p>';document.getElementById('studentMaterials').innerHTML=html; }
+window.registerStudent=async()=>{ const name=document.getElementById('name').value.trim();const phone=document.getElementById('phone').value.trim();const parentPhone=document.getElementById('parentPhone').value.trim();const grade=document.getElementById('grade').value; if(!name||!phone){alert('اكمل البيانات');return} await addDoc(collection(db,'students'),{name,phone,parentPhone,grade,status:'pending',created:Date.now(),eval_interaction:'',eval_homework:'',eval_class:'',eval_month:''}); document.getElementById('regMsg').innerHTML='✅ تم التسجيل'; }
+window.loginStudent=async()=>{ const phone=document.getElementById('loginPhone').value.trim();const q=query(collection(db,'students'),where('phone','==',phone));const snap=await getDocs(q); if(snap.empty){document.getElementById('loginMsg').innerText='❌ مش متسجل';return} const d=snap.docs[0];const data=d.data();if(data.status!=='approved'){document.getElementById('loginMsg').innerText='⏳ لسه موافقناش';return} currentStudent={id:d.id,...data}; document.getElementById('studentArea').style.display='block';document.getElementById('welcome').innerText=`أهلا يا ${data.name}`; checkCertificate(); loadStudentSchedule();loadStudentLesson();loadStudentMaterials();loadStudentExams();loadMyHomeworks(); }
+function checkCertificate(){ const m = parseInt(currentStudent.eval_month||0); if(m>=90){ document.getElementById('certArea').innerHTML = `<div class="certCard"><p style="font-size:22px;font-weight:900;color:#7c3aed">🏆 درع التفوق</p><p>${currentStudent.name}</p></div>`; } }
+window.loginParent=async()=>{ const pPhone=document.getElementById('parentLoginPhone').value.trim();const q=query(collection(db,'students'),where('parentPhone','==',pPhone));const snap=await getDocs(q); let html=''; snap.forEach(d=>{ const s=d.data(); html+=`<div class='card' style='background:#0f172a;border:2px solid #f59e0b'><h3>👦 ${s.name}</h3><p>${s.grade} - شهر: ${s.eval_month||'--'}%</p></div>`; }); document.getElementById('parentArea').innerHTML=html; document.getElementById('parentArea').style.display='block'; }
+async function loadStudentSchedule(){ if(!currentStudent) return; const snap = await getDocs(collection(db,'schedules')); let txt='لم يتم تحديد موعد'; snap.forEach(d=>{ if(d.id===currentStudent.grade){ const s=d.data(); txt = `📚 ${s.grade}<br>📅 ${s.day||''}<br>⏰ ${s.time||''}<br>${s.notes||''}`; } }); document.getElementById('studentSchedule').innerHTML=txt; }
+async function loadStudentLesson(){ const snapL=await getDocs(collection(db,'lessons'));let html='';let found=false; snapL.forEach(docD=>{ const l=docD.data();if(l.grade && l.grade!=='للكل' && l.grade!==currentStudent.grade){return;} const TWO=2*60*60*1000;const now=Date.now();if(now-(l.created||0)>TWO){html=`<div class='lesson'>⏰ انتهت الحصة</div>`;found=true;return;} let c=`<div class='lesson'><h3>${l.title}</h3><small>${l.grade}</small>`; if(l.meetLink) c+=`<a class='meetBtn' target='_blank' href='${l.meetLink}'>🎥 ادخل ميت</a>`; if(l.ytLink){let id='';try{if(l.ytLink.includes('v=')) id=l.ytLink.split('v=')[1].split('&')[0];else if(l.ytLink.includes('youtu.be/')) id=l.ytLink.split('youtu.be/')[1].split('?')[0];}catch{} if(id) c+=`<iframe width='100%' height='300' src='https://www.youtube.com/embed/${id}' frameborder='0' allowfullscreen style='border-radius:14px;margin-top:10px'></iframe>`;} c+=`</div>`;html=c;found=true; });if(!found) html='<p>لا يوجد حصة</p>';document.getElementById('lessonsList').innerHTML=html; }
+async function loadStudentMaterials(){ const snap=await getDocs(collection(db,'materials'));let html='';snap.forEach(d=>{ const m=d.data();if(m.grade && m.grade!=='للكل' && m.grade!==currentStudent.grade) return; const fileId=extractDriveId(m.link); if(fileId){ const preview=`https://drive.google.com/file/d/${fileId}/preview`; html+=`<div class='lesson'><b>📄 ${m.title}</b><br><small>${m.grade}</small><iframe class='mat-frame' src='${preview}' allowfullscreen></iframe></div>`; } });if(!html) html='<p>لا يوجد ملازم</p>';document.getElementById('studentMaterials').innerHTML=html; }
 window.uploadReceipt=async()=>{ const f=document.getElementById('receiptFile').files[0];if(!f){alert('اختار صورة');return} const reader=new FileReader();reader.onload=async(e)=>{ await addDoc(collection(db,'receipts'),{studentId:currentStudent.id,studentName:currentStudent.name,grade:currentStudent.grade,image:e.target.result,created:Date.now()}); document.getElementById('receiptMsg').innerText='✅ تم رفع الإيصال'; };reader.readAsDataURL(f); }
-window.uploadHomework=async()=>{ const files=document.getElementById('hwFiles').files; if(files.length===0){alert('اختار صور');return} if(files.length>4){alert('أقصى 4 صور');return} document.getElementById('hwMsg').innerText='⏳ جاري الرفع...'; let images=[]; for(let f of files){ const reader=new FileReader(); await new Promise(res=>{ reader.onload=e=>{images.push(e.target.result);res();}; reader.readAsDataURL(f); }); } await addDoc(collection(db,'homeworks'),{studentId:currentStudent.id,studentName:currentStudent.name,grade:currentStudent.grade,images,created:Date.now(),voiceNotes:[]}); document.getElementById('hwMsg').innerText='✅ تم رفع الواجب'; document.getElementById('hwFiles').value=''; loadMyHomeworks(); }
-async function loadMyHomeworks(){ if(!currentStudent) return; const snap=await getDocs(query(collection(db,'homeworks'),where('studentId','==',currentStudent.id))); let html=''; snap.forEach(d=>{ const h=d.data(); html+=`<div class="card" style="background:#1e293b;margin-top:8px"><small>${new Date(h.created).toLocaleDateString('ar-EG')}</small><br>`; h.images.forEach(img=>{html+=`<img src="${img}" class="hwImg">`;}); if(h.voiceNotes && h.voiceNotes.length>0){ html+=`<hr><b>🎙️ ملاحظات المستر:</b><br>`; h.voiceNotes.forEach(v=>{ html+=`<div><small>صورة ${v.index+1}:</small><br><audio controls src="${v.audio}" style="width:100%"></audio></div>`; }); } html+=`</div>`; }); if(!html) html='<p>لم ترفع واجبات</p>'; document.getElementById('myHomeworks').innerHTML=html; }
+window.uploadHomework=async()=>{ const files=document.getElementById('hwFiles').files; if(files.length===0){alert('اختار صور');return} if(files.length>4){alert('أقصى 4');return} document.getElementById('hwMsg').innerText='⏳ جاري...'; let images=[]; for(let f of files){ const reader=new FileReader(); await new Promise(res=>{ reader.onload=e=>{images.push(e.target.result);res();}; reader.readAsDataURL(f); }); } await addDoc(collection(db,'homeworks'),{studentId:currentStudent.id,studentName:currentStudent.name,grade:currentStudent.grade,images,created:Date.now(),voiceNotes:[],corrected:false}); document.getElementById('hwMsg').innerText='✅ تم رفع الواجب'; document.getElementById('hwFiles').value=''; loadMyHomeworks(); }
+async function loadMyHomeworks(){ if(!currentStudent) return; const snap=await getDocs(query(collection(db,'homeworks'),where('studentId','==',currentStudent.id))); let html=''; snap.forEach(d=>{ const h=d.data(); html+=`<div class="card" style="background:#1e293b;margin-top:8px"><small>${new Date(h.created).toLocaleDateString('ar-EG')}</small> ${h.corrected?'<span class="correctedBadge">✅ تم التصحيح</span>':'<span style="background:#f59e0b;color:#000;padding:3px 6px;border-radius:6px;font-size:10px">⏳ قيد المراجعة</span>'}<br>`; h.images.forEach(img=>{html+=`<img src="${img}" class="hwImg">`;}); if(h.voiceNotes && h.voiceNotes.length>0){ html+=`<hr><b>🎙️ ملاحظات المستر:</b><br>`; h.voiceNotes.forEach(v=>{ html+=`<audio controls src="${v.audio}" style="width:100%"></audio>`; }); } html+=`</div>`; }); if(!html) html='<p>لم ترفع واجبات</p>'; document.getElementById('myHomeworks').innerHTML=html; }
 
+// === الإضافات الجديدة ===
 window.filterHWGrade=(g)=>{ currentHWGrade=g; loadHomeworksAdmin(); }
 async function loadHomeworksAdmin(){
+  const allStudentsSnap = await getDocs(collection(db,'students'));
+  const allHWSnap = await getDocs(collection(db,'homeworks'));
+  let studentCountMap={}; let hwCountMap={};
+  GRADES.forEach(g=>{studentCountMap[g]=0; hwCountMap[g]=0;});
+  allStudentsSnap.forEach(d=>{ const g=d.data().grade; if(studentCountMap[g]!==undefined) studentCountMap[g]++; });
+  allHWSnap.forEach(d=>{ const g=d.data().grade; if(hwCountMap[g]!==undefined) hwCountMap[g]++; });
+
   const filterDiv = document.getElementById('hwGradeFilter');
-  let fHtml='<span class="gradeTab '+(currentHWGrade==='الكل'?'active':'')+'" onclick="filterHWGrade(\'الكل\')">الكل</span>';
-  GRADES.forEach(g=>{ fHtml+=`<span class="gradeTab ${currentHWGrade===g?'active':''}" onclick="filterHWGrade('${g}')">${g.replace('الصف ','')}</span>`; });
+  let fHtml=`<span class="gradeTab ${currentHWGrade==='الكل'?'active':''}" onclick="filterHWGrade('الكل')">الكل (${allHWSnap.size})</span>`;
+  GRADES.forEach(g=>{ 
+    const short=g.replace('الصف ',''); 
+    fHtml+=`<span class="gradeTab ${currentHWGrade===g?'active':''}" onclick="filterHWGrade('${g}')">${short} (${studentCountMap[g]}👦|${hwCountMap[g]}📸)</span>`; 
+  });
   if(filterDiv) filterDiv.innerHTML=fHtml;
 
-  const snap=await getDocs(collection(db,'homeworks')); let html=''; 
-  snap.forEach(d=>{ 
-    const h=d.data(); 
-    if(currentHWGrade!=='الكل' && h.grade!==currentHWGrade) return;
-    html+=`<div class="student-row"><b>👦 ${h.studentName}</b> - <small>${h.grade}</small><br><small>${new Date(h.created).toLocaleString('ar-EG')}</small><br>`;
-    h.images.forEach((img,i)=>{ html+=`<div style="display:inline-block;margin:4px;text-align:center"><img src="${img}" class="hwImg"><br><button class="btn-small" style="background:#ef4444" onclick="startVoice('${d.id}',${i})">🎙️ فويس صورة ${i+1}</button></div>`; });
-    if(h.voiceNotes) h.voiceNotes.forEach(v=>{html+=`<div><small>فويس صورة ${v.index+1}:</small><audio controls src="${v.audio}" style="width:100%"></audio></div>`;});
-    html+=`<br><button class="btn-small" style="background:#ef4444" onclick="deleteHW('${d.id}')">حذف الواجب</button></div>`;
+  const searchTerm = document.getElementById('hwSearch')?.value.trim().toLowerCase()||'';
+  let filtered = [];
+  allHWSnap.forEach(d=>{ filtered.push({id:d.id,data:d.data()}); });
+  if(currentHWGrade!=='الكل') filtered = filtered.filter(x=>x.data.grade===currentHWGrade);
+  if(searchTerm) filtered = filtered.filter(x=>x.data.studentName.toLowerCase().includes(searchTerm));
+
+  document.getElementById('hwCounter').innerText = `📊 ${currentHWGrade==='الكل'?'الكل':currentHWGrade}: ${filtered.length} واجب | بحث: "${searchTerm||'الكل'}"`;
+
+  let html=''; 
+  filtered.forEach(item=>{
+    const h=item.data; const id=item.id;
+    html+=`<div class="student-row"><div><b>👦 ${h.studentName}</b> - <small>${h.grade}</small> ${h.corrected?'<span class="correctedBadge">✅ تم التصحيح</span>':''}<br><small>${new Date(h.created).toLocaleString('ar-EG')}</small></div><div style="margin-top:6px">`;
+    h.images.forEach((img,i)=>{ html+=`<div style="display:inline-block;margin:4px;text-align:center"><img src="${img}" class="hwImg"><br><button class="btn-small" style="background:#ef4444" onclick="startVoice('${id}',${i})">🎙️ فويس ${i+1}</button></div>`; });
+    html+=`</div>`;
+    if(h.voiceNotes) h.voiceNotes.forEach(v=>{html+=`<div><audio controls src="${v.audio}" style="width:100%"></audio></div>`;});
+    html+=`<div style="margin-top:8px;display:flex;gap:6px"><button class="btn-small" style="background:${h.corrected?'#334155':'#10b981'};flex:1;padding:10px" onclick="toggleCorrected('${id}',${h.corrected?true:false})">${h.corrected?'↩️ إلغاء التصحيح':'✅ تم التصحيح'}</button><button class="btn-small" style="background:#ef4444;flex:1" onclick="deleteHW('${id}')">🗑️ حذف</button></div></div>`;
   });
-  if(!html) html='<p style="text-align:center">لا يوجد واجبات لهذا الصف</p>';
+  if(!html) html='<p style="text-align:center">لا يوجد واجبات</p>';
   document.getElementById('homeworksList').innerHTML=html;
 }
+window.toggleCorrected=async(id,current)=>{ await updateDoc(doc(db,'homeworks',id),{corrected:!current}); loadHomeworksAdmin(); }
 window.deleteHW=async(id)=>{if(!confirm('حذف؟')) return; await deleteDoc(doc(db,'homeworks',id)); loadHomeworksAdmin();}
 let mediaRecorder=null; let audioChunks=[];
 window.startVoice=async(hwId, imgIndex)=>{
-  if(!navigator.mediaDevices){alert('المتصفح لا يدعم التسجيل');return}
   const stream=await navigator.mediaDevices.getUserMedia({audio:true});
   mediaRecorder=new MediaRecorder(stream); audioChunks=[];
   mediaRecorder.ondataavailable=e=>audioChunks.push(e.data);
@@ -160,30 +188,63 @@ window.startVoice=async(hwId, imgIndex)=>{
     const blob=new Blob(audioChunks,{type:'audio/webm'});
     const reader=new FileReader();
     reader.onload=async(e)=>{
-      const snap=await getDocs(collection(db,'homeworks')); let hw=null; let docId=null;
-      snap.forEach(d=>{if(d.id===hwId){hw=d.data();docId=d.id;}});
-      if(!hw) return; let voices=hw.voiceNotes||[]; voices=voices.filter(v=>v.index!==imgIndex); voices.push({index:imgIndex,audio:e.target.result,created:Date.now()});
-      await updateDoc(doc(db,'homeworks',docId),{voiceNotes:voices}); alert('✅ تم حفظ الفويس'); loadHomeworksAdmin();
+      const snap=await getDocs(collection(db,'homeworks')); 
+      snap.forEach(async d=>{if(d.id===hwId){ let voices=d.data().voiceNotes||[]; voices=voices.filter(v=>v.index!==imgIndex); voices.push({index:imgIndex,audio:e.target.result}); await updateDoc(doc(db,'homeworks',d.id),{voiceNotes:voices}); }});
+      alert('✅ تم حفظ الفويس'); loadHomeworksAdmin();
     }; reader.readAsDataURL(blob);
   };
   mediaRecorder.start(); alert('🎙️ بدأ التسجيل - دوس OK للتوقف');
-  if(confirm('دوس OK لإيقاف التسجيل') && mediaRecorder.state==='recording'){mediaRecorder.stop(); stream.getTracks().forEach(t=>t.stop());}
+  if(confirm('OK لإيقاف')){mediaRecorder.stop(); stream.getTracks().forEach(t=>t.stop());}
 }
-async function loadStudentExams(){ const snap=await getDocs(collection(db,'exams'));let html='';snap.forEach(d=>{ const ex=d.data();if(ex.grade && ex.grade!=='للكل' && ex.grade!==currentStudent.grade) return; html+=`<div class='lesson'><b>${ex.title}</b><br><small>${ex.grade}</small><br><button class='btn-small' style='background:#8b5cf6;width:100%;margin-top:8px;padding:10px' onclick="openExam('${d.id}')">📝 ابدأ</button></div>`; });if(!html) html='لا يوجد امتحانات';document.getElementById('studentExams').innerHTML=html; }
+
+async function loadStudentExams(){ const snap=await getDocs(collection(db,'exams'));let html='';snap.forEach(d=>{ const ex=d.data();if(ex.grade && ex.grade!=='للكل' && ex.grade!==currentStudent.grade) return; html+=`<div class='lesson'><b>${ex.title}</b><br><button class='btn-small' style='background:#8b5cf6;width:100%;margin-top:8px;padding:10px' onclick="openExam('${d.id}')">📝 ابدأ</button></div>`; });document.getElementById('studentExams').innerHTML=html; }
 let currentExam=null; let currentAnswers=[]; let currentParaAnswers=[];
-window.openExam=async(id)=>{ const snap=await getDocs(collection(db,'exams'));snap.forEach(d=>{if(d.id===id) currentExam={id:d.id,...d.data()};}); if(!currentExam) return; currentAnswers=new Array(currentExam.questions.length).fill(null); currentParaAnswers=new Array(currentExam.questions.length).fill(''); let html=`<div class='card' style='background:#0f172a;border:2px solid #8b5cf6'><h3>${currentExam.title}</h3>`; currentExam.questions.forEach((q,i)=>{ if(q.type==='paragraph'){ html+=`<div class='qBlock' style='border-color:#f59e0b'><b>✍️ براجراف ${i+1}</b><br><span style='color:#fbbf24'>${q.topic}</span><br><textarea class='para-area' id='para-${i}' placeholder='اكتب هنا...' oninput='handleParaInput(${i})'></textarea></div>`; }else{ html+=`<div class='qBlock'><b>${i+1}. ${q.q}</b>`; q.options.forEach((opt,j)=>{ html+=`<div class='opt' id='opt-${i}-${j}' onclick='selectOpt(${i},${j})'>${opt}</div>`; }); html+=`</div>`; } }); html+=`<button onclick='submitExam()' style='background:#10b981;margin-top:12px'>إرسال</button></div>`; document.getElementById('examSolveArea').innerHTML=html; }
+window.openExam=async(id)=>{ const snap=await getDocs(collection(db,'exams'));snap.forEach(d=>{if(d.id===id) currentExam={id:d.id,...d.data()};}); if(!currentExam) return; currentAnswers=new Array(currentExam.questions.length).fill(null); currentParaAnswers=new Array(currentExam.questions.length).fill(''); let html=`<div class='card' style='background:#0f172a;border:2px solid #8b5cf6'><h3>${currentExam.title}</h3>`; currentExam.questions.forEach((q,i)=>{ if(q.type==='paragraph'){ html+=`<div class='qBlock'><b>✍️ براجراف</b><br><span style='color:#fbbf24'>${q.topic}</span><br><textarea class='para-area' id='para-${i}' oninput='handleParaInput(${i})'></textarea></div>`; }else{ html+=`<div class='qBlock'><b>${i+1}. ${q.q}</b>`; q.options.forEach((opt,j)=>{ html+=`<div class='opt' id='opt-${i}-${j}' onclick='selectOpt(${i},${j})'>${opt}</div>`; }); html+=`</div>`; } }); html+=`<button onclick='submitExam()' style='background:#10b981;margin-top:12px'>إرسال</button></div>`; document.getElementById('examSolveArea').innerHTML=html; }
 window.handleParaInput=(i)=>{ currentParaAnswers[i]=document.getElementById(`para-${i}`).value; }
 window.selectOpt=(qi,oi)=>{currentAnswers[qi]=oi; document.querySelectorAll(`[id^=opt-${qi}-]`).forEach(e=>e.style.background=''); document.getElementById(`opt-${qi}-${oi}`).style.background='#334155';}
-window.submitExam=async()=>{ let score=0; let totalMCQ=0; let paraToSave=[]; currentExam.questions.forEach((q,i)=>{ if(q.type==='paragraph'){ paraToSave.push({topic:q.topic,answer:currentParaAnswers[i]||''}); }else{ totalMCQ++; if(currentAnswers[i]===q.correct) score++; } }); await addDoc(collection(db,'results'),{studentId:currentStudent.id,studentName:currentStudent.name,grade:currentStudent.grade,examTitle:currentExam.title,score,total:totalMCQ,paragraphs:paraToSave,created:Date.now()}); document.getElementById('examSolveArea').innerHTML=`<div class='card' style='background:#1e293b;border:2px solid #10b981'>✅ تم الإرسال - جبت ${score}/${totalMCQ}</div>`; }
-window.filterGrade=(g)=>{ currentGradeFilter=g; document.querySelectorAll('.gradeTab').forEach(e=>e.classList.remove('active')); const el=document.getElementById('gtab-'+g.replace(/\s/g,'_')); if(el) el.classList.add('active'); loadAdminFiltered(); }
-async function loadAdmin(){ const filterDiv=document.getElementById('gradeFilter'); let html='<span class="gradeTab active" id="gtab-الكل" onclick="filterGrade(\'الكل\')">الكل</span>'; GRADES.forEach(g=>{ html+=`<span class="gradeTab" id="gtab-${g.replace(/\s/g,'_')}" onclick="filterGrade('${g}')">${g.replace('الصف ','')}</span>`; }); filterDiv.innerHTML=html; currentGradeFilter='الكل'; loadAdminFiltered(); }
-async function loadAdminFiltered(){ const snap=await getDocs(collection(db,'students')); const pending=document.getElementById('pendingList');const approved=document.getElementById('approvedList');pending.innerHTML='';approved.innerHTML=''; snap.forEach(d=>{ const s=d.data();const id=d.id; if(currentGradeFilter!=='الكل' && s.grade!==currentGradeFilter) return; if(s.status=='pending'){ pending.innerHTML+=`<div class="student-row"><div>⏳ ${s.name} - ${s.phone}<br><small>${s.grade}</small></div><div><button class="btn-small" onclick="approve('${id}')" style="background:#10b981">موافقة</button><button class="btn-small" onclick="deleteStudent('${id}')" style="background:#ef4444">حذف</button></div></div>`; } else{ approved.innerHTML+=`<div class="student-row"><div style='width:100%'><b>✅ ${s.name} - ${s.phone}</b><br><small>${s.grade}</small><div style='margin-top:8px'><input id='inter-${id}' placeholder='تفاعل' value='${s.eval_interaction||''}'><input id='month-${id}' placeholder='شهر' value='${s.eval_month||''}' style="border:2px solid #f59e0b"><button class='btn-small' onclick="saveEval('${id}')" style='background:#10b981;width:100%'>💾 حفظ</button></div></div></div>`; } }); }
-window.saveEval=async(id)=>{ await updateDoc(doc(db,'students',id),{eval_interaction:document.getElementById(`inter-${id}`).value,eval_month:document.getElementById(`month-${id}`).value}); alert('✅ تم الحفظ'); }
+window.submitExam=async()=>{ let score=0; let totalMCQ=0; let paraToSave=[]; currentExam.questions.forEach((q,i)=>{ if(q.type==='paragraph'){ paraToSave.push({topic:q.topic,answer:currentParaAnswers[i]||''}); }else{ totalMCQ++; if(currentAnswers[i]===q.correct) score++; } }); await addDoc(collection(db,'results'),{studentId:currentStudent.id,studentName:currentStudent.name,grade:currentStudent.grade,examTitle:currentExam.title,score,total:totalMCQ,paragraphs:paraToSave,created:Date.now()}); document.getElementById('examSolveArea').innerHTML=`<div class='card' style='background:#1e293b;border:2px solid #10b981'>✅ جبت ${score}/${totalMCQ}</div>`; }
+
+window.filterGrade=async(g)=>{
+  currentGradeFilter=g;
+  loadAdminFiltered();
+}
+async function loadAdmin(){ loadAdminFiltered(); }
+async function loadAdminFiltered(){
+  const allStudentsSnap = await getDocs(collection(db,'students'));
+  const allHWSnap = await getDocs(collection(db,'homeworks'));
+  let studentCountMap={}; let hwCountMap={};
+  GRADES.forEach(g=>{studentCountMap[g]=0; hwCountMap[g]=0;});
+  allStudentsSnap.forEach(d=>{ const g=d.data().grade; if(studentCountMap[g]!==undefined) studentCountMap[g]++; });
+  allHWSnap.forEach(d=>{ const g=d.data().grade; if(hwCountMap[g]!==undefined) hwCountMap[g]++; });
+
+  const filterDiv=document.getElementById('gradeFilter'); 
+  let html=`<span class="gradeTab ${currentGradeFilter==='الكل'?'active':''}" onclick="filterGrade('الكل')">الكل (${allStudentsSnap.size})</span>`;
+  GRADES.forEach(g=>{ html+=`<span class="gradeTab ${currentGradeFilter===g?'active':''}" onclick="filterGrade('${g}')">${g.replace('الصف ','')} (${studentCountMap[g]}👦|${hwCountMap[g]}📸)</span>`; });
+  filterDiv.innerHTML=html;
+
+  const searchTerm = document.getElementById('studentSearch')?.value.trim().toLowerCase()||'';
+  let students=[];
+  allStudentsSnap.forEach(d=>{ students.push({id:d.id,data:d.data()}); });
+  if(currentGradeFilter!=='الكل') students = students.filter(s=>s.data.grade===currentGradeFilter);
+  if(searchTerm) students = students.filter(s=>s.data.name.toLowerCase().includes(searchTerm));
+
+  const pending=document.getElementById('pendingList');const approved=document.getElementById('approvedList');
+  pending.innerHTML='';approved.innerHTML='';
+  let pendingCount=0, approvedCount=0;
+  students.forEach(item=>{
+    const s=item.data; const id=item.id;
+    if(s.status=='pending'){ pendingCount++; pending.innerHTML+=`<div class="student-row"><div>⏳ ${s.name} - ${s.phone}<br><small>${s.grade}</small></div><div><button class="btn-small" onclick="approve('${id}')" style="background:#10b981">موافقة</button><button class="btn-small" onclick="deleteStudent('${id}')" style="background:#ef4444">حذف</button></div></div>`; }
+    else{ approvedCount++; approved.innerHTML+=`<div class="student-row"><div style='width:100%'><b>✅ ${s.name} - ${s.phone}</b><br><small>${s.grade}</small><div style='margin-top:8px'><input id='month-${id}' placeholder='شهر %' value='${s.eval_month||''}' style="border:2px solid #f59e0b"><button class='btn-small' onclick="saveEval('${id}')" style='background:#10b981;width:100%'>💾 حفظ</button></div></div></div>`; }
+  });
+  document.getElementById('studentsCounter').innerText = `📊 ${currentGradeFilter==='الكل'?'الكل':currentGradeFilter}: ${approvedCount} مقبول | ${pendingCount} انتظار | بحث: "${searchTerm||'الكل'}"`;
+  document.getElementById('approvedTitle').innerText=`المقبولين - ${currentGradeFilter}`;
+}
+window.saveEval=async(id)=>{ await updateDoc(doc(db,'students',id),{eval_month:document.getElementById(`month-${id}`).value}); alert('✅ تم الحفظ'); }
 window.approve=async(id)=>{await updateDoc(doc(db,'students',id),{status:'approved'});loadAdminFiltered();}
 window.deleteStudent=async(id)=>{if(!confirm('متأكد؟')) return;await deleteDoc(doc(db,'students',id));loadAdminFiltered();}
 window.addLesson=async()=>{const title=document.getElementById('lessonTitle').value.trim();const meetLink=document.getElementById('meetLink').value.trim();const ytLink=document.getElementById('ytLink').value.trim();const grade=document.getElementById('lessonGrade').value;if(!title){alert('عنوان');return}await setDoc(doc(db,'lessons','current'),{title,meetLink,ytLink,grade,created:Date.now()});alert('تم النشر');}
 window.clearLesson=async()=>{if(!confirm('إنهاء؟')) return;await deleteDoc(doc(db,'lessons','current'));alert('تم');}
-async function loadScheduleAdmin(){ const snap = await getDocs(collection(db,'schedules')); let html=''; snap.forEach(d=>{ const s=d.data(); html+=`<div class="student-row"><div><b>${s.grade}</b><br>📅 ${s.day} - ⏰ ${s.time}</div><button class="btn-small" style="background:#ef4444" onclick="deleteSchedule('${d.id}')">حذف</button></div>`; }); if(!html) html='<p>لم تضف جداول</p>'; document.getElementById('allSchedulesList').innerHTML=html; }
+async function loadScheduleAdmin(){ const snap = await getDocs(collection(db,'schedules')); let html=''; snap.forEach(d=>{ const s=d.data(); html+=`<div class="student-row"><div><b>${s.grade}</b><br>📅 ${s.day} - ⏰ ${s.time}</div><button class="btn-small" style="background:#ef4444" onclick="deleteSchedule('${d.id}')">حذف</button></div>`; }); document.getElementById('allSchedulesList').innerHTML=html||'<p>لم تضف جداول</p>'; }
 window.saveSchedule=async()=>{ const grade = document.getElementById('scheduleGrade').value; const day = document.getElementById('scheduleDay').value.trim(); const time = document.getElementById('scheduleTime').value.trim(); const notes = document.getElementById('scheduleText').value.trim(); if(!day || !time){alert('اكتب اليوم والساعة');return} await setDoc(doc(db,'schedules',grade),{grade,day,time,notes,created:Date.now()}); document.getElementById('scheduleMsg').innerText='✅ تم حفظ '+grade; loadScheduleAdmin(); }
 window.deleteSchedule=async(id)=>{ if(!confirm('حذف؟')) return; await deleteDoc(doc(db,'schedules',id)); loadScheduleAdmin(); }
 async function loadExamsAdmin(){const snap=await getDocs(collection(db,'exams'));let html='';snap.forEach(d=>{const e=d.data();html+=`<div class="student-row"><div>${e.title} - ${e.grade}</div><button class="btn-small" onclick="deleteExam('${d.id}')" style="background:#ef4444">حذف</button></div>`;});document.getElementById('examsListAdmin').innerHTML=html;}
@@ -194,7 +255,7 @@ async function loadReceipts(){const snap=await getDocs(collection(db,'receipts')
 window.deleteReceipt=async(id)=>{await deleteDoc(doc(db,'receipts',id));loadReceipts();}
 async function loadResults(){const snap=await getDocs(collection(db,'results'));let html='';snap.forEach(d=>{const r=d.data();html+=`<div class="student-row"><div><b>${r.studentName}</b> - ${r.examTitle}: ${r.score}/${r.total}</div></div>`;});document.getElementById('resultsList').innerHTML=html;}
 function initQForm(){questionsCount=0;document.getElementById('qForm').innerHTML='';}
-window.addQuestionBlock=()=>{ if(questionsCount>=6){alert('أقصى 6');return} questionsCount++; const div=document.createElement('div'); div.className='qBlock'; div.innerHTML=`<b>سؤال ${questionsCount}</b><input id='q-${questionsCount}' placeholder='السؤال'><input id='q${questionsCount}-o1' placeholder='إجابة 1'><input id='q${questionsCount}-o2' placeholder='إجابة 2'><input id='q${questionsCount}-o3' placeholder='إجابة 3'><input id='q${questionsCount}-o4' placeholder='إجابة 4'><select id='q${questionsCount}-correct'><option value=''>الصح</option><option value='0'>1</option><option value='1'>2</option><option value='2'>3</option><option value='3'>4</option></select><input type='hidden' id='q${questionsCount}-type' value='mcq'>`; document.getElementById('qForm').appendChild(div); }
+window.addQuestionBlock=()=>{ if(questionsCount>=6){alert('أقصى 6');return} questionsCount++; const div=document.createElement('div'); div.className='qBlock'; div.innerHTML=`<b>سؤال ${questionsCount}</b><input id='q-${questionsCount}' placeholder='السؤال'><input id='q${questionsCount}-o1' placeholder='1'><input id='q${questionsCount}-o2' placeholder='2'><input id='q${questionsCount}-o3' placeholder='3'><input id='q${questionsCount}-o4' placeholder='4'><select id='q${questionsCount}-correct'><option value=''>الصح</option><option value='0'>1</option><option value='1'>2</option><option value='2'>3</option><option value='3'>4</option></select><input type='hidden' id='q${questionsCount}-type' value='mcq'>`; document.getElementById('qForm').appendChild(div); }
 window.addParagraphBlock=()=>{ if(questionsCount>=6){alert('أقصى 6');return} questionsCount++; const div=document.createElement('div'); div.className='qBlock'; div.style.borderColor='#f59e0b'; div.innerHTML=`<b>براجراف ${questionsCount}</b><input id='q-${questionsCount}-para-topic' placeholder='موضوع البراجراف'><input type='hidden' id='q${questionsCount}-type' value='paragraph'>`; document.getElementById('qForm').appendChild(div); }
 window.publishExam=async()=>{ const title=document.getElementById('examTitle').value.trim();const grade=document.getElementById('examGrade').value;if(!title){alert('عنوان');return} let qs=[]; for(let i=1;i<=questionsCount;i++){ const type=document.getElementById(`q${i}-type`)?.value||'mcq'; if(type==='paragraph'){ const topic=document.getElementById(`q-${i}-para-topic`)?.value.trim(); if(!topic) continue; qs.push({type:'paragraph',topic}); }else{ const q=document.getElementById(`q-${i}`)?.value.trim();const o1=document.getElementById(`q${i}-o1`)?.value.trim();const o2=document.getElementById(`q${i}-o2`)?.value.trim();const corr=document.getElementById(`q${i}-correct`)?.value; if(!q||!o1||!o2||corr==='') continue; qs.push({type:'mcq',q,options:[o1,o2,document.getElementById(`q${i}-o3`).value,document.getElementById(`q${i}-o4`).value].filter(x=>x),correct:parseInt(corr)}); } } if(qs.length===0){alert('اكتب سؤال');return} await addDoc(collection(db,'exams'),{title,grade,questions:qs,created:Date.now()}); alert('✅ تم');initQForm();loadExamsAdmin(); }
 window.addMaterial=async()=>{ const title=document.getElementById('matTitle').value.trim();const link=document.getElementById('matLink').value.trim();const grade=document.getElementById('matGrade').value; if(!title||!link){alert('اكتب البيانات');return} await addDoc(collection(db,'materials'),{title,link,grade,created:Date.now()}); alert('✅ تم');loadMaterialsAdmin(); }
