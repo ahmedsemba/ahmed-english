@@ -114,7 +114,7 @@ try{
  snap.forEach(function(d){const q=d.data(),age=now-(q.created||0);if(age>WEEK)return;allRecent++;const g=(q.grade||'').trim();if(g&&g!=='للكل'&&g!==studentGrade)return;active.push({id:d.id,title:q.title||'واجب',grade:g,questions:q.questions||[],age,created:q.created||0,showResults:q.showResults===true});});
  active.sort((a,b)=>(b.created||0)-(a.created||0));
  if(!active.length){cont.innerHTML='<p>مفيش واجب حالياً لصفك</p><p style="font-size:12px;color:#94a3b8">صفك: '+window.escHtml(studentGrade)+(allRecent?' | يوجد واجبات لصفوف أخرى':'')+'</p>';return;}
- let mySubs={};try{const subSnap=await getDocs(query(collection(db,'quiz_submissions'),where('studentId','==',currentStudent.id)));subSnap.forEach(function(d){const s=d.data();mySubs[s.quizId]={id:d.id,score:s.score||0,totalMCQ:s.totalMCQ||0,mcqAnswers:s.mcqAnswers||[],paraFeedback:s.paraFeedback||'',paraScore:s.paraScore||0,audioFeedback:s.audioFeedback||'',created:s.created};});}catch(subErr){console.log('submissions error',subErr);}
+ let mySubs={};try{const subSnap=await getDocs(query(collection(db,'quiz_submissions'),where('studentId','==',currentStudent.id)));subSnap.forEach(function(d){const s=d.data();mySubs[s.quizId]={id:d.id,score:s.score||0,totalMCQ:s.totalMCQ||0,mcqAnswers:s.mcqAnswers||[],paraFeedback:s.paraFeedback||'',paraScore:s.paraScore||0,imageCorrection:s.imageCorrection||'',created:s.created};});}catch(subErr){console.log('submissions error',subErr);}
  let html='';
  active.forEach(function(quiz){
   const daysLeft=Math.max(1,Math.ceil((WEEK-quiz.age)/(24*60*60*1000))),sub=mySubs[quiz.id];
@@ -125,7 +125,7 @@ try{
     (quiz.questions||[]).forEach(function(q,i){if(q.type!=='mcq')return;const chosen=Number.isInteger(sub.mcqAnswers[mi])?sub.mcqAnswers[mi]:-1;mi++;review+='<div style="background:#0f172a;padding:8px;border-radius:8px;margin-top:7px"><b>'+(i+1)+'. '+window.escHtml(q.q||'')+'</b><br>إجابتك: '+window.escHtml(chosen>=0?(q.opts||[])[chosen]||'—':'لم تختر إجابة')+'<br>الإجابة الصحيحة: <b style="color:#10b981">'+window.escHtml((q.opts||[])[q.correct]||'—')+'</b></div>';});
     review='<div style="margin-top:8px">درجتك: <b>'+sub.score+'/'+sub.totalMCQ+'</b></div>'+review;
    }else{review='<p style="color:#cbd5e1;margin:8px 0 0">تم استلام إجابتك. انتظر مراجعة المستر.</p>';}
-   const fb=(sub.paraFeedback?'<div style="background:#0f172a;padding:8px;border-radius:8px;margin-top:8px">📝 ملاحظة المستر: '+window.escHtml(sub.paraFeedback)+'<br>درجة البراجراف: <b>'+sub.paraScore+'/10</b></div>':'')+(sub.audioFeedback?'<div style="background:#0f172a;padding:8px;border-radius:8px;margin-top:8px">🎧 التقييم الصوتي من المستر<br><audio controls preload="none" style="width:100%;margin-top:6px" src="'+sub.audioFeedback+'"></audio></div>':'');
+   const fb=(sub.paraFeedback?'<div style="background:#0f172a;padding:8px;border-radius:8px;margin-top:8px">📝 ملاحظة المستر: '+window.escHtml(sub.paraFeedback)+'<br>درجة البراجراف: <b>'+sub.paraScore+'/10</b></div>':'')+(sub.imageCorrection?'<div style="background:#0f172a;padding:10px;border-radius:8px;margin-top:8px;white-space:pre-wrap">✍️ تصحيح المستر للصور:<br>'+window.escHtml(sub.imageCorrection)+'</div>':'');
    html+='<div style="background:#1e293b;border:2px solid #10b981;padding:12px;border-radius:12px;margin-bottom:12px"><b>✅ تم إرسال: '+window.escHtml(quiz.title)+'</b>'+review+fb+'<br><small>يختفي بعد '+daysLeft+' يوم</small></div>';
   }else{
    html+='<div class="card" style="background:#0f172a;border:2px solid #f59e0b;margin-bottom:12px;padding:12px"><h4 style="margin:0 0 6px">📝 '+window.escHtml(quiz.title)+'</h4><small style="color:#94a3b8">'+window.escHtml(quiz.grade)+' | متبقي '+daysLeft+' يوم</small>';
@@ -200,12 +200,12 @@ window.loadQuizSubmissions=async function(){
    const photos=(photoMap[id]||[]).sort((a,b)=>(a.index||0)-(b.index||0));
    const photoHtml=photos.length?'<div style="margin-top:9px"><b>📷 صور الواجب ('+photos.length+')</b><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:7px">'+photos.map(p=>'<a href="'+p.dataUrl+'" target="_blank" rel="noopener"><img src="'+p.dataUrl+'" alt="صورة واجب الطالب" style="width:105px;height:125px;object-fit:cover;border-radius:8px;border:1px solid #475569"></a>').join('')+'</div></div>':'';
    questionHtml=questionHtml||'<p style="color:#94a3b8">لا توجد أسئلة اختيارية في هذا الواجب.</p>';
-   html+='<div class="student-row" style="'+(ageDays>=7?'opacity:.7':'')+'"><b>👦 '+window.escHtml(s.studentName||'طالب')+'</b> - '+window.escHtml(s.grade||'')+' - '+ageDays+' يوم<br>الدرجة: '+(s.score||0)+'/'+(s.totalMCQ||0)+questionHtml+(s.paraText?'<div style="background:#0f172a;padding:9px;border-radius:8px;margin-top:8px"><b>إجابة البراجراف:</b><br>'+window.escHtml(s.paraText).substring(0,1200)+'</div>':'')+photoHtml+(photos.length?'<button class="btn-small" style="background:#dc2626;width:100%;margin-top:7px" onclick="deleteQuizPhotos(\''+id+'\')">🗑️ حذف صور هذا الواجب</button>':'')+'<div style="display:flex;gap:6px;margin-top:8px"><input id="paraScore_'+id+'" type="number" min="0" max="10" placeholder="درجة /10" value="'+(s.paraScore||'')+'" style="width:100px"><input id="paraFb_'+id+'" placeholder="ملاحظتك" value="'+window.escHtml(s.paraFeedback||'').replace(/"/g,'&quot;')+'" style="flex:1"></div><button class="btn-small" style="background:#10b981;width:100%;margin-top:6px" onclick="saveParaFeedback(\''+id+'\')">💾 حفظ التصحيح</button><button id="quizAudioBtn_'+id+'" class="btn-small" style="background:#2563eb;width:100%;margin-top:7px" onclick="toggleQuizAudio(\''+id+'\')">🎙️ تسجيل / إيقاف التقييم الصوتي (حتى 30 ثانية)</button>'+(s.audioFeedback?'<div style="margin-top:7px"><small>التقييم الصوتي المحفوظ:</small><audio controls preload="none" style="width:100%" src="'+s.audioFeedback+'"></audio></div>':'')+'</div>';
+   html+='<div class="student-row" style="'+(ageDays>=7?'opacity:.7':'')+'"><b>👦 '+window.escHtml(s.studentName||'طالب')+'</b> - '+window.escHtml(s.grade||'')+' - '+ageDays+' يوم<br>الدرجة: '+(s.score||0)+'/'+(s.totalMCQ||0)+questionHtml+(s.paraText?'<div style="background:#0f172a;padding:9px;border-radius:8px;margin-top:8px"><b>إجابة البراجراف:</b><br>'+window.escHtml(s.paraText).substring(0,1200)+'</div>':'')+photoHtml+(photos.length?'<button class="btn-small" style="background:#dc2626;width:100%;margin-top:7px" onclick="deleteQuizPhotos(\''+id+'\')">🗑️ حذف صور هذا الواجب</button>':'')+'<textarea id="imageCorrection_'+id+'" placeholder="اكتب تصحيحك على صور الطالب هنا، وسيظهر له في حسابه" style="width:100%;min-height:90px;margin-top:9px;padding:9px;border-radius:8px">'+window.escHtml(s.imageCorrection||'')+'</textarea><div style="display:flex;gap:6px;margin-top:8px"><input id="paraScore_'+id+'" type="number" min="0" max="10" placeholder="درجة /10" value="'+(s.paraScore||'')+'" style="width:100px"><input id="paraFb_'+id+'" placeholder="ملاحظتك" value="'+window.escHtml(s.paraFeedback||'').replace(/"/g,'&quot;')+'" style="flex:1"></div><button class="btn-small" style="background:#10b981;width:100%;margin-top:6px" onclick="saveParaFeedback(\''+id+'\')">💾 حفظ التصحيح</button>+'</div>';
   });
   list.innerHTML=html||'لا توجد إجابات حتى الآن';
  }catch(e){console.log(e);const list=document.getElementById('quizSubmissionsList');if(list)list.innerHTML='<p style="color:#ef4444">تعذر تحميل الإجابات: '+(e.message||e)+'</p>';}
 };
-window.saveParaFeedback=async function(id){const score=document.getElementById('paraScore_'+id).value;const fb=document.getElementById('paraFb_'+id).value;await updateDoc(doc(db,'quiz_submissions',id),{paraScore:parseInt(score)||0,paraFeedback:fb});alert('تم');loadQuizSubmissions();};
+window.saveParaFeedback=async function(id){const score=document.getElementById('paraScore_'+id).value;const fb=document.getElementById('paraFb_'+id).value;const imageCorrection=document.getElementById('imageCorrection_'+id)?.value||'';await updateDoc(doc(db,'quiz_submissions',id),{paraScore:parseInt(score)||0,paraFeedback:fb,imageCorrection});alert('تم حفظ التصحيح الكتابي وسيظهر للطالب.');loadQuizSubmissions();};
 window.deleteQuizPhotos=async function(id){
  if(!confirm('هل تريد حذف صور هذا الواجب نهائياً؟ ستختفي من حساب الطالب أيضاً، ولن تُحذف الدرجة أو الإجابات.'))return;
  try{
@@ -217,42 +217,6 @@ window.deleteQuizPhotos=async function(id){
   loadQuizSubmissions();
  }catch(e){alert('تعذر حذف الصور: '+(e.message||e));}
 };
-window.quizAudioRecorder=null;window.quizAudioStream=null;window.quizAudioChunks=[];window.quizAudioSubmissionId=null;window.quizAudioStopTimer=null;
-window.toggleQuizAudio=async function(id){
- if(window.quizAudioRecorder&&window.quizAudioRecorder.state==='recording'){
-  if(window.quizAudioSubmissionId===id){window.quizAudioRecorder.stop();return;}
-  alert('أوقف التسجيل الحالي أولاً.');return;
- }
- try{
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){alert('تسجيل الصوت غير مدعوم في هذا المتصفح. افتح المنصة من Google Chrome واسمح باستخدام الميكروفون.');return;}
-  const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-  const options={audioBitsPerSecond:24000};
-  let recorder;
-  try{recorder=new MediaRecorder(stream,options);}catch(e){recorder=new MediaRecorder(stream);}
-  window.quizAudioRecorder=recorder;window.quizAudioStream=stream;window.quizAudioChunks=[];window.quizAudioSubmissionId=id;
-  const btn=document.getElementById('quizAudioBtn_'+id);if(btn)btn.innerText='⏹️ إيقاف التسجيل وحفظه';
-  recorder.ondataavailable=function(e){if(e.data&&e.data.size)window.quizAudioChunks.push(e.data);};
-  recorder.onerror=function(){stream.getTracks().forEach(t=>t.stop());if(btn)btn.innerText='🎙️ تسجيل / إيقاف التقييم الصوتي (حتى 30 ثانية)';alert('حدث خطأ أثناء تسجيل الصوت.');};
-  recorder.onstop=async function(){
-   clearTimeout(window.quizAudioStopTimer);stream.getTracks().forEach(t=>t.stop());
-   if(btn)btn.innerText='⏳ جاري حفظ التقييم الصوتي...';
-   try{
-    const blob=new Blob(window.quizAudioChunks,{type:recorder.mimeType||'audio/webm'});
-    if(!blob.size){alert('لم يتم تسجيل صوت. حاول مرة أخرى.');}
-    else if(blob.size>450000){alert('حجم التسجيل كبير. سجّل تعليقاً أقصر ثم حاول مرة أخرى.');}
-    else{
-     const dataUrl=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('تعذرت قراءة التسجيل'));reader.readAsDataURL(blob);});
-     if(dataUrl.length>600000){alert('حجم التسجيل بعد التحويل كبير. سجّل تعليقاً أقصر.');}
-     else{await updateDoc(doc(db,'quiz_submissions',id),{audioFeedback:dataUrl,audioFeedbackAt:Date.now()});alert('تم حفظ التقييم الصوتي، وسيظهر للطالب في حسابه.');}
-    }
-   }catch(e){alert('تعذر حفظ التسجيل: '+(e.message||e));}
-   window.quizAudioRecorder=null;window.quizAudioStream=null;window.quizAudioChunks=[];window.quizAudioSubmissionId=null;
-   loadQuizSubmissions();
-  };
-  recorder.start();window.quizAudioStopTimer=setTimeout(function(){if(recorder.state==='recording'){alert('انتهت مدة التسجيل المحددة (30 ثانية).');recorder.stop();}},30000);
- }catch(e){if(window.quizAudioStream)window.quizAudioStream.getTracks().forEach(t=>t.stop());window.quizAudioRecorder=null;window.quizAudioStream=null;alert('لم نتمكن من تشغيل الميكروفون. تأكد من السماح للمتصفح باستخدامه: '+(e.message||e));}
-};
-
 window.submitPayment=async function(){try{if(!currentStudent){alert('سجّل دخولك أولاً');return;}const method=document.getElementById('paymentMethod').value;const amount=Number(document.getElementById('paymentAmount').value);const note=document.getElementById('paymentNote').value.trim();if(!Number.isFinite(amount)||amount<=0){alert('اكتب مبلغ التحويل بشكل صحيح');return;}const ref=await addDoc(collection(db,'payments'),{studentId:currentStudent.id,studentName:currentStudent.name,phone:currentStudent.phone||'',grade:currentStudent.grade||'',method,amount,note,status:'pending',created:Date.now()});const message='طلب دفع جديد\nالطالب: '+currentStudent.name+'\nالصف: '+currentStudent.grade+'\nالمبلغ: '+amount+' جنيه\nالطريقة: '+(method==='InstaPay'?'إنستاباي':'اتصالات كاش')+'\nرقم الطلب: '+ref.id+'\nسأرفق صورة الإيصال.';document.getElementById('paymentMsg').innerHTML='✅ تم تسجيل طلب الدفع. <a target="_blank" rel="noopener" style="color:#25D366;font-weight:900" href="https://wa.me/201116811324?text='+encodeURIComponent(message)+'">اضغط هنا لإرسال صورة الإيصال على واتساب</a>';document.getElementById('paymentAmount').value='';document.getElementById('paymentNote').value='';loadPaymentHistory();}catch(e){alert('تعذر تسجيل الدفع: '+e.message);}};
 window.loadPaymentHistory=async function(){try{const box=document.getElementById('paymentHistory');if(!box||!currentStudent)return;const snap=await getDocs(query(collection(db,'payments'),where('studentId','==',currentStudent.id)));let items=[];snap.forEach(function(d){items.push({id:d.id,...d.data()});});items.sort(function(a,b){return (b.created||0)-(a.created||0);});if(!items.length){box.innerHTML='<small style="color:#94a3b8">لا توجد طلبات دفع سابقة.</small>';return;}const labels={pending:'⏳ قيد المراجعة',approved:'✅ تم تأكيد الدفع',rejected:'❌ لم يتم قبول الإيصال'};box.innerHTML='<b>طلباتك السابقة</b>'+items.slice(0,5).map(function(p){return '<div class="student-row"><b>'+window.escHtml(String(p.amount||0))+' جنيه</b> - '+(p.method==='InstaPay'?'إنستاباي':'اتصالات كاش')+'<br><small>'+(labels[p.status]||'قيد المراجعة')+'</small></div>';}).join('');}catch(e){console.log('payment history',e);}};
 window.loadPaymentsAdmin=async function(){try{const box=document.getElementById('paymentsAdminList');if(!box)return;const snap=await getDocs(collection(db,'payments'));let items=[];snap.forEach(function(d){items.push({id:d.id,...d.data()});});items.sort(function(a,b){return (b.created||0)-(a.created||0);});if(!items.length){box.innerHTML='<p style="color:#94a3b8">لا توجد طلبات دفع حتى الآن.</p>';return;}const labels={pending:'⏳ قيد المراجعة',approved:'✅ مؤكد',rejected:'❌ مرفوض'};box.innerHTML=items.map(function(p){const date=p.created?new Date(p.created).toLocaleString('ar-EG'):'';return '<div class="student-row"><b>'+window.escHtml(p.studentName||'طالب')+'</b> - '+window.escHtml(p.grade||'')+'<br>المبلغ: <b>'+window.escHtml(String(p.amount||0))+' جنيه</b><br>الطريقة: '+(p.method==='InstaPay'?'إنستاباي':'اتصالات كاش')+'<br><small>'+window.escHtml(p.note||'')+' | '+window.escHtml(date)+'</small><br><b>'+(labels[p.status]||'قيد المراجعة')+'</b>'+(p.status==='pending'?'<div style="display:flex;gap:6px;margin-top:8px"><button class="btn-small" style="background:#10b981;flex:1" onclick="reviewPayment(\''+p.id+'\',\'approved\')">تأكيد الدفع</button><button class="btn-small" style="background:#ef4444;flex:1" onclick="reviewPayment(\''+p.id+'\',\'rejected\')">رفض</button></div>':'')+'</div>';}).join('');}catch(e){console.log(e);const box=document.getElementById('paymentsAdminList');if(box)box.innerHTML='<p style="color:#ef4444">تعذر تحميل طلبات الدفع: '+window.escHtml(e.message||e)+'</p>';}}; 
