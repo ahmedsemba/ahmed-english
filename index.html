@@ -257,7 +257,7 @@ window.watchLiveClassForStudent=function(){
  const box=document.getElementById('studentLiveClass'),info=document.getElementById('studentLiveInfo'),join=document.getElementById('studentJoinLiveBtn');
  liveUnsubscribe=onSnapshot(doc(liveDb,'live_classes','current'),snap=>{
   if(!snap.exists()){box.style.display='none';join.style.display='none';return;}
-  const d=snap.data(),now=Date.now(),fresh=Number(d.expiresAt)>0?now<Number(d.expiresAt):(Number(d.created)>0&&now-Number(d.created)<=4*60*60*1000),allowed=d.active===true&&fresh&&validMeetUrl(d.meetUrl)&&(d.grade==='للكل'||d.grade===student.grade);
+  const d=snap.data(),now=Date.now(),fresh=Number(d.expiresAt)>now,allowed=d.active===true&&fresh&&validMeetUrl(d.meetUrl)&&(d.grade==='للكل'||d.grade===student.grade);
   if(!allowed){box.style.display='none';join.style.display='none';liveClassData=null;return;}
   liveClassData=d;box.style.display='block';info.textContent='🔴 حصة متاحة الآن: '+(d.title||'حصة')+' — '+(d.grade||'');
   join.style.display='block';
