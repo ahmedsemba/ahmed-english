@@ -24,7 +24,7 @@
 <option value="للكل">كل الصفوف</option>
 <option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option>
 </select>
-<input id="voiceWorkerUrl" type="url" placeholder="رابط خادم الصوت (يتم ضبطه مرة واحدة)">
+<input id="voiceWorkerUrl" type="url" placeholder="رابط خادم الصوت (يُحفظ على هذا الجهاز)">
 <input id="teacherVoicePin" type="password" placeholder="رمز المدرس السري لخدمة الصوت">
 <button id="startLiveClassBtn" onclick="startLiveClass()" style="background:#10b981">▶️ بدء الحصة والاتصال بالصوت</button>
 <div id="teacherLiveInfo" style="font-size:12px;color:#cbd5e1;margin-top:8px">لا توجد حصة مباشرة نشطة.</div>
@@ -235,7 +235,12 @@ window.addEventListener('resize',()=>{if(liveClassData){drawPdfCanvas('teacher',
 
 let activeVoiceRoom=null;
 let activeVoiceRole=null;
-function cleanWorkerUrl(value){return String(value||"").trim().replace(/\\/+$/,"");}
+function cleanWorkerUrl(value){let u=String(value||"").trim();while(u.endsWith("/"))u=u.slice(0,-1);return u;}
+const voiceWorkerInput=document.getElementById("voiceWorkerUrl");
+if(voiceWorkerInput){
+  try{voiceWorkerInput.value=localStorage.getItem("voiceWorkerUrl")||"";}catch(e){}
+  voiceWorkerInput.addEventListener("change",()=>{try{localStorage.setItem("voiceWorkerUrl",cleanWorkerUrl(voiceWorkerInput.value));}catch(e){}});
+}
 async function voicePost(endpoint,path,payload){
   const response=await fetch(cleanWorkerUrl(endpoint)+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
   let data={};try{data=await response.json();}catch(e){}
@@ -268,8 +273,7 @@ async function connectLiveAudio(role,data,teacherPin){
   const mic=document.getElementById(role==="teacher"?"teacherMicBtn":"studentMicBtn");
   if(mic)mic.textContent=role==="teacher"?"🎤 كتم الميكروفون":"🎤 تشغيل الميكروفون";
   voiceStatus(role,role==="teacher"?"اتصلت بالحصة. الميكروفون يعمل ويمكنك بدء الشرح.":"اتصلت بالحصة. الميكروفون مغلق؛ اضغط تشغيل الميكروفون عندما تريد الكلام.");
-  try{await room.startAudio();const btn=document.getElementById(role==="teacher"?"teacherAudioBtn":"studentAudioBtn");if(btn)btn.style.display="none";}
-  catch(e){const btn=document.getElementById(role==="teacher"?"teacherAudioBtn":"studentAudioBtn");if(btn)btn.style.display="block";voiceStatus(role,"اتصلت بالحصة. اضغط «تشغيل صوت الحصة» إذا لم تسمع الآخرين.");}
+  const audioBtn=document.getElementById(role==="teacher"?"teacherAudioBtn":"studentAudioBtn");if(audioBtn){audioBtn.style.display="block";audioBtn.textContent="🔊 اضغط لتشغيل صوت الحصة";}try{await room.startAudio();}catch(e){}
   return room;
 }
 window.resumeLiveAudio=async function(role){if(!activeVoiceRoom)return;try{await activeVoiceRoom.startAudio();const b=document.getElementById(role==="teacher"?"teacherAudioBtn":"studentAudioBtn");if(b)b.style.display="none";voiceStatus(role,"الصوت يعمل.");}catch(e){voiceStatus(role,"تعذر تشغيل الصوت. اسمح بالصوت في المتصفح.");}};
@@ -284,7 +288,7 @@ window.startLiveClass=async function(){
   const title=document.getElementById("liveClassTitle").value.trim(),grade=document.getElementById("liveClassGrade").value;
   const endpoint=cleanWorkerUrl(document.getElementById("voiceWorkerUrl").value),pin=document.getElementById("teacherVoicePin").value.trim();
   if(!title){alert("اكتب عنوان الحصة أولاً");return;}
-  if(!/^https:\\/\\//i.test(endpoint)){alert("أدخل رابط خادم الصوت الذي سنجهزه على Cloudflare.");return;}
+  if(!endpoint.startsWith("https://")){alert("أدخل رابط خادم الصوت الذي سنجهزه على Cloudflare ويبدأ بـ https://");return;}
   if(!pin){alert("اكتب رمز المدرس السري لخدمة الصوت.");return;}
   const btn=document.getElementById("startLiveClassBtn");btn.disabled=true;btn.textContent="جاري تجهيز الفصل...";
   try{
