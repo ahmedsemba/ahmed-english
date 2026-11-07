@@ -268,11 +268,12 @@ async function connectLiveAudio(role,data,teacherPin){
   room.on(client.RoomEvent.Disconnected,()=>{if(activeVoiceRoom===room){activeVoiceRoom=null;updateVoiceButtons(role,false);voiceStatus(role,"انقطع الاتصال بالفصل.");}});
   await room.connect(tokenData.livekitUrl||data.livekitUrl,tokenData.token);
   activeVoiceRoom=room;activeVoiceRole=role;
-  await room.localParticipant.setMicrophoneEnabled(role==="teacher");
+  let micError=null;try{await room.localParticipant.setMicrophoneEnabled(role==="teacher");}catch(e){micError=e;}
   updateVoiceButtons(role,true);
   const mic=document.getElementById(role==="teacher"?"teacherMicBtn":"studentMicBtn");
-  if(mic)mic.textContent=role==="teacher"?"🎤 كتم الميكروفون":"🎤 تشغيل الميكروفون";
-  voiceStatus(role,role==="teacher"?"اتصلت بالحصة. الميكروفون يعمل ويمكنك بدء الشرح.":"اتصلت بالحصة. الميكروفون مغلق؛ اضغط تشغيل الميكروفون عندما تريد الكلام.");
+  const micOn=room.localParticipant.isMicrophoneEnabled;
+  if(mic)mic.textContent=micOn?"🎤 كتم الميكروفون":"🎤 تشغيل الميكروفون";
+  voiceStatus(role,micError?"اتصلت بالحصة، لكن المتصفح لم يسمح بالميكروفون. راجع إذن الميكروفون ثم اضغط تشغيله.":(role==="teacher"?"اتصلت بالحصة. الميكروفون يعمل ويمكنك بدء الشرح.":"اتصلت بالحصة. الميكروفون مغلق؛ اضغط تشغيل الميكروفون عندما تريد الكلام."));
   const audioBtn=document.getElementById(role==="teacher"?"teacherAudioBtn":"studentAudioBtn");if(audioBtn){audioBtn.style.display="block";audioBtn.textContent="🔊 اضغط لتشغيل صوت الحصة";}try{await room.startAudio();}catch(e){}
   return room;
 }
