@@ -1,31 +1,45 @@
 <!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>منصة مستر أحمد السيد انجليزي</title><link rel="manifest" href="manifest.json"><link rel="icon" href="logo.png"><meta name="theme-color" content="#4f46e5"><style>*{font-family:'Cairo',sans-serif;box-sizing:border-box}body{margin:0;background:#0f172a;color:#fff}header{background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:20px;text-align:center}.logo{width:90px;height:90px;border-radius:50%;border:3px solid #fff;background:#fff;object-fit:cover}.payBox{background:#1e293b;border:2px dashed #10b981;border-radius:14px;padding:12px;margin:12px auto;max-width:900px;text-align:center}.payBox a{color:#25D366;text-decoration:none;font-weight:900;font-size:18px;background:#0f172a;padding:8px 16px;border-radius:10px;display:inline-block;margin-top:6px;border:1px solid #25D366}.container{max-width:900px;margin:auto;padding:12px}.card{background:#1e293b;border-radius:14px;padding:16px;margin-bottom:12px}input,select,button,textarea{width:100%;padding:11px;border-radius:10px;border:none;margin-top:8px;font-size:14px}input,select,textarea{background:#0f172a;color:#fff;border:1px solid #334155}button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}.tab{flex:1;text-align:center;padding:10px;background:#1e293b;border-radius:10px;cursor:pointer;font-size:11px}.tab.active{background:#4f46e5}.tabs{display:flex;gap:5px;margin-bottom:12px}.student-row{background:#0f172a;padding:12px;border-radius:12px;margin-top:10px;border:1px solid #334155}.btn-small{width:auto;padding:6px 12px;font-size:11px;border-radius:7px;display:inline-block;margin:2px;font-weight:900}.subTab{padding:8px 12px;background:#0f172a;border-radius:8px;cursor:pointer;display:inline-block;margin:4px;font-size:11px}.subTab.active{background:#f59e0b;color:#000;font-weight:900}.gradeTab{padding:8px 10px;background:#1e293b;border-radius:8px;cursor:pointer;display:inline-block;margin:3px;font-size:11px;border:1px solid #334155}.gradeTab.active{background:#4f46e5}.star{font-size:22px;cursor:pointer;color:#334155}.star.active{color:#f59e0b}.certCard{background:linear-gradient(135deg,#fff 0%,#fef9c3 100%);color:#000;padding:28px;border-radius:20px;border:5px solid #f59e0b;text-align:center;margin-top:15px}.scheduleBox{background:linear-gradient(135deg,#10b981,#059669);padding:12px;border-radius:12px;margin-bottom:12px;font-weight:900;text-align:center}</style></head><body><header><img src="logo.png" class="logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135755.png'"><h1 style="margin:8px 0 0;font-size:24px">منصة مستر أحمد السيد انجليزي</h1><div style="font-size:13px">(من الصف الأول للثالث الإعدادي)</div><div style="font-size:11px;margin-top:4px;background:rgba(255,255,255,.2);display:inline-block;padding:3px 12px;border-radius:20px">خبرة 20 عام ⭐</div><br><button id="installBtn" style="display:none;margin-top:10px;background:#10b981;color:#fff;padding:8px 14px;border-radius:10px;border:none;font-weight:900" onclick="installApp()">📲 ثبّت التطبيق</button></header><div class="payBox">💰 للدفع انستا باي واتصالات كاش<br><a href="https://wa.me/201116811324">📱 01116811324 - واتساب</a></div><div class="container"><div class="tabs"><div class="tab active" id="tabBtn-student" onclick="showTab('student')">دخول الطلاب</div><div class="tab" id="tabBtn-register" onclick="showTab('register')">تسجيل</div><div class="tab" id="tabBtn-parent" onclick="showTab('parent')">ولي أمر</div><div class="tab" id="tabBtn-admin" onclick="showTab('admin')">لوحة المستر</div></div><div id="tab-register" class="card" style="display:none"><h3>تسجيل جديد</h3><input id="name" placeholder="الاسم ثلاثي"><input id="phone" placeholder="رقم الواتساب"><input id="parentPhone" placeholder="رقم ولي الأمر"><select id="grade"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select><button onclick="registerStudent()">تسجيل</button><p id="regMsg"></p></div><div id="tab-parent" class="card" style="display:none"><h3>دخول ولي الأمر</h3><input id="parentLoginPhone" placeholder="رقم ولي الأمر"><button onclick="loginParent()" style="background:#f59e0b;color:#000">دخول</button><div id="parentArea" style="display:none"></div></div><div id="tab-student" class="card"><h3>دخول الطالب</h3><input id="loginPhone" placeholder="رقم الواتساب"><button onclick="loginStudent()">دخول</button><p id="loginMsg"></p><div id="studentArea" style="display:none"><h2 id="welcome"></h2><div id="studentSchedule"></div>
 <div id="studentLiveClass" class="card" style="display:none;background:#0f172a;border:2px solid #10b981">
-<h3 style="margin-top:0">🎥 الفصل الأونلاين</h3>
+<h3 style="margin-top:0">🎙️ الفصل الافتراضي داخل المنصة</h3>
 <div id="studentLiveInfo" style="color:#cbd5e1;font-size:13px">جاري التحقق من وجود حصة مباشرة...</div>
-<button id="studentJoinLiveBtn" type="button" style="display:none;background:#10b981" onclick="joinStudentLiveClass()">🚀 دخول الحصة</button>
-<p style="font-size:12px;color:#cbd5e1">سيتم فتح الاجتماع في Google Meet. ويمكنك الرجوع لهذه الصفحة لمتابعة الملزمة.</p>
+<div id="studentVoiceStatus" style="font-size:12px;color:#a7f3d0;margin-top:8px">الصوت غير متصل.</div>
+<button id="studentJoinLiveBtn" type="button" style="display:none;background:#10b981" onclick="joinStudentLiveClass()">🎧 دخول الحصة والاستماع</button>
+<div style="display:flex;gap:6px;margin-top:6px">
+<button id="studentMicBtn" type="button" style="display:none;background:#475569;flex:1" onclick="toggleLiveMic('student')">🎤 تشغيل الميكروفون</button>
+<button id="studentAudioBtn" type="button" style="display:none;background:#334155;flex:1" onclick="resumeLiveAudio('student')">🔊 تشغيل صوت الحصة</button>
+<button id="studentLeaveBtn" type="button" style="display:none;background:#ef4444;flex:1" onclick="leaveLiveClass('student')">مغادرة</button>
+</div>
+<div id="studentAudioContainer" style="display:none"></div>
 <div id="studentPdfPanel" style="display:none;margin-top:14px;background:#111827;padding:10px;border-radius:12px">
-<h4 style="margin:0 0 8px">📖 كتاب الحصة</h4><div style="font-size:12px;color:#cbd5e1;margin-bottom:8px">المستر يتحكم في رقم الصفحة، والشرح بالقلم يظهر هنا.</div>
+<h4 style="margin:0 0 8px">📖 كتاب الحصة والسبورة</h4><div style="font-size:12px;color:#cbd5e1;margin-bottom:8px">الصفحة والشرح المكتوب يتحدثان تلقائيًا مع المدرس.</div>
 <div style="text-align:center;margin-bottom:8px;color:#cbd5e1"><span id="studentPdfPage">صفحة 1</span></div>
 <div id="studentPdfStage" style="position:relative;width:100%;height:65vh;min-height:360px;max-height:700px;background:#fff;border-radius:8px;overflow:hidden"><iframe id="studentPdfFrame" title="ملزمة الحصة" style="width:100%;height:100%;border:0"></iframe><canvas id="studentPdfCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"></canvas></div>
 </div>
 </div><div id="evalDisplay" class="card" style="background:#0f172a;border:2px solid #f59e0b"></div><div class="card" style="background:#0f172a;border:2px solid #10b981"><h4>💳 المدفوعات</h4><p style="font-size:12px;color:#cbd5e1">سجّل التحويل، وبعدها ابعت صورة الإيصال على واتساب.</p><select id="paymentMethod"><option value="InstaPay">إنستاباي</option><option value="Etisalat Cash">اتصالات كاش</option></select><input id="paymentAmount" type="number" min="1" step="1" placeholder="مبلغ التحويل بالجنيه"><input id="paymentNote" maxlength="120" placeholder="ملاحظة (اختياري)"><button onclick="submitPayment()" style="background:#10b981">إرسال طلب الدفع</button><div id="paymentMsg" style="font-size:12px;margin-top:8px"></div><div id="paymentHistory" style="margin-top:10px"></div></div><div id="certArea"></div><div id="lessonsList"></div><div class="card" style="background:#0f172a;border:2px solid #8b5cf6"><h4>📚 الملازم</h4><div id="materialsList">جاري التحميل...</div></div><div class="card" style="background:#0f172a;border:2px solid #f59e0b"><h4>📝 الواجب</h4><div id="quizContainer">جاري التحميل...</div></div></div></div><div id="tab-admin" class="card" style="display:none"><h3>لوحة المستر 🔒</h3><input id="adminPass" type="password" placeholder="الباسورد"><button onclick="loginAdmin()">دخول</button><div id="adminArea" style="display:none"><div style="margin:10px 0"><span class="subTab active" onclick="showAdminTab('lessons')" id="atab-lessons">الحصة</span><span class="subTab" onclick="showAdminTab('schedules')" id="atab-schedules">المواعيد</span><span class="subTab" onclick="showAdminTab('students')" id="atab-students">الطلاب</span><span class="subTab" onclick="showAdminTab('homeworks')" id="atab-homeworks">الواجبات</span><span class="subTab" onclick="showAdminTab('materials')" id="atab-materials">الملازم</span><span class="subTab" onclick="showAdminTab('payments')" id="atab-payments">المدفوعات</span></div><div id="admin-lessons" class="card" style="background:#0f172a">
 <div class="card" style="background:#111827;border:2px solid #10b981">
-<h4 style="margin-top:0">🎥 بدء فصل أونلاين مباشر</h4>
-<p style="font-size:12px;color:#cbd5e1">ابدأ الحصة من هنا، وسيظهر زر الدخول تلقائياً للطلاب المسجلين في الصف المحدد.</p>
+<h4 style="margin-top:0">🎙️ بدء فصل صوتي داخل المنصة</h4>
+<p style="font-size:12px;color:#cbd5e1">المدرس والطلاب يدخلون من نفس المنصة. الكاميرا غير مستخدمة، والكتاب والسبورة يظهران داخل الفصل.</p>
 <input id="liveClassTitle" maxlength="100" placeholder="عنوان الحصة">
 <select id="liveClassGrade">
 <option value="للكل">كل الصفوف</option>
 <option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option>
 </select>
-<button id="startLiveClassBtn" onclick="startLiveClass()" style="background:#10b981">▶️ بدء الحصة المباشرة</button>
+<input id="voiceWorkerUrl" type="url" placeholder="رابط خادم الصوت (يتم ضبطه مرة واحدة)">
+<input id="teacherVoicePin" type="password" placeholder="رمز المدرس السري لخدمة الصوت">
+<button id="startLiveClassBtn" onclick="startLiveClass()" style="background:#10b981">▶️ بدء الحصة والاتصال بالصوت</button>
 <div id="teacherLiveInfo" style="font-size:12px;color:#cbd5e1;margin-top:8px">لا توجد حصة مباشرة نشطة.</div>
-<input id="liveMeetUrl" type="url" placeholder="الصق رابط Google Meet هنا"><button id="openTeacherMeetBtn" type="button" onclick="openTeacherMeet()" style="background:#4285f4">فتح Google Meet</button>
+<div id="teacherVoiceStatus" style="font-size:12px;color:#a7f3d0;margin-top:8px">الصوت غير متصل.</div>
+<div style="display:flex;gap:6px;margin-top:6px">
+<button id="teacherMicBtn" type="button" style="display:none;background:#475569;flex:1" onclick="toggleLiveMic('teacher')">🎤 كتم الميكروفون</button>
+<button id="teacherAudioBtn" type="button" style="display:none;background:#334155;flex:1" onclick="resumeLiveAudio('teacher')">🔊 تشغيل الصوت</button>
+<button id="teacherLeaveBtn" type="button" style="display:none;background:#ef4444;flex:1" onclick="leaveLiveClass('teacher')">قطع الاتصال</button>
+</div>
+<div id="teacherAudioContainer" style="display:none"></div>
 <div id="teacherPdfPanel" style="margin-top:14px;background:#0f172a;padding:10px;border-radius:12px;border:1px solid #475569">
 <h4 style="margin:0 0 8px">📖 عرض الملزمة أثناء الحصة</h4><input id="teacherPdfLink" placeholder="الصق رابط Google Drive للملزمة هنا"><button type="button" onclick="sharePdfInLiveClass()" style="background:#8b5cf6">عرض الملزمة للطلاب</button><div id="teacherPdfStatus" style="font-size:12px;color:#cbd5e1;margin:8px 0">الصق رابط الملزمة بعد بدء الحصة.</div>
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><button type="button" onclick="changeSharedPdfPage(-1)" style="width:auto;margin:0">السابق</button><span id="teacherPdfPage" style="flex:1;text-align:center">صفحة 1</span><button type="button" onclick="changeSharedPdfPage(1)" style="width:auto;margin:0">التالي</button></div>
 <div id="teacherPdfStage" style="display:none;position:relative;width:100%;height:65vh;min-height:360px;max-height:700px;background:#fff;border-radius:8px;overflow:hidden"><iframe id="teacherPdfFrame" title="معاينة الملزمة" style="width:100%;height:100%;border:0"></iframe><canvas id="teacherPdfCanvas" style="position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair"></canvas></div>
-<div style="font-size:11px;color:#cbd5e1;margin-top:6px">استخدم القلم أو إصبعك للرسم فوق الصفحة؛ امسح آخر خط بزر التراجع.</div><button type="button" onclick="undoPdfStroke()" style="background:#64748b">↩️ تراجع عن آخر خط</button>
+<div style="font-size:11px;color:#cbd5e1;margin-top:6px">استخدم القلم أو إصبعك للرسم فوق الصفحة؛ امسح آخر خط بزر التراجع.</div><div style="display:flex;gap:6px"><button type="button" onclick="undoPdfStroke()" style="background:#64748b;flex:1">↩️ تراجع عن آخر خط</button><button type="button" onclick="clearPdfPage()" style="background:#ef4444;flex:1">🧹 مسح الصفحة</button></div>
 </div>
 <button id="endLiveClassBtn" onclick="endLiveClass()" style="display:none;background:#ef4444">⏹️ إنهاء الحصة</button>
 </div>
@@ -135,6 +149,7 @@ window.addLesson=async function(){const title=document.getElementById('lessonTit
 window.clearLesson=async function(){await deleteDoc(doc(db,'lessons','current'));alert('تم');}
 window.loginAdmin=async function(){if(document.getElementById('adminPass').value!=='Ahmed@salwa2020'){alert('الباسورد غلط');return}document.getElementById('adminArea').style.display='block';loadAdmin();loadSchedulesAdmin();}
 </script>
+<script src="https://cdn.jsdelivr.net/npm/livekit-client@2.23.0/dist/livekit-client.umd.min.js"></script>
 <script type="module">
 import { getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, setDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -218,74 +233,100 @@ function enableTeacherPdfDrawing(){
 enableTeacherPdfDrawing();
 window.addEventListener('resize',()=>{if(liveClassData){drawPdfCanvas('teacher',liveClassData);drawPdfCanvas('student',liveClassData);}});
 
-window.openTeacherMeet=function(){const url=document.getElementById('liveMeetUrl').value.trim();if(!/^https:\/\/(meet\.google\.com)\/[a-z-]+(?:\?.*)?$/i.test(url)){alert('الصق رابط Google Meet صحيحاً يبدأ بـ https://meet.google.com/');return;}window.open(url,'_blank','noopener');};
+let activeVoiceRoom=null;
+let activeVoiceRole=null;
+function cleanWorkerUrl(value){return String(value||"").trim().replace(/\\/+$/,"");}
+async function voicePost(endpoint,path,payload){
+  const response=await fetch(cleanWorkerUrl(endpoint)+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+  let data={};try{data=await response.json();}catch(e){}
+  if(!response.ok||!data.ok)throw new Error(data.error||("تعذر الاتصال بخدمة الصوت ("+response.status+")"));
+  return data;
+}
+function voiceStatus(role,message){const el=document.getElementById(role==="teacher"?"teacherVoiceStatus":"studentVoiceStatus");if(el)el.textContent=message;}
+function updateVoiceButtons(role,connected){
+  ["Mic","Audio","Leave"].forEach(suffix=>{const el=document.getElementById((role==="teacher"?"teacher":"student")+suffix+"Btn");if(el)el.style.display=connected?"block":"none";});
+}
+async function connectLiveAudio(role,data,teacherPin){
+  if(!window.LivekitClient)throw new Error("مكتبة الصوت لم تُحمّل. حدّث الصفحة وحاول مرة أخرى.");
+  if(activeVoiceRoom){try{await activeVoiceRoom.disconnect();}catch(e){}activeVoiceRoom=null;}
+  voiceStatus(role,"جاري الاتصال بالفصل الصوتي...");
+  const tokenData=await voicePost(data.voiceEndpoint,"/token",{roomId:data.roomId,joinCode:data.joinCode,participantName:role==="teacher"?"المدرس":(window.currentStudent&&window.currentStudent.name)||"طالب",role,teacherPin:teacherPin||""});
+  const client=window.LivekitClient,room=new client.Room({adaptiveStream:false,dynacast:false});
+  const audioBox=document.getElementById(role==="teacher"?"teacherAudioContainer":"studentAudioContainer");
+  if(audioBox)audioBox.innerHTML="";
+  room.on(client.RoomEvent.TrackSubscribed,(track)=>{
+    if(track.kind===client.Track.Kind.Audio){const audio=track.attach();audio.autoplay=true;audio.playsInline=true;if(audioBox)audioBox.appendChild(audio);}
+  });
+  room.on(client.RoomEvent.TrackUnsubscribed,(track)=>{track.detach().forEach(el=>el.remove());});
+  room.on(client.RoomEvent.ParticipantConnected,()=>voiceStatus(role,"متصل بالصوت. عدد المشاركين: "+(room.remoteParticipants.size+1)));
+  room.on(client.RoomEvent.ParticipantDisconnected,()=>voiceStatus(role,"متصل بالصوت. عدد المشاركين: "+(room.remoteParticipants.size+1)));
+  room.on(client.RoomEvent.Disconnected,()=>{if(activeVoiceRoom===room){activeVoiceRoom=null;updateVoiceButtons(role,false);voiceStatus(role,"انقطع الاتصال بالفصل.");}});
+  await room.connect(tokenData.livekitUrl||data.livekitUrl,tokenData.token);
+  activeVoiceRoom=room;activeVoiceRole=role;
+  await room.localParticipant.setMicrophoneEnabled(role==="teacher");
+  updateVoiceButtons(role,true);
+  const mic=document.getElementById(role==="teacher"?"teacherMicBtn":"studentMicBtn");
+  if(mic)mic.textContent=role==="teacher"?"🎤 كتم الميكروفون":"🎤 تشغيل الميكروفون";
+  voiceStatus(role,role==="teacher"?"اتصلت بالحصة. الميكروفون يعمل ويمكنك بدء الشرح.":"اتصلت بالحصة. الميكروفون مغلق؛ اضغط تشغيل الميكروفون عندما تريد الكلام.");
+  try{await room.startAudio();const btn=document.getElementById(role==="teacher"?"teacherAudioBtn":"studentAudioBtn");if(btn)btn.style.display="none";}
+  catch(e){const btn=document.getElementById(role==="teacher"?"teacherAudioBtn":"studentAudioBtn");if(btn)btn.style.display="block";voiceStatus(role,"اتصلت بالحصة. اضغط «تشغيل صوت الحصة» إذا لم تسمع الآخرين.");}
+  return room;
+}
+window.resumeLiveAudio=async function(role){if(!activeVoiceRoom)return;try{await activeVoiceRoom.startAudio();const b=document.getElementById(role==="teacher"?"teacherAudioBtn":"studentAudioBtn");if(b)b.style.display="none";voiceStatus(role,"الصوت يعمل.");}catch(e){voiceStatus(role,"تعذر تشغيل الصوت. اسمح بالصوت في المتصفح.");}};
+window.toggleLiveMic=async function(role){
+  if(!activeVoiceRoom||activeVoiceRole!==role)return;
+  const enabled=activeVoiceRoom.localParticipant.isMicrophoneEnabled;
+  try{await activeVoiceRoom.localParticipant.setMicrophoneEnabled(!enabled);const b=document.getElementById(role==="teacher"?"teacherMicBtn":"studentMicBtn");if(b)b.textContent=!enabled?"🎤 كتم الميكروفون":"🎤 تشغيل الميكروفون";voiceStatus(role,!enabled?"الميكروفون يعمل.":"الميكروفون مغلق.");}
+  catch(e){voiceStatus(role,"تعذر تغيير حالة الميكروفون: "+e.message);}
+};
+window.leaveLiveClass=async function(role){if(activeVoiceRoom){try{await activeVoiceRoom.disconnect();}catch(e){}activeVoiceRoom=null;}activeVoiceRole=null;updateVoiceButtons(role,false);voiceStatus(role,"غادرت الفصل الصوتي.");};
 window.startLiveClass=async function(){
-  const title=document.getElementById('liveClassTitle').value.trim();
-  const grade=document.getElementById('liveClassGrade').value;
-  const meetUrl=document.getElementById('liveMeetUrl').value.trim();
-  if(!title){alert('اكتب عنوان الحصة أولاً');return;}
-  if(!/^https:\/\/(meet\.google\.com)\/[a-z-]+(?:\?.*)?$/i.test(meetUrl)){alert('أنشئ اجتماع Google Meet والصق رابطه أولاً.');return;}
-  const btn=document.getElementById('startLiveClassBtn');
-  btn.disabled=true;btn.textContent='جاري بدء الحصة...';
+  const title=document.getElementById("liveClassTitle").value.trim(),grade=document.getElementById("liveClassGrade").value;
+  const endpoint=cleanWorkerUrl(document.getElementById("voiceWorkerUrl").value),pin=document.getElementById("teacherVoicePin").value.trim();
+  if(!title){alert("اكتب عنوان الحصة أولاً");return;}
+  if(!/^https:\\/\\//i.test(endpoint)){alert("أدخل رابط خادم الصوت الذي سنجهزه على Cloudflare.");return;}
+  if(!pin){alert("اكتب رمز المدرس السري لخدمة الصوت.");return;}
+  const btn=document.getElementById("startLiveClassBtn");btn.disabled=true;btn.textContent="جاري تجهيز الفصل...";
   try{
-    const data={active:true,title,grade,meetUrl,created:Date.now()};
-    await setDoc(doc(liveDb,'live_classes','current'),data);
-    liveClassData=data;
-    document.getElementById('teacherLiveInfo').textContent='الحصة نشطة: '+title+' — '+grade;
-    document.getElementById('endLiveClassBtn').style.display='block';
-    document.getElementById('teacherLiveInfo').textContent='الحصة نشطة: '+title+' — '+grade+' — اضغط فتح Google Meet للدخول.';
-  }catch(e){
-    alert('تعذر بدء الحصة: '+(e.message||e));
-    document.getElementById('teacherLiveInfo').textContent='لم يتم بدء الحصة. راجع صلاحيات Firebase واتصال الإنترنت.';
-  }finally{btn.disabled=false;btn.textContent='▶️ بدء الحصة المباشرة';}
+    const created=await voicePost(endpoint,"/create",{teacherPin:pin,title,grade});
+    const data={active:true,title,grade,voiceEndpoint:endpoint,livekitUrl:created.livekitUrl,roomId:created.roomId,roomName:created.roomName,joinCode:created.joinCode,created:Date.now()};
+    await setDoc(doc(liveDb,"live_classes","current"),data);liveClassData=data;
+    document.getElementById("teacherLiveInfo").textContent="الفصل نشط: "+title+" — "+grade+" — يمكن للطلاب الدخول من حساباتهم.";
+    document.getElementById("endLiveClassBtn").style.display="block";
+    await connectLiveAudio("teacher",data,pin);
+  }catch(e){alert("تعذر بدء الفصل: "+(e.message||e));document.getElementById("teacherLiveInfo").textContent="لم يتم تشغيل الفصل. راجع إعدادات خادم الصوت والإنترنت.";}
+  finally{btn.disabled=false;btn.textContent="▶️ بدء الحصة والاتصال بالصوت";}
 };
 window.endLiveClass=async function(){
-  if(!confirm('هل تريد إنهاء الحصة الحالية؟'))return;
+  if(!liveClassData||!confirm("هل تريد إنهاء الحصة الحالية؟"))return;
+  const pin=document.getElementById("teacherVoicePin").value.trim();
   try{
-    await deleteDoc(doc(liveDb,'live_classes','current'));
-
-    document.getElementById('teacherPdfPanel').style.display='none';
-    document.getElementById('teacherLiveInfo').textContent='تم إنهاء الحصة.';
-    document.getElementById('endLiveClassBtn').style.display='none';
-    liveClassData=null;
-  }catch(e){alert('تعذر إنهاء الحصة: '+(e.message||e));}
+    if(activeVoiceRoom){await activeVoiceRoom.disconnect();activeVoiceRoom=null;activeVoiceRole=null;}
+    await voicePost(liveClassData.voiceEndpoint,"/end",{roomId:liveClassData.roomId,teacherPin:pin});
+    await deleteDoc(doc(liveDb,"live_classes","current"));
+    document.getElementById("teacherPdfPanel").style.display="none";document.getElementById("teacherLiveInfo").textContent="تم إنهاء الحصة.";
+    document.getElementById("endLiveClassBtn").style.display="none";updateVoiceButtons("teacher",false);voiceStatus("teacher","تم إنهاء الاتصال.");liveClassData=null;
+  }catch(e){alert("تعذر إنهاء الحصة بالكامل: "+(e.message||e));}
 };
 window.watchLiveClassForStudent=function(){
-  const student=window.currentStudent;
-  if(!student)return;
-  if(liveUnsubscribe)liveUnsubscribe();
-  const box=document.getElementById('studentLiveClass');
-  const info=document.getElementById('studentLiveInfo');
-  const join=document.getElementById('studentJoinLiveBtn');
-  liveUnsubscribe=onSnapshot(doc(liveDb,'live_classes','current'),snap=>{
-    if(!snap.exists()){
-      document.getElementById('studentPdfPanel').style.display='none';
-      box.style.display='none';join.style.display='none';
-      return;
-    }
-    const d=snap.data();
-    const allowed=d.active&&(d.grade==='للكل'||d.grade===student.grade);
-    if(!allowed){box.style.display='none';join.style.display='none';return;}
-    liveClassData=d;
-    renderPdfViewer('student',d,false);
-    box.style.display='block';
-    info.textContent='🔴 حصة مباشرة الآن: '+(d.title||'حصة أونلاين')+' — '+(d.grade||'');
-    join.style.display='block';
-  },err=>{
-    box.style.display='block';
-    info.textContent='تعذر التحقق من الحصة المباشرة: '+(err.message||err);
-  });
+  const student=window.currentStudent;if(!student)return;if(liveUnsubscribe)liveUnsubscribe();
+  const box=document.getElementById("studentLiveClass"),info=document.getElementById("studentLiveInfo"),join=document.getElementById("studentJoinLiveBtn");
+  liveUnsubscribe=onSnapshot(doc(liveDb,"live_classes","current"),snap=>{
+    if(!snap.exists()){document.getElementById("studentPdfPanel").style.display="none";box.style.display="none";join.style.display="none";return;}
+    const d=snap.data(),allowed=d.active&&(d.grade==="للكل"||d.grade===student.grade);
+    if(!allowed){box.style.display="none";join.style.display="none";return;}
+    liveClassData=d;renderPdfViewer("student",d,false);box.style.display="block";info.textContent="🔴 حصة مباشرة الآن: "+(d.title||"حصة صوتية")+" — "+(d.grade||"");join.style.display="block";
+  },err=>{box.style.display="block";info.textContent="تعذر التحقق من الحصة: "+(err.message||err);});
 };
 window.joinStudentLiveClass=async function(){
-  const student=window.currentStudent;
-  if(!student||!liveClassData||!liveClassData.active){alert('لا توجد حصة متاحة حالياً');return;}
-  const join=document.getElementById('studentJoinLiveBtn');
-  join.disabled=true;join.textContent='جاري الدخول...';
-  try{
-    const url=liveClassData.meetUrl;
-    if(!url||!/^https:\/\/(meet\.google\.com)\/[a-z-]+(?:\?.*)?$/i.test(url)){alert('رابط Google Meet غير متاح. تواصل مع المستر.');return;}
-    window.open(url,'_blank','noopener');
-  }catch(e){alert('تعذر فتح Google Meet: '+(e.message||e));}
-  finally{join.disabled=false;join.textContent='🚀 دخول الحصة';}
+  const student=window.currentStudent;if(!student||!liveClassData||!liveClassData.active){alert("لا توجد حصة متاحة حالياً");return;}
+  const btn=document.getElementById("studentJoinLiveBtn");btn.disabled=true;btn.textContent="جاري الاتصال...";
+  try{await connectLiveAudio("student",liveClassData,"");btn.textContent="✅ أنت داخل الحصة";}
+  catch(e){alert("تعذر دخول الفصل الصوتي: "+(e.message||e));btn.textContent="🎧 دخول الحصة والاستماع";}
+  finally{btn.disabled=false;}
 };
-</script></body></html>
+window.clearPdfPage=async function(){
+  if(!liveClassData||!liveClassData.pdfId)return;const page=String(liveClassData.pdfPage||1),all={...(liveClassData.pdfStrokes||{})};all[page]=[];
+  try{await updateDoc(doc(liveDb,"live_classes","current"),{pdfStrokes:all});liveClassData={...liveClassData,pdfStrokes:all};renderPdfViewer("teacher",liveClassData,true);}
+  catch(e){alert("تعذر مسح الكتابة: "+e.message);}
+};</script></body></html>
