@@ -4,6 +4,11 @@
 <div id="studentLiveInfo" style="color:#cbd5e1;font-size:13px">جاري التحقق من وجود حصة مباشرة...</div>
 <button id="studentJoinLiveBtn" type="button" style="display:none;background:#10b981" onclick="joinStudentLiveClass()">🚀 دخول الحصة</button>
 <div id="studentMeetFrame" style="width:100%;min-height:420px;margin-top:10px;border-radius:12px;overflow:hidden"></div>
+<div id="studentPdfPanel" style="display:none;margin-top:14px;background:#111827;padding:10px;border-radius:12px">
+<h4 style="margin:0 0 8px">📖 كتاب الحصة</h4><div style="font-size:12px;color:#cbd5e1;margin-bottom:8px">المستر يتحكم في رقم الصفحة، والشرح بالقلم يظهر هنا.</div>
+<div style="text-align:center;margin-bottom:8px;color:#cbd5e1"><span id="studentPdfPage">صفحة 1</span></div>
+<div id="studentPdfStage" style="position:relative;width:100%;height:65vh;min-height:360px;max-height:700px;background:#fff;border-radius:8px;overflow:hidden"><iframe id="studentPdfFrame" title="ملزمة الحصة" style="width:100%;height:100%;border:0"></iframe><canvas id="studentPdfCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"></canvas></div>
+</div>
 </div><div id="evalDisplay" class="card" style="background:#0f172a;border:2px solid #f59e0b"></div><div class="card" style="background:#0f172a;border:2px solid #10b981"><h4>💳 المدفوعات</h4><p style="font-size:12px;color:#cbd5e1">سجّل التحويل، وبعدها ابعت صورة الإيصال على واتساب.</p><select id="paymentMethod"><option value="InstaPay">إنستاباي</option><option value="Etisalat Cash">اتصالات كاش</option></select><input id="paymentAmount" type="number" min="1" step="1" placeholder="مبلغ التحويل بالجنيه"><input id="paymentNote" maxlength="120" placeholder="ملاحظة (اختياري)"><button onclick="submitPayment()" style="background:#10b981">إرسال طلب الدفع</button><div id="paymentMsg" style="font-size:12px;margin-top:8px"></div><div id="paymentHistory" style="margin-top:10px"></div></div><div id="certArea"></div><div id="lessonsList"></div><div class="card" style="background:#0f172a;border:2px solid #8b5cf6"><h4>📚 الملازم</h4><div id="materialsList">جاري التحميل...</div></div><div class="card" style="background:#0f172a;border:2px solid #f59e0b"><h4>📝 الواجب</h4><div id="quizContainer">جاري التحميل...</div></div></div></div><div id="tab-admin" class="card" style="display:none"><h3>لوحة المستر 🔒</h3><input id="adminPass" type="password" placeholder="الباسورد"><button onclick="loginAdmin()">دخول</button><div id="adminArea" style="display:none"><div style="margin:10px 0"><span class="subTab active" onclick="showAdminTab('lessons')" id="atab-lessons">الحصة</span><span class="subTab" onclick="showAdminTab('schedules')" id="atab-schedules">المواعيد</span><span class="subTab" onclick="showAdminTab('students')" id="atab-students">الطلاب</span><span class="subTab" onclick="showAdminTab('homeworks')" id="atab-homeworks">الواجبات</span><span class="subTab" onclick="showAdminTab('materials')" id="atab-materials">الملازم</span><span class="subTab" onclick="showAdminTab('payments')" id="atab-payments">المدفوعات</span></div><div id="admin-lessons" class="card" style="background:#0f172a">
 <div class="card" style="background:#111827;border:2px solid #10b981">
 <h4 style="margin-top:0">🎥 بدء فصل أونلاين مباشر</h4>
@@ -16,6 +21,12 @@
 <button id="startLiveClassBtn" onclick="startLiveClass()" style="background:#10b981">▶️ بدء الحصة المباشرة</button>
 <div id="teacherLiveInfo" style="font-size:12px;color:#cbd5e1;margin-top:8px">لا توجد حصة مباشرة نشطة.</div>
 <div id="teacherMeetFrame" style="width:100%;min-height:420px;margin-top:10px;border-radius:12px;overflow:hidden"></div>
+<div id="teacherPdfPanel" style="margin-top:14px;background:#0f172a;padding:10px;border-radius:12px;border:1px solid #475569">
+<h4 style="margin:0 0 8px">📖 عرض الملزمة أثناء الحصة</h4><input id="teacherPdfLink" placeholder="الصق رابط Google Drive للملزمة هنا"><button type="button" onclick="sharePdfInLiveClass()" style="background:#8b5cf6">عرض الملزمة للطلاب</button><div id="teacherPdfStatus" style="font-size:12px;color:#cbd5e1;margin:8px 0">الصق رابط الملزمة بعد بدء الحصة.</div>
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><button type="button" onclick="changeSharedPdfPage(-1)" style="width:auto;margin:0">السابق</button><span id="teacherPdfPage" style="flex:1;text-align:center">صفحة 1</span><button type="button" onclick="changeSharedPdfPage(1)" style="width:auto;margin:0">التالي</button></div>
+<div id="teacherPdfStage" style="display:none;position:relative;width:100%;height:65vh;min-height:360px;max-height:700px;background:#fff;border-radius:8px;overflow:hidden"><iframe id="teacherPdfFrame" title="معاينة الملزمة" style="width:100%;height:100%;border:0"></iframe><canvas id="teacherPdfCanvas" style="position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair"></canvas></div>
+<div style="font-size:11px;color:#cbd5e1;margin-top:6px">استخدم القلم أو إصبعك للرسم فوق الصفحة؛ امسح آخر خط بزر التراجع.</div><button type="button" onclick="undoPdfStroke()" style="background:#64748b">↩️ تراجع عن آخر خط</button>
+</div>
 <button id="endLiveClassBtn" onclick="endLiveClass()" style="display:none;background:#ef4444">⏹️ إنهاء الحصة</button>
 </div>
 <h4>نشر حصة</h4><input id="lessonTitle" placeholder="عنوان"><input id="meetLink" placeholder="لينك ميت"><input id="ytLink" placeholder="يوتيوب"><select id="lessonGrade"><option>للكل</option><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select><button onclick="addLesson()" style="background:#10b981">نشر</button><button onclick="clearLesson()" style="background:#ef4444">إنهاء</button></div><div id="admin-schedules" style="display:none" class="card"><h4>⏰ مواعيد كل صف</h4><select id="schedGrade"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select><input id="schedTime" placeholder="مثال: السبت والثلاثاء 5 مساء"><button onclick="saveSchedule()" style="background:#10b981">حفظ</button><div id="schedulesList"></div></div><div id="admin-students" style="display:none"><input id="studentSearch" placeholder="بحث..." oninput="loadAdminFiltered()"><div id="gradeFilter"></div><div id="studentsCounter" style="background:#4f46e5;padding:8px;border-radius:8px;margin-top:8px;font-weight:900;text-align:center"></div><div id="pendingList"></div><div id="approvedList"></div><div id="blockedList"></div></div><div id="admin-homeworks" style="display:none"><div class="card" style="background:#0f172a;border:1px solid #334155"><h4>📝 إنشاء واجب جديد</h4><input id="quizTitle" placeholder="عنوان الواجب"><select id="quizGrade"><option>للكل</option><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select><div id="quizBuilder" style="margin-top:10px"></div><div style="display:flex;gap:6px;margin-top:10px"><button onclick="addQuizMCQ()" class="btn-small" style="background:#ff9800;flex:1">+ اختياري (حتى 5)</button><button onclick="addQuizPara()" class="btn-small" style="background:#4caf50;flex:1">+ Paragraph</button></div><button onclick="saveQuiz()" style="background:#10b981;margin-top:12px">💾 نشر واجب جديد</button><p id="quizMsg" style="font-size:12px;color:#10b981"></p><button onclick="clearQuizForm()" style="background:#64748b">🧹 مسح النموذج</button></div><div class="card" style="background:#0f172a;margin-top:12px;border:1px solid #334155"><h4>📋 الواجبات النشطة (آخر 7 أيام)</h4><div id="activeHomeworksList">جاري التحميل...</div></div><div class="card" style="background:#0f172a;margin-top:12px"><h4>📊 إجابات الطلبة</h4><input id="quizAnsSearch" placeholder="بحث..." oninput="loadQuizSubmissions()"><div id="quizSubmissionsList" style="margin-top:10px"></div></div></div>
@@ -126,7 +137,7 @@ window.loginAdmin=async function(){if(document.getElementById('adminPass').value
 </script>
 <script type="module">
 import { getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, setDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const liveDb=getFirestore(getApp());
 let liveApi=null, liveRoom=null, liveUnsubscribe=null, liveClassData=null;
 let jitsiLoading=null;
@@ -170,6 +181,85 @@ async function openJitsi(roomName,containerId,displayName){
   liveApi.addListener('readyToClose',()=>{if(liveApi){try{liveApi.dispose();}catch(e){}liveApi=null;}});
   return liveApi;
 }
+
+function getDriveFileId(value){
+  const text=String(value||'').trim();
+  const m=text.match(/(?:\/file\/d\/|[?&]id=)([a-zA-Z0-9_-]+)/);
+  if(m)return m[1];
+  if(/^[a-zA-Z0-9_-]{20,}$/.test(text))return text;
+  return null;
+}
+function pdfStrokesFor(data,page){
+  const all=data&&data.pdfStrokes&&typeof data.pdfStrokes==='object'?data.pdfStrokes:{};
+  return Array.isArray(all[String(page)])?all[String(page)]:[];
+}
+function drawPdfCanvas(prefix,data){
+  const canvas=document.getElementById(prefix+'PdfCanvas');
+  const stage=document.getElementById(prefix+'PdfStage');
+  if(!canvas||!stage)return;
+  const w=stage.clientWidth,h=stage.clientHeight,dpr=window.devicePixelRatio||1;
+  canvas.width=Math.max(1,Math.round(w*dpr));canvas.height=Math.max(1,Math.round(h*dpr));
+  const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
+  const strokes=pdfStrokesFor(data,data.pdfPage||1);
+  ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#e11d48';ctx.lineWidth=3;
+  strokes.forEach(stroke=>{if(!Array.isArray(stroke)||stroke.length<2)return;ctx.beginPath();stroke.forEach((p,i)=>{const x=p.x*w,y=p.y*h;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.stroke();});
+}
+function renderPdfViewer(prefix,data,isTeacher){
+  const panel=document.getElementById(prefix+'PdfPanel');
+  const stage=document.getElementById(prefix+'PdfStage');
+  if(!panel||!stage)return;
+  if(!data||!data.pdfId){panel.style.display='none';return;}
+  panel.style.display='block';stage.style.display='block';
+  const page=Math.max(1,Number(data.pdfPage)||1);
+  const frame=document.getElementById(prefix+'PdfFrame');
+  const wanted='https://drive.google.com/file/d/'+data.pdfId+'/preview#page='+page;
+  if(frame&&frame.dataset.src!==wanted){frame.src=wanted;frame.dataset.src=wanted;}
+  const pageLabel=document.getElementById(prefix+'PdfPage');if(pageLabel)pageLabel.textContent='صفحة '+page;
+  drawPdfCanvas(prefix,data);
+  if(isTeacher){
+    const status=document.getElementById('teacherPdfStatus');
+    if(status)status.textContent='الملزمة معروضة للطلاب. غيّر الصفحة أو ارسم بالقلم فوقها.';
+  }
+}
+window.sharePdfInLiveClass=async function(){
+  if(!liveClassData||!liveClassData.active){alert('ابدأ الحصة أولاً');return;}
+  const id=getDriveFileId(document.getElementById('teacherPdfLink').value);
+  if(!id){alert('رابط Google Drive غير واضح. انسخ رابط مشاركة الملف كاملاً.');return;}
+  try{
+    const next={...liveClassData,pdfId:id,pdfPage:1,pdfStrokes:{}};
+    await updateDoc(doc(liveDb,'live_classes','current'),{pdfId:id,pdfPage:1,pdfStrokes:{}});
+    liveClassData=next;renderPdfViewer('teacher',next,true);
+  }catch(e){alert('تعذر مشاركة الملزمة: '+(e.message||e));}
+};
+window.changeSharedPdfPage=async function(delta){
+  if(!liveClassData||!liveClassData.pdfId)return;
+  const page=Math.max(1,(Number(liveClassData.pdfPage)||1)+delta);
+  try{
+    await updateDoc(doc(liveDb,'live_classes','current'),{pdfPage:page});
+    liveClassData={...liveClassData,pdfPage:page};
+    renderPdfViewer('teacher',liveClassData,true);
+    renderPdfViewer('student',liveClassData,false);
+  }catch(e){console.log('pdf page sync',e);}
+};
+window.undoPdfStroke=async function(){
+  if(!liveClassData||!liveClassData.pdfId)return;
+  const page=String(liveClassData.pdfPage||1);
+  const all={...(liveClassData.pdfStrokes||{})};
+  all[page]=Array.isArray(all[page])?all[page].slice(0,-1):[];
+  try{await updateDoc(doc(liveDb,'live_classes','current'),{pdfStrokes:all});liveClassData={...liveClassData,pdfStrokes:all};renderPdfViewer('teacher',liveClassData,true);}catch(e){alert('تعذر التراجع: '+e.message);}
+};
+function enableTeacherPdfDrawing(){
+  const canvas=document.getElementById('teacherPdfCanvas');if(!canvas||canvas.dataset.ready)return;
+  canvas.dataset.ready='1';let active=null;
+  function point(e){const r=canvas.getBoundingClientRect();return{x:Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),y:Math.max(0,Math.min(1,(e.clientY-r.top)/r.height))};}
+  canvas.addEventListener('pointerdown',e=>{if(!liveClassData||!liveClassData.pdfId)return;e.preventDefault();canvas.setPointerCapture(e.pointerId);active=[point(e)];});
+  canvas.addEventListener('pointermove',e=>{if(!active)return;e.preventDefault();active.push(point(e));const preview={...liveClassData,pdfStrokes:{...(liveClassData.pdfStrokes||{}),[String(liveClassData.pdfPage||1)]:[...pdfStrokesFor(liveClassData,liveClassData.pdfPage||1),active]}};drawPdfCanvas('teacher',preview);});
+  canvas.addEventListener('pointerup',async e=>{if(!active)return;const stroke=active;active=null;if(stroke.length<2)return;const page=String(liveClassData.pdfPage||1);const all={...(liveClassData.pdfStrokes||{})};all[page]=[...(all[page]||[]),stroke].slice(-60);try{await updateDoc(doc(liveDb,'live_classes','current'),{pdfStrokes:all});liveClassData={...liveClassData,pdfStrokes:all};drawPdfCanvas('teacher',liveClassData);}catch(err){alert('تعذر حفظ الكتابة: '+err.message);}});
+  canvas.addEventListener('pointercancel',()=>{active=null;});
+}
+enableTeacherPdfDrawing();
+window.addEventListener('resize',()=>{if(liveClassData){drawPdfCanvas('teacher',liveClassData);drawPdfCanvas('student',liveClassData);}});
+
 window.startLiveClass=async function(){
   const title=document.getElementById('liveClassTitle').value.trim();
   const grade=document.getElementById('liveClassGrade').value;
@@ -195,6 +285,7 @@ window.endLiveClass=async function(){
     await deleteDoc(doc(liveDb,'live_classes','current'));
     if(liveApi){try{liveApi.executeCommand('hangup');liveApi.dispose();}catch(e){}liveApi=null;}
     document.getElementById('teacherMeetFrame').innerHTML='';
+    document.getElementById('teacherPdfPanel').style.display='none';
     document.getElementById('teacherLiveInfo').textContent='تم إنهاء الحصة.';
     document.getElementById('endLiveClassBtn').style.display='none';
     liveClassData=null;
@@ -209,6 +300,7 @@ window.watchLiveClassForStudent=function(){
   const join=document.getElementById('studentJoinLiveBtn');
   liveUnsubscribe=onSnapshot(doc(liveDb,'live_classes','current'),snap=>{
     if(!snap.exists()){
+      document.getElementById('studentPdfPanel').style.display='none';
       box.style.display='none';join.style.display='none';
       if(liveApi&&document.getElementById('studentMeetFrame')){try{liveApi.dispose();}catch(e){}liveApi=null;document.getElementById('studentMeetFrame').innerHTML='';}
       return;
@@ -217,6 +309,7 @@ window.watchLiveClassForStudent=function(){
     const allowed=d.active&&(d.grade==='للكل'||d.grade===student.grade);
     if(!allowed){box.style.display='none';join.style.display='none';return;}
     liveClassData=d;
+    renderPdfViewer('student',d,false);
     box.style.display='block';
     info.textContent='🔴 حصة مباشرة الآن: '+(d.title||'حصة أونلاين')+' — '+(d.grade||'');
     join.style.display=liveRoom===d.room&&liveApi?'none':'block';
