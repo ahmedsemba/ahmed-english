@@ -3,7 +3,7 @@
 <h3 style="margin-top:0">🎥 الفصل الأونلاين</h3>
 <div id="studentLiveInfo" style="color:#cbd5e1;font-size:13px">جاري التحقق من وجود حصة مباشرة...</div>
 <button id="studentJoinLiveBtn" type="button" style="display:none;background:#10b981" onclick="joinStudentLiveClass()">🚀 دخول الحصة</button>
-<div id="studentMeetFrame" style="width:100%;min-height:420px;margin-top:10px;border-radius:12px;overflow:hidden"></div>
+<p style="font-size:12px;color:#cbd5e1">سيتم فتح الاجتماع في Google Meet. ويمكنك الرجوع لهذه الصفحة لمتابعة الملزمة.</p>
 <div id="studentPdfPanel" style="display:none;margin-top:14px;background:#111827;padding:10px;border-radius:12px">
 <h4 style="margin:0 0 8px">📖 كتاب الحصة</h4><div style="font-size:12px;color:#cbd5e1;margin-bottom:8px">المستر يتحكم في رقم الصفحة، والشرح بالقلم يظهر هنا.</div>
 <div style="text-align:center;margin-bottom:8px;color:#cbd5e1"><span id="studentPdfPage">صفحة 1</span></div>
@@ -20,7 +20,7 @@
 </select>
 <button id="startLiveClassBtn" onclick="startLiveClass()" style="background:#10b981">▶️ بدء الحصة المباشرة</button>
 <div id="teacherLiveInfo" style="font-size:12px;color:#cbd5e1;margin-top:8px">لا توجد حصة مباشرة نشطة.</div>
-<div id="teacherMeetFrame" style="width:100%;min-height:420px;margin-top:10px;border-radius:12px;overflow:hidden"></div>
+<input id="liveMeetUrl" type="url" placeholder="الصق رابط Google Meet هنا"><button id="openTeacherMeetBtn" type="button" onclick="openTeacherMeet()" style="background:#4285f4">فتح Google Meet</button>
 <div id="teacherPdfPanel" style="margin-top:14px;background:#0f172a;padding:10px;border-radius:12px;border:1px solid #475569">
 <h4 style="margin:0 0 8px">📖 عرض الملزمة أثناء الحصة</h4><input id="teacherPdfLink" placeholder="الصق رابط Google Drive للملزمة هنا"><button type="button" onclick="sharePdfInLiveClass()" style="background:#8b5cf6">عرض الملزمة للطلاب</button><div id="teacherPdfStatus" style="font-size:12px;color:#cbd5e1;margin:8px 0">الصق رابط الملزمة بعد بدء الحصة.</div>
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><button type="button" onclick="changeSharedPdfPage(-1)" style="width:auto;margin:0">السابق</button><span id="teacherPdfPage" style="flex:1;text-align:center">صفحة 1</span><button type="button" onclick="changeSharedPdfPage(1)" style="width:auto;margin:0">التالي</button></div>
@@ -139,49 +139,7 @@ window.loginAdmin=async function(){if(document.getElementById('adminPass').value
 import { getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, setDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const liveDb=getFirestore(getApp());
-let liveApi=null, liveRoom=null, liveUnsubscribe=null, liveClassData=null;
-let jitsiLoading=null;
-function loadJitsi(){
-  if(window.JitsiMeetExternalAPI)return Promise.resolve();
-  if(jitsiLoading)return jitsiLoading;
-  jitsiLoading=new Promise((resolve,reject)=>{
-    const s=document.createElement('script');
-    s.src='https://meet.jit.si/external_api.js';
-    s.async=true;
-    s.onload=()=>resolve();
-    s.onerror=()=>reject(new Error('تعذر تحميل نظام الفصل الأونلاين'));
-    document.head.appendChild(s);
-  });
-  return jitsiLoading;
-}
-async function openJitsi(roomName,containerId,displayName){
-  await loadJitsi();
-  if(liveApi){try{liveApi.dispose();}catch(e){}liveApi=null;}
-  const host=document.getElementById(containerId);
-  if(!host)throw new Error('مكان عرض الحصة غير موجود');
-  host.innerHTML='';
-  liveRoom=roomName;
-  liveApi=new window.JitsiMeetExternalAPI('meet.jit.si',{
-    roomName,
-    parentNode:host,
-    width:'100%',
-    height:440,
-    lang:'ar',
-    userInfo:{displayName:displayName||'طالب'},
-    configOverwrite:{
-      prejoinPageEnabled:false,
-      startWithAudioMuted:true,
-      startWithVideoMuted:true,
-      disableDeepLinking:true,
-      enableWelcomePage:false,
-      toolbarButtons:['microphone','camera','chat','desktop','raisehand','tileview','fullscreen','hangup','settings']
-    },
-    interfaceConfigOverwrite:{MOBILE_APP_PROMO:false,SHOW_JITSI_WATERMARK:false}
-  });
-  liveApi.addListener('readyToClose',()=>{if(liveApi){try{liveApi.dispose();}catch(e){}liveApi=null;}});
-  return liveApi;
-}
-
+let liveUnsubscribe=null, liveClassData=null;
 function getDriveFileId(value){
   const text=String(value||'').trim();
   const m=text.match(/(?:\/file\/d\/|[?&]id=)([a-zA-Z0-9_-]+)/);
@@ -260,20 +218,22 @@ function enableTeacherPdfDrawing(){
 enableTeacherPdfDrawing();
 window.addEventListener('resize',()=>{if(liveClassData){drawPdfCanvas('teacher',liveClassData);drawPdfCanvas('student',liveClassData);}});
 
+window.openTeacherMeet=function(){const url=document.getElementById('liveMeetUrl').value.trim();if(!/^https:\/\/(meet\.google\.com)\/[a-z-]+(?:\?.*)?$/i.test(url)){alert('الصق رابط Google Meet صحيحاً يبدأ بـ https://meet.google.com/');return;}window.open(url,'_blank','noopener');};
 window.startLiveClass=async function(){
   const title=document.getElementById('liveClassTitle').value.trim();
   const grade=document.getElementById('liveClassGrade').value;
+  const meetUrl=document.getElementById('liveMeetUrl').value.trim();
   if(!title){alert('اكتب عنوان الحصة أولاً');return;}
+  if(!/^https:\/\/(meet\.google\.com)\/[a-z-]+(?:\?.*)?$/i.test(meetUrl)){alert('أنشئ اجتماع Google Meet والصق رابطه أولاً.');return;}
   const btn=document.getElementById('startLiveClassBtn');
   btn.disabled=true;btn.textContent='جاري بدء الحصة...';
   try{
-    const room='AhmedEnglish'+crypto.randomUUID().replace(/-/g,'').slice(0,24);
-    const data={active:true,title,grade,room,created:Date.now()};
+    const data={active:true,title,grade,meetUrl,created:Date.now()};
     await setDoc(doc(liveDb,'live_classes','current'),data);
     liveClassData=data;
     document.getElementById('teacherLiveInfo').textContent='الحصة نشطة: '+title+' — '+grade;
     document.getElementById('endLiveClassBtn').style.display='block';
-    await openJitsi(room,'teacherMeetFrame','مستر أحمد');
+    window.open(meetUrl,'_blank','noopener');
   }catch(e){
     alert('تعذر بدء الحصة: '+(e.message||e));
     document.getElementById('teacherLiveInfo').textContent='لم يتم بدء الحصة. راجع صلاحيات Firebase واتصال الإنترنت.';
@@ -283,8 +243,7 @@ window.endLiveClass=async function(){
   if(!confirm('هل تريد إنهاء الحصة الحالية؟'))return;
   try{
     await deleteDoc(doc(liveDb,'live_classes','current'));
-    if(liveApi){try{liveApi.executeCommand('hangup');liveApi.dispose();}catch(e){}liveApi=null;}
-    document.getElementById('teacherMeetFrame').innerHTML='';
+
     document.getElementById('teacherPdfPanel').style.display='none';
     document.getElementById('teacherLiveInfo').textContent='تم إنهاء الحصة.';
     document.getElementById('endLiveClassBtn').style.display='none';
@@ -302,7 +261,6 @@ window.watchLiveClassForStudent=function(){
     if(!snap.exists()){
       document.getElementById('studentPdfPanel').style.display='none';
       box.style.display='none';join.style.display='none';
-      if(liveApi&&document.getElementById('studentMeetFrame')){try{liveApi.dispose();}catch(e){}liveApi=null;document.getElementById('studentMeetFrame').innerHTML='';}
       return;
     }
     const d=snap.data();
@@ -312,7 +270,7 @@ window.watchLiveClassForStudent=function(){
     renderPdfViewer('student',d,false);
     box.style.display='block';
     info.textContent='🔴 حصة مباشرة الآن: '+(d.title||'حصة أونلاين')+' — '+(d.grade||'');
-    join.style.display=liveRoom===d.room&&liveApi?'none':'block';
+    join.style.display='block';
   },err=>{
     box.style.display='block';
     info.textContent='تعذر التحقق من الحصة المباشرة: '+(err.message||err);
@@ -324,9 +282,10 @@ window.joinStudentLiveClass=async function(){
   const join=document.getElementById('studentJoinLiveBtn');
   join.disabled=true;join.textContent='جاري الدخول...';
   try{
-    await openJitsi(liveClassData.room,'studentMeetFrame',student.name||'طالب');
-    join.style.display='none';
-  }catch(e){alert('تعذر دخول الحصة: '+(e.message||e));}
+    const url=liveClassData.meetUrl;
+    if(!url||!/^https:\/\/(meet\.google\.com)\/[a-z-]+(?:\?.*)?$/i.test(url)){alert('رابط Google Meet غير متاح. تواصل مع المستر.');return;}
+    window.open(url,'_blank','noopener');
+  }catch(e){alert('تعذر فتح Google Meet: '+(e.message||e));}
   finally{join.disabled=false;join.textContent='🚀 دخول الحصة';}
 };
 </script></body></html>
