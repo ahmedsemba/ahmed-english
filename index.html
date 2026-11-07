@@ -1,35 +1,24 @@
 <!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>منصة مستر أحمد السيد انجليزي</title><link rel="manifest" href="manifest.json"><link rel="icon" href="logo.png"><meta name="theme-color" content="#4f46e5"><style>*{font-family:'Cairo',sans-serif;box-sizing:border-box}body{margin:0;background:#0f172a;color:#fff}header{background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:20px;text-align:center}.logo{width:90px;height:90px;border-radius:50%;border:3px solid #fff;background:#fff;object-fit:cover}.payBox{background:#1e293b;border:2px dashed #10b981;border-radius:14px;padding:12px;margin:12px auto;max-width:900px;text-align:center}.payBox a{color:#25D366;text-decoration:none;font-weight:900;font-size:18px;background:#0f172a;padding:8px 16px;border-radius:10px;display:inline-block;margin-top:6px;border:1px solid #25D366}.container{max-width:900px;margin:auto;padding:12px}.card{background:#1e293b;border-radius:14px;padding:16px;margin-bottom:12px}input,select,button,textarea{width:100%;padding:11px;border-radius:10px;border:none;margin-top:8px;font-size:14px}input,select,textarea{background:#0f172a;color:#fff;border:1px solid #334155}button{background:#4f46e5;color:#fff;font-weight:700;cursor:pointer}.tab{flex:1;text-align:center;padding:10px;background:#1e293b;border-radius:10px;cursor:pointer;font-size:11px}.tab.active{background:#4f46e5}.tabs{display:flex;gap:5px;margin-bottom:12px}.student-row{background:#0f172a;padding:12px;border-radius:12px;margin-top:10px;border:1px solid #334155}.btn-small{width:auto;padding:6px 12px;font-size:11px;border-radius:7px;display:inline-block;margin:2px;font-weight:900}.subTab{padding:8px 12px;background:#0f172a;border-radius:8px;cursor:pointer;display:inline-block;margin:4px;font-size:11px}.subTab.active{background:#f59e0b;color:#000;font-weight:900}.gradeTab{padding:8px 10px;background:#1e293b;border-radius:8px;cursor:pointer;display:inline-block;margin:3px;font-size:11px;border:1px solid #334155}.gradeTab.active{background:#4f46e5}.star{font-size:22px;cursor:pointer;color:#334155}.star.active{color:#f59e0b}.certCard{background:linear-gradient(135deg,#fff 0%,#fef9c3 100%);color:#000;padding:28px;border-radius:20px;border:5px solid #f59e0b;text-align:center;margin-top:15px}.scheduleBox{background:linear-gradient(135deg,#10b981,#059669);padding:12px;border-radius:12px;margin-bottom:12px;font-weight:900;text-align:center}</style></head><body><header><img src="logo.png" class="logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135755.png'"><h1 style="margin:8px 0 0;font-size:24px">منصة مستر أحمد السيد انجليزي</h1><div style="font-size:13px">(من الصف الأول للثالث الإعدادي)</div><div style="font-size:11px;margin-top:4px;background:rgba(255,255,255,.2);display:inline-block;padding:3px 12px;border-radius:20px">خبرة 20 عام ⭐</div><br><button id="installBtn" style="display:none;margin-top:10px;background:#10b981;color:#fff;padding:8px 14px;border-radius:10px;border:none;font-weight:900" onclick="installApp()">📲 ثبّت التطبيق</button></header><div class="payBox">💰 للدفع انستا باي واتصالات كاش<br><a href="https://wa.me/201116811324">📱 01116811324 - واتساب</a></div><div class="container"><div class="tabs"><div class="tab active" id="tabBtn-student" onclick="showTab('student')">دخول الطلاب</div><div class="tab" id="tabBtn-register" onclick="showTab('register')">تسجيل</div><div class="tab" id="tabBtn-parent" onclick="showTab('parent')">ولي أمر</div><div class="tab" id="tabBtn-admin" onclick="showTab('admin')">لوحة المستر</div></div><div id="tab-register" class="card" style="display:none"><h3>تسجيل جديد</h3><input id="name" placeholder="الاسم ثلاثي"><input id="phone" placeholder="رقم الواتساب"><input id="parentPhone" placeholder="رقم ولي الأمر"><select id="grade"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select><button onclick="registerStudent()">تسجيل</button><p id="regMsg"></p></div><div id="tab-parent" class="card" style="display:none"><h3>دخول ولي الأمر</h3><input id="parentLoginPhone" placeholder="رقم ولي الأمر"><button onclick="loginParent()" style="background:#f59e0b;color:#000">دخول</button><div id="parentArea" style="display:none"></div></div><div id="tab-student" class="card"><h3>دخول الطالب</h3><input id="loginPhone" placeholder="رقم الواتساب"><button onclick="loginStudent()">دخول</button><p id="loginMsg"></p><div id="studentArea" style="display:none"><h2 id="welcome"></h2><div id="studentSchedule"></div>
 <div id="studentLiveClass" class="card" style="display:none;background:#0f172a;border:2px solid #10b981">
-<h3 style="margin-top:0">🎥 الفصل الأونلاين</h3>
+<h3 style="margin-top:0">🎥 حصة Google Meet</h3>
 <div id="studentLiveInfo" style="color:#cbd5e1;font-size:13px">جاري التحقق من وجود حصة مباشرة...</div>
-<button id="studentJoinLiveBtn" type="button" style="display:none;background:#10b981" onclick="joinStudentLiveClass()">🚀 دخول الحصة</button>
-<p style="font-size:12px;color:#cbd5e1">سيتم فتح الاجتماع في Google Meet. ويمكنك الرجوع لهذه الصفحة لمتابعة الملزمة.</p>
-<div id="studentPdfPanel" style="display:none;margin-top:14px;background:#111827;padding:10px;border-radius:12px">
-<h4 style="margin:0 0 8px">📖 كتاب الحصة</h4><div style="font-size:12px;color:#cbd5e1;margin-bottom:8px">المستر يتحكم في رقم الصفحة، والشرح بالقلم يظهر هنا.</div>
-<div style="text-align:center;margin-bottom:8px;color:#cbd5e1"><span id="studentPdfPage">صفحة 1</span></div>
-<div id="studentPdfStage" style="position:relative;width:100%;height:65vh;min-height:360px;max-height:700px;background:#fff;border-radius:8px;overflow:hidden"><iframe id="studentPdfFrame" title="ملزمة الحصة" style="width:100%;height:100%;border:0"></iframe><canvas id="studentPdfCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"></canvas></div>
-</div>
+<button id="studentJoinLiveBtn" type="button" style="display:none;background:#10b981" onclick="joinStudentLiveClass()">🚀 دخول الحصة على Google Meet</button>
 </div><div id="evalDisplay" class="card" style="background:#0f172a;border:2px solid #f59e0b"></div><div class="card" style="background:#0f172a;border:2px solid #10b981"><h4>💳 المدفوعات</h4><p style="font-size:12px;color:#cbd5e1">سجّل التحويل، وبعدها ابعت صورة الإيصال على واتساب.</p><select id="paymentMethod"><option value="InstaPay">إنستاباي</option><option value="Etisalat Cash">اتصالات كاش</option></select><input id="paymentAmount" type="number" min="1" step="1" placeholder="مبلغ التحويل بالجنيه"><input id="paymentNote" maxlength="120" placeholder="ملاحظة (اختياري)"><button onclick="submitPayment()" style="background:#10b981">إرسال طلب الدفع</button><div id="paymentMsg" style="font-size:12px;margin-top:8px"></div><div id="paymentHistory" style="margin-top:10px"></div></div><div id="certArea"></div><div id="lessonsList"></div><div class="card" style="background:#0f172a;border:2px solid #8b5cf6"><h4>📚 الملازم</h4><div id="materialsList">جاري التحميل...</div></div><div class="card" style="background:#0f172a;border:2px solid #f59e0b"><h4>📝 الواجب</h4><div id="quizContainer">جاري التحميل...</div></div></div></div><div id="tab-admin" class="card" style="display:none"><h3>لوحة المستر 🔒</h3><input id="adminPass" type="password" placeholder="الباسورد"><button onclick="loginAdmin()">دخول</button><div id="adminArea" style="display:none"><div style="margin:10px 0"><span class="subTab active" onclick="showAdminTab('lessons')" id="atab-lessons">الحصة</span><span class="subTab" onclick="showAdminTab('schedules')" id="atab-schedules">المواعيد</span><span class="subTab" onclick="showAdminTab('students')" id="atab-students">الطلاب</span><span class="subTab" onclick="showAdminTab('homeworks')" id="atab-homeworks">الواجبات</span><span class="subTab" onclick="showAdminTab('materials')" id="atab-materials">الملازم</span><span class="subTab" onclick="showAdminTab('payments')" id="atab-payments">المدفوعات</span></div><div id="admin-lessons" class="card" style="background:#0f172a">
 <div class="card" style="background:#111827;border:2px solid #10b981">
-<h4 style="margin-top:0">🎥 بدء فصل أونلاين مباشر</h4>
-<p style="font-size:12px;color:#cbd5e1">ابدأ الحصة من هنا، وسيظهر زر الدخول تلقائياً للطلاب المسجلين في الصف المحدد.</p>
+<h4 style="margin-top:0">🎥 إدارة رابط Google Meet</h4>
+<p style="font-size:12px;color:#cbd5e1">اكتب عنوان الحصة والصف، والصق رابط Google Meet. سيظهر زر الدخول للطلاب المحددين.</p>
 <input id="liveClassTitle" maxlength="100" placeholder="عنوان الحصة">
 <select id="liveClassGrade">
 <option value="للكل">كل الصفوف</option>
 <option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option>
 </select>
-<button id="startLiveClassBtn" onclick="startLiveClass()" style="background:#10b981">▶️ بدء الحصة المباشرة</button>
-<div id="teacherLiveInfo" style="font-size:12px;color:#cbd5e1;margin-top:8px">لا توجد حصة مباشرة نشطة.</div>
-<input id="liveMeetUrl" type="url" placeholder="الصق رابط Google Meet هنا"><button id="openTeacherMeetBtn" type="button" onclick="openTeacherMeet()" style="background:#4285f4">فتح Google Meet</button>
-<div id="teacherPdfPanel" style="margin-top:14px;background:#0f172a;padding:10px;border-radius:12px;border:1px solid #475569">
-<h4 style="margin:0 0 8px">📖 عرض الملزمة أثناء الحصة</h4><input id="teacherPdfLink" placeholder="الصق رابط Google Drive للملزمة هنا"><button type="button" onclick="sharePdfInLiveClass()" style="background:#8b5cf6">عرض الملزمة للطلاب</button><div id="teacherPdfStatus" style="font-size:12px;color:#cbd5e1;margin:8px 0">الصق رابط الملزمة بعد بدء الحصة.</div>
-<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><button type="button" onclick="changeSharedPdfPage(-1)" style="width:auto;margin:0">السابق</button><span id="teacherPdfPage" style="flex:1;text-align:center">صفحة 1</span><button type="button" onclick="changeSharedPdfPage(1)" style="width:auto;margin:0">التالي</button></div>
-<div id="teacherPdfStage" style="display:none;position:relative;width:100%;height:65vh;min-height:360px;max-height:700px;background:#fff;border-radius:8px;overflow:hidden"><iframe id="teacherPdfFrame" title="معاينة الملزمة" style="width:100%;height:100%;border:0"></iframe><canvas id="teacherPdfCanvas" style="position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair"></canvas></div>
-<div style="font-size:11px;color:#cbd5e1;margin-top:6px">استخدم القلم أو إصبعك للرسم فوق الصفحة؛ امسح آخر خط بزر التراجع.</div><button type="button" onclick="undoPdfStroke()" style="background:#64748b">↩️ تراجع عن آخر خط</button>
-</div>
+<input id="liveMeetUrl" type="url" placeholder="الصق رابط Google Meet هنا">
+<button id="openTeacherMeetBtn" type="button" onclick="openTeacherMeet()" style="background:#4285f4">فتح Google Meet</button>
+<button id="startLiveClassBtn" onclick="startLiveClass()" style="background:#10b981">📢 إتاحة رابط الحصة للطلاب</button>
+<div id="teacherLiveInfo" style="font-size:12px;color:#cbd5e1;margin-top:8px">لا توجد حصة نشطة حالياً.</div>
 <button id="endLiveClassBtn" onclick="endLiveClass()" style="display:none;background:#ef4444">⏹️ إنهاء الحصة</button>
 </div>
-<h4>نشر حصة</h4><input id="lessonTitle" placeholder="عنوان"><input id="meetLink" placeholder="لينك ميت"><input id="ytLink" placeholder="يوتيوب"><select id="lessonGrade"><option>للكل</option><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select><button onclick="addLesson()" style="background:#10b981">نشر</button><button onclick="clearLesson()" style="background:#ef4444">إنهاء</button></div><div id="admin-schedules" style="display:none" class="card"><h4>⏰ مواعيد كل صف</h4><select id="schedGrade"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select><input id="schedTime" placeholder="مثال: السبت والثلاثاء 5 مساء"><button onclick="saveSchedule()" style="background:#10b981">حفظ</button><div id="schedulesList"></div></div><div id="admin-students" style="display:none"><input id="studentSearch" placeholder="بحث..." oninput="loadAdminFiltered()"><div id="gradeFilter"></div><div id="studentsCounter" style="background:#4f46e5;padding:8px;border-radius:8px;margin-top:8px;font-weight:900;text-align:center"></div><div id="pendingList"></div><div id="approvedList"></div><div id="blockedList"></div></div><div id="admin-homeworks" style="display:none"><div class="card" style="background:#0f172a;border:1px solid #334155"><h4>📝 إنشاء واجب جديد</h4><input id="quizTitle" placeholder="عنوان الواجب"><select id="quizGrade"><option>للكل</option><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select><div id="quizBuilder" style="margin-top:10px"></div><div style="display:flex;gap:6px;margin-top:10px"><button onclick="addQuizMCQ()" class="btn-small" style="background:#ff9800;flex:1">+ اختياري (حتى 5)</button><button onclick="addQuizPara()" class="btn-small" style="background:#4caf50;flex:1">+ Paragraph</button></div><button onclick="saveQuiz()" style="background:#10b981;margin-top:12px">💾 نشر واجب جديد</button><p id="quizMsg" style="font-size:12px;color:#10b981"></p><button onclick="clearQuizForm()" style="background:#64748b">🧹 مسح النموذج</button></div><div class="card" style="background:#0f172a;margin-top:12px;border:1px solid #334155"><h4>📋 الواجبات النشطة (آخر 7 أيام)</h4><div id="activeHomeworksList">جاري التحميل...</div></div><div class="card" style="background:#0f172a;margin-top:12px"><h4>📊 إجابات الطلبة</h4><input id="quizAnsSearch" placeholder="بحث..." oninput="loadQuizSubmissions()"><div id="quizSubmissionsList" style="margin-top:10px"></div></div></div>
+<h4>نشر حصة</h4><input id="lessonTitle" placeholder="عنوان"><input id="meetLink" placeholder="لينك ميت"><input id="ytLink" placeholder="يوتيوب"><select id="lessonGrade"><option>للكل</option><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select><button onclick="addLesson()" style="background:#10b981">نشر</button><button onclick="clearLesson()" style="background:#ef4444">إنهاء</button></div><div id="admin-schedules" style="display:none" class="card"><h4>⏰ مواعيد كل صف</h4><select id="schedGrade"><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select><input id="schedTime" placeholder="مثال: السبت والثلاثاء 5 مساء"><button onclick="saveSchedule()" style="background:#10b981">حفظ</button><div id="schedulesList"></div></div><div id="admin-students" style="display:none"><input id="studentSearch" placeholder="بحث..." oninput="loadAdminFiltered()"><div id="gradeFilter"></div><div id="studentsCounter" style="background:#4f46e5;padding:8px;border-radius:8px;margin-top:8px;font-weight:900;text-align:center"></div><div id="pendingList"></div><div id="approvedList"></div><div id="blockedList"></div></div><div id="admin-homeworks" style="display:none"><div class="card" style="background:#0f172a;border:1px solid #334155"><h4>📝 إنشاء واجب جديد</h4><input id="quizTitle" placeholder="عنوان الواجب"><select id="quizGrade"><option>للكل</option><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select><label style="display:flex;align-items:center;gap:8px;margin-top:10px;color:#cbd5e1;font-size:13px"><input id="quizShowResults" type="checkbox" style="width:18px;height:18px;margin:0"> إظهار الدرجة والإجابات الصحيحة للطالب بعد الإرسال</label><div id="quizBuilder" style="margin-top:10px"></div><div style="display:flex;gap:6px;margin-top:10px"><button onclick="addQuizMCQ()" class="btn-small" style="background:#ff9800;flex:1">+ اختياري (حتى 5)</button><button onclick="addQuizPara()" class="btn-small" style="background:#4caf50;flex:1">+ Paragraph</button></div><button onclick="saveQuiz()" style="background:#10b981;margin-top:12px">💾 نشر واجب جديد</button><p id="quizMsg" style="font-size:12px;color:#10b981"></p><button onclick="clearQuizForm()" style="background:#64748b">🧹 مسح النموذج</button></div><div class="card" style="background:#0f172a;margin-top:12px;border:1px solid #334155"><h4>📋 الواجبات النشطة (آخر 7 أيام)</h4><div id="activeHomeworksList">جاري التحميل...</div></div><div class="card" style="background:#0f172a;margin-top:12px"><h4>📊 إجابات الطلبة</h4><input id="quizAnsSearch" placeholder="بحث..." oninput="loadQuizSubmissions()"><div id="quizSubmissionsList" style="margin-top:10px"></div></div></div>
 <div id="admin-materials" style="display:none">
 <div class="card" style="background:#0f172a;border:1px solid #334155">
 <h4>📚 إضافة ملزمة</h4>
@@ -106,7 +95,7 @@ window.removeQuizQ=function(id){quizQuestions=quizQuestions.filter(function(x){r
 function renderQuizBuilder(){const c=document.getElementById('quizBuilder');if(!c)return;c.innerHTML='';quizQuestions.forEach(function(qq,idx){let html='<div class="student-row" style="border:1px dashed #f59e0b;padding:10px;margin-top:8px" data-qidx="'+idx+'"><b>'+(qq.type==='mcq'?'اختياري '+(idx+1):'Paragraph')+'</b> <button type="button" class="btn-small" style="background:#ef4444;float:left" onclick="removeQuizQ('+qq.id+')">حذف</button><input class="q-text" data-idx="'+idx+'" placeholder="نص السؤال" value="'+(qq.q||'').replace(/"/g,'&quot;')+'" style="margin-top:8px;width:100%">';if(qq.type==='mcq'){qq.opts.forEach(function(op,i){html+='<div style="display:flex;gap:6px;margin-top:6px;align-items:center"><input type="radio" name="correct_'+qq.id+'" '+(qq.correct===i?'checked':'')+' data-idx="'+idx+'" data-opt="'+i+'" class="q-correct" style="width:auto;min-width:18px"><input class="q-opt" data-idx="'+idx+'" data-opt="'+i+'" placeholder="اختيار '+(i+1)+'" value="'+(op||'').replace(/"/g,'&quot;')+'" style="flex:1"></div>';});}html+='</div>';c.innerHTML+=html;});}
 window.loadCurrentQuizForEdit=async function(){loadActiveHomeworksAdmin();};
 window.clearQuizForm=function(){quizQuestions=[];renderQuizBuilder();document.getElementById('quizTitle').value='';document.getElementById('quizMsg').innerText='';};
-window.saveQuiz=async function(){const title=document.getElementById('quizTitle').value.trim()||'واجب';const grade=document.getElementById('quizGrade').value;if(quizQuestions.length===0){alert('ضيف سؤال');return;}document.querySelectorAll('.q-text').forEach(function(el){const i=parseInt(el.getAttribute('data-idx'));if(!isNaN(i)&&quizQuestions[i])quizQuestions[i].q=el.value;});document.querySelectorAll('.q-opt').forEach(function(el){const i=parseInt(el.getAttribute('data-idx'));const o=parseInt(el.getAttribute('data-opt'));if(!isNaN(i)&&!isNaN(o)&&quizQuestions[i]&&quizQuestions[i].opts)quizQuestions[i].opts[o]=el.value;});document.querySelectorAll('.q-correct:checked').forEach(function(el){const i=parseInt(el.getAttribute('data-idx'));const o=parseInt(el.getAttribute('data-opt'));if(!isNaN(i)&&!isNaN(o)&&quizQuestions[i])quizQuestions[i].correct=o;});for(let i=0;i<quizQuestions.length;i++){const qq=quizQuestions[i];if(!qq.q||!String(qq.q).trim()){alert('اكتب نص السؤال رقم '+(i+1));return;}if(qq.type==='mcq'){for(let j=0;j<(qq.opts||[]).length;j++){if(!qq.opts[j]||!String(qq.opts[j]).trim()){alert('اكتب الاختيار '+(j+1)+' للسؤال رقم '+(i+1));return;}}}}await addDoc(collection(db,'quiz_homeworks'),{title:title,grade:grade,questions:JSON.parse(JSON.stringify(quizQuestions)),created:Date.now(),updated:Date.now()});document.getElementById('quizMsg').innerText='✅ تم نشر الواجب';alert('تم نشر الواجب بنجاح');quizQuestions=[];renderQuizBuilder();document.getElementById('quizTitle').value='';loadActiveHomeworksAdmin();};
+window.saveQuiz=async function(){const title=document.getElementById('quizTitle').value.trim()||'واجب';const grade=document.getElementById('quizGrade').value;if(quizQuestions.length===0){alert('ضيف سؤال');return;}document.querySelectorAll('.q-text').forEach(function(el){const i=parseInt(el.getAttribute('data-idx'));if(!isNaN(i)&&quizQuestions[i])quizQuestions[i].q=el.value;});document.querySelectorAll('.q-opt').forEach(function(el){const i=parseInt(el.getAttribute('data-idx'));const o=parseInt(el.getAttribute('data-opt'));if(!isNaN(i)&&!isNaN(o)&&quizQuestions[i]&&quizQuestions[i].opts)quizQuestions[i].opts[o]=el.value;});document.querySelectorAll('.q-correct:checked').forEach(function(el){const i=parseInt(el.getAttribute('data-idx'));const o=parseInt(el.getAttribute('data-opt'));if(!isNaN(i)&&!isNaN(o)&&quizQuestions[i])quizQuestions[i].correct=o;});for(let i=0;i<quizQuestions.length;i++){const qq=quizQuestions[i];if(!qq.q||!String(qq.q).trim()){alert('اكتب نص السؤال رقم '+(i+1));return;}if(qq.type==='mcq'){for(let j=0;j<(qq.opts||[]).length;j++){if(!qq.opts[j]||!String(qq.opts[j]).trim()){alert('اكتب الاختيار '+(j+1)+' للسؤال رقم '+(i+1));return;}}}}await addDoc(collection(db,'quiz_homeworks'),{title:title,grade:grade,questions:JSON.parse(JSON.stringify(quizQuestions)),showResults:!!document.getElementById('quizShowResults')?.checked,created:Date.now(),updated:Date.now()});document.getElementById('quizMsg').innerText='✅ تم نشر الواجب';alert('تم نشر الواجب بنجاح');quizQuestions=[];renderQuizBuilder();document.getElementById('quizTitle').value='';loadActiveHomeworksAdmin();};
 window.loadActiveHomeworksAdmin=async function(){try{const list=document.getElementById('activeHomeworksList');if(!list)return;const WEEK=7*24*60*60*1000;const now=Date.now();const snap=await getDocs(collection(db,'quiz_homeworks'));let items=[];snap.forEach(function(d){const q=d.data();const age=now-(q.created||0);if(age<=WEEK)items.push({id:d.id,title:q.title||'واجب',grade:q.grade||'',questions:q.questions||[],age:age,created:q.created||0});});items.sort(function(a,b){return(b.created||0)-(a.created||0);});if(items.length===0){list.innerHTML='<p style="color:#94a3b8">لا يوجد واجبات نشطة حالياً</p>';return;}let html='';items.forEach(function(q){const daysLeft=Math.ceil((WEEK-q.age)/(24*60*60*1000));const qs=q.questions||[];const qCount=qs.length;let filled=0;qs.forEach(function(qq){if(qq.q&&String(qq.q).trim())filled++;});const status=filled===qCount&&qCount>0?'✅ جاهز':'⚠️ ناقص نص الأسئلة';html+='<div class="student-row" style="border:1px solid #334155;margin-top:8px;padding:10px"><b>📝 '+q.title+'</b><br><small>'+q.grade+' | '+qCount+' سؤال | متبقي '+daysLeft+' يوم</small><br><small style="color:'+(filled===qCount&&qCount>0?'#10b981':'#f59e0b')+'">'+status+'</small><br><button type="button" class="btn-small" style="background:#ef4444;margin-top:6px" onclick="deleteHomework(\''+q.id+'\')">🗑️ حذف</button></div>';});list.innerHTML=html;}catch(e){console.log(e);}};
 window.deleteHomework=async function(id){if(!confirm('هل تريد حذف هذا الواجب؟'))return;await deleteDoc(doc(db,'quiz_homeworks',id));loadActiveHomeworksAdmin();alert('تم الحذف');};
 window.addMaterial=async function(){try{const title=document.getElementById('matTitle').value.trim();const link=document.getElementById('matLink').value.trim();const grade=document.getElementById('matGrade').value;if(!title||!link){alert('اكتب العنوان واللينك');return;}if(link.indexOf('http')!==0){alert('اللينك لازم يبدأ بـ http');return;}await addDoc(collection(db,'materials'),{title,link,grade,created:Date.now()});document.getElementById('matMsg').innerText='✅ تم إضافة الملزمة';document.getElementById('matTitle').value='';document.getElementById('matLink').value='';loadMaterialsAdmin();alert('تم إضافة الملزمة');}catch(e){alert('خطأ: '+e.message);}};
@@ -115,10 +104,106 @@ window.deleteMaterial=async function(id){if(!confirm('هل تريد حذف هذ�
 window.loadStudentMaterials=async function(){try{const cont=document.getElementById('materialsList');if(!cont||!currentStudent)return;const snap=await getDocs(collection(db,'materials'));let items=[];snap.forEach(function(d){const m=d.data();if(m.grade!=='للكل'&&m.grade!==currentStudent.grade)return;items.push({id:d.id,...m});});items.sort(function(a,b){return(b.created||0)-(a.created||0);});if(items.length===0){cont.innerHTML='<p style=color:#94a3b8>مفيش ملازم لصفك حالياً</p>';return;}let html='';items.forEach(function(m){html+='<div class=student-row style=border:1px solid #8b5cf6;margin-top:8px><b>📚 '+m.title+'</b><br><a href="'+m.link+'" target=_blank style="display:inline-block;margin-top:8px;background:#8b5cf6;color:#fff;padding:8px 14px;border-radius:8px;text-decoration:none;font-weight:700">📂 فتح / تحميل الملزمة</a></div>';});cont.innerHTML=html;}catch(e){console.log(e);cont.innerHTML='<p>خطأ في التحميل</p>';}};
 
 window.escHtml=function(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
-window.loadStudentQuiz=async function(){try{const cont=document.getElementById('quizContainer');if(!cont||!currentStudent)return;cont.innerHTML='<p>جاري تحميل الواجب...</p>';const WEEK=7*24*60*60*1000;const now=Date.now();const studentGrade=(currentStudent.grade||'').trim();const snap=await getDocs(collection(db,'quiz_homeworks'));let active=[];let allRecent=0;snap.forEach(function(d){const q=d.data();const age=now-(q.created||0);if(age>WEEK)return;allRecent++;const g=(q.grade||'').trim();if(g&&g!=='للكل'&&g!==studentGrade)return;active.push({id:d.id,title:q.title||'واجب',grade:g,questions:q.questions||[],age:age,created:q.created||0});});active.sort(function(a,b){return(b.created||0)-(a.created||0);});if(active.length===0){cont.innerHTML='<p>مفيش واجب حالياً لصفك</p><p style="font-size:12px;color:#94a3b8">صفك: '+window.escHtml(studentGrade)+(allRecent>0?' | يوجد واجبات لصفوف أخرى':'')+'</p>';return;}let mySubs={};try{const subSnap=await getDocs(query(collection(db,'quiz_submissions'),where('studentId','==',currentStudent.id)));subSnap.forEach(function(d){const s=d.data();mySubs[s.quizId]={id:d.id,score:s.score||0,totalMCQ:s.totalMCQ||0,paraFeedback:s.paraFeedback||'',paraScore:s.paraScore||0,created:s.created};});}catch(subErr){console.log('submissions error',subErr);}let html='';active.forEach(function(quiz){const daysLeft=Math.max(1,Math.ceil((WEEK-quiz.age)/(24*60*60*1000)));const sub=mySubs[quiz.id];if(sub){let fb=sub.paraFeedback?'<div style="background:#0f172a;padding:8px;border-radius:8px;margin-top:6px">📝 ملاحظة المستر: '+window.escHtml(sub.paraFeedback)+'<br>درجة البراجراف: <b>'+sub.paraScore+'/10</b></div>':'<small style="color:#94a3b8">البراجراف لسه متصححش</small>';html+='<div style="background:#1e293b;border:2px solid #10b981;padding:12px;border-radius:12px;margin-bottom:12px"><b>✅ حليت: '+window.escHtml(quiz.title)+'</b><br>اختياري: <b>'+sub.score+'/'+sub.totalMCQ+'</b><br>'+fb+'<br><small>يختفي بعد '+daysLeft+' يوم</small></div>';}else{html+='<div class="card" style="background:#0f172a;border:2px solid #f59e0b;margin-bottom:12px;padding:12px"><h4 style="margin:0 0 6px">📝 '+window.escHtml(quiz.title)+'</h4><small style="color:#94a3b8">'+window.escHtml(quiz.grade)+' | متبقي '+daysLeft+' يوم</small>';const qs=quiz.questions||[];if(qs.length===0){html+='<p style="color:#f59e0b;margin-top:10px">لا توجد أسئلة في هذا الواجب — أعد نشره من لوحة المستر</p>';}qs.forEach(function(q,i){const qtext=window.escHtml(q.q||'(بدون نص)');if(q.type==='mcq'){html+='<div class="student-row" style="margin-top:10px"><b style="color:#fff">'+(i+1)+'. '+qtext+'</b>';(q.opts||[]).forEach(function(op,oi){const oid='q_'+quiz.id+'_'+i+'_'+oi;const optext=window.escHtml(op||'اختيار '+(oi+1));html+='<div style="display:flex;gap:8px;margin-top:8px;align-items:center"><input type="radio" name="q_'+quiz.id+'_'+i+'" value="'+oi+'" id="'+oid+'" style="width:18px;height:18px;min-width:18px"><label for="'+oid+'" style="color:#fff;cursor:pointer">'+optext+'</label></div>';});html+='</div>';}else{html+='<div class="student-row" style="margin-top:10px"><b style="color:#fff">'+(i+1)+'. '+qtext+'</b><br><small>(حتى 150 كلمة)</small><textarea id="paraAns_'+quiz.id+'" rows="5" placeholder="اكتب هنا..." maxlength="1200" oninput="countParaWords(this,\''+quiz.id+'\')" style="width:100%;margin-top:8px;background:#0f172a;color:#fff;border:1px solid #334155;border-radius:8px;padding:10px"></textarea><div id="wc_'+quiz.id+'" style="font-size:11px;color:#aaa;text-align:left">0 / 150</div></div>';}});html+='<button type="button" onclick="submitQuiz(\''+quiz.id+'\')" style="background:#f59e0b;color:#000;margin-top:12px;width:100%;padding:12px;border:none;border-radius:10px;font-weight:700;cursor:pointer">📤 إرسال</button></div>';}});cont.innerHTML=html||'<p>مفيش واجب حالياً لصفك</p>';}catch(e){console.log(e);const c=document.getElementById('quizContainer');if(c)c.innerHTML='<p style="color:#ef4444">خطأ في تحميل الواجب: '+(e.message||e)+'</p>';}};
+window.loadStudentQuiz=async function(){
+try{
+ const cont=document.getElementById('quizContainer');if(!cont||!currentStudent)return;
+ cont.innerHTML='<p>جاري تحميل الواجب...</p>';
+ const WEEK=7*24*60*60*1000,now=Date.now(),studentGrade=(currentStudent.grade||'').trim();
+ const snap=await getDocs(collection(db,'quiz_homeworks'));let active=[],allRecent=0;
+ snap.forEach(function(d){const q=d.data(),age=now-(q.created||0);if(age>WEEK)return;allRecent++;const g=(q.grade||'').trim();if(g&&g!=='للكل'&&g!==studentGrade)return;active.push({id:d.id,title:q.title||'واجب',grade:g,questions:q.questions||[],age,created:q.created||0,showResults:q.showResults===true});});
+ active.sort((a,b)=>(b.created||0)-(a.created||0));
+ if(!active.length){cont.innerHTML='<p>مفيش واجب حالياً لصفك</p><p style="font-size:12px;color:#94a3b8">صفك: '+window.escHtml(studentGrade)+(allRecent?' | يوجد واجبات لصفوف أخرى':'')+'</p>';return;}
+ let mySubs={};try{const subSnap=await getDocs(query(collection(db,'quiz_submissions'),where('studentId','==',currentStudent.id)));subSnap.forEach(function(d){const s=d.data();mySubs[s.quizId]={id:d.id,score:s.score||0,totalMCQ:s.totalMCQ||0,mcqAnswers:s.mcqAnswers||[],paraFeedback:s.paraFeedback||'',paraScore:s.paraScore||0,created:s.created};});}catch(subErr){console.log('submissions error',subErr);}
+ let html='';
+ active.forEach(function(quiz){
+  const daysLeft=Math.max(1,Math.ceil((WEEK-quiz.age)/(24*60*60*1000))),sub=mySubs[quiz.id];
+  if(sub){
+   let review='';
+   if(quiz.showResults){
+    let mi=0;
+    (quiz.questions||[]).forEach(function(q,i){if(q.type!=='mcq')return;const chosen=Number.isInteger(sub.mcqAnswers[mi])?sub.mcqAnswers[mi]:-1;mi++;review+='<div style="background:#0f172a;padding:8px;border-radius:8px;margin-top:7px"><b>'+(i+1)+'. '+window.escHtml(q.q||'')+'</b><br>إجابتك: '+window.escHtml(chosen>=0?(q.opts||[])[chosen]||'—':'لم تختر إجابة')+'<br>الإجابة الصحيحة: <b style="color:#10b981">'+window.escHtml((q.opts||[])[q.correct]||'—')+'</b></div>';});
+    review='<div style="margin-top:8px">درجتك: <b>'+sub.score+'/'+sub.totalMCQ+'</b></div>'+review;
+   }else{review='<p style="color:#cbd5e1;margin:8px 0 0">تم استلام إجابتك. انتظر مراجعة المستر.</p>';}
+   const fb=sub.paraFeedback?'<div style="background:#0f172a;padding:8px;border-radius:8px;margin-top:8px">📝 ملاحظة المستر: '+window.escHtml(sub.paraFeedback)+'<br>درجة البراجراف: <b>'+sub.paraScore+'/10</b></div>':'';
+   html+='<div style="background:#1e293b;border:2px solid #10b981;padding:12px;border-radius:12px;margin-bottom:12px"><b>✅ تم إرسال: '+window.escHtml(quiz.title)+'</b>'+review+fb+'<br><small>يختفي بعد '+daysLeft+' يوم</small></div>';
+  }else{
+   html+='<div class="card" style="background:#0f172a;border:2px solid #f59e0b;margin-bottom:12px;padding:12px"><h4 style="margin:0 0 6px">📝 '+window.escHtml(quiz.title)+'</h4><small style="color:#94a3b8">'+window.escHtml(quiz.grade)+' | متبقي '+daysLeft+' يوم</small>';
+   const qs=quiz.questions||[];
+   if(!qs.length)html+='<p style="color:#f59e0b;margin-top:10px">لا توجد أسئلة في هذا الواجب</p>';
+   qs.forEach(function(q,i){
+    const qtext=window.escHtml(q.q||'(بدون نص)');
+    if(q.type==='mcq'){
+     html+='<div class="student-row" style="margin-top:10px"><b style="color:#fff">'+(i+1)+'. '+qtext+'</b>';
+     (q.opts||[]).forEach(function(op,oi){const oid='q_'+quiz.id+'_'+i+'_'+oi;html+='<div style="display:flex;gap:8px;margin-top:8px;align-items:center"><input type="radio" name="q_'+quiz.id+'_'+i+'" value="'+oi+'" id="'+oid+'" style="width:18px;height:18px;min-width:18px"><label for="'+oid+'" style="color:#fff;cursor:pointer">'+window.escHtml(op||'اختيار '+(oi+1))+'</label></div>';});
+     html+='</div>';
+    }else{
+     html+='<div class="student-row" style="margin-top:10px"><b style="color:#fff">'+(i+1)+'. '+qtext+'</b><br><small>(حتى 150 كلمة)</small><textarea id="paraAns_'+quiz.id+'" rows="5" placeholder="اكتب هنا..." maxlength="1200" oninput="countParaWords(this,\''+quiz.id+'\')" style="width:100%;margin-top:8px;background:#0f172a;color:#fff;border:1px solid #334155;border-radius:8px;padding:10px"></textarea><div id="wc_'+quiz.id+'" style="font-size:11px;color:#aaa;text-align:left">0 / 150</div></div>';
+    }
+   });
+   html+='<div class="student-row" style="margin-top:10px"><b>📷 إرفاق صور الواجب (اختياري)</b><input id="quizPhotos_'+quiz.id+'" type="file" accept="image/*" multiple style="margin-top:8px"><small style="color:#94a3b8">يمكن اختيار حتى 3 صور من الكاميرا أو المعرض. سيتم ضغط الصور قبل إرسالها.</small></div>';
+   html+='<button type="button" onclick="submitQuiz(\''+quiz.id+'\')" style="background:#f59e0b;color:#000;margin-top:12px;width:100%;padding:12px;border:none;border-radius:10px;font-weight:700;cursor:pointer">📤 إرسال الواجب</button></div>';
+  }
+ });
+ cont.innerHTML=html||'<p>مفيش واجب حالياً لصفك</p>';
+}catch(e){console.log(e);const c=document.getElementById('quizContainer');if(c)c.innerHTML='<p style="color:#ef4444">خطأ في تحميل الواجب: '+(e.message||e)+'</p>';}
+};
 window.countParaWords=function(el,qid){const w=el.value.trim().split(/\s+/).filter(function(x){return x;});const n=el.value.trim()===''?0:w.length;const wc=document.getElementById(qid?'wc_'+qid:'wc');if(wc){wc.innerText=n+' / 150';wc.style.color=n>150?'red':'#aaa';}};
-window.submitQuiz=async function(quizId){const snap=await getDocs(collection(db,'quiz_homeworks'));let quiz=null;snap.forEach(function(d){if(d.id===quizId)quiz=d.data();});if(!quiz)return;let mcqAnswers=[];let totalMCQ=0;let score=0;quiz.questions.forEach(function(q,i){if(q.type==='mcq'){totalMCQ++;const sel=document.querySelector('input[name="q_'+quizId+'_'+i+'"]:checked');const ans=sel?parseInt(sel.value):-1;mcqAnswers.push(ans);if(ans===q.correct)score++;}});const paraEl=document.getElementById('paraAns_'+quizId);const paraText=paraEl?paraEl.value.trim():'';if(paraText){const words=paraText.split(/\s+/).filter(function(w){return w;}).length;if(words>150){alert('اكتر من 150 كلمة');return;}}await addDoc(collection(db,'quiz_submissions'),{studentId:currentStudent.id,studentName:currentStudent.name,grade:currentStudent.grade,quizId,mcqAnswers,paraText,score,totalMCQ,paraScore:0,paraFeedback:'',created:Date.now()});alert('تم ✅ '+score+'/'+totalMCQ);loadStudentQuiz();};
-window.loadQuizSubmissions=async function(){try{const list=document.getElementById('quizSubmissionsList'); if(!list) return;const snap=await getDocs(collection(db,'quiz_submissions'));const search=document.getElementById('quizAnsSearch')?document.getElementById('quizAnsSearch').value.toLowerCase():'';let filtered=[]; let now=Date.now();snap.forEach(function(d){filtered.push({id:d.id,data:d.data()});});if(search) filtered=filtered.filter(function(x){return x.data.studentName.toLowerCase().includes(search);});filtered.sort(function(a,b){return b.data.created-a.data.created;});let html='<div style=background:#4f46e5;padding:8px;border-radius:8px;text-align:center>إجمالي: '+filtered.length+'</div>';filtered.forEach(function(item){const s=item.data; const id=item.id;const ageDays=Math.floor((now-s.created)/(24*60*60*1000));html+='<div class=student-row style='+(ageDays>=7?'opacity:.6':'')+'><b>👦 '+s.studentName+'</b> - '+s.grade+' - '+ageDays+' يوم<br>اختياري: '+s.score+'/'+s.totalMCQ+'<br><div style=background:#0f172a;padding:8px;border-radius:8px;margin-top:6px>'+(s.paraText||'').replace(/</g,'&lt;').substring(0,600)+'</div><div style=display:flex;gap:6px;margin-top:8px><input id=paraScore_'+id+' type=number min=0 max=10 placeholder=/10 value='+(s.paraScore||'')+' style=width:80px><input id=paraFb_'+id+' placeholder=ملاحظتك value='+(s.paraFeedback||'').split('"').join('&quot;')+' style=flex:1></div><button class=btn-small style=background:#10b981;width:100%;margin-top:6px onclick=saveParaFeedback(\''+id+'\')>💾 حفظ</button></div>';});list.innerHTML=html||'لا يوجد';}catch(e){console.log(e);}}
+async function compressQuizPhoto(file){
+ return new Promise(function(resolve,reject){
+  const reader=new FileReader();reader.onerror=()=>reject(new Error('تعذر قراءة الصورة'));
+  reader.onload=function(){const img=new Image();img.onerror=()=>reject(new Error('صيغة الصورة غير مدعومة'));img.onload=function(){
+   const scale=Math.min(1,1100/Math.max(img.width,img.height)),canvas=document.createElement('canvas');
+   canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));
+   const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,canvas.width,canvas.height);
+   let data=canvas.toDataURL('image/jpeg',.62);
+   if(data.length>850000){const c2=document.createElement('canvas');c2.width=Math.max(1,Math.round(canvas.width*.75));c2.height=Math.max(1,Math.round(canvas.height*.75));c2.getContext('2d').drawImage(canvas,0,0,c2.width,c2.height);data=c2.toDataURL('image/jpeg',.42);}
+   if(data.length>850000){reject(new Error('حجم الصورة كبير بعد الضغط. اختَر صورة بحجم أصغر.'));return;}
+   resolve(data);
+  };img.src=reader.result;};reader.readAsDataURL(file);
+ });
+}
+window.submitQuiz=async function(quizId){
+ try{
+  const snap=await getDocs(collection(db,'quiz_homeworks'));let quiz=null;snap.forEach(function(d){if(d.id===quizId)quiz=d.data();});if(!quiz||!currentStudent)return;
+  let mcqAnswers=[],totalMCQ=0,score=0;
+  (quiz.questions||[]).forEach(function(q,i){if(q.type==='mcq'){totalMCQ++;const sel=document.querySelector('input[name="q_'+quizId+'_'+i+'"]:checked');const ans=sel?parseInt(sel.value):-1;mcqAnswers.push(ans);if(ans===q.correct)score++;}});
+  const paraEl=document.getElementById('paraAns_'+quizId),paraText=paraEl?paraEl.value.trim():'';
+  if(paraText&&paraText.split(/\s+/).filter(Boolean).length>150){alert('أكثر من 150 كلمة في البراجراف');return;}
+  const photoInput=document.getElementById('quizPhotos_'+quizId),files=photoInput&&photoInput.files?Array.from(photoInput.files):[];
+  if(files.length>3){alert('مسموح بحد أقصى 3 صور للواجب الواحد');return;}
+  const subRef=await addDoc(collection(db,'quiz_submissions'),{studentId:currentStudent.id,studentName:currentStudent.name,grade:currentStudent.grade,quizId,mcqAnswers,paraText,score,totalMCQ,paraScore:0,paraFeedback:'',photoCount:files.length,created:Date.now()});
+  let photoError='';
+  for(let i=0;i<files.length;i++){
+   try{const dataUrl=await compressQuizPhoto(files[i]);await addDoc(collection(db,'quiz_submission_photos'),{submissionId:subRef.id,studentId:currentStudent.id,quizId,index:i+1,dataUrl,created:Date.now()});}
+   catch(photoErr){photoError=photoErr.message||'تعذر إرسال صورة';break;}
+  }
+  alert(photoError?'تم إرسال إجاباتك، لكن تعذر إرسال بعض الصور: '+photoError:'تم إرسال الواجب بنجاح'+(files.length?' والصور المرفقة':'')+'.');
+  loadStudentQuiz();
+ }catch(e){alert('تعذر إرسال الواجب: '+(e.message||e));}
+};
+window.loadQuizSubmissions=async function(){
+ try{
+  const list=document.getElementById('quizSubmissionsList');if(!list)return;
+  const [subSnap,quizSnap,photoSnap]=await Promise.all([getDocs(collection(db,'quiz_submissions')),getDocs(collection(db,'quiz_homeworks')),getDocs(collection(db,'quiz_submission_photos'))]);
+  const quizMap={},photoMap={};quizSnap.forEach(d=>quizMap[d.id]=d.data());
+  photoSnap.forEach(d=>{const p=d.data();if(!photoMap[p.submissionId])photoMap[p.submissionId]=[];photoMap[p.submissionId].push(p);});
+  const search=(document.getElementById('quizAnsSearch')?.value||'').toLowerCase();
+  let filtered=[];const now=Date.now();subSnap.forEach(d=>filtered.push({id:d.id,data:d.data()}));
+  if(search)filtered=filtered.filter(x=>(x.data.studentName||'').toLowerCase().includes(search));
+  filtered.sort((a,b)=>(b.data.created||0)-(a.data.created||0));
+  let html='<div style="background:#4f46e5;padding:8px;border-radius:8px;text-align:center">إجمالي الإجابات: '+filtered.length+'</div>';
+  filtered.forEach(function(item){
+   const s=item.data,id=item.id,ageDays=Math.floor((now-(s.created||now))/(24*60*60*1000)),quiz=quizMap[s.quizId],questions=quiz?.questions||[];
+   let questionHtml='',mi=0;
+   questions.forEach(function(q,i){if(q.type!=='mcq')return;const ans=Number.isInteger((s.mcqAnswers||[])[mi])?s.mcqAnswers[mi]:-1,chosen=ans>=0?(q.opts||[])[ans]:'لم يختر إجابة',correct=(q.opts||[])[q.correct]||'—';questionHtml+='<div style="background:#0f172a;padding:9px;border-radius:8px;margin-top:7px"><b>س'+(i+1)+': '+window.escHtml(q.q||'')+'</b><br>اختيار الطالب: <span style="color:'+(ans===q.correct?'#10b981':'#f59e0b')+'">'+window.escHtml(chosen||'—')+'</span><br>الإجابة الصحيحة: <b style="color:#10b981">'+window.escHtml(correct)+'</b></div>';mi++;});
+   const photos=(photoMap[id]||[]).sort((a,b)=>(a.index||0)-(b.index||0));
+   const photoHtml=photos.length?'<div style="margin-top:9px"><b>📷 صور الواجب ('+photos.length+')</b><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:7px">'+photos.map(p=>'<a href="'+p.dataUrl+'" target="_blank" rel="noopener"><img src="'+p.dataUrl+'" alt="صورة واجب الطالب" style="width:105px;height:125px;object-fit:cover;border-radius:8px;border:1px solid #475569"></a>').join('')+'</div></div>':'';
+   questionHtml=questionHtml||'<p style="color:#94a3b8">لا توجد أسئلة اختيارية في هذا الواجب.</p>';
+   html+='<div class="student-row" style="'+(ageDays>=7?'opacity:.7':'')+'"><b>👦 '+window.escHtml(s.studentName||'طالب')+'</b> - '+window.escHtml(s.grade||'')+' - '+ageDays+' يوم<br>الدرجة: '+(s.score||0)+'/'+(s.totalMCQ||0)+questionHtml+(s.paraText?'<div style="background:#0f172a;padding:9px;border-radius:8px;margin-top:8px"><b>إجابة البراجراف:</b><br>'+window.escHtml(s.paraText).substring(0,1200)+'</div>':'')+photoHtml+'<div style="display:flex;gap:6px;margin-top:8px"><input id="paraScore_'+id+'" type="number" min="0" max="10" placeholder="درجة /10" value="'+(s.paraScore||'')+'" style="width:100px"><input id="paraFb_'+id+'" placeholder="ملاحظتك" value="'+window.escHtml(s.paraFeedback||'').replace(/"/g,'&quot;')+'" style="flex:1"></div><button class="btn-small" style="background:#10b981;width:100%;margin-top:6px" onclick="saveParaFeedback(\''+id+'\')">💾 حفظ التصحيح</button></div>';
+  });
+  list.innerHTML=html||'لا توجد إجابات حتى الآن';
+ }catch(e){console.log(e);const list=document.getElementById('quizSubmissionsList');if(list)list.innerHTML='<p style="color:#ef4444">تعذر تحميل الإجابات: '+(e.message||e)+'</p>';}
+};
 window.saveParaFeedback=async function(id){const score=document.getElementById('paraScore_'+id).value;const fb=document.getElementById('paraFb_'+id).value;await updateDoc(doc(db,'quiz_submissions',id),{paraScore:parseInt(score)||0,paraFeedback:fb});alert('تم');loadQuizSubmissions();};
 window.submitPayment=async function(){try{if(!currentStudent){alert('سجّل دخولك أولاً');return;}const method=document.getElementById('paymentMethod').value;const amount=Number(document.getElementById('paymentAmount').value);const note=document.getElementById('paymentNote').value.trim();if(!Number.isFinite(amount)||amount<=0){alert('اكتب مبلغ التحويل بشكل صحيح');return;}const ref=await addDoc(collection(db,'payments'),{studentId:currentStudent.id,studentName:currentStudent.name,phone:currentStudent.phone||'',grade:currentStudent.grade||'',method,amount,note,status:'pending',created:Date.now()});const message='طلب دفع جديد\nالطالب: '+currentStudent.name+'\nالصف: '+currentStudent.grade+'\nالمبلغ: '+amount+' جنيه\nالطريقة: '+(method==='InstaPay'?'إنستاباي':'اتصالات كاش')+'\nرقم الطلب: '+ref.id+'\nسأرفق صورة الإيصال.';document.getElementById('paymentMsg').innerHTML='✅ تم تسجيل طلب الدفع. <a target="_blank" rel="noopener" style="color:#25D366;font-weight:900" href="https://wa.me/201116811324?text='+encodeURIComponent(message)+'">اضغط هنا لإرسال صورة الإيصال على واتساب</a>';document.getElementById('paymentAmount').value='';document.getElementById('paymentNote').value='';loadPaymentHistory();}catch(e){alert('تعذر تسجيل الدفع: '+e.message);}};
 window.loadPaymentHistory=async function(){try{const box=document.getElementById('paymentHistory');if(!box||!currentStudent)return;const snap=await getDocs(query(collection(db,'payments'),where('studentId','==',currentStudent.id)));let items=[];snap.forEach(function(d){items.push({id:d.id,...d.data()});});items.sort(function(a,b){return (b.created||0)-(a.created||0);});if(!items.length){box.innerHTML='<small style="color:#94a3b8">لا توجد طلبات دفع سابقة.</small>';return;}const labels={pending:'⏳ قيد المراجعة',approved:'✅ تم تأكيد الدفع',rejected:'❌ لم يتم قبول الإيصال'};box.innerHTML='<b>طلباتك السابقة</b>'+items.slice(0,5).map(function(p){return '<div class="student-row"><b>'+window.escHtml(String(p.amount||0))+' جنيه</b> - '+(p.method==='InstaPay'?'إنستاباي':'اتصالات كاش')+'<br><small>'+(labels[p.status]||'قيد المراجعة')+'</small></div>';}).join('');}catch(e){console.log('payment history',e);}};
@@ -137,155 +222,49 @@ window.loginAdmin=async function(){if(document.getElementById('adminPass').value
 </script>
 <script type="module">
 import { getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, setDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const liveDb=getFirestore(getApp());
-let liveUnsubscribe=null, liveClassData=null;
-function getDriveFileId(value){
-  const text=String(value||'').trim();
-  const m=text.match(/(?:\/file\/d\/|[?&]id=)([a-zA-Z0-9_-]+)/);
-  if(m)return m[1];
-  if(/^[a-zA-Z0-9_-]{20,}$/.test(text))return text;
-  return null;
-}
-function pdfStrokesFor(data,page){
-  const all=data&&data.pdfStrokes&&typeof data.pdfStrokes==='object'?data.pdfStrokes:{};
-  return Array.isArray(all[String(page)])?all[String(page)]:[];
-}
-function drawPdfCanvas(prefix,data){
-  const canvas=document.getElementById(prefix+'PdfCanvas');
-  const stage=document.getElementById(prefix+'PdfStage');
-  if(!canvas||!stage)return;
-  const w=stage.clientWidth,h=stage.clientHeight,dpr=window.devicePixelRatio||1;
-  canvas.width=Math.max(1,Math.round(w*dpr));canvas.height=Math.max(1,Math.round(h*dpr));
-  const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
-  const strokes=pdfStrokesFor(data,data.pdfPage||1);
-  ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#e11d48';ctx.lineWidth=3;
-  strokes.forEach(stroke=>{if(!Array.isArray(stroke)||stroke.length<2)return;ctx.beginPath();stroke.forEach((p,i)=>{const x=p.x*w,y=p.y*h;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.stroke();});
-}
-function renderPdfViewer(prefix,data,isTeacher){
-  const panel=document.getElementById(prefix+'PdfPanel');
-  const stage=document.getElementById(prefix+'PdfStage');
-  if(!panel||!stage)return;
-  if(!data||!data.pdfId){panel.style.display='none';return;}
-  panel.style.display='block';stage.style.display='block';
-  const page=Math.max(1,Number(data.pdfPage)||1);
-  const frame=document.getElementById(prefix+'PdfFrame');
-  const wanted='https://drive.google.com/file/d/'+data.pdfId+'/preview#page='+page;
-  if(frame&&frame.dataset.src!==wanted){frame.src=wanted;frame.dataset.src=wanted;}
-  const pageLabel=document.getElementById(prefix+'PdfPage');if(pageLabel)pageLabel.textContent='صفحة '+page;
-  drawPdfCanvas(prefix,data);
-  if(isTeacher){
-    const status=document.getElementById('teacherPdfStatus');
-    if(status)status.textContent='الملزمة معروضة للطلاب. غيّر الصفحة أو ارسم بالقلم فوقها.';
-  }
-}
-window.sharePdfInLiveClass=async function(){
-  if(!liveClassData||!liveClassData.active){alert('ابدأ الحصة أولاً');return;}
-  const id=getDriveFileId(document.getElementById('teacherPdfLink').value);
-  if(!id){alert('رابط Google Drive غير واضح. انسخ رابط مشاركة الملف كاملاً.');return;}
-  try{
-    const next={...liveClassData,pdfId:id,pdfPage:1,pdfStrokes:{}};
-    await updateDoc(doc(liveDb,'live_classes','current'),{pdfId:id,pdfPage:1,pdfStrokes:{}});
-    liveClassData=next;renderPdfViewer('teacher',next,true);
-  }catch(e){alert('تعذر مشاركة الملزمة: '+(e.message||e));}
+let liveUnsubscribe=null,liveClassData=null;
+function validMeetUrl(value){return /^https:\/\/(meet\.google\.com)\/[a-z-]+(?:\?.*)?$/i.test(String(value||'').trim());}
+window.openTeacherMeet=function(){
+ const url=document.getElementById('liveMeetUrl').value.trim();
+ if(!validMeetUrl(url)){alert('الصق رابط Google Meet صحيحاً يبدأ بـ https://meet.google.com/');return;}
+ window.open(url,'_blank','noopener');
 };
-window.changeSharedPdfPage=async function(delta){
-  if(!liveClassData||!liveClassData.pdfId)return;
-  const page=Math.max(1,(Number(liveClassData.pdfPage)||1)+delta);
-  try{
-    await updateDoc(doc(liveDb,'live_classes','current'),{pdfPage:page});
-    liveClassData={...liveClassData,pdfPage:page};
-    renderPdfViewer('teacher',liveClassData,true);
-    renderPdfViewer('student',liveClassData,false);
-  }catch(e){console.log('pdf page sync',e);}
-};
-window.undoPdfStroke=async function(){
-  if(!liveClassData||!liveClassData.pdfId)return;
-  const page=String(liveClassData.pdfPage||1);
-  const all={...(liveClassData.pdfStrokes||{})};
-  all[page]=Array.isArray(all[page])?all[page].slice(0,-1):[];
-  try{await updateDoc(doc(liveDb,'live_classes','current'),{pdfStrokes:all});liveClassData={...liveClassData,pdfStrokes:all};renderPdfViewer('teacher',liveClassData,true);}catch(e){alert('تعذر التراجع: '+e.message);}
-};
-function enableTeacherPdfDrawing(){
-  const canvas=document.getElementById('teacherPdfCanvas');if(!canvas||canvas.dataset.ready)return;
-  canvas.dataset.ready='1';let active=null;
-  function point(e){const r=canvas.getBoundingClientRect();return{x:Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),y:Math.max(0,Math.min(1,(e.clientY-r.top)/r.height))};}
-  canvas.addEventListener('pointerdown',e=>{if(!liveClassData||!liveClassData.pdfId)return;e.preventDefault();canvas.setPointerCapture(e.pointerId);active=[point(e)];});
-  canvas.addEventListener('pointermove',e=>{if(!active)return;e.preventDefault();active.push(point(e));const preview={...liveClassData,pdfStrokes:{...(liveClassData.pdfStrokes||{}),[String(liveClassData.pdfPage||1)]:[...pdfStrokesFor(liveClassData,liveClassData.pdfPage||1),active]}};drawPdfCanvas('teacher',preview);});
-  canvas.addEventListener('pointerup',async e=>{if(!active)return;const stroke=active;active=null;if(stroke.length<2)return;const page=String(liveClassData.pdfPage||1);const all={...(liveClassData.pdfStrokes||{})};all[page]=[...(all[page]||[]),stroke].slice(-60);try{await updateDoc(doc(liveDb,'live_classes','current'),{pdfStrokes:all});liveClassData={...liveClassData,pdfStrokes:all};drawPdfCanvas('teacher',liveClassData);}catch(err){alert('تعذر حفظ الكتابة: '+err.message);}});
-  canvas.addEventListener('pointercancel',()=>{active=null;});
-}
-enableTeacherPdfDrawing();
-window.addEventListener('resize',()=>{if(liveClassData){drawPdfCanvas('teacher',liveClassData);drawPdfCanvas('student',liveClassData);}});
-
-window.openTeacherMeet=function(){const url=document.getElementById('liveMeetUrl').value.trim();if(!/^https:\/\/(meet\.google\.com)\/[a-z-]+(?:\?.*)?$/i.test(url)){alert('الصق رابط Google Meet صحيحاً يبدأ بـ https://meet.google.com/');return;}window.open(url,'_blank','noopener');};
 window.startLiveClass=async function(){
-  const title=document.getElementById('liveClassTitle').value.trim();
-  const grade=document.getElementById('liveClassGrade').value;
-  const meetUrl=document.getElementById('liveMeetUrl').value.trim();
-  if(!title){alert('اكتب عنوان الحصة أولاً');return;}
-  if(!/^https:\/\/(meet\.google\.com)\/[a-z-]+(?:\?.*)?$/i.test(meetUrl)){alert('أنشئ اجتماع Google Meet والصق رابطه أولاً.');return;}
-  const btn=document.getElementById('startLiveClassBtn');
-  btn.disabled=true;btn.textContent='جاري بدء الحصة...';
-  try{
-    const data={active:true,title,grade,meetUrl,created:Date.now()};
-    await setDoc(doc(liveDb,'live_classes','current'),data);
-    liveClassData=data;
-    document.getElementById('teacherLiveInfo').textContent='الحصة نشطة: '+title+' — '+grade;
-    document.getElementById('endLiveClassBtn').style.display='block';
-    document.getElementById('teacherLiveInfo').textContent='الحصة نشطة: '+title+' — '+grade+' — اضغط فتح Google Meet للدخول.';
-  }catch(e){
-    alert('تعذر بدء الحصة: '+(e.message||e));
-    document.getElementById('teacherLiveInfo').textContent='لم يتم بدء الحصة. راجع صلاحيات Firebase واتصال الإنترنت.';
-  }finally{btn.disabled=false;btn.textContent='▶️ بدء الحصة المباشرة';}
+ const title=document.getElementById('liveClassTitle').value.trim(),grade=document.getElementById('liveClassGrade').value,meetUrl=document.getElementById('liveMeetUrl').value.trim();
+ if(!title){alert('اكتب عنوان الحصة أولاً');return;}
+ if(!validMeetUrl(meetUrl)){alert('الصق رابط Google Meet صحيحاً أولاً.');return;}
+ const btn=document.getElementById('startLiveClassBtn');btn.disabled=true;btn.textContent='جاري إتاحة الرابط...';
+ try{
+  const data={active:true,title,grade,meetUrl,created:Date.now()};
+  await setDoc(doc(liveDb,'live_classes','current'),data);liveClassData=data;
+  document.getElementById('teacherLiveInfo').textContent='رابط الحصة متاح للطلاب: '+title+' — '+grade;
+  document.getElementById('endLiveClassBtn').style.display='block';
+  alert('تم إتاحة رابط Google Meet للطلاب المحددين.');
+ }catch(e){alert('تعذر إتاحة الرابط: '+(e.message||e));}
+ finally{btn.disabled=false;btn.textContent='📢 إتاحة رابط الحصة للطلاب';}
 };
 window.endLiveClass=async function(){
-  if(!confirm('هل تريد إنهاء الحصة الحالية؟'))return;
-  try{
-    await deleteDoc(doc(liveDb,'live_classes','current'));
-
-    document.getElementById('teacherPdfPanel').style.display='none';
-    document.getElementById('teacherLiveInfo').textContent='تم إنهاء الحصة.';
-    document.getElementById('endLiveClassBtn').style.display='none';
-    liveClassData=null;
-  }catch(e){alert('تعذر إنهاء الحصة: '+(e.message||e));}
+ if(!confirm('هل تريد إنهاء الحصة الحالية وإخفاء الرابط عن الطلاب؟'))return;
+ try{await deleteDoc(doc(liveDb,'live_classes','current'));liveClassData=null;document.getElementById('teacherLiveInfo').textContent='تم إنهاء الحصة وإخفاء الرابط.';document.getElementById('endLiveClassBtn').style.display='none';}
+ catch(e){alert('تعذر إنهاء الحصة: '+(e.message||e));}
 };
 window.watchLiveClassForStudent=function(){
-  const student=window.currentStudent;
-  if(!student)return;
-  if(liveUnsubscribe)liveUnsubscribe();
-  const box=document.getElementById('studentLiveClass');
-  const info=document.getElementById('studentLiveInfo');
-  const join=document.getElementById('studentJoinLiveBtn');
-  liveUnsubscribe=onSnapshot(doc(liveDb,'live_classes','current'),snap=>{
-    if(!snap.exists()){
-      document.getElementById('studentPdfPanel').style.display='none';
-      box.style.display='none';join.style.display='none';
-      return;
-    }
-    const d=snap.data();
-    const allowed=d.active&&(d.grade==='للكل'||d.grade===student.grade);
-    if(!allowed){box.style.display='none';join.style.display='none';return;}
-    liveClassData=d;
-    renderPdfViewer('student',d,false);
-    box.style.display='block';
-    info.textContent='🔴 حصة مباشرة الآن: '+(d.title||'حصة أونلاين')+' — '+(d.grade||'');
-    join.style.display='block';
-  },err=>{
-    box.style.display='block';
-    info.textContent='تعذر التحقق من الحصة المباشرة: '+(err.message||err);
-  });
+ const student=window.currentStudent;if(!student)return;
+ if(liveUnsubscribe)liveUnsubscribe();
+ const box=document.getElementById('studentLiveClass'),info=document.getElementById('studentLiveInfo'),join=document.getElementById('studentJoinLiveBtn');
+ liveUnsubscribe=onSnapshot(doc(liveDb,'live_classes','current'),snap=>{
+  if(!snap.exists()){box.style.display='none';join.style.display='none';return;}
+  const d=snap.data(),allowed=d.active&&(d.grade==='للكل'||d.grade===student.grade);
+  if(!allowed){box.style.display='none';join.style.display='none';return;}
+  liveClassData=d;box.style.display='block';info.textContent='🔴 حصة متاحة الآن: '+(d.title||'حصة')+' — '+(d.grade||'');
+  join.style.display='block';
+ },err=>{box.style.display='block';info.textContent='تعذر تحميل رابط الحصة: '+(err.message||err);});
 };
-window.joinStudentLiveClass=async function(){
-  const student=window.currentStudent;
-  if(!student||!liveClassData||!liveClassData.active){alert('لا توجد حصة متاحة حالياً');return;}
-  const join=document.getElementById('studentJoinLiveBtn');
-  join.disabled=true;join.textContent='جاري الدخول...';
-  try{
-    const url=liveClassData.meetUrl;
-    if(!url||!/^https:\/\/(meet\.google\.com)\/[a-z-]+(?:\?.*)?$/i.test(url)){alert('رابط Google Meet غير متاح. تواصل مع المستر.');return;}
-    window.open(url,'_blank','noopener');
-  }catch(e){alert('تعذر فتح Google Meet: '+(e.message||e));}
-  finally{join.disabled=false;join.textContent='🚀 دخول الحصة';}
+window.joinStudentLiveClass=function(){
+ const student=window.currentStudent;if(!student||!liveClassData||!liveClassData.active){alert('لا توجد حصة متاحة حالياً');return;}
+ if(!validMeetUrl(liveClassData.meetUrl)){alert('رابط Google Meet غير متاح. تواصل مع المستر.');return;}
+ window.open(liveClassData.meetUrl,'_blank','noopener');
 };
-</script></body></html>
+</script></script></body></html>
