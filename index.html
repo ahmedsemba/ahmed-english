@@ -233,7 +233,7 @@ window.startLiveClass=async function(){
     liveClassData=data;
     document.getElementById('teacherLiveInfo').textContent='الحصة نشطة: '+title+' — '+grade;
     document.getElementById('endLiveClassBtn').style.display='block';
-    window.open(meetUrl,'_blank','noopener');
+    document.getElementById('teacherLiveInfo').textContent='الحصة نشطة: '+title+' — '+grade+' — اضغط فتح Google Meet للدخول.';
   }catch(e){
     alert('تعذر بدء الحصة: '+(e.message||e));
     document.getElementById('teacherLiveInfo').textContent='لم يتم بدء الحصة. راجع صلاحيات Firebase واتصال الإنترنت.';
