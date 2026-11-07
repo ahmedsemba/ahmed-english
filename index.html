@@ -71,7 +71,7 @@ window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();def
 window.installApp=function(){if(deferredPrompt){deferredPrompt.prompt();}else{alert('من المتصفح: تثبيت');}};
 </script><script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, setDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, setDoc, deleteDoc, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyA3EUyPGWQXi3yEV50QYYCtCASKV-MEE5I",authDomain:"ahmed-elsayed-bf13d.firebaseapp.com",projectId:"ahmed-elsayed-bf13d",storageBucket:"ahmed-elsayed-bf13d.firebasestorage.app",messagingSenderId:"66067955169",appId:"1:66067955169:web:28330bd439b6fd4c73e6a0"};
 const app=initializeApp(firebaseConfig);
 const db=getFirestore(app);
@@ -174,7 +174,7 @@ window.submitQuiz=async function(quizId){
   const subRef=await addDoc(collection(db,'quiz_submissions'),{studentId:currentStudent.id,studentName:currentStudent.name,grade:currentStudent.grade,quizId,mcqAnswers,paraText,score,totalMCQ,paraScore:0,paraFeedback:'',photoCount:files.length,created:Date.now()});
   let photoError='';
   for(let i=0;i<files.length;i++){
-   try{const dataUrl=await compressQuizPhoto(files[i]);await addDoc(collection(db,'quiz_submission_photos'),{submissionId:subRef.id,studentId:currentStudent.id,quizId,index:i+1,dataUrl,created:Date.now()});}
+   try{const dataUrl=await compressQuizPhoto(files[i]);await addDoc(collection(db,'quiz_submission_photos'),{submissionId:subRef.id,studentId:currentStudent.id,quizId,index:i+1,dataUrl,created:Date.now(),expiresAt:Timestamp.fromMillis(Date.now()+7*24*60*60*1000)});}
    catch(photoErr){photoError=photoErr.message||'تعذر إرسال صورة';break;}
   }
   alert(photoError?'تم إرسال إجاباتك، لكن تعذر إرسال بعض الصور: '+photoError:'تم إرسال الواجب بنجاح'+(files.length?' والصور المرفقة':'')+'.');
