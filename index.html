@@ -95,22 +95,22 @@ window.loadStudentQuiz=async function(){
 try{
  const cont=document.getElementById('quizContainer');if(!cont||!currentStudent)return;
  cont.innerHTML='<p>جاري تحميل الواجب...</p>';
- const WEEK=7*24*60*60*1000,now=Date.now(),studentGrade=(currentStudent.grade||'').trim();
- const snap=await getDocs(collection(db,'quiz_homeworks'));let active=[],allRecent=0;
- snap.forEach(function(d){const q=d.data(),age=now-(q.created||0);if(age>WEEK)return;allRecent++;const g=(q.grade||'').trim();if(g&&g!=='للكل'&&g!==studentGrade)return;active.push({id:d.id,title:q.title||'واجب',grade:g,questions:q.questions||[],age,created:q.created||0,showResults:q.showResults===true});});
- active.sort((a,b)=>(b.created||0)-(a.created||0));
- if(!active.length){cont.innerHTML='<p>مفيش واجب حالياً لصفك</p><p style="font-size:12px;color:#94a3b8">صفك: '+window.escHtml(studentGrade)+(allRecent?' | يوجد واجبات لصفوف أخرى':'')+'</p>';return;}
- let mySubs={};try{const subSnap=await getDocs(query(collection(db,'quiz_submissions'),where('studentId','==',currentStudent.id)));subSnap.forEach(function(d){const s=d.data();mySubs[s.quizId]={id:d.id,score:s.score||0,totalMCQ:s.totalMCQ||0,mcqAnswers:s.mcqAnswers||[],paraFeedback:s.paraFeedback||'',paraScore:s.paraScore||0,imageCorrection:s.imageCorrection||'',created:s.created};});}catch(subErr){console.log('submissions error',subErr);}
+  const WEEK=7*24*60*60*1000,now=Date.now(),studentGrade=(currentStudent.grade||'').trim();
+  const mySubs={};
+  try{const subSnap=await getDocs(query(collection(db,'quiz_submissions'),where('studentId','==',currentStudent.id)));subSnap.forEach(function(d){const v=d.data();mySubs[v.quizId]={id:d.id,score:v.score||0,totalMCQ:v.totalMCQ||0,mcqAnswers:v.mcqAnswers||[],paraFeedback:v.paraFeedback||'',paraScore:v.paraScore||0,imageCorrection:v.imageCorrection||'',created:v.created||0};});}catch(subErr){console.log('submissions error',subErr);}
+  const snap=await getDocs(collection(db,'quiz_homeworks'));let active=[],allRecent=0;
+  snap.forEach(function(d){const q=d.data(),age=now-(q.created||0),sub=mySubs[d.id];if(age>WEEK&&(!sub||now-(sub.created||0)>WEEK))return;if(age<=WEEK)allRecent++;const g=(q.grade||'').trim();if(g&&g!=='للكل'&&g!==studentGrade)return;active.push({id:d.id,title:q.title||'واجب',grade:g,questions:q.questions||[],age,created:q.created||0,showResults:q.showResults===true});});
+  active.sort((a,b)=>(b.created||0)-(a.created||0));
+  if(!active.length){cont.innerHTML='<p>مفيش واجب حالياً لصفك</p><p style="font-size:12px;color:#94a3b8">صفك: '+window.escHtml(studentGrade)+(allRecent?' | يوجد واجبات لصفوف أخرى':'')+'</p>';return;}
  let html='';
  active.forEach(function(quiz){
-  const daysLeft=Math.max(1,Math.ceil((WEEK-quiz.age)/(24*60*60*1000))),sub=mySubs[quiz.id];
+   const sub=mySubs[quiz.id],daysLeft=Math.max(1,Math.ceil((WEEK-(sub?now-sub.created:quiz.age))/(24*60*60*1000)));
   if(sub){
-   let review='';
-   if(quiz.showResults){
-    let mi=0;
-    (quiz.questions||[]).forEach(function(q,i){if(q.type!=='mcq')return;const chosen=Number.isInteger(sub.mcqAnswers[mi])?sub.mcqAnswers[mi]:-1;mi++;review+='<div style="background:#0f172a;padding:8px;border-radius:8px;margin-top:7px"><b>'+(i+1)+'. '+window.escHtml(q.q||'')+'</b><br>إجابتك: '+window.escHtml(chosen>=0?(q.opts||[])[chosen]||'—':'لم تختر إجابة')+'<br>الإجابة الصحيحة: <b style="color:#10b981">'+window.escHtml((q.opts||[])[q.correct]||'—')+'</b></div>';});
-    review='<div style="margin-top:8px">درجتك: <b>'+sub.score+'/'+sub.totalMCQ+'</b></div>'+review;
-   }else{review='<p style="color:#cbd5e1;margin:8px 0 0">تم استلام إجابتك. انتظر مراجعة المستر.</p>';}
+    let review='<div style="margin-top:8px;font-size:17px">درجتك: <b style="color:#10b981">'+sub.score+'/'+sub.totalMCQ+'</b></div>';
+    if(quiz.showResults){
+     let mi=0;
+     (quiz.questions||[]).forEach(function(q,i){if(q.type!=='mcq')return;const chosen=Number.isInteger(sub.mcqAnswers[mi])?sub.mcqAnswers[mi]:-1;mi++;review+='<div style="background:#0f172a;padding:8px;border-radius:8px;margin-top:7px"><b>'+(i+1)+'. '+window.escHtml(q.q||'')+'</b><br>إجابتك: '+window.escHtml(chosen>=0?(q.opts||[])[chosen]||'—':'لم تختر إجابة')+'<br>الإجابة الصحيحة: <b style="color:#10b981">'+window.escHtml((q.opts||[])[q.correct]||'—')+'</b></div>';});
+    }
    const fb=(sub.paraFeedback?'<div style="background:#0f172a;padding:8px;border-radius:8px;margin-top:8px">📝 ملاحظة المستر: '+window.escHtml(sub.paraFeedback)+'<br>درجة البراجراف: <b>'+sub.paraScore+'/10</b></div>':'')+(sub.imageCorrection?'<div style="background:#0f172a;padding:10px;border-radius:8px;margin-top:8px;white-space:pre-wrap">✍️ تصحيح المستر للصور:<br>'+window.escHtml(sub.imageCorrection)+'</div>':'');
    html+='<div style="background:#1e293b;border:2px solid #10b981;padding:12px;border-radius:12px;margin-bottom:12px"><b>✅ تم إرسال: '+window.escHtml(quiz.title)+'</b>'+review+fb+'<br><small>يختفي بعد '+daysLeft+' يوم</small></div>';
   }else{
@@ -175,23 +175,25 @@ window.loadQuizSubmissions=async function(){
   const quizMap={},photoMap={};quizSnap.forEach(d=>quizMap[d.id]=d.data());
   try{const photoSnap=await getDocs(collection(db,'quiz_submission_photos'));photoSnap.forEach(d=>{const p=d.data();if(!photoMap[p.submissionId])photoMap[p.submissionId]=[];photoMap[p.submissionId].push(p);});}catch(photoReadError){console.log('تعذر تحميل صور الواجب',photoReadError);}
   const search=(document.getElementById('quizAnsSearch')?.value||'').toLowerCase();
-  let filtered=[];const now=Date.now();subSnap.forEach(d=>filtered.push({id:d.id,data:d.data()}));
+  let filtered=[];const now=Date.now(),WEEK=7*24*60*60*1000;subSnap.forEach(d=>{const data=d.data();if(now-(data.created||0)<=WEEK&&!data.teacherReviewedAt)filtered.push({id:d.id,data});});
   if(search)filtered=filtered.filter(x=>(x.data.studentName||'').toLowerCase().includes(search));
   filtered.sort((a,b)=>(b.data.created||0)-(a.data.created||0));
-  let html='<div style="background:#4f46e5;padding:8px;border-radius:8px;text-align:center">إجمالي الإجابات: '+filtered.length+'</div>';
+  let html='<div style="background:#4f46e5;padding:10px;border-radius:10px;text-align:center">إجابات تنتظر المراجعة: <b>'+filtered.length+'</b><div style="font-size:11px;color:#e2e8f0;margin-top:4px">بعد المراجعة اضغط «إخفاء من قائمتي» — لن تُحذف إجابة الطالب أو درجته.</div></div>';
   filtered.forEach(function(item){
    const s=item.data,id=item.id,ageDays=Math.floor((now-(s.created||now))/(24*60*60*1000)),quiz=quizMap[s.quizId],questions=quiz?.questions||[];
    let questionHtml='',mi=0;
-   questions.forEach(function(q,i){if(q.type!=='mcq')return;const ans=Number.isInteger((s.mcqAnswers||[])[mi])?s.mcqAnswers[mi]:-1,chosen=ans>=0?(q.opts||[])[ans]:'لم يختر إجابة',correct=(q.opts||[])[q.correct]||'—';questionHtml+='<div style="background:#0f172a;padding:9px;border-radius:8px;margin-top:7px"><b>س'+(i+1)+': '+window.escHtml(q.q||'')+'</b><br>اختيار الطالب: <span style="color:'+(ans===q.correct?'#10b981':'#f59e0b')+'">'+window.escHtml(chosen||'—')+'</span><br>الإجابة الصحيحة: <b style="color:#10b981">'+window.escHtml(correct)+'</b></div>';mi++;});
+   questions.forEach(function(q,i){if(q.type!=='mcq')return;const ans=Number.isInteger((s.mcqAnswers||[])[mi])?s.mcqAnswers[mi]:-1,chosen=ans>=0?(q.opts||[])[ans]:'لم يختر إجابة',correct=(q.opts||[])[q.correct]||'—';questionHtml+='<div style="background:#0f172a;padding:9px;border-radius:8px;margin-top:7px"><b>س'+(i+1)+': '+window.escHtml(q.q||'')+'</b><br>اختيار الطالب: <span style="color:'+(ans===q.correct?'#10b981':'#ef4444')+'">'+window.escHtml(chosen||'—')+'</span><br>الإجابة الصحيحة: <b style="color:#10b981">'+window.escHtml(correct)+'</b></div>';mi++;});
    const photos=(photoMap[id]||[]).sort((a,b)=>(a.index||0)-(b.index||0));
    const photoHtml=photos.length?'<div style="margin-top:9px"><b>📷 صور الواجب ('+photos.length+')</b><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:7px">'+photos.map(p=>'<a href="'+p.dataUrl+'" target="_blank" rel="noopener"><img src="'+p.dataUrl+'" alt="صورة واجب الطالب" style="width:105px;height:125px;object-fit:cover;border-radius:8px;border:1px solid #475569"></a>').join('')+'</div></div>':'';
    questionHtml=questionHtml||'<p style="color:#94a3b8">لا توجد أسئلة اختيارية في هذا الواجب.</p>';
-   html+='<div class="student-row" style="'+(ageDays>=7?'opacity:.7':'')+'"><b>👦 '+window.escHtml(s.studentName||'طالب')+'</b> - '+window.escHtml(s.grade||'')+' - '+ageDays+' يوم<br>الدرجة: '+(s.score||0)+'/'+(s.totalMCQ||0)+questionHtml+(s.paraText?'<div style="background:#0f172a;padding:9px;border-radius:8px;margin-top:8px"><b>إجابة البراجراف:</b><br>'+window.escHtml(s.paraText).substring(0,1200)+'</div>':'')+photoHtml+(photos.length?'<button class="btn-small" style="background:#dc2626;width:100%;margin-top:7px" onclick="deleteQuizPhotos(\''+id+'\')">🗑️ حذف صور هذا الواجب</button>':'')+'<textarea id="imageCorrection_'+id+'" placeholder="اكتب تصحيحك على صور الطالب هنا، وسيظهر له في حسابه" style="width:100%;min-height:90px;margin-top:9px;padding:9px;border-radius:8px">'+window.escHtml(s.imageCorrection||'')+'</textarea><div style="display:flex;gap:6px;margin-top:8px"><input id="paraScore_'+id+'" type="number" min="0" max="10" placeholder="درجة /10" value="'+(s.paraScore||'')+'" style="width:100px"><input id="paraFb_'+id+'" placeholder="ملاحظتك" value="'+window.escHtml(s.paraFeedback||'').replace(/"/g,'&quot;')+'" style="flex:1"></div><button class="btn-small" style="background:#10b981;width:100%;margin-top:6px" onclick="saveParaFeedback(\''+id+'\')">💾 حفظ التصحيح</button></div>';
+   const quizTitle=quizMap[s.quizId]?.title||'واجب سابق';
+   html+='<div class="student-row" style="border:1px solid #475569;margin-top:12px"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>👦 '+window.escHtml(s.studentName||'طالب')+'</b><small>'+window.escHtml(s.grade||'')+' | منذ '+ageDays+' يوم</small></div><div style="color:#a5b4fc;margin:6px 0">📝 '+window.escHtml(quizTitle)+'</div><div style="font-size:17px;margin:7px 0">الدرجة: <b style="color:#10b981">'+(s.score||0)+'/'+(s.totalMCQ||0)+'</b></div>'+questionHtml+(s.paraText?'<div style="background:#0f172a;padding:9px;border-radius:8px;margin-top:8px"><b>إجابة البراجراف:</b><br>'+window.escHtml(s.paraText).substring(0,1200)+'</div>':'')+photoHtml+(photos.length?'<button class="btn-small" style="background:#dc2626;width:100%;margin-top:7px" onclick="deleteQuizPhotos(\\''+id+'\\')">🗑️ حذف صور هذا الواجب</button>':'')+'<textarea id="imageCorrection_'+id+'" placeholder="اكتب تصحيحك على صور الطالب هنا، وسيظهر له في حسابه" style="width:100%;min-height:90px;margin-top:9px;padding:9px;border-radius:8px">'+window.escHtml(s.imageCorrection||'')+'</textarea><div style="display:flex;gap:6px;margin-top:8px"><input id="paraScore_'+id+'" type="number" min="0" max="10" placeholder="درجة /10" value="'+(s.paraScore||'')+'" style="width:100px"><input id="paraFb_'+id+'" placeholder="ملاحظتك" value="'+window.escHtml(s.paraFeedback||'').replace(/"/g,'&quot;')+'" style="flex:1"></div><button class="btn-small" style="background:#10b981;width:100%;margin-top:6px" onclick="saveParaFeedback(\\''+id+'\\')">💾 حفظ التصحيح</button><button class="btn-small" style="background:#64748b;width:100%;margin-top:7px" onclick="markSubmissionReviewed(\\''+id+'\\')">✓ تمت المراجعة — إخفاء من قائمتي فقط</button></div>';
   });
   list.innerHTML=html||'لا توجد إجابات حتى الآن';
  }catch(e){console.log(e);const list=document.getElementById('quizSubmissionsList');if(list)list.innerHTML='<p style="color:#ef4444">تعذر تحميل الإجابات: '+(e.message||e)+'</p>';}
 };
-window.saveParaFeedback=async function(id){const score=document.getElementById('paraScore_'+id).value;const fb=document.getElementById('paraFb_'+id).value;const imageCorrection=document.getElementById('imageCorrection_'+id)?.value||'';await updateDoc(doc(db,'quiz_submissions',id),{paraScore:parseInt(score)||0,paraFeedback:fb,imageCorrection});alert('تم حفظ التصحيح الكتابي وسيظهر للطالب.');loadQuizSubmissions();};
+window.saveParaFeedback=async function(id){try{const score=document.getElementById('paraScore_'+id).value;const fb=document.getElementById('paraFb_'+id).value;const imageCorrection=document.getElementById('imageCorrection_'+id)?.value||'';await updateDoc(doc(db,'quiz_submissions',id),{paraScore:parseInt(score)||0,paraFeedback:fb,imageCorrection});alert('تم حفظ التصحيح الكتابي وسيظهر للطالب.');loadQuizSubmissions();}catch(e){alert('تعذر حفظ التصحيح: '+(e.message||e));}};
+window.markSubmissionReviewed=async function(id){if(!confirm('إخفاء هذه الإجابة من قائمة مراجعتك فقط؟ ستظل الدرجة والإجابة ظاهرة للطالب لمدة أسبوع من تاريخ الإرسال.'))return;try{await updateDoc(doc(db,'quiz_submissions',id),{teacherReviewedAt:Date.now()});loadQuizSubmissions();}catch(e){alert('تعذر إخفاء الإجابة: '+(e.message||e));}};
 window.deleteQuizPhotos=async function(id){
  if(!confirm('هل تريد حذف صور هذا الواجب نهائياً؟ ستختفي من حساب الطالب أيضاً، ولن تُحذف الدرجة أو الإجابات.'))return;
  try{
