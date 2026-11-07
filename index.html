@@ -184,9 +184,9 @@ window.submitQuiz=async function(quizId){
 window.loadQuizSubmissions=async function(){
  try{
   const list=document.getElementById('quizSubmissionsList');if(!list)return;
-  const [subSnap,quizSnap,photoSnap]=await Promise.all([getDocs(collection(db,'quiz_submissions')),getDocs(collection(db,'quiz_homeworks')),getDocs(collection(db,'quiz_submission_photos'))]);
+  const [subSnap,quizSnap]=await Promise.all([getDocs(collection(db,'quiz_submissions')),getDocs(collection(db,'quiz_homeworks'))]);
   const quizMap={},photoMap={};quizSnap.forEach(d=>quizMap[d.id]=d.data());
-  photoSnap.forEach(d=>{const p=d.data();if(!photoMap[p.submissionId])photoMap[p.submissionId]=[];photoMap[p.submissionId].push(p);});
+  try{const photoSnap=await getDocs(collection(db,'quiz_submission_photos'));photoSnap.forEach(d=>{const p=d.data();if(!photoMap[p.submissionId])photoMap[p.submissionId]=[];photoMap[p.submissionId].push(p);});}catch(photoReadError){console.log('تعذر تحميل صور الواجب',photoReadError);}
   const search=(document.getElementById('quizAnsSearch')?.value||'').toLowerCase();
   let filtered=[];const now=Date.now();subSnap.forEach(d=>filtered.push({id:d.id,data:d.data()}));
   if(search)filtered=filtered.filter(x=>(x.data.studentName||'').toLowerCase().includes(search));
