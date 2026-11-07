@@ -15,6 +15,24 @@ function json(data, status = 200) {
 function base64url(bytes) {
   let binary = "";
   for (const byte of bytes) binary += String.fromCharCode(byte);
+  return binary.replace(/=/g, "").split("+").join("-").split("/").join("_");
+}onst corsHeaders = {
+  "Access-Control-Allow-Origin": "https://ahmedsemba.github.io",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Max-Age": "86400"
+};
+
+function json(data, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json; charset=utf-8" }
+  });
+}
+
+function base64url(bytes) {
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
   return btoa(binary).replace(/=/g, "").replace(/\\+/g, "-").replace(/\\//g, "_");
 }
 
