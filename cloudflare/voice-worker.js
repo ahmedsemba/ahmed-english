@@ -16,29 +16,10 @@ function base64url(bytes) {
   let binary = "";
   for (const byte of bytes) binary += String.fromCharCode(byte);
   return binary.replace(/=/g, "").split("+").join("-").split("/").join("_");
-}onst corsHeaders = {
-  "Access-Control-Allow-Origin": "https://ahmedsemba.github.io",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-  "Access-Control-Max-Age": "86400"
-};
-
-function json(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { ...corsHeaders, "Content-Type": "application/json; charset=utf-8" }
-  });
-}
-
-function base64url(bytes) {
-  let binary = "";
-  for (const byte of bytes) binary += String.fromCharCode(byte);
-  return btoa(binary).replace(/=/g, "").replace(/\\+/g, "-").replace(/\\//g, "_");
 }
 
 function randomText(length = 24) {
-  const bytes = crypto.getRandomValues(new Uint8Array(length));
-  return base64url(bytes);
+  return base64url(crypto.getRandomValues(new Uint8Array(length)));
 }
 
 async function signToken(payload, secret) {
@@ -62,26 +43,17 @@ function safeName(value) {
 
 export default {
   async fetch(request, env) {
-    if (request.method === "OPTIONS") {
-      return new Response(null, { status: 204, headers: corsHeaders });
-    }
+    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders });
 
     const url = new URL(request.url);
     if (request.method === "GET" && url.pathname === "/health") {
-      return json({
-        ok: true,
-        configured: Boolean(env.LIVEKIT_URL && env.LIVEKIT_API_KEY && env.LIVEKIT_API_SECRET && env.TEACHER_PIN && env.CLASSROOMS)
-      });
+      return json({ ok: true, configured: Boolean(env.LIVEKIT_URL && env.LIVEKIT_API_KEY && env.LIVEKIT_API_SECRET && env.TEACHER_PIN && env.CLASSROOMS) });
     }
-
     if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
     let body;
-    try {
-      body = await request.json();
-    } catch {
-      return json({ error: "Invalid JSON body" }, 400);
-    }
+    try { body = await request.json(); }
+    catch { return json({ error: "Invalid JSON body" }, 400); }
 
     if (!env.CLASSROOMS || !env.LIVEKIT_URL || !env.LIVEKIT_API_KEY || !env.LIVEKIT_API_SECRET || !env.TEACHER_PIN) {
       return json({ error: "Voice service is not configured yet." }, 503);
@@ -93,9 +65,7 @@ export default {
       const roomName = "ahmed_class_" + roomId;
       const joinCode = randomText(9);
       const room = {
-        roomId,
-        roomName,
-        joinCode,
+        roomId, roomName, joinCode,
         title: safeName(body.title || "حصة مباشرة"),
         grade: safeName(body.grade || "للكل"),
         createdAt: Date.now()
@@ -110,7 +80,6 @@ export default {
       if (!roomRaw) return json({ error: "الحصة غير موجودة أو انتهت." }, 404);
       const room = JSON.parse(roomRaw);
       const role = body.role === "teacher" ? "teacher" : "student";
-
       if (role === "teacher") {
         if (body.teacherPin !== env.TEACHER_PIN) return json({ error: "Teacher PIN is incorrect." }, 403);
       } else if (!body.joinCode || body.joinCode !== room.joinCode) {
@@ -134,14 +103,12 @@ export default {
           roomAdmin: role === "teacher"
         }
       }, env.LIVEKIT_API_SECRET);
-
       return json({ ok: true, token, livekitUrl: env.LIVEKIT_URL, identity, role });
     }
 
     if (url.pathname === "/end") {
       if (body.teacherPin !== env.TEACHER_PIN) return json({ error: "Teacher PIN is incorrect." }, 403);
-      const roomId = String(body.roomId || "");
-      await env.CLASSROOMS.delete("room:" + roomId);
+      await env.CLASSROOMS.delete("room:" + String(body.roomId || ""));
       return json({ ok: true });
     }
 
