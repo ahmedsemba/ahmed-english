@@ -235,14 +235,27 @@ window.addEventListener('resize',()=>{if(liveClassData){drawPdfCanvas('teacher',
 
 let activeVoiceRoom=null;
 let activeVoiceRole=null;
-function cleanWorkerUrl(value){let u=String(value||"").trim();while(u.endsWith("/"))u=u.slice(0,-1);return u;}
+const DEFAULT_VOICE_WORKER_URL="https://cold-brook-24ee.ahmedelsayedhr83.workers.dev";
+function cleanWorkerUrl(value){
+  const raw=String(value||"").trim();
+  if(!raw)return DEFAULT_VOICE_WORKER_URL;
+  try{
+    const u=new URL(raw);
+    if(u.protocol!=="https:"||u.search||u.hash)throw new Error("invalid");
+    return u.origin+u.pathname.replace(/\\/+$/,"");
+  }catch(e){throw new Error("رابط خادم الصوت غير صحيح. امسح الرابط واستخدم الرابط المحفوظ تلقائياً.");}
+}
 const voiceWorkerInput=document.getElementById("voiceWorkerUrl");
 if(voiceWorkerInput){
-  try{voiceWorkerInput.value=localStorage.getItem("voiceWorkerUrl")||"";}catch(e){}
-  voiceWorkerInput.addEventListener("change",()=>{try{localStorage.setItem("voiceWorkerUrl",cleanWorkerUrl(voiceWorkerInput.value));}catch(e){}});
+  let saved="";
+  try{saved=localStorage.getItem("voiceWorkerUrl")||"";}catch(e){}
+  try{voiceWorkerInput.value=cleanWorkerUrl(saved);}catch(e){voiceWorkerInput.value=DEFAULT_VOICE_WORKER_URL;}
+  voiceWorkerInput.addEventListener("input",()=>{try{localStorage.setItem("voiceWorkerUrl",voiceWorkerInput.value.trim());}catch(e){}});
 }
 async function voicePost(endpoint,path,payload){
-  const response=await fetch(cleanWorkerUrl(endpoint)+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+  const base=cleanWorkerUrl(endpoint);
+  const requestUrl=new URL(path.replace(/^\\/+/, "")+"/",base+"/").toString().replace(/\\/$/,"");
+  const response=await fetch(requestUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
   let data={};try{data=await response.json();}catch(e){}
   if(!response.ok||!data.ok)throw new Error(data.error||("تعذر الاتصال بخدمة الصوت ("+response.status+")"));
   return data;
@@ -266,7 +279,10 @@ async function connectLiveAudio(role,data,teacherPin){
   room.on(client.RoomEvent.ParticipantConnected,()=>voiceStatus(role,"متصل بالصوت. عدد المشاركين: "+(room.remoteParticipants.size+1)));
   room.on(client.RoomEvent.ParticipantDisconnected,()=>voiceStatus(role,"متصل بالصوت. عدد المشاركين: "+(room.remoteParticipants.size+1)));
   room.on(client.RoomEvent.Disconnected,()=>{if(activeVoiceRoom===room){activeVoiceRoom=null;updateVoiceButtons(role,false);voiceStatus(role,"انقطع الاتصال بالفصل.");}});
-  await room.connect(tokenData.livekitUrl||data.livekitUrl,tokenData.token);
+  const livekitUrl=String(tokenData.livekitUrl||data.livekitUrl||"").trim();
+  try{const livekitParsed=new URL(livekitUrl);if(livekitParsed.protocol!=="wss:"&&livekitParsed.protocol!=="https:")throw new Error("protocol");}
+  catch(e){throw new Error("رابط LiveKit غير صحيح في إعدادات خدمة الصوت. راجع قيمة LIVEKIT_URL في Cloudflare.");}
+  await room.connect(livekitUrl,tokenData.token);
   activeVoiceRoom=room;activeVoiceRole=role;
   let micError=null;try{await room.localParticipant.setMicrophoneEnabled(role==="teacher");}catch(e){micError=e;}
   updateVoiceButtons(role,true);
