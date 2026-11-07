@@ -227,6 +227,7 @@ window.loadPaperHomeworkStudent=async function(){
   const submitted={};
   subSnap.forEach(d=>{const v={id:d.id,...d.data()};submitted[v.homeworkId]=v;});
   const now=Date.now(),WEEK=7*24*60*60*1000;
+  let nextExpiry=Infinity;
   let html='<h4 style="color:#67e8f9">الواجبات الورقية ونتائج التصحيح</h4>',shown=0;
   hwSnap.forEach(d=>{
    const h=d.data(),sub=submitted[d.id];
@@ -234,6 +235,7 @@ window.loadPaperHomeworkStudent=async function(){
    if(sub&&sub.reviewed){
     const reviewedAt=Number(sub.reviewedAt||0);
     if(!reviewedAt||now-reviewedAt>WEEK)return;
+    nextExpiry=Math.min(nextExpiry,reviewedAt+WEEK);
     shown++;
     html+='<div class="student-row"><b>📷 '+window.escHtml(h.title||sub.title||'واجب ورقي')+'</b><br><small>تم التصحيح — النتيجة متاحة لمدة أسبوع من تاريخ التصحيح</small><div style="color:#10b981;margin-top:8px;font-size:18px;font-weight:900">الدرجة: '+Number(sub.score||0)+'/10</div><div style="white-space:pre-wrap;margin-top:5px">ملاحظات المستر: '+window.escHtml(sub.feedback||'لا توجد ملاحظات')+'</div></div>';
     return;
@@ -249,6 +251,7 @@ window.loadPaperHomeworkStudent=async function(){
    html+='</div>';
   });
   box.innerHTML=html+(shown?'':'<p style="color:#94a3b8">لا توجد واجبات ورقية مطلوبة حالياً أو نتائج حديثة.</p>');
+  if(Number.isFinite(nextExpiry))setTimeout(()=>{if(currentStudent)loadPaperHomeworkStudent();},Math.max(1000,nextExpiry-Date.now()+500));
  }catch(e){box.innerHTML='<p style="color:#ef4444">تعذر تحميل الواجب الورقي: '+window.escHtml(e.message||e)+'</p>';}
 };
 window.submitPaperHomework=async function(homeworkId,title){
