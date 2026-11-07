@@ -272,16 +272,42 @@ window.submitPaperHomework=async function(homeworkId,title){
   loadPaperHomeworkStudent();
  }catch(e){alert('تعذر إرسال صور الواجب: '+(e.message||e));}
 };
+let paperPhotoCleanupDone=false,paperPhotoCleanupPromise=null;
+async function cleanupExpiredPaperPhotos(subSnap,photoSnap){
+ if(paperPhotoCleanupDone)return 0;
+ if(paperPhotoCleanupPromise)return paperPhotoCleanupPromise;
+ paperPhotoCleanupPromise=(async()=>{
+  const cutoff=Date.now()-7*24*60*60*1000,expiredIds=new Set();
+  subSnap.forEach(d=>{
+   const x=d.data(),reviewedAt=Number(x.reviewedAt||0);
+   if(x.reviewed===true&&reviewedAt>0&&reviewedAt<cutoff)expiredIds.add(d.id);
+  });
+  if(!expiredIds.size){paperPhotoCleanupDone=true;return 0;}
+  const targets=photoSnap.docs.filter(d=>expiredIds.has(d.data().submissionId));
+  if(!targets.length){paperPhotoCleanupDone=true;return 0;}
+  const results=await Promise.allSettled(targets.map(d=>deleteDoc(doc(db,'paper_submission_photos',d.id))));
+  const removed=results.filter(x=>x.status==='fulfilled').length;
+  if(results.every(x=>x.status==='fulfilled'))paperPhotoCleanupDone=true;
+  else console.warn('بعض صور الواجبات لم تُحذف، ستتم إعادة المحاولة عند فتح لوحة الواجبات مرة أخرى.');
+  return removed;
+ })().catch(e=>{console.warn('تعذر تنظيف صور الواجبات القديمة:',e);return 0;}).finally(()=>{paperPhotoCleanupPromise=null;});
+ return paperPhotoCleanupPromise;
+}
 window.loadPaperHomeworkAdmin=async function(){
  const box=document.getElementById('paperHomeworkAdminList');if(!box)return;
  try{
   const [subSnap,photoSnap]=await Promise.all([getDocs(collection(db,'paper_submissions')),getDocs(collection(db,'paper_submission_photos'))]);
-  const photos={};photoSnap.forEach(d=>{const p=d.data();(photos[p.submissionId]||(photos[p.submissionId]=[])).push(p);});
+  const deletedPhotoCount=await cleanupExpiredPaperPhotos(subSnap,photoSnap);
+  const expiredIds=new Set();
+  const cutoff=Date.now()-7*24*60*60*1000;
+  subSnap.forEach(d=>{const x=d.data(),t=Number(x.reviewedAt||0);if(x.reviewed===true&&t>0&&t<cutoff)expiredIds.add(d.id);});
+  const photos={};photoSnap.forEach(d=>{const p=d.data();if(expiredIds.has(p.submissionId))return;(photos[p.submissionId]||(photos[p.submissionId]=[])).push(p);});
   const term=(document.getElementById('paperSubmissionSearch')?.value||'').trim().toLowerCase();
   let rows=[];subSnap.forEach(d=>{const x={id:d.id,...d.data()};if(!x.archivedAt&&(!term||(x.studentName||'').toLowerCase().includes(term)))rows.push(x);});
   rows.sort((a,b)=>(b.created||0)-(a.created||0));
-  if(!rows.length){box.innerHTML='<p style="color:#94a3b8">لا توجد تسليمات ظاهرة حالياً.</p>';return;}
-  box.innerHTML=rows.map(x=>{
+  const cleanupNote=deletedPhotoCount?'<p style="color:#10b981;font-size:12px">🧹 تم حذف '+deletedPhotoCount+' صورة قديمة بعد مرور 7 أيام على تصحيحها، مع الاحتفاظ بالدرجات والملاحظات.</p>':'';
+  if(!rows.length){box.innerHTML=cleanupNote+'<p style="color:#94a3b8">لا توجد تسليمات ظاهرة حالياً.</p>';return;}
+  box.innerHTML=cleanupNote+rows.map(x=>{
    const imgs=(photos[x.id]||[]).sort((a,b)=>(a.index||0)-(b.index||0));
    const imageHtml=imgs.map(p=>'<a href="'+p.dataUrl+'" target="_blank" rel="noopener"><img src="'+p.dataUrl+'" alt="صورة الواجب" style="width:100px;height:130px;object-fit:contain;background:#fff;border-radius:8px;margin:4px"></a>').join('');
    const correction=x.reviewed?'<small style="color:#10b981;display:block;margin-top:6px">✅ تم التصحيح — الدرجة '+Number(x.score||0)+'/10</small><button class="btn-small" style="background:#64748b;width:100%;margin-top:7px" onclick="archivePaperSubmission(\''+x.id+'\')">إخفاء من قائمتي</button>':'<small style="color:#fbbf24;display:block;margin-top:6px">⏳ في انتظار التصحيح</small>';
