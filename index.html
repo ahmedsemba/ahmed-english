@@ -253,9 +253,15 @@ if(voiceWorkerInput){
   voiceWorkerInput.addEventListener("input",()=>{try{localStorage.setItem("voiceWorkerUrl",voiceWorkerInput.value.trim());}catch(e){}});
 }
 async function voicePost(endpoint,path,payload){
-  const base=cleanWorkerUrl(endpoint);
-  const requestUrl=new URL(path.replace(/^\\/+/, "")+"/",base+"/").toString().replace(/\\/$/,"");
-  const response=await fetch(requestUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+  let requestUrl="";
+  try{
+    const base=cleanWorkerUrl(endpoint);
+    requestUrl=base.replace(/\\/+$/,"")+"/"+String(path||"").replace(/^\\/+/, "");
+    new URL(requestUrl);
+  }catch(e){throw new Error("رابط خادم الصوت غير صالح: "+(e.message||e));}
+  let response;
+  try{response=await fetch(requestUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});}
+  catch(e){throw new Error("فشل الاتصال بخادم الصوت: "+(e.message||e));}
   let data={};try{data=await response.json();}catch(e){}
   if(!response.ok||!data.ok)throw new Error(data.error||("تعذر الاتصال بخدمة الصوت ("+response.status+")"));
   return data;
@@ -309,12 +315,16 @@ window.startLiveClass=async function(){
   if(!pin){alert("اكتب رمز المدرس السري لخدمة الصوت.");return;}
   const btn=document.getElementById("startLiveClassBtn");btn.disabled=true;btn.textContent="جاري تجهيز الفصل...";
   try{
-    const created=await voicePost(endpoint,"/create",{teacherPin:pin,title,grade});
+    let created;
+    try{created=await voicePost(endpoint,"/create",{teacherPin:pin,title,grade});}
+    catch(e){throw new Error("المرحلة 1 (إنشاء الفصل): "+(e.message||e));}
     const data={active:true,title,grade,voiceEndpoint:endpoint,livekitUrl:created.livekitUrl,roomId:created.roomId,roomName:created.roomName,joinCode:created.joinCode,created:Date.now()};
-    await setDoc(doc(liveDb,"live_classes","current"),data);liveClassData=data;
+    try{await setDoc(doc(liveDb,"live_classes","current"),data);liveClassData=data;}
+    catch(e){throw new Error("المرحلة 2 (حفظ بيانات الفصل): "+(e.message||e));}
     document.getElementById("teacherLiveInfo").textContent="الفصل نشط: "+title+" — "+grade+" — يمكن للطلاب الدخول من حساباتهم.";
     document.getElementById("endLiveClassBtn").style.display="block";
-    await connectLiveAudio("teacher",data,pin);
+    try{await connectLiveAudio("teacher",data,pin);}
+    catch(e){throw new Error("المرحلة 3 (الاتصال بالصوت): "+(e.message||e));}
   }catch(e){alert("تعذر بدء الفصل: "+(e.message||e));document.getElementById("teacherLiveInfo").textContent="لم يتم تشغيل الفصل. راجع إعدادات خادم الصوت والإنترنت.";}
   finally{btn.disabled=false;btn.textContent="▶️ بدء الحصة والاتصال بالصوت";}
 };
