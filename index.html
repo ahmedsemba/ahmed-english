@@ -115,6 +115,10 @@
           <div id="materialsList">جاري التحميل...</div>
         </div>
         <div class="card" style="background:#0f172a;border:2px solid #06b6d4">
+          <h4>✍️ واجب البراجراف</h4>
+          <div id="paragraphHomeworkStudent">جاري تحميل واجبات البراجراف...</div>
+        </div>
+        <div class="card" style="background:#0f172a;border:2px solid #06b6d4">
           <h4>📷 الواجب الورقي</h4>
           <div id="paperHomeworkStudent">جاري تحميل الواجبات الورقية...</div>
         </div>
@@ -190,6 +194,17 @@
         </div>
 
         <div id="admin-homeworks" style="display:none">
+          <div class="card" style="background:#0f172a;border:1px solid #8b5cf6">
+            <h4>✍️ نشر واجب براجراف</h4>
+            <input id="paragraphTitle" placeholder="عنوان واجب البراجراف">
+            <textarea id="paragraphPrompt" rows="3" placeholder="اكتب المطلوب من الطالب في البراجراف"></textarea>
+            <select id="paragraphGrade"><option>للكل</option><option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option><option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option><option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select>
+            <button onclick="publishParagraphHomework()" style="background:#8b5cf6">📢 نشر واجب البراجراف</button>
+            <div id="paragraphHomeworkAdminMsg" style="font-size:12px;margin-top:7px"></div>
+            <hr style="border-color:#334155;margin:14px 0"><h4>📥 إجابات البراجراف للتصحيح</h4>
+            <input id="paragraphSubmissionSearch" placeholder="بحث باسم الطالب" oninput="loadParagraphHomeworkAdmin()">
+            <div id="paragraphHomeworkAdminList">لا توجد إجابات حتى الآن.</div>
+          </div>
           <div class="card" style="background:#0f172a;border:1px solid #06b6d4">
             <h4>📷 نشر واجب ورقي</h4>
             <input id="paperTitle" placeholder="عنوان الواجب (مثال: صفحة 25 — تدريبات الوحدة)">
@@ -269,6 +284,7 @@
       });
       if (t === 'students' && window.loadAdmin) window.loadAdmin();
       if (t === 'homeworks' && window.loadPaperHomeworkAdmin) window.loadPaperHomeworkAdmin();
+      if (t === 'homeworks' && window.loadParagraphHomeworkAdmin) window.loadParagraphHomeworkAdmin();
       if (t === 'schedules' && window.loadSchedulesAdmin) window.loadSchedulesAdmin();
       if (t === 'materials' && window.loadMaterialsAdmin) window.loadMaterialsAdmin();
       if (t === 'payments' && window.loadPaymentsAdmin) window.loadPaymentsAdmin();
@@ -569,6 +585,100 @@
       });
     }
 
+    window.limitParagraphWords = function(el) {
+      const words = el.value.trim().split(/\s+/).filter(Boolean);
+      if (words.length > 150) el.value = words.slice(0, 150).join(' ');
+    };
+
+    window.publishParagraphHomework = async function() {
+      try {
+        const title = document.getElementById('paragraphTitle').value.trim();
+        const prompt = document.getElementById('paragraphPrompt').value.trim();
+        const grade = document.getElementById('paragraphGrade').value;
+        if (!title || !prompt) { alert('اكتب عنوان الواجب والمطلوب من الطالب'); return; }
+        await addDoc(collection(db, 'paragraph_homeworks'), { title, prompt, grade, created: Date.now(), active: true });
+        document.getElementById('paragraphTitle').value = '';
+        document.getElementById('paragraphPrompt').value = '';
+        document.getElementById('paragraphHomeworkAdminMsg').innerText = '✅ تم نشر واجب البراجراف للصف المحدد.';
+        loadParagraphHomeworkAdmin();
+      } catch (e) { alert('تعذر نشر واجب البراجراف: ' + (e.message || e)); }
+    };
+
+    window.loadParagraphHomeworkStudent = async function() {
+      const box = document.getElementById('paragraphHomeworkStudent');
+      if (!box || !currentStudent) return;
+      try {
+        const [hwSnap, subSnap] = await Promise.all([
+          getDocs(collection(db, 'paragraph_homeworks')),
+          getDocs(query(collection(db, 'paragraph_submissions'), where('studentId', '==', currentStudent.id)))
+        ]);
+        const submitted = {};
+        subSnap.forEach(d => { const v = { id: d.id, ...d.data() }; submitted[v.homeworkId] = v; });
+        let html = '', shown = 0;
+        hwSnap.forEach(d => {
+          const h = d.data(), sub = submitted[d.id];
+          if (h.active === false || (h.grade !== 'للكل' && h.grade !== currentStudent.grade)) return;
+          if (sub && sub.acknowledged) return;
+          shown++;
+          html += '<div class="student-row"><b>' + window.escHtml(h.title || 'واجب براجراف') + '</b><div style="white-space:pre-wrap;margin:8px 0;color:#cbd5e1">' + window.escHtml(h.prompt || '') + '</div>';
+          if (sub && sub.reviewed) {
+            html += '<div style="color:#10b981;font-weight:900">✅ تم تصحيح إجابتك</div><div style="white-space:pre-wrap;margin:8px 0">ملاحظات المستر: ' + window.escHtml(sub.feedback || 'أحسنت') + '</div><button class="btn-small" style="background:#10b981;width:100%" onclick="acknowledgeParagraphCorrection(\'' + sub.id + '\')">تم</button>';
+          } else if (sub) {
+            html += '<div style="color:#fbbf24;margin-top:8px">✅ تم إرسال إجابتك — في انتظار التصحيح</div>';
+          } else {
+            html += '<p style="font-size:12px;color:#cbd5e1">اكتب البراجراف في حدود 150 كلمة.</p><textarea id="paragraphAnswer_' + d.id + '" rows="8" maxlength="3000" oninput="limitParagraphWords(this)" placeholder="اكتب البراجراف هنا..." style="min-height:180px"></textarea><button class="btn-small" style="background:#8b5cf6;width:100%;margin-top:8px" onclick="submitParagraphHomework(\'' + d.id + '\',\'' + window.escHtml(h.title || 'واجب براجراف').replace(/'/g, '&#39;') + '\')">📤 إرسال البراجراف</button>';
+          }
+          html += '</div>';
+        });
+        box.innerHTML = html || '<p style="color:#94a3b8">لا توجد واجبات براجراف مطلوبة حالياً.</p>';
+      } catch (e) { box.innerHTML = '<p style="color:#ef4444">تعذر تحميل واجب البراجراف: ' + window.escHtml(e.message || e) + '</p>'; }
+    };
+
+    window.submitParagraphHomework = async function(homeworkId, title) {
+      try {
+        if (!currentStudent) { alert('سجّل دخولك أولاً'); return; }
+        const answerBox = document.getElementById('paragraphAnswer_' + homeworkId);
+        const answer = answerBox ? answerBox.value.trim() : '';
+        const wordCount = answer ? answer.split(/\s+/).filter(Boolean).length : 0;
+        if (!answer) { alert('اكتب البراجراف أولاً'); return; }
+        if (wordCount > 150) { alert('الحد الأقصى 150 كلمة'); return; }
+        await addDoc(collection(db, 'paragraph_submissions'), { homeworkId, title, answer, studentId: currentStudent.id, studentName: currentStudent.name, grade: currentStudent.grade, created: Date.now(), reviewed: false, acknowledged: false, feedback: '' });
+        alert('✅ تم إرسال البراجراف للمستر.');
+        loadParagraphHomeworkStudent();
+      } catch (e) { alert('تعذر إرسال البراجراف: ' + (e.message || e)); }
+    };
+
+    window.loadParagraphHomeworkAdmin = async function() {
+      const box = document.getElementById('paragraphHomeworkAdminList');
+      if (!box) return;
+      try {
+        const snap = await getDocs(collection(db, 'paragraph_submissions'));
+        const term = (document.getElementById('paragraphSubmissionSearch')?.value || '').trim().toLowerCase();
+        const rows = [];
+        snap.forEach(d => { const x = { id: d.id, ...d.data() }; if (!x.reviewed && (!term || (x.studentName || '').toLowerCase().includes(term))) rows.push(x); });
+        rows.sort((a, b) => (b.created || 0) - (a.created || 0));
+        if (!rows.length) { box.innerHTML = '<p style="color:#94a3b8">لا توجد براجرافات في انتظار التصحيح.</p>'; return; }
+        box.innerHTML = rows.map(x => '<div class="student-row"><b>👦 ' + window.escHtml(x.studentName || 'طالب') + '</b> — ' + window.escHtml(x.grade || '') + '<br><b>📝 ' + window.escHtml(x.title || 'واجب براجراف') + '</b><br><small>' + new Date(x.created || Date.now()).toLocaleString('ar-EG') + '</small><div style="white-space:pre-wrap;background:#111827;padding:10px;border-radius:8px;margin-top:8px">' + window.escHtml(x.answer || '') + '</div><textarea id="paragraphFeedback_' + x.id + '" rows="3" placeholder="اكتب ملاحظاتك للطالب" style="min-height:75px"></textarea><button class="btn-small" style="background:#10b981;width:100%;margin-top:7px" onclick="saveParagraphCorrection(\'' + x.id + '\')">📨 إرسال التصحيح للطالب</button></div>').join('');
+      } catch (e) { box.innerHTML = '<p style="color:#ef4444">تعذر تحميل إجابات البراجراف: ' + window.escHtml(e.message || e) + '</p>'; }
+    };
+
+    window.saveParagraphCorrection = async function(id) {
+      try {
+        const feedback = document.getElementById('paragraphFeedback_' + id).value.trim();
+        if (!feedback) { alert('اكتب ملاحظات التصحيح أولاً'); return; }
+        await updateDoc(doc(db, 'paragraph_submissions', id), { feedback, reviewed: true, reviewedAt: Date.now(), acknowledged: false });
+        alert('✅ تم إرسال التصحيح للطالب وإخفاء الإجابة من قائمة التصحيح.');
+        loadParagraphHomeworkAdmin();
+      } catch (e) { alert('تعذر حفظ التصحيح: ' + (e.message || e)); }
+    };
+
+    window.acknowledgeParagraphCorrection = async function(id) {
+      try {
+        await updateDoc(doc(db, 'paragraph_submissions', id), { acknowledged: true, acknowledgedAt: Date.now() });
+        loadParagraphHomeworkStudent();
+      } catch (e) { alert('تعذر تأكيد استلام التصحيح: ' + (e.message || e)); }
+    };
+
     window.publishPaperHomework = async function() {
       try {
         const title = document.getElementById('paperTitle').value.trim();
@@ -682,8 +792,11 @@
       const score = Number(document.getElementById('paperScore_' + id).value);
       const feedback = document.getElementById('paperFeedback_' + id).value.trim();
       if (!Number.isFinite(score) || score < 0 || score > 10) { alert('اكتب الدرجة من 0 إلى 10'); return; }
-      await updateDoc(doc(db, 'paper_submissions', id), { score, feedback, reviewed: true, reviewedAt: Date.now() });
-      alert('✅ تم حفظ التصحيح وسيظهر للطالب.');
+      const photoSnap = await getDocs(query(collection(db, 'paper_submission_photos'), where('submissionId', '==', id)));
+      await Promise.all(photoSnap.docs.map(p => deleteDoc(doc(db, 'paper_submission_photos', p.id))));
+      const correctedAt = Date.now();
+      await updateDoc(doc(db, 'paper_submissions', id), { score, feedback, reviewed: true, reviewedAt: correctedAt, archivedAt: correctedAt });
+      alert('✅ تم حفظ التصحيح للطالب وحذف صور الإجابة من قائمة المعلم.');
       loadPaperHomeworkAdmin();
     };
 
@@ -753,6 +866,7 @@
         loadStudentLesson();
         loadStudentMaterials();
         loadPaperHomeworkStudent();
+        loadParagraphHomeworkStudent();
         loadPaymentHistory();
       } catch (e) { document.getElementById('loginMsg').innerText = 'خطأ: ' + e.message; }
     };
