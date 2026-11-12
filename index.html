@@ -144,6 +144,7 @@
           <input id="lessonTitle" placeholder="عنوان الحصة">
           <input id="meetLink" placeholder="لينك Google Meet">
           <input id="ytLink" placeholder="لينك يوتيوب">
+          <input id="teachmintLink" placeholder="لينك Teachmint (اختياري)">
           <select id="lessonGrade">
             <option>للكل</option>
             <option>الصف الأول الابتدائي</option>
@@ -159,27 +160,6 @@
           <button onclick="addLesson()" style="background:#10b981">نشر الحصة والروابط</button>
           <button onclick="clearLesson()" style="background:#ef4444;margin-top:6px">إنهاء الحصة وإخفاء الروابط</button>
 
-          <hr style="border-color:#334155;margin:16px 0">
-          <h4 style="color:#10b981">👨‍🏫 دخول المعلم (Teacher Entry)</h4>
-          <p style="font-size:12px;color:#cbd5e1">بدء البث المباشر على Google Meet وإتاحة الرابط للطلاب فورياً.</p>
-          <input id="liveClassTitle" placeholder="عنوان الحصة المباشرة">
-          <select id="liveClassGrade">
-            <option>للكل</option>
-            <option>الصف الأول الابتدائي</option>
-            <option>الصف الثاني الابتدائي</option>
-            <option>الصف الثالث الابتدائي</option>
-            <option>الصف الرابع الابتدائي</option>
-            <option>الصف الخامس الابتدائي</option>
-            <option>الصف السادس الابتدائي</option>
-            <option>الصف الأول الإعدادي</option>
-            <option>الصف الثاني الإعدادي</option>
-            <option>الصف الثالث الإعدادي</option>
-          </select>
-          <input id="liveMeetUrl" placeholder="رابط Google Meet (مثال: https://meet.google.com/abc-defg-hij)">
-          <div id="teacherLiveInfo" style="font-size:12px;color:#f59e0b;margin-top:6px"></div>
-          <button id="startLiveClassBtn" type="button" onclick="startLiveClass()" style="background:#10b981;margin-top:8px">📢 إتاحة رابط الحصة للطلاب</button>
-          <button id="endLiveClassBtn" type="button" onclick="endLiveClass()" style="background:#ef4444;margin-top:6px;display:none">⛔ إنهاء الحصة وإغلاق الميت</button>
-          <button type="button" onclick="openTeacherMeet()" style="background:#2563eb;margin-top:6px">🚀 دخول المعلم (فتح غرفة Meet)</button>
         </div>
 
         <div id="admin-schedules" style="display:none" class="card">
@@ -487,7 +467,8 @@
           }
           html = '<div class="card"><h3>' + l.title + '</h3>' +
             (l.meetLink ? '<a target="_blank" href="' + l.meetLink + '" style="background:#10b981;display:block;padding:12px;border-radius:10px;color:#fff;text-decoration:none;margin-top:10px">🎥 ميت</a>' : '') +
-            (l.ytLink ? '<a target="_blank" href="' + l.ytLink + '" style="background:#ef4444;display:block;padding:10px;border-radius:10px;color:#fff;text-decoration:none;margin-top:8px">▶️ يوتيوب</a>' : '') + '</div>';
+            (l.ytLink ? '<a target="_blank" rel="noopener" href="' + l.ytLink + '" style="background:#ef4444;display:block;padding:10px;border-radius:10px;color:#fff;text-decoration:none;margin-top:8px">▶️ يوتيوب</a>' : '') +
+            (l.teachmintLink ? '<a target="_blank" rel="noopener" href="' + l.teachmintLink + '" style="background:#2563eb;display:block;padding:10px;border-radius:10px;color:#fff;text-decoration:none;margin-top:8px">🎓 Teachmint</a>' : '') + '</div>';
         });
         document.getElementById('lessonsList').innerHTML = html || '<p>لا يوجد حصص حاليا</p>';
       } catch (e) { console.log(e); }
@@ -831,9 +812,10 @@
       const title = document.getElementById('lessonTitle').value.trim();
       const meetLink = document.getElementById('meetLink').value.trim();
       const ytLink = document.getElementById('ytLink').value.trim();
+      const teachmintLink = document.getElementById('teachmintLink').value.trim();
       const grade = document.getElementById('lessonGrade').value;
       if (!title) { alert('عنوان'); return; }
-      await setDoc(doc(db, 'lessons', 'current'), { title, meetLink, ytLink, grade, created: Date.now() });
+      await setDoc(doc(db, 'lessons', 'current'), { title, meetLink, ytLink, teachmintLink, grade, created: Date.now() });
       alert('تم نشر الحصة');
     };
 
