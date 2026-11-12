@@ -28,8 +28,11 @@
     .subTab.active { background: #f59e0b; color: #000; font-weight: 900; }
     .gradeTab { padding: 8px 10px; background: #1e293b; border-radius: 8px; cursor: pointer; display: inline-block; margin: 3px; font-size: 11px; border: 1px solid #334155; }
     .gradeTab.active { background: #4f46e5; }
-    .star { font-size: 22px; cursor: pointer; color: #334155; }
-    .star.active { color: #f59e0b; }
+    .score-control { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .score-control select { width: 82px; margin: 4px 0; padding: 7px; }
+    .attendance-control { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 9px; }
+    .attendance-control select { width: 125px; margin: 4px 0; padding: 7px; }
+    .attendance-history { background: #111827; border-radius: 9px; padding: 9px; margin-top: 8px; }
     .certCard { background: linear-gradient(135deg, #fff 0%, #fef9c3 100%); color: #000; padding: 28px; border-radius: 20px; border: 5px solid #f59e0b; text-align: center; margin-top: 15px; }
     .scheduleBox { background: linear-gradient(135deg, #10b981, #059669); padding: 12px; border-radius: 12px; margin-bottom: 12px; font-weight: 900; text-align: center; }
   </style>
@@ -341,23 +344,69 @@
       return /^data:image\/(png|jpe?g|webp|gif);base64,[A-Za-z0-9+\/=]+$/.test(u) ? u : '';
     };
 
-    function starsHtml(v) {
-      let h = '';
-      for (let i = 1; i <= 5; i++) h += (i <= v ? '⭐' : '☆');
-      return h;
-    }
-
-    function editableStars(id, type, val) {
-      let h = '';
-      for (let i = 1; i <= 5; i++) {
-        h += '<span class="star ' + (i <= val ? 'active' : '') + '" onclick="setEval(\'' + id + '\',\'' + type + '\',' + i + ')">★</span>';
+    // الدرجات الجديدة من 10، مع قراءة القيم القديمة من 5 دون تغيير بياناتها.
+    function score10(student, type) {
+      const current = student[type + '10'];
+      if (current !== undefined && current !== null && current !== '') {
+        const n = Number(current);
+        return Number.isFinite(n) ? Math.max(0, Math.min(10, n)) : 0;
       }
-      return h + ' <small>(' + val + '/5)</small>';
+      const old = Number(student[type] || 0);
+      return Number.isFinite(old) ? Math.max(0, Math.min(10, old * 2)) : 0;
     }
 
-    window.setEval = async function(id, type, val) {
-      await updateDoc(doc(db, 'students', id), { [type]: val });
-      loadAdminFiltered();
+    function editableScore(id, type, val) {
+      let options = '';
+      for (let i = 0; i <= 10; i++) options += '<option value="' + i + '"' + (i === Number(val) ? ' selected' : '') + '>' + i + '</option>';
+      return '<span class="score-control"><select id="score_' + id + '_' + type + '" aria-label="الدرجة من 10">' + options + '</select><small>/ 10</small><button class="btn-small" style="background:#10b981" onclick="setEvalFromInput(\\'' + id + '\\',\\'' + type + '\\')">حفظ</button></span>';
+    }
+
+    window.setEvalFromInput = async function(id, type) {
+      const input = document.getElementById('score_' + id + '_' + type);
+      const val = Number(input && input.value);
+      if (!Number.isInteger(val) || val < 0 || val > 10) { alert('اختر درجة من 0 إلى 10'); return; }
+      try {
+        await updateDoc(doc(db, 'students', id), { [type + '10']: val });
+        loadAdminFiltered();
+      } catch (e) { alert('تعذر حفظ الدرجة: ' + (e.message || e)); }
+    };
+
+    function todayAttendanceKey() {
+      const d = new Date();
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+
+    function attendanceHistoryHtml(attendanceByDate) {
+      const records = attendanceByDate && typeof attendanceByDate === 'object' ? attendanceByDate : {};
+      const keys = Object.keys(records).filter(k => records[k] === 'present' || records[k] === 'absent').sort().reverse().slice(0, 10);
+      if (!keys.length) return '<div class="attendance-history"><small style="color:#cbd5e1">لم يتم تسجيل الحضور بعد.</small></div>';
+      return '<div class="attendance-history"><b>📅 سجل الحضور</b>' + keys.map(k =>
+        '<div style="margin-top:5px"><small>' + window.escHtml(k) + '</small> — ' +
+        (records[k] === 'present' ? '<b style="color:#10b981">✅ حاضر</b>' : '<b style="color:#f87171">❌ غائب</b>') +
+        '</div>'
+      ).join('') + '</div>';
+    }
+
+    function attendanceEditor(id, attendanceByDate) {
+      const key = todayAttendanceKey();
+      const records = attendanceByDate && typeof attendanceByDate === 'object' ? attendanceByDate : {};
+      const current = records[key] || '';
+      return '<div class="attendance-control"><b>حضور اليوم:</b><select id="attendance_' + id + '"><option value=""' + (!current ? ' selected' : '') + '>لم يحدد</option><option value="present"' + (current === 'present' ? ' selected' : '') + '>نعم - حاضر</option><option value="absent"' + (current === 'absent' ? ' selected' : '') + '>لا - غائب</option></select><button class="btn-small" style="background:#0891b2" onclick="saveStudentAttendance(\\'' + id + '\\')">حفظ الحضور</button></div>';
+    }
+
+    window.saveStudentAttendance = async function(id) {
+      const input = document.getElementById('attendance_' + id);
+      const status = input ? input.value : '';
+      if (!['present', 'absent'].includes(status)) { alert('اختر حاضر أو غائب أولاً'); return; }
+      const key = todayAttendanceKey();
+      try {
+        await updateDoc(doc(db, 'students', id), {
+          ['attendanceByDate.' + key]: status,
+          ['attendanceUpdatedAt.' + key]: Date.now()
+        });
+        alert('✅ تم حفظ حضور الطالب بتاريخ ' + key);
+        loadAdminFiltered();
+      } catch (e) { alert('تعذر حفظ الحضور: ' + (e.message || e)); }
     };
 
     window.registerStudent = async function() {
@@ -426,6 +475,8 @@
         for (const d of snap.docs) {
           const s = d.data(), sid = d.id;
           const sched = await getScheduleForGrade(s.grade);
+          const attendanceHtml = attendanceHistoryHtml(s.attendanceByDate);
+          const monthScore = score10(s, 'eval_month');
           const paySnap = await getDocs(query(collection(db, 'payments'), where('studentId', '==', sid)));
           let payments = [];
           paySnap.forEach(p => payments.push({ id: p.id, ...p.data() }));
@@ -435,7 +486,7 @@
             '<div class="student-row"><b>' + window.escHtml(String(p.amount || 0)) + ' جنيه</b> — ' + (p.method === 'InstaPay' ? 'إنستاباي' : 'اتصالات كاش') + '<br><small>' + (labels[p.status] || 'قيد المراجعة') + '</small></div>'
           ).join('') : '<small style="color:#94a3b8">لا توجد مدفوعات مسجلة حتى الآن.</small>';
 
-          html += '<div class="card" style="background:#0f172a;border:2px solid #f59e0b"><h3>👦 ' + window.escHtml(s.name || '') + ' - ' + window.escHtml(s.grade || '') + '</h3><div class="scheduleBox">⏰ ' + sched + '</div><div>تفاعل: ' + starsHtml(s.eval_interaction || 0) + ' واجب: ' + starsHtml(s.eval_homework || 0) + ' شهر: ' + starsHtml(s.eval_month || 0) + '</div><hr style="border-color:#334155;margin:12px 0"><h4>💳 مدفوعات الطالب</h4><p style="font-size:12px;color:#cbd5e1">سجّل المبلغ وطريقة التحويل، ثم أرسل صورة الإيصال عبر واتساب.</p><select id="parentPaymentMethod_' + sid + '"><option value="InstaPay">إنستاباي</option><option value="Etisalat Cash">اتصالات كاش</option></select><input id="parentPaymentAmount_' + sid + '" type="number" min="1" step="1" placeholder="المبلغ المحوّل بالجنيه"><input id="parentPaymentNote_' + sid + '" maxlength="120" placeholder="ملاحظة (اختياري)"><button onclick="submitParentPayment(\'' + sid + '\',\'' + window.escHtml(s.name || '').replace(/'/g, '&#39;') + '\',\'' + window.escHtml(s.grade || '').replace(/'/g, '&#39;') + '\')" style="background:#10b981">تسجيل الدفع وإرسال صورة الإيصال</button><div id="parentPaymentMsg_' + sid + '" style="font-size:12px;margin-top:8px"></div><h4 style="margin-top:14px">سجل المدفوعات</h4><div>' + history + '</div></div>';
+          html += '<div class="card" style="background:#0f172a;border:2px solid #f59e0b"><h3>👦 ' + window.escHtml(s.name || '') + ' - ' + window.escHtml(s.grade || '') + '</h3><div class="scheduleBox">⏰ ' + sched + '</div><div>تفاعل: ' + score10(s, 'eval_interaction') + '/10 — واجب: ' + score10(s, 'eval_homework') + '/10 — امتحان الشهر: ' + monthScore + '/10</div>' + (monthScore >= 9 ? '<div style="color:#fbbf24;font-weight:900;margin-top:7px">🏆 درع التفوق</div>' : '') + attendanceHtml + '<hr style="border-color:#334155;margin:12px 0"><h4>💳 مدفوعات الطالب</h4><p style="font-size:12px;color:#cbd5e1">سجّل المبلغ وطريقة التحويل، ثم أرسل صورة الإيصال عبر واتساب.</p><select id="parentPaymentMethod_' + sid + '"><option value="InstaPay">إنستاباي</option><option value="Etisalat Cash">اتصالات كاش</option></select><input id="parentPaymentAmount_' + sid + '" type="number" min="1" step="1" placeholder="المبلغ المحوّل بالجنيه"><input id="parentPaymentNote_' + sid + '" maxlength="120" placeholder="ملاحظة (اختياري)"><button onclick="submitParentPayment(\'' + sid + '\',\'' + window.escHtml(s.name || '').replace(/'/g, '&#39;') + '\',\'' + window.escHtml(s.grade || '').replace(/'/g, '&#39;') + '\')" style="background:#10b981">تسجيل الدفع وإرسال صورة الإيصال</button><div id="parentPaymentMsg_' + sid + '" style="font-size:12px;margin-top:8px"></div><h4 style="margin-top:14px">سجل المدفوعات</h4><div>' + history + '</div></div>';
         }
         document.getElementById('parentArea').innerHTML = html;
         document.getElementById('parentArea').style.display = 'block';
@@ -769,8 +820,9 @@
         document.getElementById('welcome').innerText = 'أهلا يا ' + data.name;
         const sched = await getScheduleForGrade(data.grade);
         document.getElementById('studentSchedule').innerHTML = '<div class="scheduleBox">⏰ ' + data.grade + ': ' + sched + '</div>';
-        document.getElementById('evalDisplay').innerHTML = '<h4>📊 تقييمك</h4><div>تفاعل: ' + starsHtml(data.eval_interaction || 0) + '</div><div>واجب: ' + starsHtml(data.eval_homework || 0) + '</div><div>شهر: ' + starsHtml(data.eval_month || 0) + '</div>';
-        if ((data.eval_month || 0) >= 5) {
+        const monthScore = score10(data, 'eval_month');
+        document.getElementById('evalDisplay').innerHTML = '<h4>📊 تقييمك</h4><div>التفاعل: ' + score10(data, 'eval_interaction') + '/10</div><div>الواجب: ' + score10(data, 'eval_homework') + '/10</div><div>امتحان الشهر: ' + monthScore + '/10</div>';
+        if (monthScore >= 9) {
           const today = new Date().toLocaleDateString('ar-EG');
           document.getElementById('certArea').innerHTML = '<div class="certCard"><h2>🏆 درع التفوق</h2><h2>' + data.name + '</h2><p>' + today + '</p></div>';
         }
@@ -821,7 +873,7 @@
           } else if (s.status == 'blocked') {
             if (blocked) blocked.innerHTML += '<div class="student-row" style="border:2px solid #ef4444"><div><b>🚫 ' + window.escHtml(s.name) + '</b> - ' + window.escHtml(s.phone) + '</div><div><button class="btn-small" onclick="approve(\'' + id + '\')" style="background:#10b981">✅ فك الحظر</button><button class="btn-small" onclick="deleteStudent(\'' + id + '\')" style="background:#ef4444">🗑️ حذف</button></div></div>';
           } else {
-            if (approved) approved.innerHTML += '<div class="student-row" style="border:2px solid #f59e0b"><div style="width:100%"><b>✅ ' + window.escHtml(s.name) + '</b> - ' + window.escHtml(s.phone) + '<br><small>' + window.escHtml(s.grade) + '</small><div>تفاعل: ' + editableStars(id, 'eval_interaction', s.eval_interaction || 0) + '</div><div>واجب: ' + editableStars(id, 'eval_homework', s.eval_homework || 0) + '</div><div>شهر: ' + editableStars(id, 'eval_month', s.eval_month || 0) + '</div><div style="margin-top:10px;display:flex;gap:6px"><button class="btn-small" onclick="blockStudent(\'' + id + '\')" style="background:#f97316;flex:1">🚫 حظر</button><button class="btn-small" onclick="deleteStudent(\'' + id + '\')" style="background:#ef4444;flex:1">🗑️ حذف</button></div></div></div>';
+            if (approved) approved.innerHTML += '<div class="student-row" style="border:2px solid #f59e0b"><div style="width:100%"><b>✅ ' + window.escHtml(s.name) + '</b> - ' + window.escHtml(s.phone) + '<br><small>' + window.escHtml(s.grade) + '</small><div>تفاعل: ' + editableScore(id, 'eval_interaction', score10(s, 'eval_interaction')) + '</div><div>واجب: ' + editableScore(id, 'eval_homework', score10(s, 'eval_homework')) + '</div><div>امتحان الشهر: ' + editableScore(id, 'eval_month', score10(s, 'eval_month')) + '</div>' + attendanceEditor(id, s.attendanceByDate) + '<div style="margin-top:10px;display:flex;gap:6px"><button class="btn-small" onclick="blockStudent(\'' + id + '\')" style="background:#f97316;flex:1">🚫 حظر</button><button class="btn-small" onclick="deleteStudent(\'' + id + '\')" style="background:#ef4444;flex:1">🗑️ حذف</button></div></div></div>';
           }
         });
       } catch (e) { console.log(e); }
