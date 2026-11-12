@@ -822,6 +822,7 @@
         document.getElementById('studentSchedule').innerHTML = '<div class="scheduleBox">⏰ ' + data.grade + ': ' + sched + '</div>';
         const monthScore = score10(data, 'eval_month');
         document.getElementById('evalDisplay').innerHTML = '<h4>📊 تقييمك</h4><div>التفاعل: ' + score10(data, 'eval_interaction') + '/10</div><div>الواجب: ' + score10(data, 'eval_homework') + '/10</div><div>امتحان الشهر: ' + monthScore + '/10</div>';
+        document.getElementById('certArea').innerHTML = '';
         if (monthScore >= 9) {
           const today = new Date().toLocaleDateString('ar-EG');
           document.getElementById('certArea').innerHTML = '<div class="certCard"><h2>🏆 درع التفوق</h2><h2>' + data.name + '</h2><p>' + today + '</p></div>';
