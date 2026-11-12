@@ -721,11 +721,12 @@
           const h = d.data(), sub = submitted[d.id];
           if (h.grade !== 'للكل' && h.grade !== currentStudent.grade) return;
           if (sub && sub.reviewed) {
+            if (sub.acknowledged) return;
             const reviewedAt = Number(sub.reviewedAt || 0);
             if (!reviewedAt || now - reviewedAt > WEEK) return;
             nextExpiry = Math.min(nextExpiry, reviewedAt + WEEK);
             shown++;
-            html += '<div class="student-row"><b>📷 ' + window.escHtml(h.title || sub.title || 'واجب ورقي') + '</b><br><small>تم التصحيح — النتيجة متاحة لمدة أسبوع من تاريخ التصحيح</small><div style="color:#10b981;margin-top:8px;font-size:18px;font-weight:900">الدرجة: ' + Number(sub.score || 0) + '/10</div><div style="white-space:pre-wrap;margin-top:5px">ملاحظات المستر: ' + window.escHtml(sub.feedback || 'لا توجد ملاحظات') + '</div></div>';
+            html += '<div class="student-row"><b>📷 ' + window.escHtml(h.title || sub.title || 'واجب ورقي') + '</b><br><small>تم التصحيح — يمكنك إخفاء النتيجة من زر «تم»</small><div style="color:#10b981;margin-top:8px;font-size:18px;font-weight:900">الدرجة: ' + Number(sub.score || 0) + '/10</div><div style="white-space:pre-wrap;margin-top:5px">ملاحظات المستر: ' + window.escHtml(sub.feedback || 'لا توجد ملاحظات') + '</div><button class="btn-small" style="background:#10b981;width:100%;margin-top:8px" onclick="acknowledgePaperCorrection(\\'' + sub.id + '\\')">تم</button></div>';
             return;
           }
           if (h.active === false) return;
@@ -744,6 +745,15 @@
       }
     };
 
+    window.acknowledgePaperCorrection = async function(id) {
+      try {
+        await updateDoc(doc(db, 'paper_submissions', id), { acknowledged: true, acknowledgedAt: Date.now() });
+        await loadPaperHomeworkStudent();
+      } catch (e) {
+        alert('تعذر إخفاء التصحيح: ' + (e.message || e));
+      }
+    };
+
     window.submitPaperHomework = async function(homeworkId, title) {
       try {
         if (!currentStudent) { alert('سجّل دخولك أولاً'); return; }
@@ -753,7 +763,7 @@
         if (files.length > 3) { alert('مسموح بحد أقصى 3 صور'); return; }
         const ref = await addDoc(collection(db, 'paper_submissions'), {
           homeworkId, title, studentId: currentStudent.id, studentName: currentStudent.name,
-          grade: currentStudent.grade, photoCount: files.length, created: Date.now(), reviewed: false, score: 0, feedback: ''
+          grade: currentStudent.grade, photoCount: files.length, created: Date.now(), reviewed: false, acknowledged: false, score: 0, feedback: ''
         });
         for (let i = 0; i < files.length; i++) {
           const dataUrl = await compressQuizPhoto(files[i]);
