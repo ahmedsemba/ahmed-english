@@ -308,7 +308,7 @@
   <!-- سكربت Firebase المدمج والمحدث -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, setDoc, deleteDoc, query, where, Timestamp, onSnapshot, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, setDoc, deleteDoc, query, where, Timestamp, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const firebaseConfig = {
@@ -892,7 +892,7 @@
           collectionsData[name] = snap.docs.map(d => ({
             id: d.id,
             data: JSON.parse(JSON.stringify(d.data(), (key, value) =>
-              value instanceof Timestamp
+              value instanceof Timestamp || (value && value.type === 'firestore/timestamp/1.0')
                 ? { __platformBackupType: 'Timestamp', seconds: value.seconds, nanoseconds: value.nanoseconds }
                 : value
             ))
