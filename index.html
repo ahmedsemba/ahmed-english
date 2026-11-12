@@ -97,12 +97,6 @@
         <h2 id="welcome"></h2>
         <div id="studentSchedule"></div>
 
-        <div id="studentLiveClass" class="card" style="display:none;background:#0f172a;border:2px solid #10b981">
-          <h3 style="margin-top:0">🎥 حصة Google Meet</h3>
-          <div id="studentLiveInfo" style="color:#cbd5e1;font-size:13px">جاري التحقق من وجود حصة مباشرة...</div>
-          <button id="studentJoinLiveBtn" type="button" style="display:none;background:#10b981" onclick="joinStudentLiveClass()">🚀 دخول الحصة على Google Meet</button>
-        </div>
-
         <div id="evalDisplay" class="card" style="background:#0f172a;border:2px solid #f59e0b"></div>
         <div class="card" style="background:#0f172a;border:2px solid #10b981">
           <h4>💳 موقف الدفع</h4>
@@ -137,6 +131,7 @@
           <span class="subTab" onclick="showAdminTab('homeworks')" id="atab-homeworks">الواجبات</span>
           <span class="subTab" onclick="showAdminTab('materials')" id="atab-materials">الملازم</span>
           <span class="subTab" onclick="showAdminTab('payments')" id="atab-payments">المدفوعات</span>
+          <span class="subTab" onclick="showAdminTab('backup')" id="atab-backup">النسخ الاحتياطي</span>
         </div>
 
         <div id="admin-lessons" class="card" style="background:#0f172a">
@@ -246,6 +241,19 @@
             <div id="paymentsAdminList">اضغط على المدفوعات لعرض الطلبات.</div>
           </div>
         </div>
+
+        <div id="admin-backup" style="display:none">
+          <div class="card" style="background:#0f172a;border:1px solid #10b981">
+            <h4>🛡️ النسخ الاحتياطي واستعادة البيانات</h4>
+            <p style="font-size:13px;color:#cbd5e1">ينزّل نسخة JSON من مجموعات بيانات المنصة، بما فيها سجلات الواجبات وصور الواجبات المحفوظة حاليًا. احتفظ بالملف في مكان آمن.</p>
+            <button onclick="exportPlatformBackup()" style="background:#10b981">⬇️ تنزيل نسخة احتياطية الآن</button>
+            <hr style="border-color:#334155;margin:14px 0">
+            <p style="font-size:13px;color:#fbbf24">استعادة النسخة تكتب المستندات الموجودة في الملف باستخدام معرّفاتها الأصلية. لا تحذف المستندات الأخرى غير الموجودة في النسخة، لكنها قد تستبدل مستندًا حاليًا إذا كان له نفس المعرّف.</p>
+            <input id="backupRestoreFile" type="file" accept=".json,application/json">
+            <button onclick="restorePlatformBackup()" style="background:#d97706">♻️ استعادة من ملف JSON</button>
+            <div id="backupStatus" style="font-size:12px;margin-top:8px;color:#cbd5e1"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -261,7 +269,7 @@
     }
 
     function showAdminTab(t) {
-      ['lessons', 'schedules', 'students', 'homeworks', 'materials', 'payments'].forEach(function(x) {
+      ['lessons', 'schedules', 'students', 'homeworks', 'materials', 'payments', 'backup'].forEach(function(x) {
         var el = document.getElementById('admin-' + x);
         if (el) el.style.display = (x === t) ? 'block' : 'none';
         var tab = document.getElementById('atab-' + x);
@@ -300,7 +308,7 @@
   <!-- سكربت Firebase المدمج والمحدث -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, setDoc, deleteDoc, query, where, Timestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, setDoc, deleteDoc, query, where, Timestamp, onSnapshot, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const firebaseConfig = {
@@ -318,9 +326,6 @@
 
     let currentStudent = null;
     let currentGradeFilter = 'الكل';
-    let liveUnsubscribe = null;
-    let liveClassData = null;
-
     const GRADES = [
       "الصف الأول الابتدائي", "الصف الثاني الابتدائي", "الصف الثالث الابتدائي",
       "الصف الرابع الابتدائي", "الصف الخامس الابتدائي", "الصف السادس الابتدائي",
@@ -639,16 +644,23 @@
         const files = input && input.files ? Array.from(input.files) : [];
         if (!files.length) { alert('صوّر الواجب أو اختر الصور أولاً'); return; }
         if (files.length > 3) { alert('مسموح بحد أقصى 3 صور'); return; }
-        const ref = await addDoc(collection(db, 'paper_submissions'), {
+        // ضغط كل الصور أولاً، ثم حفظ التسليم وصوره في دفعة ذرية واحدة حتى لا يبقى تسليم ناقص.
+        const compressedPhotos = await Promise.all(files.map(file => compressQuizPhoto(file)));
+        const submissionRef = doc(collection(db, 'paper_submissions'));
+        const batch = writeBatch(db);
+        batch.set(submissionRef, {
           homeworkId, title, studentId: currentStudent.id, studentName: currentStudent.name,
-          grade: currentStudent.grade, photoCount: files.length, created: Date.now(), reviewed: false, acknowledged: false, score: 0, feedback: ''
+          grade: currentStudent.grade, photoCount: compressedPhotos.length, created: Date.now(),
+          reviewed: false, acknowledged: false, score: 0, feedback: ''
         });
-        for (let i = 0; i < files.length; i++) {
-          const dataUrl = await compressQuizPhoto(files[i]);
-          await addDoc(collection(db, 'paper_submission_photos'), {
-            submissionId: ref.id, studentId: currentStudent.id, index: i + 1, dataUrl, created: Date.now()
+        compressedPhotos.forEach((dataUrl, i) => {
+          const photoRef = doc(collection(db, 'paper_submission_photos'));
+          batch.set(photoRef, {
+            submissionId: submissionRef.id, studentId: currentStudent.id, index: i + 1,
+            dataUrl, created: Date.now()
           });
-        }
+        });
+        await batch.commit();
         alert('✅ تم إرسال صور الواجب للمستر بنجاح.');
         loadPaperHomeworkStudent();
       } catch (e) { alert('تعذر إرسال صور الواجب: ' + (e.message || e)); }
@@ -753,7 +765,6 @@
         if (data.status === 'blocked') { document.getElementById('loginMsg').innerText = '🚫 محظور'; return; }
         currentStudent = { id: d.id, ...data };
         window.currentStudent = currentStudent;
-        watchLiveClassForStudent();
         document.getElementById('studentArea').style.display = 'block';
         document.getElementById('welcome').innerText = 'أهلا يا ' + data.name;
         const sched = await getScheduleForGrade(data.grade);
@@ -863,76 +874,112 @@
       document.getElementById('adminArea').style.display = 'none';
     };
 
-    onAuthStateChanged(auth, function(u) { if (u) showAdminArea(); });
+    // مجموعات بيانات المنصة المعروفة. لا يتم حذف أي مستند عند الاستعادة.
+    const BACKUP_COLLECTIONS = [
+      'students', 'schedules', 'payments', 'lessons', 'materials',
+      'paper_homeworks', 'paper_submissions', 'paper_submission_photos',
+      'quiz_submissions', 'live_classes', 'paragraph_homeworks', 'paragraph_submissions'
+    ];
 
-    function validMeetUrl(value) {
-      return /^https:\/\/(meet\.google\.com)\/[a-z-]+(?:\?.*)?$/i.test(String(value || '').trim());
-    }
-
-    window.openTeacherMeet = function() {
-      const url = document.getElementById('liveMeetUrl').value.trim();
-      if (!validMeetUrl(url)) { alert('الصق رابط Google Meet صحيحاً يبدأ بـ https://meet.google.com/'); return; }
-      window.open(url, '_blank', 'noopener');
-    };
-
-    window.startLiveClass = async function() {
-      const title = document.getElementById('liveClassTitle').value.trim();
-      const grade = document.getElementById('liveClassGrade').value;
-      const meetUrl = document.getElementById('liveMeetUrl').value.trim();
-      if (!title) { alert('اكتب عنوان الحصة أولاً'); return; }
-      if (!validMeetUrl(meetUrl)) { alert('الصق رابط Google Meet صحيحاً أولاً.'); return; }
-      const btn = document.getElementById('startLiveClassBtn');
-      btn.disabled = true; btn.textContent = 'جاري إتاحة الرابط...';
+    window.exportPlatformBackup = async function() {
+      const status = document.getElementById('backupStatus');
       try {
-        const startedAt = Date.now();
-        const data = { active: true, title, grade, meetUrl, created: startedAt, expiresAt: startedAt + 4 * 60 * 60 * 1000 };
-        await setDoc(doc(db, 'live_classes', 'current'), data);
-        liveClassData = data;
-        document.getElementById('teacherLiveInfo').textContent = 'رابط الحصة متاح للطلاب: ' + title + ' — ' + grade;
-        document.getElementById('endLiveClassBtn').style.display = 'block';
-        alert('تم إتاحة رابط Google Meet للطلاب المحددين.');
+        if (!auth.currentUser) { alert('سجّل دخولك بحساب المدرس أولاً.'); return; }
+        status.textContent = 'جاري تجهيز النسخة الاحتياطية...';
+        const collectionsData = {};
+        for (const name of BACKUP_COLLECTIONS) {
+          const snap = await getDocs(collection(db, name));
+          collectionsData[name] = snap.docs.map(d => ({
+            id: d.id,
+            data: JSON.parse(JSON.stringify(d.data(), (key, value) =>
+              value instanceof Timestamp
+                ? { __platformBackupType: 'Timestamp', seconds: value.seconds, nanoseconds: value.nanoseconds }
+                : value
+            ))
+          }));
+        }
+        const backup = {
+          format: 'ahmed-english-platform-backup',
+          version: 1,
+          projectId: firebaseConfig.projectId,
+          createdAt: new Date().toISOString(),
+          collections: collectionsData
+        };
+        const blob = new Blob([JSON.stringify(backup)], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'ahmed-english-backup-' + new Date().toISOString().replace(/[:.]/g, '-') + '.json';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        const total = Object.values(collectionsData).reduce((n, arr) => n + arr.length, 0);
+        status.textContent = '✅ تم تجهيز النسخة: ' + total + ' مستندًا من ' + BACKUP_COLLECTIONS.length + ' مجموعة.';
       } catch (e) {
-        alert('تعذر إتاحة الرابط: ' + (e.message || e));
-      } finally {
-        btn.disabled = false; btn.textContent = '📢 إتاحة رابط الحصة للطلاب';
+        status.textContent = 'تعذر إنشاء النسخة: ' + (e.message || e);
+        alert('تعذر إنشاء النسخة الاحتياطية: ' + (e.message || e));
       }
     };
 
-    window.endLiveClass = async function() {
-      if (!confirm('هل تريد إنهاء الحصة الحالية وإخفاء الرابط عن الطلاب؟')) return;
+    window.restorePlatformBackup = async function() {
+      const status = document.getElementById('backupStatus');
+      const input = document.getElementById('backupRestoreFile');
       try {
-        await deleteDoc(doc(db, 'live_classes', 'current'));
-        liveClassData = null;
-        document.getElementById('teacherLiveInfo').textContent = 'تم إنهاء الحصة وإخفاء الرابط.';
-        document.getElementById('endLiveClassBtn').style.display = 'none';
-      } catch (e) { alert('تعذر إنهاء الحصة: ' + (e.message || e)); }
+        if (!auth.currentUser) { alert('سجّل دخولك بحساب المدرس أولاً.'); return; }
+        const file = input && input.files && input.files[0];
+        if (!file) { alert('اختر ملف النسخة الاحتياطية أولاً.'); return; }
+        if (file.size > 100 * 1024 * 1024) { alert('حجم الملف أكبر من 100 ميجابايت.'); return; }
+        const raw = await file.text();
+        const backup = JSON.parse(raw, (key, value) => {
+          if (value && value.__platformBackupType === 'Timestamp') {
+            return new Timestamp(value.seconds, value.nanoseconds);
+          }
+          return value;
+        });
+        if (!backup || backup.format !== 'ahmed-english-platform-backup' ||
+            backup.version !== 1 || backup.projectId !== firebaseConfig.projectId ||
+            !backup.collections || typeof backup.collections !== 'object') {
+          throw new Error('ملف النسخة غير صحيح أو تابع لمشروع Firebase آخر.');
+        }
+        const entries = [];
+        for (const name of BACKUP_COLLECTIONS) {
+          const docs = backup.collections[name];
+          if (docs === undefined) continue;
+          if (!Array.isArray(docs)) throw new Error('بيانات المجموعة غير صحيحة: ' + name);
+          for (const item of docs) {
+            if (!item || typeof item.id !== 'string' || !item.id || !item.data || typeof item.data !== 'object' || Array.isArray(item.data)) {
+              throw new Error('يوجد مستند غير صالح داخل المجموعة: ' + name);
+            }
+            entries.push({ name, id: item.id, data: item.data });
+          }
+        }
+        if (!entries.length) { alert('الملف لا يحتوي على مستندات للاستعادة.'); return; }
+        const ok = confirm(
+          'سيتم استعادة ' + entries.length + ' مستندًا.\n' +
+          'المستندات التي تحمل نفس المعرّف سيتم استبدالها، والمستندات الأخرى لن تُحذف.\n' +
+          'تأكد أنك نزّلت نسخة احتياطية حديثة قبل المتابعة. هل تريد الاستمرار؟'
+        );
+        if (!ok) return;
+        status.textContent = 'جاري الاستعادة... لا تغلق الصفحة.';
+        for (let i = 0; i < entries.length; i += 400) {
+          const batch = writeBatch(db);
+          entries.slice(i, i + 400).forEach(item => {
+            batch.set(doc(db, item.name, item.id), item.data);
+          });
+          await batch.commit();
+          status.textContent = 'جاري الاستعادة: ' + Math.min(i + 400, entries.length) + ' من ' + entries.length;
+        }
+        status.textContent = '✅ تمت استعادة ' + entries.length + ' مستندًا. أعد تحميل الصفحة لمراجعة البيانات.';
+        alert('تمت الاستعادة بنجاح.');
+      } catch (e) {
+        status.textContent = 'تعذرت الاستعادة: ' + (e.message || e);
+        alert('تعذرت الاستعادة: ' + (e.message || e));
+      }
     };
 
-    function watchLiveClassForStudent() {
-      const student = window.currentStudent;
-      if (!student) return;
-      if (liveUnsubscribe) liveUnsubscribe();
-      const box = document.getElementById('studentLiveClass'), info = document.getElementById('studentLiveInfo'), join = document.getElementById('studentJoinLiveBtn');
-      liveUnsubscribe = onSnapshot(doc(db, 'live_classes', 'current'), snap => {
-        if (!snap.exists()) { box.style.display = 'none'; join.style.display = 'none'; return; }
-        const d = snap.data(), now = Date.now(), fresh = Number(d.expiresAt) > now;
-        const allowed = d.active === true && fresh && validMeetUrl(d.meetUrl) && (d.grade === 'للكل' || d.grade === student.grade);
-        if (!allowed) { box.style.display = 'none'; join.style.display = 'none'; liveClassData = null; return; }
-        liveClassData = d;
-        box.style.display = 'block';
-        info.textContent = '🔴 حصة متاحة الآن: ' + (d.title || 'حصة') + ' — ' + (d.grade || '');
-        join.style.display = 'block';
-      }, err => {
-        box.style.display = 'none'; join.style.display = 'none'; liveClassData = null;
-      });
-    }
+    onAuthStateChanged(auth, function(u) { if (u) showAdminArea(); });
 
-    window.joinStudentLiveClass = function() {
-      const student = window.currentStudent;
-      if (!student || !liveClassData || !liveClassData.active) { alert('لا توجد حصة متاحة حالياً'); return; }
-      if (!validMeetUrl(liveClassData.meetUrl)) { alert('رابط Google Meet غير متاح. تواصل مع المستر.'); return; }
-      window.open(liveClassData.meetUrl, '_blank', 'noopener');
-    };
   </script>
 </body>
 </html>
