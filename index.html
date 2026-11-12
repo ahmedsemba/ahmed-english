@@ -948,7 +948,7 @@
           if (docs === undefined) continue;
           if (!Array.isArray(docs)) throw new Error('بيانات المجموعة غير صحيحة: ' + name);
           for (const item of docs) {
-            if (!item || typeof item.id !== 'string' || !item.id || !item.data || typeof item.data !== 'object' || Array.isArray(item.data)) {
+            if (!item || typeof item.id !== 'string' || !item.id || item.id.includes('/') || !item.data || typeof item.data !== 'object' || Array.isArray(item.data)) {
               throw new Error('يوجد مستند غير صالح داخل المجموعة: ' + name);
             }
             entries.push({ name, id: item.id, data: item.data });
