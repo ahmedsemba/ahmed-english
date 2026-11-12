@@ -358,7 +358,7 @@
     function editableScore(id, type, val) {
       let options = '';
       for (let i = 0; i <= 10; i++) options += '<option value="' + i + '"' + (i === Number(val) ? ' selected' : '') + '>' + i + '</option>';
-      return '<span class="score-control"><select id="score_' + id + '_' + type + '" aria-label="الدرجة من 10">' + options + '</select><small>/ 10</small><button class="btn-small" style="background:#10b981" onclick="setEvalFromInput(\\'' + id + '\\',\\'' + type + '\\')">حفظ</button></span>';
+      return '<span class="score-control"><select id="score_' + id + '_' + type + '" aria-label="الدرجة من 10">' + options + '</select><small>/ 10</small><button class="btn-small" style="background:#10b981" onclick="setEvalFromInput(\'' + id + '\',\'' + type + '\')">حفظ</button></span>';
     }
 
     window.setEvalFromInput = async function(id, type) {
@@ -391,7 +391,7 @@
       const key = todayAttendanceKey();
       const records = attendanceByDate && typeof attendanceByDate === 'object' ? attendanceByDate : {};
       const current = records[key] || '';
-      return '<div class="attendance-control"><b>حضور اليوم:</b><select id="attendance_' + id + '"><option value=""' + (!current ? ' selected' : '') + '>لم يحدد</option><option value="present"' + (current === 'present' ? ' selected' : '') + '>نعم - حاضر</option><option value="absent"' + (current === 'absent' ? ' selected' : '') + '>لا - غائب</option></select><button class="btn-small" style="background:#0891b2" onclick="saveStudentAttendance(\\'' + id + '\\')">حفظ الحضور</button></div>';
+      return '<div class="attendance-control"><b>حضور اليوم:</b><select id="attendance_' + id + '"><option value=""' + (!current ? ' selected' : '') + '>لم يحدد</option><option value="present"' + (current === 'present' ? ' selected' : '') + '>نعم - حاضر</option><option value="absent"' + (current === 'absent' ? ' selected' : '') + '>لا - غائب</option></select><button class="btn-small" style="background:#0891b2" onclick="saveStudentAttendance(\'' + id + '\')">حفظ الحضور</button></div>';
     }
 
     window.saveStudentAttendance = async function(id) {
