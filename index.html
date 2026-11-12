@@ -336,6 +336,8 @@
     let currentGradeFilter = 'الكل';
     let liveUnsubscribe = null;
     let liveClassData = null;
+    let paragraphStudentUnsubscribe = null;
+    let paragraphAdminUnsubscribe = null;
 
     const GRADES = [
       "الصف الأول الابتدائي", "الصف الثاني الابتدائي", "الصف الثالث الابتدائي",
@@ -607,6 +609,11 @@
     window.loadParagraphHomeworkStudent = async function() {
       const box = document.getElementById('paragraphHomeworkStudent');
       if (!box || !currentStudent) return;
+      if (!paragraphStudentUnsubscribe) {
+        paragraphStudentUnsubscribe = onSnapshot(query(collection(db, 'paragraph_submissions'), where('studentId', '==', currentStudent.id)), function() {
+          if (currentStudent) window.loadParagraphHomeworkStudent();
+        }, function(e) { console.log('paragraph student updates', e); });
+      }
       try {
         const [hwSnap, subSnap] = await Promise.all([
           getDocs(collection(db, 'paragraph_homeworks')),
@@ -651,6 +658,11 @@
     window.loadParagraphHomeworkAdmin = async function() {
       const box = document.getElementById('paragraphHomeworkAdminList');
       if (!box) return;
+      if (!paragraphAdminUnsubscribe) {
+        paragraphAdminUnsubscribe = onSnapshot(collection(db, 'paragraph_submissions'), function() {
+          window.loadParagraphHomeworkAdmin();
+        }, function(e) { console.log('paragraph admin updates', e); });
+      }
       try {
         const snap = await getDocs(collection(db, 'paragraph_submissions'));
         const term = (document.getElementById('paragraphSubmissionSearch')?.value || '').trim().toLowerCase();
