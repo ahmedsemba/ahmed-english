@@ -678,7 +678,7 @@
       try {
         const feedback = document.getElementById('paragraphFeedback_' + id).value.trim();
         if (!feedback) { alert('اكتب ملاحظات التصحيح أولاً'); return; }
-        await updateDoc(doc(db, 'paragraph_submissions', id), { feedback, reviewed: true, reviewedAt: Date.now(), acknowledged: false });
+        await updateDoc(doc(db, 'paragraph_submissions', id), { answer: '', feedback, reviewed: true, reviewedAt: Date.now(), acknowledged: false });
         alert('✅ تم إرسال التصحيح للطالب وإخفاء الإجابة من قائمة التصحيح.');
         loadParagraphHomeworkAdmin();
       } catch (e) { alert('تعذر حفظ التصحيح: ' + (e.message || e)); }
