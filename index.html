@@ -726,7 +726,7 @@
             if (!reviewedAt || now - reviewedAt > WEEK) return;
             nextExpiry = Math.min(nextExpiry, reviewedAt + WEEK);
             shown++;
-            html += '<div class="student-row"><b>📷 ' + window.escHtml(h.title || sub.title || 'واجب ورقي') + '</b><br><small>تم التصحيح — يمكنك إخفاء النتيجة من زر «تم»</small><div style="color:#10b981;margin-top:8px;font-size:18px;font-weight:900">الدرجة: ' + Number(sub.score || 0) + '/10</div><div style="white-space:pre-wrap;margin-top:5px">ملاحظات المستر: ' + window.escHtml(sub.feedback || 'لا توجد ملاحظات') + '</div><button class="btn-small" style="background:#10b981;width:100%;margin-top:8px" onclick="acknowledgePaperCorrection(\'' + sub.id + '\\')">تم</button></div>';
+            html += '<div class="student-row"><b>📷 ' + window.escHtml(h.title || sub.title || 'واجب ورقي') + '</b><br><small>تم التصحيح — يمكنك إخفاء النتيجة من زر «تم»</small><div style="color:#10b981;margin-top:8px;font-size:18px;font-weight:900">الدرجة: ' + Number(sub.score || 0) + '/10</div><div style="white-space:pre-wrap;margin-top:5px">ملاحظات المستر: ' + window.escHtml(sub.feedback || 'لا توجد ملاحظات') + '</div><button class="btn-small" style="background:#10b981;width:100%;margin-top:8px" onclick="acknowledgePaperCorrection(\'' + sub.id + '\')">تم</button></div>';
             return;
           }
           if (h.active === false) return;
