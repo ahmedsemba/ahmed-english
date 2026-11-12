@@ -936,7 +936,7 @@
       const student = window.currentStudent;
       if (!student || !liveClassData || !liveClassData.active) { alert('لا توجد حصة متاحة حالياً'); return; }
       if (!validMeetUrl(liveClassData.meetUrl)) { alert('رابط Google Meet غير متاح. تواصل مع المستر.'); return; }
-quad      window.open(liveClassData.meetUrl, '_blank', 'noopener');
+      window.open(liveClassData.meetUrl, '_blank', 'noopener');
     };
   </script>
 </body>
