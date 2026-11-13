@@ -453,7 +453,7 @@
       };
       const exactIcon = exactWordIcons[word.word.toLowerCase()];
       const match = pictureRules.find(([pattern]) =>
-        new RegExp('\\\\b(?:' + pattern.source + ')\\\\b', 'i').test(term)
+        new RegExp('\\b(?:' + pattern.source + ')\\b', 'i').test(term)
       );
       const symbol = exactIcon || (match ? match[1] : '✨');
       wordImage.textContent = symbol;
