@@ -98,7 +98,7 @@
     { word: "Require", meaning: "يتطلب", level: "B1", example: "This job requires patience.", exampleAr: "تتطلب هذه الوظيفة الصبر." },
     { word: "Successful", meaning: "ناجح", level: "B1", example: "A successful student keeps learning.", exampleAr: "الطالب الناجح يواصل التعلم." },
     { word: "Communicate", meaning: "يتواصل", level: "B1", example: "We use language to communicate with others.", exampleAr: "نستخدم اللغة للتواصل مع الآخرين." },
-    { word: "Protective", meaning: "واقٍ / حامٍ", level: "B1", example: "Wearing a helmet is protective.", exampleAr: "ارتداء الخوذة وسيلة للوقاية." }
+    { word: "Protective", meaning: "واقٍ / حامٍ", level: "B1", example: "Wearing a helmet is protective.", exampleAr: "ارتداء الخوذة وسيلة للوقاية." },
     { word: "Apple", meaning: "تفاحة", level: "A1", example: "I learned the meaning of apple today.", exampleAr: "تعلمت معنى كلمة تفاحة اليوم." },
     { word: "Banana", meaning: "موزة", level: "A1", example: "I learned the meaning of banana today.", exampleAr: "تعلمت معنى كلمة موزة اليوم." },
     { word: "Bread", meaning: "خبز", level: "A1", example: "I learned the meaning of bread today.", exampleAr: "تعلمت معنى كلمة خبز اليوم." },
