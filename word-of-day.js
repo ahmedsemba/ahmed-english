@@ -411,8 +411,51 @@
         [/idea|think|thought|decision|choose|solution|problem|suggest|improve|develop|discover|remember|forget|plan|strategy|method|process|concept|theory|principle/, '💡'],
         [/danger|dangerous|safe|helmet|doctor|medicine|health/, '🛡️']
       ];
-      const match = pictureRules.find(([pattern]) => pattern.test(term));
-      const symbol = match ? match[1] : '✨';
+      // Match whole words only, so a short sequence inside another word
+      // (for example "car" in "career" or "wind" in "window") cannot mislabel it.
+      const exactWordIcons = {
+        hungry: '🍽️',
+        thirsty: '💧',
+        clean: '🧼',
+        listen: '👂',
+        behind: '↩️',
+        because: '🔗',
+        prepare: '📝',
+        invite: '✉️',
+        celebrate: '🎉',
+        advice: '💬',
+        share: '🤝',
+        collect: '🧺',
+        achieve: '🏆',
+        opportunity: '🚪',
+        responsible: '🧑‍💼',
+        experience: '🧭',
+        independent: '🕊️',
+        encourage: '👏',
+        compare: '⚖️',
+        tradition: '🏛️',
+        communicate: '💬',
+        passport: '🛂',
+        schedule: '🗓️',
+        message: '✉️',
+        mistake: '❗',
+        research: '🔎',
+        application: '📱',
+        appoint: '📅',
+        appropriate: '👌',
+        career: '💼',
+        participate: '🙋',
+        acknowledge: '🤝',
+        advocate: '📣',
+        allocate: '📊',
+        category: '🗂️',
+        communication: '💬'
+      };
+      const exactIcon = exactWordIcons[word.word.toLowerCase()];
+      const match = pictureRules.find(([pattern]) =>
+        new RegExp('\\b(?:' + pattern.source + ')\\b', 'i').test(term)
+      );
+      const symbol = exactIcon || (match ? match[1] : '✨');
       wordImage.textContent = symbol;
       wordImage.setAttribute('aria-label', 'Illustration for ' + word.word);
     }
