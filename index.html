@@ -171,6 +171,34 @@
       .card { padding: 14px; border-radius: 13px; }
     }
 
+    .daily-learning-wrap { max-width: 900px; margin: 0 auto; }
+    .daily-intro { color:#cbd5e1; font-size:13px; line-height:1.8; margin:4px 0 14px; }
+    .daily-meta { display:inline-block; padding:5px 10px; border-radius:20px; background:#123e59; color:#99f6e4; font-size:12px; font-weight:800; margin-bottom:12px; }
+    .daily-passage-text { background:#102238; border:1px solid #36516f; border-radius:13px; padding:14px 16px; direction:ltr; text-align:left; }
+    .daily-passage-text p { margin:5px 0; line-height:1.8; color:#f8fafc; }
+    .daily-questions { display:grid; gap:10px; margin-top:14px; }
+    .daily-question { background:#102238; border:1px solid #36516f; border-radius:12px; padding:13px; }
+    .daily-question h4 { margin:0 0 10px; font-size:14px; }
+    .daily-options { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+    .daily-option { margin:0; min-height:42px; background:#203a57; border:1px solid #45617e; font-size:13px; }
+    .daily-option:disabled { opacity:1; cursor:default; }
+    .daily-option.is-correct { background:#14532d; border-color:#22c55e; color:#dcfce7; }
+    .daily-option.is-wrong { background:#7f1d1d; border-color:#ef4444; color:#fee2e2; }
+    .daily-result { min-height:24px; margin-top:13px; padding:10px; border-radius:10px; color:#cbd5e1; font-size:13px; }
+    .daily-result.is-perfect { background:#14532d; color:#dcfce7; font-weight:900; }
+    .daily-result.is-complete { background:#203a57; }
+    .daily-grammar-title { color:#99f6e4; margin:4px 0 8px; }
+    .daily-grammar-explain { font-size:15px; line-height:1.9; margin:0 0 14px; }
+    .daily-examples { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .daily-example { background:#102238; border:1px solid #36516f; border-radius:12px; padding:12px; }
+    .daily-example-en { direction:ltr; text-align:left; font-weight:800; margin:0 0 7px; }
+    .daily-example-ar { color:#cbd5e1; margin:0; font-size:13px; }
+    .daily-grammar-note { margin-top:12px; padding:12px; border-right:3px solid #14b8a6; border-radius:9px; background:#102238; line-height:1.8; font-size:13px; }
+    @media(max-width:600px) {
+      .daily-options { grid-template-columns:1fr; }
+      .daily-examples { grid-template-columns:1fr; }
+      .daily-passage-text { padding:11px 12px; }
+    }
   </style>
 </head>
 <body>
@@ -222,6 +250,8 @@
       <div class="tab" id="tabBtn-parent" onclick="showTab('parent')">ولي أمر</div>
       <div class="tab" id="tabBtn-admin" onclick="showTab('admin')">لوحة المستر</div>
       <div class="tab" id="tabBtn-public-materials" onclick="showTab('public-materials')">📚 ملازم مجانية</div>
+      <div class="tab" id="tabBtn-self-learning" onclick="showTab('self-learning')">🧠 علّم نفسك</div>
+      <div class="tab" id="tabBtn-daily-grammar" onclick="showTab('daily-grammar')">📘 قاعدة اليوم</div>
     </div>
 
     <!-- تسجيل طالب -->
@@ -306,6 +336,24 @@
         <div id="publicMaterialsList" aria-live="polite">
           <div class="public-material-empty">اختر الصف الدراسي لعرض الملازم المتاحة له.</div>
         </div>
+      </div>
+    </section>
+
+    <!-- تدريب يومي متاح للجميع دون تسجيل -->
+    <section id="tab-self-learning" class="card" style="display:none">
+      <div class="daily-learning-wrap">
+        <h3>🧠 علّم نفسك</h3>
+        <p class="daily-intro">اقرأ فقرة اليوم، ثم أجب عن الأسئلة الثلاثة. اختر إجابة واحدة لكل سؤال وستظهر لك النتيجة تلقائيًا.</p>
+        <div id="dailyPassage" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- قاعدة لغوية يومية متاحة للجميع دون تسجيل -->
+    <section id="tab-daily-grammar" class="card" style="display:none">
+      <div class="daily-learning-wrap">
+        <h3>📘 قاعدة اليوم</h3>
+        <p class="daily-intro">شرح مبسط باللغة العربية مع أمثلة باللغة الإنجليزية وترجمتها.</p>
+        <div id="dailyGrammar" aria-live="polite"></div>
       </div>
     </section>
 
@@ -1278,5 +1326,6 @@
 
   </script>
   <script src="word-of-day.js" defer></script>
+  <script src="daily-learning.js" defer></script>
 </body>
 </html>
