@@ -303,6 +303,7 @@
         <div id="studentSchedule"></div>
 
         <div id="evalDisplay" class="card" style="background:#0f172a;border:2px solid #f59e0b"></div>
+        <div id="studentAttendanceDisplay"></div>
         <div class="card" style="background:#0f172a;border:2px solid #10b981">
           <h4>💳 موقف الدفع</h4>
           <div id="paymentHistory" style="margin-top:10px">جاري تحميل موقف الدفع...</div>
@@ -624,20 +625,26 @@
 
     function attendanceHistoryHtml(attendanceByDate) {
       const records = attendanceByDate && typeof attendanceByDate === 'object' ? attendanceByDate : {};
-      const keys = Object.keys(records).filter(k => records[k] === 'present' || records[k] === 'absent').sort().reverse().slice(0, 10);
-      if (!keys.length) return '<div class="attendance-history"><small style="color:#cbd5e1">لم يتم تسجيل الحضور بعد.</small></div>';
-      return '<div class="attendance-history"><b>📅 سجل الحضور</b>' + keys.map(k =>
-        '<div style="margin-top:5px"><small>' + window.escHtml(k) + '</small> — ' +
+      const keys = Object.keys(records)
+        .filter(k => records[k] === 'present' || records[k] === 'absent')
+        .sort().reverse();
+      const presentCount = keys.filter(k => records[k] === 'present').length;
+      const absentCount = keys.length - presentCount;
+      const summary = '<div style="margin:8px 0;color:#cbd5e1;font-size:12px">الحصص المسجلة: <b>' + keys.length + '</b> — حضور: <b style="color:#10b981">' + presentCount + '</b> — غياب: <b style="color:#f87171">' + absentCount + '</b></div>';
+      const note = '<small style="display:block;color:#93c5fd;margin-top:9px;line-height:1.7">يُسجَّل الحضور في أيام الحصص فقط (مرة أو مرتين أسبوعيًا بحد أقصى). اليوم الذي لا يظهر في السجل ليس غيابًا؛ بل لا توجد له حصة مسجلة.</small>';
+      if (!keys.length) return '<div class="attendance-history"><b>📅 سجل الحصص</b><div style="margin-top:7px;color:#cbd5e1">لا توجد حصص مسجلة حتى الآن.</div>' + note + '</div>';
+      return '<div class="attendance-history"><b>📅 سجل الحصص (آخر 10 حصص)</b>' + summary + keys.slice(0, 10).map(k =>
+        '<div style="margin-top:7px;padding-top:6px;border-top:1px solid #334155"><small>' + window.escHtml(k) + '</small> — ' +
         (records[k] === 'present' ? '<b style="color:#10b981">✅ حاضر</b>' : '<b style="color:#f87171">❌ غائب</b>') +
         '</div>'
-      ).join('') + '</div>';
+      ).join('') + note + '</div>';
     }
 
     function attendanceEditor(id, attendanceByDate) {
       const key = todayAttendanceKey();
       const records = attendanceByDate && typeof attendanceByDate === 'object' ? attendanceByDate : {};
       const current = records[key] || '';
-      return '<div class="attendance-control"><b>حضور اليوم:</b><select id="attendance_' + id + '"><option value=""' + (!current ? ' selected' : '') + '>لم يحدد</option><option value="present"' + (current === 'present' ? ' selected' : '') + '>نعم - حاضر</option><option value="absent"' + (current === 'absent' ? ' selected' : '') + '>لا - غائب</option></select><button class="btn-small" style="background:#0891b2" onclick="saveStudentAttendance(\'' + id + '\')">حفظ الحضور</button></div>';
+      return '<div class="attendance-control"><b>حضور الحصة بتاريخ ' + key + ':</b><select id="attendance_' + id + '"><option value=""' + (!current ? ' selected' : '') + '>لم يحدد</option><option value="present"' + (current === 'present' ? ' selected' : '') + '>نعم - حاضر</option><option value="absent"' + (current === 'absent' ? ' selected' : '') + '>لا - غائب</option></select><button class="btn-small" style="background:#0891b2" onclick="saveStudentAttendance(\'' + id + '\')">حفظ الحضور</button></div>';
     }
 
     window.saveStudentAttendance = async function(id) {
@@ -732,7 +739,7 @@
             '<div class="student-row"><b>' + window.escHtml(String(p.amount || 0)) + ' جنيه</b> — ' + (p.method === 'InstaPay' ? 'إنستاباي' : 'اتصالات كاش') + '<br><small>' + (labels[p.status] || 'قيد المراجعة') + '</small></div>'
           ).join('') : '<small style="color:#94a3b8">لا توجد مدفوعات مسجلة حتى الآن.</small>';
 
-          html += '<div class="card" style="background:#0f172a;border:2px solid #f59e0b"><h3>👦 ' + window.escHtml(s.name || '') + ' - ' + window.escHtml(s.grade || '') + '</h3><div class="scheduleBox">⏰ ' + sched + '</div><div>تفاعل: ' + score10(s, 'eval_interaction') + '/10 — واجب: ' + score10(s, 'eval_homework') + '/10 — امتحان الشهر: ' + monthScore + '/10</div>' + (monthScore >= 9 ? '<div style="color:#fbbf24;font-weight:900;margin-top:7px">🏆 درع التفوق</div>' : '') + attendanceHtml + '<hr style="border-color:#334155;margin:12px 0"><h4>💳 مدفوعات الطالب</h4><p style="font-size:12px;color:#cbd5e1">سجّل المبلغ وطريقة التحويل، ثم أرسل صورة الإيصال عبر واتساب.</p><select id="parentPaymentMethod_' + sid + '"><option value="InstaPay">إنستاباي</option><option value="Etisalat Cash">اتصالات كاش</option></select><input id="parentPaymentAmount_' + sid + '" type="number" min="1" step="1" placeholder="المبلغ المحوّل بالجنيه"><input id="parentPaymentNote_' + sid + '" maxlength="120" placeholder="ملاحظة (اختياري)"><button onclick="submitParentPayment(\'' + sid + '\',\'' + window.escHtml(s.name || '').replace(/'/g, '&#39;') + '\',\'' + window.escHtml(s.grade || '').replace(/'/g, '&#39;') + '\')" style="background:#10b981">تسجيل الدفع وإرسال صورة الإيصال</button><div id="parentPaymentMsg_' + sid + '" style="font-size:12px;margin-top:8px"></div><h4 style="margin-top:14px">سجل المدفوعات</h4><div>' + history + '</div></div>';
+          html += '<div class="card" style="background:#0f172a;border:2px solid #f59e0b"><h3>👦 ' + window.escHtml(s.name || '') + ' - ' + window.escHtml(s.grade || '') + '</h3><div class="scheduleBox">⏰ ' + sched + '</div><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:12px 0"><div style="background:#102238;padding:9px;border-radius:9px;text-align:center">التفاعل<br><b style="color:#99f6e4;font-size:18px">' + score10(s, 'eval_interaction') + '/10</b></div><div style="background:#102238;padding:9px;border-radius:9px;text-align:center">الواجب<br><b style="color:#99f6e4;font-size:18px">' + score10(s, 'eval_homework') + '/10</b></div><div style="background:#102238;padding:9px;border-radius:9px;text-align:center">امتحان الشهر<br><b style="color:#99f6e4;font-size:18px">' + monthScore + '/10</b></div></div>' + (monthScore >= 9 ? '<div style="color:#fbbf24;font-weight:900;margin-top:7px">🏆 درع التفوق</div>' : '') + attendanceHtml + '<hr style="border-color:#334155;margin:12px 0"><h4>💳 مدفوعات الطالب</h4><p style="font-size:12px;color:#cbd5e1">سجّل المبلغ وطريقة التحويل، ثم أرسل صورة الإيصال عبر واتساب.</p><select id="parentPaymentMethod_' + sid + '"><option value="InstaPay">إنستاباي</option><option value="Etisalat Cash">اتصالات كاش</option></select><input id="parentPaymentAmount_' + sid + '" type="number" min="1" step="1" placeholder="المبلغ المحوّل بالجنيه"><input id="parentPaymentNote_' + sid + '" maxlength="120" placeholder="ملاحظة (اختياري)"><button onclick="submitParentPayment(\'' + sid + '\',\'' + window.escHtml(s.name || '').replace(/'/g, '&#39;') + '\',\'' + window.escHtml(s.grade || '').replace(/'/g, '&#39;') + '\')" style="background:#10b981">تسجيل الدفع وإرسال صورة الإيصال</button><div id="parentPaymentMsg_' + sid + '" style="font-size:12px;margin-top:8px"></div><h4 style="margin-top:14px">سجل المدفوعات</h4><div>' + history + '</div></div>';
         }
         document.getElementById('parentArea').innerHTML = html;
         document.getElementById('parentArea').style.display = 'block';
@@ -1120,6 +1127,7 @@
         document.getElementById('studentSchedule').innerHTML = '<div class="scheduleBox">⏰ ' + data.grade + ': ' + sched + '</div>';
         const monthScore = score10(data, 'eval_month');
         document.getElementById('evalDisplay').innerHTML = '<h4>📊 تقييمك</h4><div>التفاعل: ' + score10(data, 'eval_interaction') + '/10</div><div>الواجب: ' + score10(data, 'eval_homework') + '/10</div><div>امتحان الشهر: ' + monthScore + '/10</div>';
+        document.getElementById('studentAttendanceDisplay').innerHTML = attendanceHistoryHtml(data.attendanceByDate);
         document.getElementById('certArea').innerHTML = '';
         if (monthScore >= 9) {
           const today = new Date().toLocaleDateString('ar-EG');
