@@ -412,7 +412,6 @@
       ];
       const match = pictureRules.find(([pattern]) => pattern.test(term));
       const symbol = match ? match[1] : '✨';
-      const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dbeafe"/><stop offset="1" stop-color="#a7f3d0"/></linearGradient></defs><rect x="3" y="3" width="114" height="114" rx="24" fill="url(#g)"/><circle cx="60" cy="60" r="43" fill="#ffffff" fill-opacity=".72"/><text x="60" y="76" text-anchor="middle" font-size="54">' + symbol + '</text></svg>';
       wordImage.textContent = symbol;
       wordImage.setAttribute('aria-label', 'Illustration for ' + word.word);
     }
