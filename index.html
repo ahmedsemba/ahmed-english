@@ -199,6 +199,9 @@
       .daily-examples { grid-template-columns:1fr; }
       .daily-passage-text { padding:11px 12px; }
     }
+    .visitor-counter { max-width:940px; margin:8px auto 22px; padding:14px 16px; display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; background:#14283f; border:1px solid rgba(20,184,166,.55); border-radius:13px; color:#cbd5e1; text-align:center; }
+    .visitor-counter strong { color:#99f6e4; font-size:20px; direction:ltr; font-variant-numeric:tabular-nums; }
+    @media(max-width:600px) { .visitor-counter { margin:8px 10px 18px; padding:12px; } }
   </style>
 </head>
 <body>
@@ -500,6 +503,11 @@
     </div>
   </div>
 
+  <footer id="visitorCounter" class="visitor-counter" aria-live="polite">
+    <span>👥 عدد مرات فتح المنصة</span>
+    <strong id="visitorCount">جاري تحميل العدد...</strong>
+  </footer>
+
   <script>
     function showTab(t) {
       document.querySelectorAll('[id^=tab-]').forEach(function(e) { e.style.display = 'none'; });
@@ -550,7 +558,7 @@
   <!-- سكربت Firebase المدمج والمحدث -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, setDoc, deleteDoc, query, where, Timestamp, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, setDoc, deleteDoc, query, where, Timestamp, writeBatch, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const firebaseConfig = {
@@ -565,6 +573,26 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    // عداد مرات فتح المنصة: يزيد مع كل تحميل للصفحة، حتى لنفس الزائر.
+    async function updateVisitorCounter() {
+      const output = document.getElementById('visitorCount');
+      if (!output) return;
+      try {
+        const counterRef = doc(db, 'siteStats', 'visitors');
+        const total = await runTransaction(db, async function(transaction) {
+          const snapshot = await transaction.get(counterRef);
+          const previous = snapshot.exists() ? Number(snapshot.data().count || 0) : 0;
+          const next = previous + 1;
+          transaction.set(counterRef, { count: next, updatedAt: serverTimestamp() });
+          return next;
+        });
+        output.textContent = total.toLocaleString('en-US');
+      } catch (error) {
+        console.error('Visitor counter unavailable:', error);
+        output.textContent = 'سيظهر العدد بعد تفعيل صلاحيات العداد';
+      }
+    }
+
 
     let currentStudent = null;
     let currentGradeFilter = 'الكل';
@@ -1323,6 +1351,7 @@
     };
 
     onAuthStateChanged(auth, function(u) { if (u) showAdminArea(); });
+    updateVisitorCounter();
 
   </script>
   <script src="word-of-day.js" defer></script>
