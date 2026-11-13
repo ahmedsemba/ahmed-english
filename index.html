@@ -36,6 +36,43 @@
     .certCard { background: linear-gradient(135deg, #fff 0%, #fef9c3 100%); color: #000; padding: 28px; border-radius: 20px; border: 5px solid #f59e0b; text-align: center; margin-top: 15px; }
     .scheduleBox { background: linear-gradient(135deg, #10b981, #059669); padding: 12px; border-radius: 12px; margin-bottom: 12px; font-weight: 900; text-align: center; }
 
+    /* تحديث الهوية البصرية: أزرق تعليمي هادئ مع لمسات تركواز */
+    :root { --brand-900:#102a43; --brand-800:#173f6b; --brand-700:#1d4f91; --brand-600:#2563eb; --brand-500:#3b82f6; --accent:#14b8a6; --surface:#172b43; --surface-2:#203a57; --line:#36516f; }
+    body { background:#0b1728; color:#f1f5f9; }
+    header { background:linear-gradient(125deg,#102a43 0%,#174b7e 58%,#2563a6 100%); border-bottom:3px solid #14b8a6; }
+    .payBox { background:#14283f; border:1px solid rgba(20,184,166,.65); }
+    .payBox a { background:#0b1b2e; color:#5eead4; border-color:#14b8a6; }
+    .card { background:#172b43; border:1px solid rgba(148,163,184,.12); box-shadow:0 8px 22px rgba(0,0,0,.12); }
+    button { background:linear-gradient(135deg,#2563eb,#1d4ed8); }
+    button:hover { filter:brightness(1.08); }
+    .tab { background:#172b43; border:1px solid #294563; transition:background .18s ease,border-color .18s ease; }
+    .tab.active { background:linear-gradient(135deg,#2563eb,#1d4ed8); border-color:#60a5fa; box-shadow:0 4px 12px rgba(37,99,235,.2); }
+    .subTab { background:#203a57; }
+    .subTab.active { background:#14b8a6; color:#062b2a; }
+    input, select, textarea { background:#102238; border-color:#36516f; }
+    .student-row { background:#102238; border-color:#36516f; }
+    .gradeTab.active { background:#2563eb; border-color:#60a5fa; }
+    .public-materials-wrap { max-width:900px; margin:0 auto; }
+    .public-materials-intro { background:linear-gradient(130deg,#173f6b,#1e5b91); border:1px solid #3b82f6; border-radius:14px; padding:15px; margin-bottom:12px; }
+    .public-materials-intro h3 { margin:0 0 6px; font-size:19px; }
+    .public-materials-intro p { color:#dbeafe; margin:0; font-size:13px; line-height:1.7; }
+    .public-materials-controls { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:9px; align-items:end; }
+    .public-materials-controls select { margin:0; min-height:44px; }
+    .public-materials-controls button { width:auto; min-width:120px; margin:0; min-height:44px; }
+    .public-material-card { background:#102238; border:1px solid #36516f; border-radius:12px; padding:13px; margin-top:10px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .public-material-card h4 { margin:0 0 5px; color:#f8fafc; font-size:14px; }
+    .public-material-card p { margin:0; color:#b6c7d9; font-size:11px; }
+    .public-material-link { flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; background:#14b8a6; color:#062b2a; padding:9px 12px; border-radius:9px; text-decoration:none; font-size:12px; font-weight:900; }
+    .public-material-empty { text-align:center; color:#cbd5e1; background:#102238; border:1px dashed #496582; border-radius:12px; padding:18px 12px; margin-top:12px; font-size:13px; }
+    @media(max-width:600px) {
+      .tabs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
+      .tab { min-width:0; padding:10px 4px; font-size:10px; line-height:1.5; }
+      .public-materials-controls { grid-template-columns:1fr; }
+      .public-materials-controls button { width:100%; }
+      .public-material-card { align-items:flex-start; flex-direction:column; }
+      .public-material-link { width:100%; }
+    }
+
     /* الصفحة الرئيسية: بطاقة كلمة اليوم */
     header { padding: 16px 12px; }
     .logo { width: 78px; height: 78px; }
@@ -136,6 +173,7 @@
   <div class="container">
     <div class="tabs">
       <div class="tab active" id="tabBtn-student" onclick="showTab('student')">دخول الطلاب</div>
+      <div class="tab" id="tabBtn-public-materials" onclick="showTab('public-materials')">📚 ملازم مجانية</div>
       <div class="tab" id="tabBtn-register" onclick="showTab('register')">تسجيل</div>
       <div class="tab" id="tabBtn-parent" onclick="showTab('parent')">ولي أمر</div>
       <div class="tab" id="tabBtn-admin" onclick="showTab('admin')">لوحة المستر</div>
@@ -188,16 +226,43 @@
         </div>
         <div id="certArea"></div>
         <div id="lessonsList"></div>
-        <div class="card" style="background:#0f172a;border:2px solid #8b5cf6">
-          <h4>📚 الملازم</h4>
-          <div id="materialsList">جاري التحميل...</div>
-        </div>
         <div class="card" style="background:#0f172a;border:2px solid #06b6d4">
           <h4>📷 الواجب الورقي</h4>
           <div id="paperHomeworkStudent">جاري تحميل الواجبات الورقية...</div>
         </div>
       </div>
     </div>
+
+    <!-- مكتبة الملازم المجانية: متاحة دون تسجيل دخول -->
+    <section id="tab-public-materials" class="card" style="display:none">
+      <div class="public-materials-wrap">
+        <div class="public-materials-intro">
+          <h3>📚 الملازم المجانية</h3>
+          <p>اختر صفك الدراسي للوصول إلى الملازم المجانية المتاحة. لا تحتاج إلى إنشاء حساب أو تسجيل الدخول.</p>
+        </div>
+        <div class="public-materials-controls">
+          <div>
+            <label for="publicMaterialsGrade" style="display:block;font-size:12px;color:#cbd5e1;margin:0 0 5px">الصف الدراسي</label>
+            <select id="publicMaterialsGrade">
+              <option value="">-- اختر الصف الدراسي --</option>
+              <option>الصف الأول الابتدائي</option>
+              <option>الصف الثاني الابتدائي</option>
+              <option>الصف الثالث الابتدائي</option>
+              <option>الصف الرابع الابتدائي</option>
+              <option>الصف الخامس الابتدائي</option>
+              <option>الصف السادس الابتدائي</option>
+              <option>الصف الأول الإعدادي</option>
+              <option>الصف الثاني الإعدادي</option>
+              <option>الصف الثالث الإعدادي</option>
+            </select>
+          </div>
+          <button type="button" onclick="loadPublicMaterials()">عرض الملازم</button>
+        </div>
+        <div id="publicMaterialsList" aria-live="polite">
+          <div class="public-material-empty">اختر الصف الدراسي لعرض الملازم المتاحة له.</div>
+        </div>
+      </div>
+    </section>
 
     <!-- لوحة المستر -->
     <div id="tab-admin" class="card" style="display:none">
@@ -649,6 +714,58 @@
       await deleteDoc(doc(db, 'materials', id));
       loadMaterialsAdmin();
       alert('تم الحذف');
+    };
+
+    window.loadPublicMaterials = async function() {
+      const gradeSelect = document.getElementById('publicMaterialsGrade');
+      const container = document.getElementById('publicMaterialsList');
+      if (!gradeSelect || !container) return;
+      const grade = gradeSelect.value;
+      if (!grade) {
+        container.innerHTML = '<div class="public-material-empty">من فضلك اختر الصف الدراسي أولاً.</div>';
+        return;
+      }
+      container.innerHTML = '<div class="public-material-empty">⏳ جاري تحميل الملازم...</div>';
+      try {
+        const snap = await getDocs(collection(db, 'materials'));
+        const items = [];
+        snap.forEach(function(d) {
+          const m = d.data();
+          if (m.grade !== grade && m.grade !== 'للكل') return;
+          if (typeof m.link !== 'string' || !/^https?:\/\//i.test(m.link)) return;
+          items.push({ id: d.id, title: String(m.title || 'ملزمة تعليمية'), link: m.link, grade: m.grade || grade, created: m.created || 0 });
+        });
+        items.sort(function(a, b) { return (b.created || 0) - (a.created || 0); });
+        container.replaceChildren();
+        if (!items.length) {
+          const empty = document.createElement('div');
+          empty.className = 'public-material-empty';
+          empty.textContent = 'لا توجد ملازم مرفوعة لهذا الصف حالياً. تابعنا قريباً.';
+          container.appendChild(empty);
+          return;
+        }
+        items.forEach(function(m) {
+          const card = document.createElement('article');
+          card.className = 'public-material-card';
+          const info = document.createElement('div');
+          const title = document.createElement('h4');
+          title.textContent = '📘 ' + m.title;
+          const meta = document.createElement('p');
+          meta.textContent = m.grade === 'للكل' ? 'متاحة لجميع الصفوف' : m.grade;
+          info.append(title, meta);
+          const link = document.createElement('a');
+          link.className = 'public-material-link';
+          link.href = m.link;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.textContent = 'فتح / تحميل الملزمة ↗';
+          card.append(info, link);
+          container.appendChild(card);
+        });
+      } catch (e) {
+        console.error('Public materials error:', e);
+        container.innerHTML = '<div class="public-material-empty">تعذر تحميل الملازم حالياً. حاول مرة أخرى بعد قليل.</div>';
+      }
     };
 
     window.loadStudentMaterials = async function() {
