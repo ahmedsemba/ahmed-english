@@ -124,7 +124,7 @@
     ['Mona','practise speaking English','an online study group','useful questions','communicate more confidently'],
     ['Tamer','make a water-saving plan','his family home','a daily checklist','reduce unnecessary water use'],
     ['Aya','design a recycling poster','the art classroom','coloured paper and markers','encourage responsible habits'],
-    ['Rami','learn to cook rice','his grandmother kitchen','a measuring cup','prepare a simple meal'],
+    ['Rami','learn to cook rice','his grandmother\'s kitchen','a measuring cup','prepare a simple meal'],
     ['Nada','train for a school race','the sports field','a weekly schedule','build stamina gradually'],
     ['Bilal','write a school newspaper article','the school library','interview notes','share useful local news'],
     ['Reem','organise school materials','her bedroom desk','labelled folders','find papers quickly'],
@@ -158,7 +158,7 @@
     ['Rasha','prepare a healthy breakfast','the dining room','fruit and whole-grain bread','start the day with energy'],
     ['Nabil','create a study group','the school library','revision notes','learn from classmates'],
     ['Mira','make a safety guide','the science classroom','clear drawings','remember safety rules'],
-    ['Wael','collect family stories','his grandparents home','a voice recorder','preserve family history'],
+    ['Wael','collect family stories','his grandparents\' home','a voice recorder','preserve family history'],
     ['Samar','solve logic puzzles','the study room','a puzzle book','improve problem-solving skills'],
     ['Hany','prepare a class garden','the school yard','young plants','make the school greener'],
     ['Rim','learn to write a formal email','the computer room','a sample email','communicate politely online'],
@@ -202,11 +202,17 @@
       ['A new goal encouraged '+name+' to '+action+'.','The activity took place at '+place+'.','To stay organised, '+name+' prepared '+tool+'.','The work made it possible to '+benefit+'.','Afterwards, '+name+' wanted to keep learning.'],
       [name+' had an interesting idea: to '+action+'.','The best place for the activity was '+place+'.','During the task, '+name+' worked with '+tool+'.','By the end, it was easier to '+benefit+'.','The result proved that practice is useful.']
     ];
-    const rotate = (arr, shift) => arr.map((v,j) => arr[(j+shift)%arr.length]);
-    const ai=i%3, pi=(i+1)%3, ti=(i+2)%3;
-    const actions=rotate([action,activityOptions[(i+1)%6],activityOptions[(i+3)%6]],ai);
-    const places=rotate([place,placeOptions[(i+2)%6],placeOptions[(i+4)%6]],pi);
-    const tools=rotate([tool,toolOptions[(i+1)%6],toolOptions[(i+4)%6]],ti);
+    const buildOptions = (correct, pool, offset) => {
+      const result=[correct];
+      for(let k=0;result.length<3 && k<pool.length;k++) {
+        const candidate=pool[(offset+k)%pool.length];
+        if(!result.includes(candidate)) result.push(candidate);
+      }
+      return result.map((v,j)=>result[(j+(i%3))%3]);
+    };
+    const actions=buildOptions(action,activityOptions,i);
+    const places=buildOptions(place,placeOptions,i+2);
+    const tools=buildOptions(tool,toolOptions,i+4);
     return {level:['A1','A2','B1','B2'][i%4],lines:patterns[i%4],questions:[
       {q:'What did '+name+' want to do?',o:actions,a:actions.indexOf(action)},
       {q:'Where did the activity take place?',o:places,a:places.indexOf(place)},
