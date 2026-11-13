@@ -395,6 +395,7 @@
     if (wordImage) {
       const term = (word.word + ' ' + word.meaning).toLowerCase();
       const pictureRules = [
+        [/process|workflow|procedure|operation/, '⚙️'],
         [/apple|banana|bread|cheese|chicken|coffee|milk|orange|potato|rice|tomato|egg|fish|meat|sugar|salt|breakfast|dinner|hungry|thirsty|food|fruit|vegetable|kitchen|cook|meal|restaurant|bake|taste|sweet|fresh|juice/, '🍎'],
         [/family|mother|father|brother|sister|friend|teacher|student|child|boy|girl|people|person|community|neighbour|volunteer|leader|individual|human|team|partner/, '👨‍👩‍👧'],
         [/school|class|lesson|book|read|write|learn|study|education|homework|exam|question|answer|explain|practice|dictionary|knowledge|language|word|essay|grammar|college|university/, '📚'],
