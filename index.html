@@ -89,6 +89,9 @@
     .word-day-main { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; background: rgba(7,18,35,.48); border: 1px solid rgba(148,163,184,.18); border-radius: 14px; padding: 16px 18px; min-width: 0; }
     .word-day-level { display: inline-block; background: #10b981; color: #052e2b; border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 900; }
     .word-day-word { color: #fff; font-size: clamp(30px,5vw,42px); line-height: 1.2; font-weight: 900; margin: 8px 0 2px; overflow-wrap: anywhere; direction: ltr; }
+    .word-day-word-row { display: flex; align-items: center; justify-content: flex-start; gap: 13px; width: 100%; min-width: 0; direction: ltr; }
+    .word-day-image { display: block; flex: 0 0 58px; width: 58px; height: 58px; object-fit: contain; border-radius: 13px; background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.16); }
+    @media (max-width: 600px) { .word-day-image { width: 52px; height: 52px; flex-basis: 52px; } .word-day-word-row { gap: 10px; } }
     .word-day-meaning { color: #a7f3d0; font-size: 20px; font-weight: 800; }
     .word-day-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 13px; width: 100%; }
     .word-day-actions button { width: auto; flex: 0 1 auto; margin: 0; padding: 9px 13px; border-radius: 9px; font-size: 12px; }
@@ -150,7 +153,7 @@
       </div>
       <div class="word-day-content">
         <div class="word-day-main">
-          <div class="word-day-word" id="wordDayWord">Brave</div>
+          <div class="word-day-word-row"><img id="wordDayImage" class="word-day-image" alt="Illustration for the word of the day" width="58" height="58" decoding="async"><div class="word-day-word" id="wordDayWord">Brave</div></div>
           <div class="word-day-meaning" id="wordDayMeaning">شجاع</div>
           <div class="word-day-actions">
             <button type="button" class="word-day-audio" onclick="speakWordOfDay()">🔊 اسمع الكلمة</button>

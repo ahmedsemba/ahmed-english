@@ -390,6 +390,32 @@
 
   function renderWord() {
     setText('wordDayWord', word.word);
+    // Local lightweight pictogram; no external images or extra network requests.
+    const wordImage = document.getElementById('wordDayImage');
+    if (wordImage) {
+      const term = (word.word + ' ' + word.meaning).toLowerCase();
+      const pictureRules = [
+        [/apple|banana|bread|cheese|chicken|coffee|milk|orange|potato|rice|tomato|egg|fish|meat|sugar|salt|breakfast|dinner|hungry|thirsty|food|fruit|vegetable|kitchen|cook|meal|restaurant|bake|taste|sweet|fresh|juice/, '🍎'],
+        [/family|mother|father|brother|sister|friend|teacher|student|child|boy|girl|people|person|community|neighbour|volunteer|leader|individual|human|team|partner/, '👨‍👩‍👧'],
+        [/school|class|lesson|book|read|write|learn|study|education|homework|exam|question|answer|explain|practice|dictionary|knowledge|language|word|essay|grammar|college|university/, '📚'],
+        [/water|rain|river|sea|ocean|lake|weather|cloud|storm|wind|environment|nature|tree|flower|garden|forest|earth|planet|protect|reduce|plastic|animal|bird|cat|dog|horse|wildlife/, '🌿'],
+        [/house|home|bedroom|bathroom|window|door|room|building|street|city|village|country|hospital|shop|market|station|airport|journey|travel|trip|adventure|road|map|place/, '🏡'],
+        [/happy|sad|funny|beautiful|clever|brave|confident|polite|careful|friendly|famous|excellent|successful|quiet|strong|small|comfortable|healthy|kind|respect|smile|feel|emotion/, '😊'],
+        [/time|morning|evening|night|day|always|sometimes|before|after|suddenly|calendar|date|annual|period|previous|future|today|tomorrow/, '🕒'],
+        [/car|bus|train|plane|bicycle|vehicle|drive|traffic|transport|arrive|return|move|run|walk|fly|travel|journey/, '🚗'],
+        [/computer|technology|digital|internet|website|application|app|code|data|system|function|software|device|phone|communication|communicate/, '💻'],
+        [/money|price|cost|buy|sell|borrow|bank|business|job|work|career|company|resource|value|benefit|advantage/, '💼'],
+        [/music|song|sing|dance|art|paint|draw|picture|photo|film|movie|story|imagine|creative|design/, '🎨'],
+        [/sport|football|game|play|team|challenge|competition|win|goal|exercise|swim|ball/, '⚽'],
+        [/idea|think|thought|decision|choose|solution|problem|suggest|improve|develop|discover|remember|forget|plan|strategy|method|process|concept|theory|principle/, '💡'],
+        [/danger|dangerous|safe|helmet|doctor|medicine|health/, '🛡️']
+      ];
+      const match = pictureRules.find(([pattern]) => pattern.test(term));
+      const symbol = match ? match[1] : '✨';
+      const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dbeafe"/><stop offset="1" stop-color="#a7f3d0"/></linearGradient></defs><rect x="3" y="3" width="114" height="114" rx="24" fill="url(#g)"/><circle cx="60" cy="60" r="43" fill="#ffffff" fill-opacity=".72"/><text x="60" y="76" text-anchor="middle" font-size="54">' + symbol + '</text></svg>';
+      wordImage.src = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+      wordImage.alt = 'Illustration for ' + word.word;
+    }
     setText('wordDayMeaning', word.meaning);
     setText('wordDayExample', word.example);
     setText('wordDayExampleAr', word.exampleAr);
