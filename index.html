@@ -85,22 +85,14 @@
     .word-day-heading { margin: 3px 0 0; font-size: 22px; line-height: 1.35; }
     .word-day-subtitle { color: #cbd5e1; font-size: 12px; margin: 4px 0 0; }
     .word-day-date { flex-shrink: 0; background: rgba(255,255,255,.10); color: #e2e8f0; border: 1px solid rgba(255,255,255,.13); border-radius: 10px; padding: 7px 10px; font-size: 11px; }
-    .word-day-content { display: grid; grid-template-columns: minmax(0,1.05fr) minmax(0,.95fr); gap: 14px; align-items: stretch; }
-    .word-day-main { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; background: rgba(7,18,35,.48); border: 1px solid rgba(148,163,184,.18); border-radius: 14px; padding: 16px 18px; min-width: 0; }
-    .word-day-level { display: inline-block; background: #10b981; color: #052e2b; border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 900; }
-    .word-day-word { color: #fff; font-size: clamp(30px,5vw,42px); line-height: 1.2; font-weight: 900; margin: 8px 0 2px; overflow-wrap: anywhere; direction: ltr; }
-    .word-day-word-row { display: flex; align-items: center; justify-content: flex-start; gap: 13px; width: 100%; min-width: 0; direction: ltr; }
-    .word-day-image { display: flex; flex: 0 0 58px; width: 58px; height: 58px; align-items: center; justify-content: center; font-size: 34px; line-height: 1; border-radius: 13px; background: linear-gradient(135deg,#dbeafe,#a7f3d0); border: 1px solid rgba(255,255,255,.35); }
-    @media (max-width: 600px) { .word-day-image { width: 52px; height: 52px; flex-basis: 52px; } .word-day-word-row { gap: 10px; } }
-    .word-day-meaning { color: #a7f3d0; font-size: 20px; font-weight: 800; }
-    .word-day-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 13px; width: 100%; }
-    .word-day-actions button { width: auto; flex: 0 1 auto; margin: 0; padding: 9px 13px; border-radius: 9px; font-size: 12px; }
+    .word-day-main { display: flex; flex-direction: column; align-items: stretch; justify-content: center; background: rgba(7,18,35,.48); border: 1px solid rgba(148,163,184,.18); border-radius: 14px; padding: 18px 20px; min-width: 0; }
+    .word-day-word { color: #fff; font-size: clamp(30px,5vw,42px); line-height: 1.25; font-weight: 900; margin: 0; overflow-wrap: anywhere; direction: ltr; text-align: left; }
+    .word-day-word-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; width: 100%; min-width: 0; direction: ltr; }
+    .word-day-meaning { color: #a7f3d0; font-size: clamp(20px,3vw,25px); font-weight: 900; direction: rtl; text-align: right; line-height: 1.7; }
+    .word-day-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; width: 100%; }
+    .word-day-actions button { width: auto; flex: 0 1 auto; margin: 0; padding: 9px 15px; border-radius: 9px; font-size: 13px; }
     .word-day-audio { background: #10b981; color: #052e2b; }
-    .word-day-example-audio { background: #334155; color: #fff; }
-    .word-day-example { display: flex; flex-direction: column; justify-content: center; background: rgba(255,255,255,.07); border: 1px solid rgba(148,163,184,.16); border-radius: 14px; padding: 16px; min-width: 0; }
-    .word-day-example-label { color: #93c5fd; font-size: 11px; font-weight: 900; text-transform: uppercase; }
-    .word-day-example-en { direction: ltr; text-align: left; color: #fff; font-size: 17px; line-height: 1.6; font-weight: 700; margin: 8px 0; overflow-wrap: anywhere; }
-    .word-day-example-ar { color: #cbd5e1; font-size: 13px; line-height: 1.7; margin: 0; }
+    @media(max-width:600px) { .word-day-main { padding:15px 13px; } .word-day-word-row { gap:8px; } .word-day-word { font-size:clamp(25px,7vw,34px); } .word-day-meaning { font-size:clamp(17px,5vw,21px); } }
     .word-day-footer { border-top: 1px solid rgba(148,163,184,.18); margin-top: 14px; padding-top: 10px; color: #cbd5e1; font-size: 11px; text-align: center; }
     @media (max-width: 600px) {
       header { padding: 13px 10px; }
@@ -233,19 +225,13 @@
         </div>
         <div class="word-day-date" id="wordDayDate">كلمة اليوم</div>
       </div>
-      <div class="word-day-content">
-        <div class="word-day-main">
-          <div class="word-day-word-row"><div id="wordDayImage" class="word-day-image" role="img" aria-label="Word illustration">✨</div><div class="word-day-word" id="wordDayWord">Brave</div></div>
-          <div class="word-day-meaning" id="wordDayMeaning">شجاع</div>
-          <div class="word-day-actions">
-            <button type="button" class="word-day-audio" onclick="speakWordOfDay()">🔊 اسمع الكلمة</button>
-            <button type="button" class="word-day-example-audio" onclick="speakWordExample()">▶ اسمع المثال</button>
-          </div>
+      <div class="word-day-main word-day-main-clean">
+        <div class="word-day-word-row">
+          <div class="word-day-word" id="wordDayWord">Brave</div>
+          <div class="word-day-meaning" id="wordDayMeaning" lang="ar" dir="rtl">شُجَاع</div>
         </div>
-        <div class="word-day-example">
-          <span class="word-day-example-label">Example</span>
-          <p class="word-day-example-en" id="wordDayExample">The brave boy helped his friend.</p>
-          <p class="word-day-example-ar" id="wordDayExampleAr">ساعد الولد الشجاع صديقه.</p>
+        <div class="word-day-actions">
+          <button type="button" class="word-day-audio" onclick="speakWordOfDay()">🔊 اسمع الكلمة</button>
         </div>
       </div>
     </div>
@@ -253,17 +239,17 @@
 
   <div class="container">
     <div class="tabs">
-      <div class="tab active" id="tabBtn-student" onclick="showTab('student')">دخول الطلاب</div>
-      <div class="tab" id="tabBtn-register" onclick="showTab('register')">تسجيل</div>
-      <div class="tab" id="tabBtn-parent" onclick="showTab('parent')">ولي أمر</div>
-      <div class="tab" id="tabBtn-admin" onclick="showTab('admin')">لوحة المستر</div>
+      <div class="tab active" id="tabBtn-register" onclick="showTab('register')">سجل الآن</div>
+      <div class="tab" id="tabBtn-student" onclick="showTab('student')">دخول الطالب</div>
+      <div class="tab" id="tabBtn-parent" onclick="showTab('parent')">دخول ولي الأمر</div>
       <div class="tab" id="tabBtn-public-materials" onclick="showTab('public-materials')">📚 ملازم مجانية</div>
       <div class="tab" id="tabBtn-self-learning" onclick="showTab('self-learning')">🧠 علّم نفسك</div>
       <div class="tab" id="tabBtn-daily-grammar" onclick="showTab('daily-grammar')">📘 قاعدة اليوم</div>
+      <div class="tab" id="tabBtn-admin" onclick="showTab('admin')">لوحة المستر</div>
     </div>
 
     <!-- تسجيل طالب -->
-    <div id="tab-register" class="card" style="display:none">
+    <div id="tab-register" class="card">
       <h3>تسجيل جديد</h3>
       <input id="name" placeholder="الاسم ثلاثي">
       <input id="phone" placeholder="رقم الواتساب">
@@ -292,7 +278,7 @@
     </div>
 
     <!-- دخول الطالب -->
-    <div id="tab-student" class="card">
+    <div id="tab-student" class="card" style="display:none">
       <h3>دخول الطالب</h3>
       <input id="loginPhone" placeholder="رقم الواتساب">
       <button onclick="loginStudent()">دخول</button>
@@ -510,14 +496,31 @@
   </div>
 
   <script>
-    function showTab(t) {
-      document.querySelectorAll('[id^=tab-]').forEach(function(e) { e.style.display = 'none'; });
+    function showTab(t, fromHistory) {
       var target = document.getElementById('tab-' + t);
-      if (target) target.style.display = 'block';
+      if (!target) return;
+      document.querySelectorAll('[id^=tab-]').forEach(function(e) { e.style.display = 'none'; });
+      target.style.display = 'block';
       document.querySelectorAll('.tab').forEach(function(e) { e.classList.remove('active'); });
       var btn = document.getElementById('tabBtn-' + t);
       if (btn) btn.classList.add('active');
+      if (!fromHistory) {
+        var nextHash = '#' + encodeURIComponent(t);
+        if (window.location.hash !== nextHash) history.pushState({ platformTab: t }, '', nextHash);
+      }
     }
+    window.addEventListener('popstate', function() {
+      var t = '';
+      try { t = decodeURIComponent(window.location.hash.replace(/^#/, '')); } catch (e) {}
+      if (t && document.getElementById('tab-' + t)) showTab(t, true);
+      else showTab('register', true);
+    });
+    window.addEventListener('DOMContentLoaded', function() {
+      var t = '';
+      try { t = decodeURIComponent(window.location.hash.replace(/^#/, '')); } catch (e) {}
+      if (t && document.getElementById('tab-' + t)) showTab(t, true);
+      else showTab('register', true);
+    });
 
     function showAdminTab(t) {
       ['lessons', 'schedules', 'students', 'homeworks', 'materials', 'payments', 'backup'].forEach(function(x) {
