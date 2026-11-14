@@ -69,6 +69,14 @@ canvas{display:block;max-width:100%;height:auto}#ink{position:absolute;inset:0;w
 </div>
 <div id="classStatus" class="status">الاتصال غير نشط. لا تدخل بيانات سرية إلا في خادمك الموثوق.</div>
 <div id="audioTracks"></div>
+<div id="teacherMicPanel" class="panel" hidden style="margin-top:12px;background:#102b35">
+  <div class="toolbar" style="justify-content:space-between">
+    <strong>🎛️ التحكم في ميكروفونات الطلاب</strong>
+    <div class="toolbar"><button id="refreshStudents">تحديث القائمة</button><button id="muteAllStudents" class="primary">كتم الجميع</button></div>
+  </div>
+  <div id="studentMicList" class="status">سيظهر الطلاب المتصلون هنا.</div>
+  <div class="status">يمكنك كتم ميكروفون الطالب من هنا. إعادة تشغيل الميكروفون تكون من جهاز الطالب.</div>
+</div>
 <div id="teacherCode" class="notice" hidden></div>
 <div class="status">اختر الصف والملزمة من قسم الملازم المجانية. عند دخول الطالب تُحمّل نفس الملزمة تلقائيًا وتتم مزامنة الصفحات والكتابة. يلزم نشر Worker وضبط LiveKit أولًا.</div>
 </section>
@@ -81,6 +89,7 @@ canvas{display:block;max-width:100%;height:auto}#ink{position:absolute;inset:0;w
 const $=id=>document.getElementById(id), pdfCanvas=$('pdfCanvas'),ctx=pdfCanvas.getContext('2d'),ink=$('ink'),ictx=ink.getContext('2d');
 let pdf=null,page=1,scale=1,tool='pen',drawing=false,strokesByPage={},strokes=[],current=null,studentMode=false;
 let liveRoom=null,liveRole=null,teacherSecret=null,liveRoomId=null,micMuted=false;
+let studentRefreshTimer=null,studentRoster=[];
 if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 function resizeInk(){ink.width=pdfCanvas.width;ink.height=pdfCanvas.height;redraw()}
 function redraw(){ictx.clearRect(0,0,ink.width,ink.height);for(const s of strokes){ictx.globalCompositeOperation=s.tool==='eraser'?'destination-out':'source-over';ictx.strokeStyle=s.color;ictx.lineWidth=Math.max(1,s.width*ink.width);ictx.lineCap='round';ictx.lineJoin='round';ictx.beginPath();s.points.forEach((p,i)=>i?ictx.lineTo(p.x*ink.width,p.y*ink.height):ictx.moveTo(p.x*ink.width,p.y*ink.height));ictx.stroke()}ictx.globalCompositeOperation='source-over'}
@@ -115,7 +124,14 @@ async function connectRoom(credentials,role,roomId){
  liveRoom.on(LivekitClient.RoomEvent.Disconnected,()=>{status('انقطع الاتصال. يمكنك إعادة الدخول برمز الحصة.');setConnectedUI(false)});
  await liveRoom.connect(credentials.livekitUrl,credentials.token);
  await liveRoom.localParticipant.setMicrophoneEnabled(true);
- setConnectedUI(true);status(role==='teacher'?'اتصل المدرس. افتح الميكروفون وشارك رقم الحصة ورمز الدخول مع الطالب.':'تم دخول الطالب. الميكروفون يعمل، والسبورة في وضع المشاهدة فقط.');
+ setConnectedUI(true);
+ if(role==='teacher'){
+  $('teacherMicPanel').hidden=false;
+  await refreshStudentRoster();
+  if(studentRefreshTimer)clearInterval(studentRefreshTimer);
+  studentRefreshTimer=setInterval(()=>refreshStudentRoster(),5000);
+ }else{$('teacherMicPanel').hidden=true;}
+ status(role==='teacher'?'اتصل المدرس. افتح الميكروفون وشارك رقم الحصة ورمز الدخول مع الطالب.':'تم دخول الطالب. الميكروفون يعمل، والسبورة في وضع المشاهدة فقط.');
 }
 function compactStroke(stroke){const points=stroke.points||[];const max=220;const sampled=points.length<=max?points:points.filter((p,i)=>i===0||i===points.length-1||i%Math.ceil(points.length/max)===0).slice(0,max);return{tool:stroke.tool==='eraser'?'eraser':'pen',color:'#e11d48',width:Math.max(.001,Math.min(.05,Number(stroke.width)||.004)),points:sampled}}
 async function sendBoard(message){if(!liveRoom||liveRole!=='teacher')return;try{await liveRoom.localParticipant.publishData(new TextEncoder().encode(JSON.stringify(message)),{reliable:true,topic:'teacher-board'})}catch(e){status('تعذر إرسال تحديث السبورة: '+e.message)}}
@@ -132,8 +148,42 @@ async function applyBoard(message){
 $('startClass').onclick=async()=>{try{const grade=window.getSelectedClassroomGrade();const material=window.getSelectedClassroomMaterial();if(!grade)throw new Error('اختر الصف الدراسي أولًا.');if(!material)throw new Error('اختر الملزمة التي ستشرح منها.');status('جارٍ تجهيز الملزمة وإنشاء الحصة...');await window.loadClassroomMaterialById(material.id);const created=await workerPost('/create',{teacherPin:$('teacherPin').value,title:$('classTitle').value,grade,materialId:material.id,materialTitle:material.title,driveFileId:window.getSelectedClassroomFileId()});teacherSecret=created.teacherSecret;liveRoomId=created.roomId;$('roomId').value=created.roomId;$('joinCode').value=created.joinCode;$('teacherCode').hidden=false;$('teacherCode').textContent='رقم الحصة: '+created.roomId+' — رمز دخول الطالب: '+created.joinCode+' — الملزمة: '+material.title+' (احتفظ بالرمز وشاركه مع طلاب الصف فقط).';const token=await workerPost('/token',{role:'teacher',roomId:created.roomId,teacherSecret,participantName:$('participantName').value||'المدرس'});await connectRoom(token,'teacher',created.roomId)}catch(e){status(e.message)}};
 $('joinClass').onclick=async()=>{try{status('جارٍ التحقق من الحصة وتحميل الملزمة...');const token=await workerPost('/token',{role:'student',roomId:$('roomId').value.trim(),joinCode:$('joinCode').value.trim(),participantName:$('participantName').value||'طالب'});if(!token.materialId)throw new Error('لم يتم ربط ملزمة بهذه الحصة. اطلب من المدرس إنشاء حصة جديدة بعد اختيار الملزمة.');await window.loadClassroomMaterialById(token.materialId);await connectRoom(token,'student',$('roomId').value.trim());studentMode=true;ink.style.pointerEvents='none';$('pen').disabled=true;$('eraser').disabled=true;$('studentPreview').disabled=true;$('toolStatus').textContent='وضع الطالب: مشاهدة فقط.'}catch(e){status(e.message)}};
 $('muteMic').onclick=async()=>{if(!liveRoom)return;try{micMuted=!micMuted;await liveRoom.localParticipant.setMicrophoneEnabled(!micMuted);$('muteMic').textContent=micMuted?'🎙️ تشغيل الميكروفون':'🎙️ كتم الميكروفون'}catch(e){status(e.message)}};
-$('leaveClass').onclick=async()=>{if(liveRoom)await liveRoom.disconnect();liveRoom=null;liveRole=null;teacherSecret=null;setConnectedUI(false);status('غادرت الحصة.')};
-$('endClass').onclick=async()=>{if(!liveRoom||liveRole!=='teacher'||!teacherSecret)return;try{await workerPost('/end',{roomId:liveRoomId,teacherSecret});await liveRoom.disconnect();liveRoom=null;liveRole=null;teacherSecret=null;setConnectedUI(false);status('تم إنهاء الحصة.')}catch(e){status(e.message)}};
+$('leaveClass').onclick=async()=>{if(studentRefreshTimer){clearInterval(studentRefreshTimer);studentRefreshTimer=null;}$('teacherMicPanel').hidden=true;if(liveRoom)await liveRoom.disconnect();liveRoom=null;liveRole=null;teacherSecret=null;setConnectedUI(false);status('غادرت الحصة.')};
+$('endClass').onclick=async()=>{if(!liveRoom||liveRole!=='teacher'||!teacherSecret)return;try{await workerPost('/end',{roomId:liveRoomId,teacherSecret});if(studentRefreshTimer){clearInterval(studentRefreshTimer);studentRefreshTimer=null;}await liveRoom.disconnect();liveRoom=null;liveRole=null;teacherSecret=null;$('teacherMicPanel').hidden=true;setConnectedUI(false);status('تم إنهاء الحصة.')}catch(e){status(e.message)}};
+
+async function teacherAction(path,body={}){
+ const response=await fetch(workerBase()+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({roomId:liveRoomId,teacherSecret,...body})});
+ const result=await response.json().catch(()=>({}));
+ if(!response.ok)throw new Error(result.error||'تعذر تنفيذ التحكم في الميكروفون.');
+ return result;
+}
+async function refreshStudentRoster(){
+ if(liveRole!=='teacher'||!liveRoomId||!teacherSecret)return;
+ try{
+  const result=await teacherAction('/participants');
+  studentRoster=Array.isArray(result.participants)?result.participants:[];
+  renderStudentRoster();
+ }catch(e){$('studentMicList').textContent='تعذر تحديث قائمة الطلاب: '+e.message;}
+}
+function renderStudentRoster(){
+ const host=$('studentMicList');host.replaceChildren();
+ if(!studentRoster.length){host.textContent='لا يوجد طلاب متصلون حاليًا.';return;}
+ for(const student of studentRoster){
+  const row=document.createElement('div');row.className='toolbar';row.style.cssText='justify-content:space-between;padding:8px 0;border-bottom:1px solid #2b5260';
+  const label=document.createElement('span');label.textContent=(student.name||'طالب')+' — '+(student.hasMic?(student.micMuted?'الميكروفون مكتوم':'الميكروفون مفتوح'):'لا يوجد ميكروفون منشور');
+  const button=document.createElement('button');button.textContent=student.hasMic?(student.micMuted?'مكتوم بالفعل':'كتم الطالب'):'غير متاح';button.disabled=!student.hasMic||student.micMuted;
+  button.onclick=async()=>{button.disabled=true;try{await teacherAction('/mute',{identity:student.identity});await refreshStudentRoster();}catch(e){status(e.message);button.disabled=false;}};
+  row.append(label,button);host.appendChild(row);
+ }
+}
+$('refreshStudents').onclick=refreshStudentRoster;
+$('muteAllStudents').onclick=async()=>{
+ if(liveRole!=='teacher')return;
+ const button=$('muteAllStudents');button.disabled=true;
+ try{const result=await teacherAction('/mute-all');status('تم كتم '+(result.mutedCount||0)+' ميكروفون من الطلاب.');await refreshStudentRoster();}
+ catch(e){status(e.message);}
+ finally{button.disabled=false;}
+};
 })();
 </script>
 <script type="module">
