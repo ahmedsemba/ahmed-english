@@ -1437,9 +1437,10 @@
     onAuthStateChanged(auth, function(u) { if (u) showAdminArea(); });
 
   </script>
-  <script src="word-of-day.js" defer></script>
+  <script src="word-of-day.js?v=20261114fix1" defer></script>
   <script src="daily-learning.js" defer></script>
 
-<button type="button" class="platform-back-button" aria-label="الرجوع للخلف" onclick="if (document.referrer && new URL(document.referrer).origin === window.location.origin) { window.history.back(); } else { window.location.href='index.html'; }">← رجوع</button>
+<a class="platform-back-button" href="index.html" aria-label="العودة للصفحة الرئيسية" style="position:fixed;bottom:14px;left:14px;z-index:2147483000;display:flex;align-items:center;justify-content:center;min-width:104px;min-height:48px;padding:10px 18px;border:2px solid #5eead4;border-radius:14px;background:#123c5a;color:#fff;font-size:16px;font-weight:900;text-decoration:none;box-shadow:0 5px 18px rgba(0,0,0,.35);cursor:pointer">← رجوع</a>
+
 </body>
 </html>
