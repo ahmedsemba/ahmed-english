@@ -273,6 +273,12 @@
     }
 
   </style>
+
+<style id="platform-navigation-adjustments">
+  body:not([data-page="home"]) { padding-bottom: 78px; }
+  .platform-back-button { position:fixed; z-index:9999; left:50%; transform:translateX(-50%); bottom:calc(12px + env(safe-area-inset-bottom)); width:auto!important; min-width:116px; margin:0!important; padding:10px 24px!important; border:1px solid #5eead4!important; border-radius:999px!important; background:linear-gradient(135deg,#0f766e,#115e59)!important; color:#fff!important; box-shadow:0 5px 18px rgba(0,0,0,.32); font-size:14px!important; font-weight:900; }
+  body[data-page="home"] > .page-nav { display:none!important; }
+</style>
 </head>
 <body data-page="register">
 
@@ -1433,5 +1439,7 @@
   </script>
   <script src="word-of-day.js" defer></script>
   <script src="daily-learning.js" defer></script>
+
+<button type="button" class="platform-back-button" aria-label="الرجوع للخلف" onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href='index.html'; }">← رجوع</button>
 </body>
 </html>
