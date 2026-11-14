@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ابحث عن تسجيلات الحصص حسب الصف والوحدة والدرس وشاهدها داخل المنصة.">
+<meta name="theme-color" content="#123c5a"><title>الحصص المسجلة | منصة مستر أحمد السيد</title>
+<link rel="icon" href="logo.png">
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#0f172a;color:#fff;padding:18px 12px 90px}
+header{max-width:900px;margin:0 auto 18px;padding:22px 16px;text-align:center;border-radius:18px;background:linear-gradient(135deg,#4f46e5,#0f766e)}
+h1{margin:0 0 8px;font-size:clamp(23px,5vw,32px)}
+header p{margin:0;color:#e2e8f0;font-size:14px}
+main{max-width:900px;margin:auto}
+.filter,.lesson{background:#1e293b;border:1px solid #334155;border-radius:15px;padding:15px;margin:12px 0}
+label{display:block;margin:10px 0 7px;color:#cbd5e1;font-weight:bold}
+select,input{width:100%;padding:13px;border:1px solid #475569;border-radius:10px;background:#0f172a;color:#fff;font-size:16px}
+.search{margin-top:14px;width:100%;padding:13px;border:0;border-radius:10px;background:#0f766e;color:#fff;font-size:16px;font-weight:bold}
+.lesson h2{font-size:19px;margin:0 0 8px}
+.grade{color:#5eead4;font-size:13px;margin:0 0 12px}
+.video{width:100%;aspect-ratio:16/9;background:#020617;border-radius:12px;overflow:hidden}
+.video iframe{width:100%;height:100%;border:0}
+.empty,.status{color:#cbd5e1;text-align:center;padding:18px}
+.back{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));z-index:2147483647;min-width:116px;padding:12px 24px;border:2px solid #5eead4;border-radius:999px;background:#115e59;color:#fff;font-size:16px;font-weight:bold;text-decoration:none}
+</style></head><body>
+<header><h1>🎬 الحصص المسجلة</h1><p>اختَر الصف والوحدة والدرس، وشاهد التسجيل مباشرة داخل المنصة بدون تسجيل دخول.</p></header>
+<main>
+<section class="filter">
+<label for="gradeSelect">الصف الدراسي</label>
+<select id="gradeSelect"><option value="">اختر الصف الدراسي</option>
+<option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option>
+<option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option>
+<option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select>
+<label for="unitSelect">الوحدة</label><select id="unitSelect" disabled><option value="">اختر الصف أولاً</option></select>
+<label for="lessonSelect">الدرس</label><select id="lessonSelect" disabled><option value="">اختر الوحدة أولاً</option></select>
+<label for="lessonSearch">بحث باسم الدرس (اختياري)</label><input id="lessonSearch" type="search" placeholder="اكتب اسم الدرس">
+<button class="search" id="searchButton" type="button">🔎 بحث وعرض الدرس</button>
+</section>
+<div id="lessons" class="status">اختر الصف والوحدة والدرس لعرض الفيديو.</div>
+<section id="playerCard" class="lesson" style="display:none">
+<h2 id="playerTitle"></h2><p id="playerMeta" class="grade"></p>
+<div class="video"><iframe id="lessonPlayer" title="فيديو الحصة المسجلة" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+</section>
+</main>
+<a class="back" href="./index.html">← رجوع</a>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getFirestore,collection,getDocs} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyA3EUyPGWQXi3yEV50QYYCtCASKV-MEE5I",authDomain:"ahmed-elsayed-bf13d.firebaseapp.com",projectId:"ahmed-elsayed-bf13d",storageBucket:"ahmed-elsayed-bf13d.firebasestorage.app",messagingSenderId:"66067955169",appId:"1:66067955169:web:28330bd439b6fd4c73e6a0"});
+const db=getFirestore(app);
+const gradeSelect=document.getElementById('gradeSelect');
+const unitSelect=document.getElementById('unitSelect');
+const lessonSelect=document.getElementById('lessonSelect');
+const searchInput=document.getElementById('lessonSearch');
+const statusBox=document.getElementById('lessons');
+const playerCard=document.getElementById('playerCard');
+const player=document.getElementById('lessonPlayer');
+let allLessons=[];
+function youtubeId(value){
+  try{
+    const u=new URL(String(value||'').trim());
+    const h=u.hostname.toLowerCase().replace(/^www\\./,'');
+    if(h==='youtu.be')return u.pathname.split('/').filter(Boolean)[0]||'';
+    if(['youtube.com','m.youtube.com','youtube-nocookie.com'].includes(h)){
+      if(u.pathname==='/watch')return u.searchParams.get('v')||'';
+      const p=u.pathname.split('/').filter(Boolean);
+      if(['embed','shorts','live'].includes(p[0]))return p[1]||'';
+    }
+  }catch(e){}
+  return '';
+}
+function unique(values){
+  return [...new Set(values.filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ar',{numeric:true}));
+}
+function setOptions(select,values,placeholder){
+  select.replaceChildren();
+  const first=document.createElement('option');
+  first.value='';first.textContent=placeholder;select.appendChild(first);
+  values.forEach(value=>{
+    const option=document.createElement('option');
+    option.value=value;option.textContent=value;select.appendChild(option);
+  });
+}
+function gradeItems(){return allLessons.filter(item=>item.grade===gradeSelect.value);}
+function refreshUnits(){
+  const items=gradeItems();
+  setOptions(unitSelect,[...Array.from({length:6},(_,i)=>'الوحدة '+(i+1)),'القصة'],'اختر الوحدة أو القصة');
+  unitSelect.disabled=!gradeSelect.value;
+  setOptions(lessonSelect,[],'اختر الدرس من 1 إلى 5');
+  lessonSelect.disabled=true;
+  playerCard.style.display='none';
+  player.src='';
+  statusBox.textContent=items.length?'اختر الوحدة من 1 إلى 6 أو القصة.':'لا توجد حصص مسجلة لهذا الصف حتى الآن.';
+}
+function refreshLessons(){
+  const items=gradeItems().filter(item=>item.unit===unitSelect.value);
+  setOptions(lessonSelect,Array.from({length:5},(_,i)=>String(i+1)),'اختر الدرس من 1 إلى 5');
+  Array.from(lessonSelect.options).forEach((option,index)=>{if(index>0)option.textContent='الدرس '+option.value;});
+  lessonSelect.disabled=!unitSelect.value;
+  playerCard.style.display='none';
+  player.src='';
+  statusBox.textContent=items.length?'اختر رقم الدرس من 1 إلى 5.':'لا توجد فيديوهات مضافة في هذه الوحدة حتى الآن، لكن يمكنك اختيار رقم الدرس.';
+}
+async function loadAll(){
+  statusBox.textContent='⏳ جاري تحميل الحصص المسجلة...';
+  try{
+    const snap=await getDocs(collection(db,'materials'));
+    allLessons=[];
+    snap.forEach(docSnap=>{
+      const item=docSnap.data();
+      if(item.type!=='recorded_lesson')return;
+      const id=youtubeId(item.link);
+      if(!id)return;
+      allLessons.push({
+        id,
+        title:String(item.title||'درس مسجل'),
+        unit:String(item.unit||'وحدة غير محددة'),
+        lessonNumber:String(item.lessonNumber||''),
+        grade:String(item.grade||''),
+        created:item.created||0
+      });
+    });
+    statusBox.textContent='اختَر الصف ثم الوحدة من 1 إلى 6 ثم الدرس من 1 إلى 5.';
+  }catch(error){
+    statusBox.textContent='تعذر تحميل الحصص الآن. حاول مرة أخرى لاحقًا.';
+  }
+}
+function showChosenLesson(){
+  const grade=gradeSelect.value;
+  const unit=unitSelect.value;
+  const lessonNumber=lessonSelect.value;
+  const query=searchInput.value.trim().toLocaleLowerCase('ar');
+  if(!grade){statusBox.textContent='اختر الصف الدراسي أولاً.';playerCard.style.display='none';return;}
+  const matches=gradeItems().filter(item=>
+    (!unit||item.unit===unit)&&(!lessonNumber||item.lessonNumber===lessonNumber)&&
+    (!query||item.title.toLocaleLowerCase('ar').includes(query))
+  );
+  if(matches.length!==1){
+    statusBox.textContent=matches.length?'نتائج البحث متعددة. اختر الوحدة والدرس لتحديد فيديو واحد.':'لا توجد نتيجة مطابقة. راجع الصف والوحدة واسم الدرس.';
+    playerCard.style.display='none';player.src='';return;
+  }
+  const item=matches[0];
+  document.getElementById('playerTitle').textContent='📘 '+item.title;
+  document.getElementById('playerMeta').textContent=item.grade+' • '+item.unit;
+  player.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(item.id);
+  playerCard.style.display='block';
+  statusBox.textContent='الفيديو يعمل داخل المنصة. يمكنك تكبيره من زر ملء الشاشة داخل مشغل الفيديو.';
+}
+gradeSelect.addEventListener('change',()=>{searchInput.value='';refreshUnits();});
+unitSelect.addEventListener('change',refreshLessons);
+document.getElementById('searchButton').addEventListener('click',showChosenLesson);
+searchInput.addEventListener('keydown',event=>{if(event.key==='Enter')showChosenLesson();});
+loadAll();
+</script></body></html>
