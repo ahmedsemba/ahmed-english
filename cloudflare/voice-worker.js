@@ -64,6 +64,46 @@ export default {
       });
     }
     if (origin !== ALLOWED_ORIGIN) return reply({ error: "Origin not allowed." }, 403);
+
+    // Proxy only publicly shared Drive PDFs so browsers can load them into PDF.js.
+    // The file remains in Google Drive; this Worker streams it without storing a copy.
+    if (request.method === "GET" && url.pathname === "/pdf") {
+      const fileId = url.searchParams.get("fileId") || "";
+      if (!/^[A-Za-z0-9_-]{10,200}$/.test(fileId)) {
+        return reply({ error: "Invalid Google Drive file ID." }, 400);
+      }
+      try {
+        const upstream = await fetch(
+          "https://drive.google.com/uc?export=download&id=" + encodeURIComponent(fileId),
+          { redirect: "follow", headers: { "User-Agent": "Mozilla/5.0" } }
+        );
+        if (!upstream.ok) return reply({ error: "Google Drive could not provide this file. Check that link sharing is enabled." }, 502);
+        const contentLength = Number(upstream.headers.get("Content-Length") || 0);
+        if (contentLength > 40 * 1024 * 1024) return reply({ error: "PDF is larger than the 40 MB classroom demo limit." }, 413);
+        const bytes = await upstream.arrayBuffer();
+        if (bytes.byteLength < 5 || bytes.byteLength > 40 * 1024 * 1024) {
+          return reply({ error: "The Drive response is empty or exceeds the 40 MB classroom demo limit." }, 502);
+        }
+        const signature = new TextDecoder().decode(bytes.slice(0, 5));
+        if (signature !== "%PDF-") {
+          return reply({ error: "Google Drive returned a preview or confirmation page instead of a PDF. The file may be too large or have restricted downloads." }, 502);
+        }
+        return new Response(bytes, {
+          status: 200,
+          headers: {
+            ...CORS,
+            "Content-Type": "application/pdf",
+            "Content-Disposition": "inline; filename=\"classroom-material.pdf\"",
+            "Content-Length": String(bytes.byteLength),
+            "Cache-Control": "private, max-age=60",
+            "X-Content-Type-Options": "nosniff"
+          }
+        });
+      } catch (error) {
+        return reply({ error: "Could not retrieve the public PDF from Google Drive." }, 502);
+      }
+    }
+
     if (request.method !== "POST") return reply({ error: "Method not allowed." }, 405);
     if (!request.headers.get("Content-Type")?.toLowerCase().includes("application/json")) {
       return reply({ error: "Content-Type must be application/json." }, 415);
@@ -90,6 +130,9 @@ export default {
         teacherSecretHash: await hashSecret(teacherSecret),
         title: safeName(body.title || "حصة مباشرة"),
         grade: safeName(body.grade || "للكل"),
+        materialId: String(body.materialId || "").slice(0, 160),
+        materialTitle: safeName(body.materialTitle || "ملزمة الحصة"),
+        driveFileId: /^[A-Za-z0-9_-]{10,200}$/.test(String(body.driveFileId || "")) ? String(body.driveFileId) : "",
         createdAt: Date.now()
       };
       await env.CLASSROOMS.put("room:" + roomId, JSON.stringify(room), { expirationTtl: 4 * 60 * 60 });
@@ -141,7 +184,11 @@ export default {
           roomAdmin: role === "teacher"
         }
       }, env.LIVEKIT_API_SECRET);
-      return reply({ ok: true, token, livekitUrl: env.LIVEKIT_URL, identity, role });
+      return reply({
+        ok: true, token, livekitUrl: env.LIVEKIT_URL, identity, role,
+        grade: room.grade, materialId: room.materialId,
+        materialTitle: room.materialTitle, driveFileId: room.driveFileId
+      });
     }
     return reply({ error: "Not found." }, 404);
   }
