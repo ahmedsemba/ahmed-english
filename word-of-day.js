@@ -408,18 +408,51 @@
   }
 
   window.speakWordOfDay = function () {
+    const textToSpeak = String(word && word.word || '').trim();
+    if (!textToSpeak) return;
+
+    // Keep a real audio fallback for Android WebViews/devices with a broken speech engine.
+    const playAudioFallback = function () {
+      try {
+        if (window._wordDayAudio) {
+          window._wordDayAudio.pause();
+          window._wordDayAudio.currentTime = 0;
+        }
+        const audioUrl = 'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=' + encodeURIComponent(textToSpeak);
+        window._wordDayAudio = new Audio(audioUrl);
+        window._wordDayAudio.play().catch(function () {
+          alert('تعذر تشغيل الصوت. تأكد من اتصال الإنترنت، ثم جرّب فتح المنصة من Google Chrome.');
+        });
+      } catch (error) {
+        alert('تعذر تشغيل الصوت على هذا الجهاز. جرّب فتح المنصة من Google Chrome.');
+      }
+    };
+
     if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
-      alert('عذراً، متصفحك لا يدعم تشغيل النطق الصوتي. جرّب فتح المنصة من Google Chrome.');
+      playAudioFallback();
       return;
     }
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(word.word);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.72;
-    const voices = window.speechSynthesis.getVoices();
-    const englishVoice = voices.find(v => /^en(-|_)/i.test(v.lang));
-    if (englishVoice) utterance.voice = englishVoice;
-    window.speechSynthesis.speak(utterance);
+
+    try {
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.resume();
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.82;
+      const voices = window.speechSynthesis.getVoices();
+      const englishVoice = voices.find(function (voice) { return /^en(-|_)/i.test(voice.lang); });
+      if (englishVoice) utterance.voice = englishVoice;
+
+      let started = false;
+      utterance.onstart = function () { started = true; };
+      utterance.onerror = function () { if (!started) playAudioFallback(); };
+      window.speechSynthesis.speak(utterance);
+      window.setTimeout(function () {
+        if (!started) playAudioFallback();
+      }, 2200);
+    } catch (error) {
+      playAudioFallback();
+    }
   };
 
 

@@ -1437,9 +1437,41 @@
     onAuthStateChanged(auth, function(u) { if (u) showAdminArea(); });
 
   </script>
-  <script src="word-of-day.js" defer></script>
+  <script src="word-of-day.js?v=20261114fix1" defer></script>
   <script src="daily-learning.js" defer></script>
 
-<button type="button" class="platform-back-button" aria-label="الرجوع للخلف" onclick="if (document.referrer && new URL(document.referrer).origin === window.location.origin) { window.history.back(); } else { window.location.href='index.html'; }">← رجوع</button>
+<button type="button" class="platform-back-button" id="platformBackButton" aria-label="الرجوع للخلف">← رجوع</button>
+<script>
+(function () {
+  var backButton = document.getElementById('platformBackButton');
+  if (!backButton) return;
+  window.addEventListener('pagehide', function () {
+    try {
+      if (location.origin === window.location.origin) {
+        sessionStorage.setItem('platformPreviousPage', location.href);
+      }
+    } catch (error) {}
+  });
+  backButton.addEventListener('click', function () {
+    var sameOriginReferrer = false;
+    try {
+      sameOriginReferrer = !!document.referrer && new URL(document.referrer).origin === location.origin;
+    } catch (error) {}
+    if (sameOriginReferrer && window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+    var previousPage = '';
+    try { previousPage = sessionStorage.getItem('platformPreviousPage') || ''; } catch (error) {}
+    try {
+      if (previousPage && new URL(previousPage).origin === location.origin && previousPage !== location.href) {
+        location.assign(previousPage);
+        return;
+      }
+    } catch (error) {}
+    location.assign('index.html');
+  });
+})();
+</script>
 </body>
 </html>
