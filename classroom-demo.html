@@ -26,6 +26,12 @@ canvas{display:block;max-width:100%;height:auto}#ink{position:absolute;inset:0;w
 <div class="notice"><b>تنبيه مهم:</b> هذه شاشة تجريبية لاختبار شكل عرض الملزمة وأدوات المدرس على الجهاز فقط. الصوت المباشر ومزامنة الطالب مع المدرس لم يتم ربطهما بعد، ولن يتم نشرها للطلاب قبل اكتمال الاختبار.</div>
 <section class="panel">
 <div class="toolbar">
+<select id="savedDriveMaterial" style="min-width:220px;flex:1"><option value="">تحميل ملازم المنصة...</option></select>
+<input id="driveApiKey" placeholder="مفتاح Google Drive API" style="min-width:180px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px">
+<button id="loadDriveMaterial" class="primary">فتح الملزمة المختارة من Google Drive</button>
+</div>
+<div class="status">يمكنك اختيار ملزمة موجودة بالفعل في قسم الملازم بالمنصة. يلزم أن يكون ملف PDF متاحًا للطلاب عبر الرابط، مع إعداد مفتاح Google Drive API. ويمكنك استخدام الاختيار المحلي أدناه للتجربة.</div>
+<div class="toolbar" style="margin-top:9px">
 <label class="primary" for="pdfFile">اختيار ملف PDF من الجهاز</label><input id="pdfFile" type="file" accept="application/pdf">
 <button id="prev">◀ الصفحة السابقة</button><span id="pageInfo">0 / 0</span><button id="next">الصفحة التالية ▶</button>
 <button id="zoomOut">− تصغير</button><button id="zoomIn">تكبير +</button><button id="fit">ملاءمة الشاشة</button><button id="fullscreen">⛶ ملء الشاشة</button>
@@ -74,7 +80,9 @@ if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudfl
 function resizeInk(){ink.width=pdfCanvas.width;ink.height=pdfCanvas.height;redraw()}
 function redraw(){ictx.clearRect(0,0,ink.width,ink.height);for(const s of strokes){ictx.globalCompositeOperation=s.tool==='eraser'?'destination-out':'source-over';ictx.strokeStyle=s.color;ictx.lineWidth=Math.max(1,s.width*ink.width);ictx.lineCap='round';ictx.lineJoin='round';ictx.beginPath();s.points.forEach((p,i)=>i?ictx.lineTo(p.x*ink.width,p.y*ink.height):ictx.moveTo(p.x*ink.width,p.y*ink.height));ictx.stroke()}ictx.globalCompositeOperation='source-over'}
 async function render(){if(!pdf)return;const p=await pdf.getPage(page),v=p.getViewport({scale});pdfCanvas.width=v.width;pdfCanvas.height=v.height;await p.render({canvasContext:ctx,viewport:v}).promise;ink.style.width=pdfCanvas.width+'px';ink.style.height=pdfCanvas.height+'px';strokes=strokesByPage[page]||[];resizeInk();$('pageInfo').textContent=page+' / '+pdf.numPages;$('prev').disabled=page<=1;$('next').disabled=page>=pdf.numPages}
-$('pdfFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const data=await f.arrayBuffer();pdf=await pdfjsLib.getDocument({data}).promise;page=1;scale=1;strokesByPage={};strokes=[];$('fileStatus').textContent='تم فتح: '+f.name+' — الملف محلي على جهازك فقط.';await render()}catch(err){$('fileStatus').textContent='تعذر فتح الملف. تأكد أنه PDF صالح.'}});
+async function loadPdfData(data,label,source){pdf=await pdfjsLib.getDocument({data}).promise;page=1;scale=1;strokesByPage={};strokes=[];$('fileStatus').textContent='تم فتح: '+label+' — '+source+' — عدد الصفحات: '+pdf.numPages;await render()}
+window.openClassroomPdf=loadPdfData;
+$('pdfFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const data=await f.arrayBuffer();await loadPdfData(data,f.name,'الملف محلي على جهازك فقط')}catch(err){$('fileStatus').textContent='تعذر فتح الملف. تأكد أنه PDF صالح.'}});
 async function changePage(next){if(!pdf||next<1||next>pdf.numPages)return;page=next;strokes=strokesByPage[page]||[];await render();if(liveRole==='teacher')sendBoard({type:'page',page});}
 $('prev').onclick=()=>changePage(page-1);$('next').onclick=()=>changePage(page+1);
 $('zoomIn').onclick=()=>{if(pdf){scale=Math.min(2.5,scale+.15);render()}};$('zoomOut').onclick=()=>{if(pdf){scale=Math.max(.5,scale-.15);render()}};
@@ -122,5 +130,74 @@ $('muteMic').onclick=async()=>{if(!liveRoom)return;try{micMuted=!micMuted;await 
 $('leaveClass').onclick=async()=>{if(liveRoom)await liveRoom.disconnect();liveRoom=null;liveRole=null;teacherSecret=null;setConnectedUI(false);status('غادرت الحصة.')};
 $('endClass').onclick=async()=>{if(!liveRoom||liveRole!=='teacher'||!teacherSecret)return;try{await workerPost('/end',{roomId:liveRoomId,teacherSecret});await liveRoom.disconnect();liveRoom=null;liveRole=null;teacherSecret=null;setConnectedUI(false);status('تم إنهاء الحصة.')}catch(e){status(e.message)}};
 })();
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyA3EUyPGWQXi3yEV50QYYCtCASKV-MEE5I",
+  authDomain: "ahmed-elsayed-bf13d.firebaseapp.com",
+  projectId: "ahmed-elsayed-bf13d",
+  storageBucket: "ahmed-elsayed-bf13d.firebasestorage.app",
+  messagingSenderId: "66067955169",
+  appId: "1:66067955169:web:28330bd439b6fd4c73e6a0"
+};
+const app = initializeApp(firebaseConfig, "classroomDemo");
+const db = getFirestore(app);
+const select = document.getElementById("savedDriveMaterial");
+let materials = [];
+function driveFileId(link) {
+  try {
+    const u = new URL(link);
+    if (!/(^|\\.)drive\\.google\\.com$/i.test(u.hostname)) return null;
+    const path = u.pathname.match(/\\/(?:file|document)\\/d\\/([A-Za-z0-9_-]+)/);
+    return (path && path[1]) || u.searchParams.get("id") || null;
+  } catch { return null; }
+}
+async function loadMaterials() {
+  try {
+    const snap = await getDocs(collection(db, "materials"));
+    materials = snap.docs.map(d => ({ id:d.id, ...d.data() }))
+      .filter(m => typeof m.link === "string" && driveFileId(m.link))
+      .sort((a,b)=>(b.created||0)-(a.created||0));
+    select.replaceChildren();
+    const first = document.createElement("option");
+    first.value = "";
+    first.textContent = materials.length ? "اختر ملزمة من قسم الملازم" : "لا توجد روابط Google Drive صالحة";
+    select.appendChild(first);
+    for (const m of materials) {
+      const option = document.createElement("option");
+      option.value = m.id;
+      option.textContent = (m.title || "ملزمة") + " — " + (m.grade || "بدون صف");
+      select.appendChild(option);
+    }
+  } catch (e) {
+    select.innerHTML = '<option value="">تعذر تحميل قائمة الملازم</option>';
+    document.getElementById("fileStatus").textContent = "تعذر قراءة قائمة الملازم من المنصة: " + (e.message || e);
+  }
+}
+document.getElementById("loadDriveMaterial").addEventListener("click", async () => {
+  const item = materials.find(m => m.id === select.value);
+  const apiKey = document.getElementById("driveApiKey").value.trim();
+  if (!item) { document.getElementById("fileStatus").textContent = "اختر ملزمة أولًا."; return; }
+  if (!apiKey) { document.getElementById("fileStatus").textContent = "أدخل مفتاح Google Drive API أولًا."; return; }
+  const id = driveFileId(item.link);
+  try {
+    document.getElementById("fileStatus").textContent = "جارٍ تحميل الملزمة من Google Drive...";
+    const url = "https://www.googleapis.com/drive/v3/files/" + encodeURIComponent(id) + "?alt=media&key=" + encodeURIComponent(apiKey);
+    const response = await fetch(url);
+    if (!response.ok) {
+      let detail = "";
+      try { const data = await response.json(); detail = data.error?.message || ""; } catch {}
+      throw new Error(detail || "تعذر الوصول للملف. تأكد من تفعيل Drive API ومشاركة الملف بصلاحية «أي شخص لديه الرابط».");
+    }
+    const data = await response.arrayBuffer();
+    if (data.byteLength < 100 || data.byteLength > 40 * 1024 * 1024) throw new Error("حجم الملف غير مناسب للعرض التجريبي (الحد الأقصى 40 ميجابايت).");
+    await window.openClassroomPdf(data, item.title || "ملزمة من Google Drive", "Google Drive");
+  } catch (e) {
+    document.getElementById("fileStatus").textContent = "تعذر فتح الملزمة: " + (e.message || e) + " — يمكنك مؤقتًا اختيار PDF من جهازك.";
+  }
+});
+loadMaterials();
 </script>
 </body></html>
