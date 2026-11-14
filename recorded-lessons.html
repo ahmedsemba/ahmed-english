@@ -84,13 +84,13 @@ function setOptions(select,values,placeholder){
 function gradeItems(){return allLessons.filter(item=>item.grade===gradeSelect.value);}
 function refreshUnits(){
   const items=gradeItems();
-  setOptions(unitSelect,Array.from({length:6},(_,i)=>'الوحدة '+(i+1)),'اختر الوحدة من 1 إلى 6');
+  setOptions(unitSelect,[...Array.from({length:6},(_,i)=>'الوحدة '+(i+1)),'القصة'],'اختر الوحدة أو القصة');
   unitSelect.disabled=!items.length;
   setOptions(lessonSelect,[],'اختر الدرس من 1 إلى 5');
   lessonSelect.disabled=true;
   playerCard.style.display='none';
   player.src='';
-  statusBox.textContent=items.length?'اختر الوحدة من 1 إلى 6.':'لا توجد حصص مسجلة لهذا الصف حتى الآن.';
+  statusBox.textContent=items.length?'اختر الوحدة من 1 إلى 6 أو القصة.':'لا توجد حصص مسجلة لهذا الصف حتى الآن.';
 }
 function refreshLessons(){
   const items=gradeItems().filter(item=>item.unit===unitSelect.value);
