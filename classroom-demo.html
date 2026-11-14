@@ -38,28 +38,87 @@ canvas{display:block;max-width:100%;height:auto}#ink{position:absolute;inset:0;w
 </div><div class="status" id="toolStatus">الأدوات تعمل محليًا للتجربة. اضغط «معاينة الطالب» للتأكد أن الكتابة مقفولة في وضع المشاهدة.</div>
 </section>
 <section class="panel">
-<div class="audio"><b>🎙️ الصوت المباشر:</b><span class="status">سيتم تفعيله بعد ربط خدمة الاتصال الآمن.</span></div>
+<strong>🎙️ الاتصال بالفصل التجريبي</strong>
+<div class="toolbar" style="margin-top:10px">
+<input id="workerUrl" placeholder="رابط خادم الفصل (Worker URL)" style="display:block;min-width:230px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px">
+<input id="participantName" placeholder="اسمك" style="display:block;min-width:130px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px">
+</div>
+<div class="toolbar" style="margin-top:9px">
+<input id="teacherPin" type="password" placeholder="رمز المدرس السري" style="display:block;min-width:180px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px">
+<input id="classTitle" placeholder="عنوان الحصة" value="حصة تجريبية" style="display:block;min-width:150px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px">
+<button id="startClass" class="primary">إنشاء حصة كمدرس</button>
+</div>
+<div class="toolbar" style="margin-top:9px">
+<input id="roomId" placeholder="رقم الحصة" style="display:block;min-width:160px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px">
+<input id="joinCode" placeholder="رمز دخول الطالب" style="display:block;min-width:150px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px">
+<button id="joinClass">دخول كطالب</button>
+</div>
+<div class="toolbar" style="margin-top:9px">
+<button id="muteMic" disabled>🎙️ كتم الميكروفون</button><button id="leaveClass" disabled>مغادرة الحصة</button><button id="endClass" disabled>إنهاء الحصة (المدرس)</button>
+</div>
+<div id="classStatus" class="status">الاتصال غير نشط. لا تدخل بيانات سرية إلا في خادمك الموثوق.</div>
+<div id="audioTracks"></div>
+<div id="teacherCode" class="notice" hidden></div>
+<div class="status">هذه واجهة ربط تجريبية. يحتاج الاتصال إلى نشر Worker وضبط خدمة LiveKit أولًا. مشاركة ملف PDF من Google Drive لم تُربط بعد.</div>
 </section>
 <section class="viewer"><div class="page-wrap" id="pageWrap"><canvas id="pdfCanvas"></canvas><canvas id="ink"></canvas></div></section>
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
 <script>
 (function(){
 const $=id=>document.getElementById(id), pdfCanvas=$('pdfCanvas'),ctx=pdfCanvas.getContext('2d'),ink=$('ink'),ictx=ink.getContext('2d');
 let pdf=null,page=1,scale=1,tool='pen',drawing=false,strokesByPage={},strokes=[],current=null,studentMode=false;
+let liveRoom=null,liveRole=null,teacherSecret=null,liveRoomId=null,micMuted=false;
 if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 function resizeInk(){ink.width=pdfCanvas.width;ink.height=pdfCanvas.height;redraw()}
 function redraw(){ictx.clearRect(0,0,ink.width,ink.height);for(const s of strokes){ictx.globalCompositeOperation=s.tool==='eraser'?'destination-out':'source-over';ictx.strokeStyle=s.color;ictx.lineWidth=s.width;ictx.lineCap='round';ictx.lineJoin='round';ictx.beginPath();s.points.forEach((p,i)=>i?ictx.lineTo(p.x,p.y):ictx.moveTo(p.x,p.y));ictx.stroke()}ictx.globalCompositeOperation='source-over'}
 async function render(){if(!pdf)return;const p=await pdf.getPage(page),v=p.getViewport({scale});pdfCanvas.width=v.width;pdfCanvas.height=v.height;await p.render({canvasContext:ctx,viewport:v}).promise;ink.style.width=pdfCanvas.width+'px';ink.style.height=pdfCanvas.height+'px';strokes=strokesByPage[page]||[];resizeInk();$('pageInfo').textContent=page+' / '+pdf.numPages;$('prev').disabled=page<=1;$('next').disabled=page>=pdf.numPages}
 $('pdfFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const data=await f.arrayBuffer();pdf=await pdfjsLib.getDocument({data}).promise;page=1;scale=1;strokesByPage={};strokes=[];$('fileStatus').textContent='تم فتح: '+f.name+' — الملف محلي على جهازك فقط.';await render()}catch(err){$('fileStatus').textContent='تعذر فتح الملف. تأكد أنه PDF صالح.'}});
-$('prev').onclick=()=>{if(page>1){strokesByPage[page]=strokes;page--;render()}};$('next').onclick=()=>{if(pdf&&page<pdf.numPages){strokesByPage[page]=strokes;page++;render()}};
+async function changePage(next){if(!pdf||next<1||next>pdf.numPages)return;page=next;strokes=strokesByPage[page]||[];await render();if(liveRole==='teacher')sendBoard({type:'page',page});}
+$('prev').onclick=()=>changePage(page-1);$('next').onclick=()=>changePage(page+1);
 $('zoomIn').onclick=()=>{if(pdf){scale=Math.min(2.5,scale+.15);render()}};$('zoomOut').onclick=()=>{if(pdf){scale=Math.max(.5,scale-.15);render()}};
 $('fit').onclick=()=>{if(pdf){const max=Math.min(($('pageWrap').parentElement.clientWidth-24)/pdfCanvas.width,1.5);scale=Math.max(.5,max);render()}};$('fullscreen').onclick=async()=>{try{if(!$('pageWrap').requestFullscreen)throw new Error('unsupported');await $('pageWrap').requestFullscreen()}catch(e){$('fileStatus').textContent='ملء الشاشة غير مدعوم في هذا المتصفح؛ استخدم التكبير.'}};
 $('pen').onclick=()=>setTool('pen');$('eraser').onclick=()=>setTool('eraser');function setTool(t){tool=t;$('pen').classList.toggle('active',t==='pen');$('eraser').classList.toggle('active',t==='eraser')}
 function point(e){const r=ink.getBoundingClientRect();return{x:(e.clientX-r.left)*ink.width/r.width,y:(e.clientY-r.top)*ink.height/r.height}}
-ink.addEventListener('pointerdown',e=>{if(!pdf||studentMode)return;drawing=true;ink.setPointerCapture(e.pointerId);const p=point(e);current={tool,color:'#e11d48',width:4,points:[p]};strokes.push(current);strokesByPage[page]=strokes;redraw()});
-ink.addEventListener('pointermove',e=>{if(!drawing||!current)return;current.points.push(point(e));strokesByPage[page]=strokes;redraw()});function stop(){drawing=false;current=null}ink.addEventListener('pointerup',stop);ink.addEventListener('pointercancel',stop);
-$('studentPreview').onclick=()=>{studentMode=!studentMode;ink.style.pointerEvents=studentMode?'none':'auto';$('studentPreview').classList.toggle('active',studentMode);$('studentPreview').textContent=studentMode?'✏️ العودة لوضع المدرس':'👁️ معاينة الطالب';$('toolStatus').textContent=studentMode?'وضع الطالب: مشاهدة فقط، والكتابة متوقفة.':'وضع المدرس: القلم والممحاة متاحان.'};
+ink.addEventListener('pointerdown',e=>{if(!pdf||studentMode||liveRole==='student')return;drawing=true;ink.setPointerCapture(e.pointerId);const p=point(e);current={tool,color:'#e11d48',width:4,points:[p]};strokes.push(current);strokesByPage[page]=strokes;redraw()});
+ink.addEventListener('pointermove',e=>{if(!drawing||!current)return;current.points.push(point(e));strokesByPage[page]=strokes;redraw()});
+function stop(){if(drawing&&current&&liveRole==='teacher'){const normalized={tool:current.tool,color:current.color,width:current.width/pdfCanvas.width,points:current.points.map(p=>({x:p.x/pdfCanvas.width,y:p.y/pdfCanvas.height}))};sendBoard({type:'stroke',page,stroke:normalized});}drawing=false;current=null}
+ink.addEventListener('pointerup',stop);ink.addEventListener('pointercancel',stop);
+$('studentPreview').onclick=()=>{if(liveRole==='student')return;studentMode=!studentMode;ink.style.pointerEvents=studentMode?'none':'auto';$('studentPreview').classList.toggle('active',studentMode);$('studentPreview').textContent=studentMode?'✏️ العودة لوضع المدرس':'👁️ معاينة الطالب';$('toolStatus').textContent=studentMode?'وضع الطالب: مشاهدة فقط، والكتابة متوقفة.':'وضع المدرس: القلم والممحاة متاحان.'};
+
+function status(message){$('classStatus').textContent=message}
+function workerBase(){const value=$('workerUrl').value.trim().replace(/\/+$/,'');if(!/^https:\/\//i.test(value))throw new Error('اكتب رابط Worker يبدأ بـ https://');return value}
+async function workerPost(path,data){const response=await fetch(workerBase()+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await response.json().catch(()=>({}));if(!response.ok)throw new Error(result.error||'تعذر الاتصال بخادم الفصل.');return result}
+function setConnectedUI(connected){$('muteMic').disabled=!connected;$('leaveClass').disabled=!connected;$('startClass').disabled=connected;$('joinClass').disabled=connected;$('endClass').disabled=!(connected&&liveRole==='teacher');}
+async function connectRoom(credentials,role,roomId){
+ if(!window.LivekitClient)throw new Error('تعذر تحميل مكتبة الاتصال. تحقق من الإنترنت ثم أعد المحاولة.');
+ liveRoom=new LivekitClient.Room({adaptiveStream:true,dynacast:true});
+ liveRole=role;liveRoomId=roomId;
+ liveRoom.on(LivekitClient.RoomEvent.TrackSubscribed,(track)=>{const element=track.attach();$('audioTracks').appendChild(element)});
+ liveRoom.on(LivekitClient.RoomEvent.TrackUnsubscribed,(track)=>track.detach());
+ liveRoom.on(LivekitClient.RoomEvent.DataReceived,(payload,participant)=>{if(role!=='student'||!participant?.identity?.startsWith('teacher_'))return;try{applyBoard(JSON.parse(new TextDecoder().decode(payload)))}catch(e){}});
+ liveRoom.on(LivekitClient.RoomEvent.Disconnected,()=>{status('انقطع الاتصال. يمكنك إعادة الدخول برمز الحصة.');setConnectedUI(false)});
+ await liveRoom.connect(credentials.livekitUrl,credentials.token);
+ await liveRoom.localParticipant.setMicrophoneEnabled(true);
+ setConnectedUI(true);status(role==='teacher'?'اتصل المدرس. افتح الميكروفون وشارك رقم الحصة ورمز الدخول مع الطالب.':'تم دخول الطالب. الميكروفون يعمل، والسبورة في وضع المشاهدة فقط.');
+}
+async function sendBoard(message){if(!liveRoom||liveRole!=='teacher')return;try{await liveRoom.localParticipant.publishData(new TextEncoder().encode(JSON.stringify(message)),{reliable:true,topic:'teacher-board'})}catch(e){status('تعذر إرسال تحديث السبورة: '+e.message)}}
+async function applyBoard(message){
+ if(!message||!pdf)return;
+ if(message.type==='page'&&Number.isInteger(message.page)&&message.page>=1&&message.page<=pdf.numPages){page=message.page;await render();return}
+ if(message.type==='stroke'&&Number.isInteger(message.page)&&message.stroke&&Array.isArray(message.stroke.points)){
+  const target=message.page;if(!strokesByPage[target])strokesByPage[target]=[];
+  const s=message.stroke,baseW=pdfCanvas.width,baseH=pdfCanvas.height;
+  const converted={tool:s.tool==='eraser'?'eraser':'pen',color:'#e11d48',width:Math.max(1,(s.width||.004)*baseW),points:s.points.slice(0,2500).map(p=>({x:p.x*baseW,y:p.y*baseH}))};
+  strokesByPage[target].push(converted);if(page===target){strokes=strokesByPage[target];redraw()}
+ }
+}
+$('startClass').onclick=async()=>{try{status('جارٍ إنشاء الحصة...');const created=await workerPost('/create',{teacherPin:$('teacherPin').value,title:$('classTitle').value});teacherSecret=created.teacherSecret;liveRoomId=created.roomId;$('roomId').value=created.roomId;$('joinCode').value=created.joinCode;$('teacherCode').hidden=false;$('teacherCode').textContent='رقم الحصة: '+created.roomId+' — رمز دخول الطالب: '+created.joinCode+' (احتفظ بهما وشاركه مع طلاب حصتك فقط).';const token=await workerPost('/token',{role:'teacher',roomId:created.roomId,teacherSecret,participantName:$('participantName').value||'المدرس'});await connectRoom(token,'teacher',created.roomId)}catch(e){status(e.message)}};
+$('joinClass').onclick=async()=>{try{status('جارٍ دخول الحصة...');const token=await workerPost('/token',{role:'student',roomId:$('roomId').value.trim(),joinCode:$('joinCode').value.trim(),participantName:$('participantName').value||'طالب'});await connectRoom(token,'student',$('roomId').value.trim());studentMode=true;ink.style.pointerEvents='none';$('pen').disabled=true;$('eraser').disabled=true;$('studentPreview').disabled=true;$('toolStatus').textContent='وضع الطالب: مشاهدة فقط.'}catch(e){status(e.message)}};
+$('muteMic').onclick=async()=>{if(!liveRoom)return;try{micMuted=!micMuted;await liveRoom.localParticipant.setMicrophoneEnabled(!micMuted);$('muteMic').textContent=micMuted?'🎙️ تشغيل الميكروفون':'🎙️ كتم الميكروفون'}catch(e){status(e.message)}};
+$('leaveClass').onclick=async()=>{if(liveRoom)await liveRoom.disconnect();liveRoom=null;liveRole=null;teacherSecret=null;setConnectedUI(false);status('غادرت الحصة.')};
+$('endClass').onclick=async()=>{if(!liveRoom||liveRole!=='teacher'||!teacherSecret)return;try{await workerPost('/end',{roomId:liveRoomId,teacherSecret});await liveRoom.disconnect();liveRoom=null;liveRole=null;teacherSecret=null;setConnectedUI(false);status('تم إنهاء الحصة.')}catch(e){status(e.message)}};
 })();
 </script>
 </body></html>
