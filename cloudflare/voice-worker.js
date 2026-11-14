@@ -16,13 +16,13 @@ function reply(data, status = 200) {
 function base64url(bytes) {
   let binary = "";
   for (const byte of bytes) binary += String.fromCharCode(byte);
-  return btoa(binary).replace(/=/g, "").replace(/\\+/g, "-").replace(/\\//g, "_");
+  return btoa(binary).replace(/=/g, "").replaceAll("+", "-").replaceAll("/", "_");
 }
 function randomText(size = 24) {
   return base64url(crypto.getRandomValues(new Uint8Array(size)));
 }
 function safeName(value) {
-  return String(value || "مشارك").replace(/[<>\\u0000-\\u001f]/g, "").trim().slice(0, 60) || "مشارك";
+  return String(value || "مشارك").replace(/[<>]/g, "").replace(/[\x00-\x1F]/g, "").trim().slice(0, 60) || "مشارك";
 }
 function validRoomId(value) {
   return typeof value === "string" && /^[A-Za-z0-9_-]{20,40}$/.test(value);
