@@ -291,9 +291,9 @@ export default {
           roomJoin: true,
           room: room.roomName,
           canPublish: true,
+          canPublishSources: ["microphone"],
           canSubscribe: true,
-          canPublishData: role === "teacher",
-          roomAdmin: role === "teacher"
+          canPublishData: role === "teacher"
         }
       }, env.LIVEKIT_API_SECRET);
       return reply({
