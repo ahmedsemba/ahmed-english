@@ -344,6 +344,7 @@
     <a href="student.html">دخول الطالب</a>
     <a href="parent.html">دخول ولي الأمر</a>
     <a href="materials.html">📚 الملازم المجانية</a>
+    <a href="recorded-lessons.html">🎬 الحصص المسجلة</a>
     <a href="self-learning.html">🧠 علّم نفسك</a>
     <a href="daily-grammar.html">📘 قاعدة اليوم</a>
     <a href="admin.html">لوحة المستر</a>
@@ -354,6 +355,7 @@
     <a href="student.html">دخول الطالب</a>
     <a href="parent.html">دخول ولي الأمر</a>
     <a href="materials.html">📚 الملازم المجانية</a>
+    <a href="recorded-lessons.html">🎬 الحصص المسجلة</a>
     <a href="self-learning.html">🧠 علّم نفسك</a>
     <a href="daily-grammar.html">📘 قاعدة اليوم</a>
     <a href="admin.html">لوحة المستر</a>
@@ -474,6 +476,7 @@
         <button onclick="logoutAdmin()" style="background:#64748b;width:auto;padding:6px 14px;font-size:12px;margin:0 0 8px">تسجيل خروج</button>
         <div style="margin:10px 0">
           <span class="subTab active" onclick="showAdminTab('lessons')" id="atab-lessons">الحصة</span>
+          <span class="subTab" onclick="showAdminTab('recorded')" id="atab-recorded">الحصص المسجلة</span>
           <span class="subTab" onclick="showAdminTab('schedules')" id="atab-schedules">المواعيد</span>
           <span class="subTab" onclick="showAdminTab('students')" id="atab-students">الطلاب</span>
           <span class="subTab" onclick="showAdminTab('homeworks')" id="atab-homeworks">الواجبات</span>
@@ -503,6 +506,26 @@
           <button onclick="addLesson()" style="background:#10b981">نشر الحصة والروابط</button>
           <button onclick="clearLesson()" style="background:#ef4444;margin-top:6px">إنهاء الحصة وإخفاء الروابط</button>
 
+        </div>
+
+        <div id="admin-recorded" style="display:none" class="card">
+          <h4>🎬 إضافة حصة مسجلة</h4>
+          <p style="color:#cbd5e1;font-size:13px">أضف عنوان الدرس والصف ورابط فيديو يوتيوب. سيظهر الفيديو للطلاب من صفحة الحصص المسجلة دون تسجيل دخول.</p>
+          <input id="recordedTitle" placeholder="اسم الدرس">
+          <select id="recordedGrade">
+            <option value="الصف الأول الابتدائي">الصف الأول الابتدائي</option>
+            <option value="الصف الثاني الابتدائي">الصف الثاني الابتدائي</option>
+            <option value="الصف الثالث الابتدائي">الصف الثالث الابتدائي</option>
+            <option value="الصف الرابع الابتدائي">الصف الرابع الابتدائي</option>
+            <option value="الصف الخامس الابتدائي">الصف الخامس الابتدائي</option>
+            <option value="الصف السادس الابتدائي">الصف السادس الابتدائي</option>
+            <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+            <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+            <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+          </select>
+          <input id="recordedYoutubeLink" type="url" placeholder="رابط تسجيل الحصة على يوتيوب">
+          <button onclick="addRecordedLesson()" style="background:#10b981">➕ إضافة الحصة المسجلة</button>
+          <div id="recordedLessonsAdminList" style="margin-top:12px"></div>
         </div>
 
         <div id="admin-schedules" style="display:none" class="card">
@@ -617,12 +640,13 @@
     }
 
     function showAdminTab(t) {
-      ['lessons', 'schedules', 'students', 'homeworks', 'materials', 'payments', 'backup'].forEach(function(x) {
+      ['lessons', 'recorded', 'schedules', 'students', 'homeworks', 'materials', 'payments', 'backup'].forEach(function(x) {
         var el = document.getElementById('admin-' + x);
         if (el) el.style.display = (x === t) ? 'block' : 'none';
         var tab = document.getElementById('atab-' + x);
         if (tab) tab.classList.toggle('active', x === t);
       });
+      if (t === 'recorded' && window.loadRecordedLessonsAdmin) window.loadRecordedLessonsAdmin();
       if (t === 'students' && window.loadAdmin) window.loadAdmin();
       if (t === 'homeworks' && window.loadPaperHomeworkAdmin) window.loadPaperHomeworkAdmin();
       if (t === 'schedules' && window.loadSchedulesAdmin) window.loadSchedulesAdmin();
@@ -902,7 +926,10 @@
         if (!list) return;
         const snap = await getDocs(collection(db, 'materials'));
         let items = [];
-        snap.forEach(function(d) { items.push({ id: d.id, ...d.data() }); });
+        snap.forEach(function(d) {
+          const item = d.data();
+          if (item.type !== 'recorded_lesson') items.push({ id: d.id, ...item });
+        });
         items.sort(function(a, b) { return (b.created || 0) - (a.created || 0); });
         if (items.length === 0) { list.innerHTML = '<p style="color:#94a3b8">لا يوجد ملازم حالياً</p>'; return; }
         let html = '';
@@ -935,6 +962,7 @@
         const items = [];
         snap.forEach(function(d) {
           const m = d.data();
+          if (m.type === 'recorded_lesson') return;
           if (m.grade !== grade && m.grade !== 'للكل') return;
           if (typeof m.link !== 'string' || !/^https?:\/\//i.test(m.link)) return;
           items.push({ id: d.id, title: String(m.title || 'ملزمة تعليمية'), link: m.link, grade: m.grade || grade, created: m.created || 0 });
@@ -1299,6 +1327,72 @@
       alert('تم نشر الحصة');
     };
 
+    function getYouTubeVideoId(value) {
+      try {
+        const url = new URL(String(value || '').trim());
+        const host = url.hostname.toLowerCase().replace(/^www\./, '');
+        if (host === 'youtu.be') return url.pathname.split('/').filter(Boolean)[0] || '';
+        if (host === 'youtube.com' || host === 'm.youtube.com' || host === 'youtube-nocookie.com') {
+          if (url.pathname === '/watch') return url.searchParams.get('v') || '';
+          const parts = url.pathname.split('/').filter(Boolean);
+          if (['embed', 'shorts', 'live'].includes(parts[0])) return parts[1] || '';
+        }
+      } catch (e) {}
+      return '';
+    }
+    window.addRecordedLesson = async function() {
+      try {
+        const title = document.getElementById('recordedTitle').value.trim();
+        const grade = document.getElementById('recordedGrade').value;
+        const link = document.getElementById('recordedYoutubeLink').value.trim();
+        if (!title || !grade || !link) { alert('اكتب اسم الدرس واختر الصف وضع رابط يوتيوب.'); return; }
+        if (!getYouTubeVideoId(link)) { alert('ضع رابط فيديو صحيح من يوتيوب.'); return; }
+        await addDoc(collection(db, 'materials'), { type: 'recorded_lesson', title, grade, link, created: Date.now() });
+        document.getElementById('recordedTitle').value = '';
+        document.getElementById('recordedYoutubeLink').value = '';
+        await window.loadRecordedLessonsAdmin();
+        alert('✅ تم إضافة الحصة المسجلة، وستظهر لطلاب الصف المحدد.');
+      } catch (e) { alert('تعذرت إضافة الحصة: ' + (e.message || e)); }
+    };
+    window.loadRecordedLessonsAdmin = async function() {
+      const list = document.getElementById('recordedLessonsAdminList');
+      if (!list) return;
+      list.textContent = '⏳ جاري تحميل الحصص المسجلة...';
+      try {
+        const snap = await getDocs(collection(db, 'materials'));
+        const items = [];
+        snap.forEach(function(d) {
+          const item = d.data();
+          if (item.type === 'recorded_lesson') items.push({ id: d.id, ...item });
+        });
+        items.sort((a,b) => (b.created || 0) - (a.created || 0));
+        list.replaceChildren();
+        if (!items.length) { list.textContent = 'لا توجد حصص مسجلة مضافة حتى الآن.'; return; }
+        items.forEach(function(item) {
+          const card = document.createElement('div');
+          card.className = 'student-row';
+          const title = document.createElement('b');
+          title.textContent = '🎬 ' + (item.title || 'درس مسجل');
+          const grade = document.createElement('div');
+          grade.textContent = item.grade || '';
+          const remove = document.createElement('button');
+          remove.className = 'btn-small';
+          remove.style.background = '#ef4444';
+          remove.textContent = 'حذف';
+          remove.onclick = function() { window.deleteRecordedLesson(item.id); };
+          card.append(title, grade, remove);
+          list.appendChild(card);
+        });
+      } catch (e) { list.textContent = 'تعذر تحميل القائمة: ' + (e.message || e); }
+    };
+    window.deleteRecordedLesson = async function(id) {
+      if (!confirm('هل تريد حذف هذه الحصة المسجلة؟')) return;
+      try {
+        await deleteDoc(doc(db, 'materials', id));
+        await window.loadRecordedLessonsAdmin();
+      } catch (e) { alert('تعذر الحذف: ' + (e.message || e)); }
+    };
+
     window.clearLesson = async function() {
       await deleteDoc(doc(db, 'lessons', 'current'));
       alert('تم إنهاء الحصة');
@@ -1440,7 +1534,7 @@
   <script src="word-of-day.js?v=20261114fix1" defer></script>
   <script src="daily-learning.js" defer></script>
 
-<a class="platform-back-button" href="index.html" aria-label="العودة للصفحة الرئيسية" style="position:fixed;bottom:14px;left:14px;z-index:2147483000;display:flex;align-items:center;justify-content:center;min-width:104px;min-height:48px;padding:10px 18px;border:2px solid #5eead4;border-radius:14px;background:#123c5a;color:#fff;font-size:16px;font-weight:900;text-decoration:none;box-shadow:0 5px 18px rgba(0,0,0,.35);cursor:pointer">← رجوع</a>
+<button type="button" class="platform-back-button" aria-label="العودة للصفحة الرئيسية" onclick="window.location.assign('/')" style="position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));z-index:2147483647;display:flex;align-items:center;justify-content:center;width:auto!important;min-width:116px;min-height:48px;margin:0;padding:10px 24px;border:2px solid #5eead4;border-radius:999px;background:#115e59;color:#fff;font-size:16px;font-weight:900;box-shadow:0 5px 18px rgba(0,0,0,.35);cursor:pointer;touch-action:manipulation">← رجوع</button>
 
 </body>
 </html>
