@@ -69,12 +69,15 @@ export default {
     // The file remains in Google Drive; this Worker streams it without storing a copy.
     if (request.method === "GET" && url.pathname === "/pdf") {
       const fileId = url.searchParams.get("fileId") || "";
-      if (!/^[A-Za-z0-9_-]{10,200}$/.test(fileId)) {
+      const resourceKey = url.searchParams.get("resourceKey") || "";
+      if (!/^[A-Za-z0-9_-]{10,200}$/.test(fileId) ||
+          (resourceKey && !/^[A-Za-z0-9_-]{5,200}$/.test(resourceKey))) {
         return reply({ error: "Invalid Google Drive file ID." }, 400);
       }
       try {
         const upstream = await fetch(
-          "https://drive.google.com/uc?export=download&id=" + encodeURIComponent(fileId),
+          "https://drive.google.com/uc?export=download&id=" + encodeURIComponent(fileId) +
+            (resourceKey ? "&resourcekey=" + encodeURIComponent(resourceKey) : ""),
           { redirect: "follow", headers: { "User-Agent": "Mozilla/5.0" } }
         );
         if (!upstream.ok) return reply({ error: "Google Drive could not provide this file. Check that link sharing is enabled." }, 502);
@@ -94,7 +97,6 @@ export default {
             ...CORS,
             "Content-Type": "application/pdf",
             "Content-Disposition": "inline; filename=\"classroom-material.pdf\"",
-            "Content-Length": String(bytes.byteLength),
             "Cache-Control": "private, max-age=60",
             "X-Content-Type-Options": "nosniff"
           }
