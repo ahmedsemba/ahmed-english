@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>الفصل التفاعلي - نموذج تجريبي</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#142238;--line:#2b405b;--blue:#2563eb;--teal:#0d9488}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f8fafc;font-family:Tahoma,Arial,sans-serif}
+header{padding:14px 18px;background:linear-gradient(120deg,#1d4ed8,#0f766e);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font-size:19px;margin:0}small{color:#cbd5e1}.wrap{max-width:1100px;margin:auto;padding:14px}
+.notice{background:#3b2d12;border:1px solid #a16207;color:#fde68a;padding:11px 13px;border-radius:10px;line-height:1.7;margin-bottom:12px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.toolbar button,.toolbar label,.toolbar select{background:#243b59;color:#fff;border:1px solid #49617f;padding:9px 12px;border-radius:9px;font-size:14px}
+button:disabled{opacity:.4}.primary{background:var(--blue)!important}.active{outline:2px solid #5eead4}
+input[type=file]{display:none}.viewer{background:#334155;border-radius:12px;min-height:55vh;padding:12px;display:flex;justify-content:center;align-items:flex-start;overflow:auto}
+.page-wrap{position:relative;background:white;max-width:100%;line-height:0;box-shadow:0 5px 24px #0008}
+canvas{display:block;max-width:100%;height:auto}#ink{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.status{font-size:13px;color:#cbd5e1;margin-top:9px}.audio{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+@media(max-width:600px){h1{font-size:16px}.wrap{padding:9px}.viewer{min-height:48vh;padding:6px}.toolbar button,.toolbar label,.toolbar select{padding:8px 9px;font-size:13px}}
+</style>
+</head>
+<body>
+<header><h1>📚 الفصل التفاعلي — نموذج أولي</h1><small>نسخة اختبار منفصلة عن المنصة الأساسية</small></header>
+<main class="wrap">
+<div class="notice"><b>تنبيه مهم:</b> هذه شاشة تجريبية للفصل التفاعلي. تتضمن النسخة التجريبية مسار الاتصال الصوتي ومزامنة السبورة، مع لوحة للمدرس لكتم ميكروفون طالب محدد أو كتم الجميع. يلزم إعداد LiveKit وCloudflare واختبارهما قبل استخدامها مع الطلاب.</div>
+<section class="panel">
+<div class="toolbar">
+<select id="classroomGrade" style="min-width:180px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px">
+<option value="">اختر الصف الدراسي أولاً</option>
+<option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option>
+<option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option>
+<option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option><option>للكل</option>
+</select>
+<select id="savedDriveMaterial" disabled style="min-width:220px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px"><option value="">اختر الصف أولاً</option></select>
+<button id="loadDriveMaterial" class="primary">فتح الملزمة</button>
+</div>
+<div class="status">الملازم هنا تُسحب تلقائيًا من نفس قسم «الملازم المجانية» في المنصة. اختر الصف ثم الملزمة التي تريد الشرح منها؛ لا تحتاج لإعادة كتابة الرابط كل حصة.</div>
+<div class="toolbar" style="margin-top:9px">
+<label class="primary" for="pdfFile">اختيار ملف PDF من الجهاز</label><input id="pdfFile" type="file" accept="application/pdf">
+<button id="prev">◀ الصفحة السابقة</button><span id="pageInfo">0 / 0</span><button id="next">الصفحة التالية ▶</button>
+<button id="zoomOut">− تصغير</button><button id="zoomIn">تكبير +</button><button id="fit">ملاءمة الشاشة</button><button id="fullscreen">⛶ ملء الشاشة</button>
+</div><div class="status" id="fileStatus">اختر ملف PDF لتجربة عرضه. لا يتم رفع الملف إلى أي خادم.</div>
+</section>
+<section class="panel">
+<div class="toolbar">
+<strong>أدوات المدرس (محاكاة محلية):</strong>
+<button id="pen" class="active">✏️ القلم</button><button id="eraser">⌫ الممحاة</button><button id="studentPreview">👁️ معاينة الطالب</button>
+</div><div class="status" id="toolStatus">الأدوات تعمل محليًا للتجربة. اضغط «معاينة الطالب» للتأكد أن الكتابة مقفولة في وضع المشاهدة.</div>
+</section>
+<section class="panel">
+<strong>🎙️ الاتصال بالفصل التجريبي</strong>
+<div class="toolbar" style="margin-top:10px">
+<input id="workerUrl" value="https://ahmed-classroom-demo.ahmedelsayedhr83.workers.dev" placeholder="رابط خادم الفصل (Worker URL)" style="display:block;min-width:230px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px">
+<input id="participantName" placeholder="اسمك" style="display:block;min-width:130px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px">
+</div>
+<div class="toolbar" style="margin-top:9px">
+<input id="teacherPin" type="password" placeholder="رمز المدرس السري" style="display:block;min-width:180px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px">
+<input id="classTitle" placeholder="عنوان الحصة" value="حصة تجريبية" style="display:block;min-width:150px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px">
+<button id="startClass" class="primary">إنشاء حصة كمدرس</button>
+</div>
+<div class="toolbar" style="margin-top:9px">
+<input id="roomId" placeholder="رقم الحصة" style="display:block;min-width:160px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px">
+<input id="joinCode" placeholder="رمز دخول الطالب" style="display:block;min-width:150px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px">
+<button id="joinClass">دخول كطالب</button>
+</div>
+<div class="toolbar" style="margin-top:9px">
+<button id="muteMic" disabled>🎙️ كتم الميكروفون</button><button id="leaveClass" disabled>مغادرة الحصة</button><button id="endClass" disabled>إنهاء الحصة (المدرس)</button>
+</div>
+<div id="classStatus" class="status">الاتصال غير نشط. لا تدخل بيانات سرية إلا في خادمك الموثوق.</div>
+<div id="audioTracks"></div>
+<div id="teacherMicPanel" class="panel" hidden style="margin-top:12px;background:#102b35">
+  <div class="toolbar" style="justify-content:space-between">
+    <strong>🎛️ التحكم في ميكروفونات الطلاب</strong>
+    <div class="toolbar"><button id="refreshStudents">تحديث القائمة</button><button id="muteAllStudents" class="primary">كتم الجميع</button></div>
+  </div>
+  <div id="studentMicList" class="status">سيظهر الطلاب المتصلون هنا.</div>
+  <div class="status">يمكنك كتم ميكروفون الطالب من هنا. إعادة تشغيل الميكروفون تكون من جهاز الطالب.</div>
+</div>
+<div id="teacherCode" class="notice" hidden></div>
+<div class="status">اختر الصف والملزمة من قسم الملازم المجانية. عند دخول الطالب تُحمّل نفس الملزمة تلقائيًا وتتم مزامنة الصفحات والكتابة. يلزم نشر Worker وضبط LiveKit أولًا.</div>
+</section>
+<section class="viewer"><div class="page-wrap" id="pageWrap"><canvas id="pdfCanvas"></canvas><canvas id="ink"></canvas></div></section>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id), pdfCanvas=$('pdfCanvas'),ctx=pdfCanvas.getContext('2d'),ink=$('ink'),ictx=ink.getContext('2d');
+let pdf=null,page=1,scale=1,tool='pen',drawing=false,strokesByPage={},strokes=[],current=null,studentMode=false;
+let renderQueue=Promise.resolve(),renderRequestId=0,activeRenderTask=null;
+let liveRoom=null,liveRole=null,teacherSecret=null,liveRoomId=null,micMuted=false;
+let studentRefreshTimer=null,studentRoster=[];
+if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+function resizeInk(){ink.width=pdfCanvas.width;ink.height=pdfCanvas.height;redraw()}
+function redraw(){ictx.clearRect(0,0,ink.width,ink.height);for(const s of strokes){ictx.globalCompositeOperation=s.tool==='eraser'?'destination-out':'source-over';ictx.strokeStyle=s.color;ictx.lineWidth=Math.max(1,s.width*ink.width);ictx.lineCap='round';ictx.lineJoin='round';ictx.beginPath();s.points.forEach((p,i)=>i?ictx.lineTo(p.x*ink.width,p.y*ink.height):ictx.moveTo(p.x*ink.width,p.y*ink.height));ictx.stroke()}ictx.globalCompositeOperation='source-over'}
+async function render(){if(!pdf)return;const requestedPdf=pdf,requestedPage=page,requestedScale=scale,requestId=++renderRequestId;if(activeRenderTask){try{activeRenderTask.cancel()}catch(e){}}const run=async()=>{if(requestId!==renderRequestId||requestedPdf!==pdf)return;if(activeRenderTask){try{await activeRenderTask.promise}catch(e){}activeRenderTask=null}if(requestId!==renderRequestId||requestedPdf!==pdf)return;const p=await requestedPdf.getPage(requestedPage);if(requestId!==renderRequestId||requestedPdf!==pdf)return;const v=p.getViewport({scale:requestedScale});pdfCanvas.width=v.width;pdfCanvas.height=v.height;ink.style.width=pdfCanvas.width+'px';ink.style.height=pdfCanvas.height+'px';const task=p.render({canvasContext:ctx,viewport:v});activeRenderTask=task;try{await task.promise}catch(e){if(e?.name!=='RenderingCancelledException')throw e}finally{if(activeRenderTask===task)activeRenderTask=null}if(requestId!==renderRequestId||requestedPdf!==pdf)return;strokes=strokesByPage[requestedPage]||[];resizeInk();$('pageInfo').textContent=requestedPage+' / '+requestedPdf.numPages;$('prev').disabled=requestedPage<=1;$('next').disabled=requestedPage>=requestedPdf.numPages};renderQueue=renderQueue.then(run,run);return renderQueue}
+async function loadPdfData(data,label,source){pdf=await pdfjsLib.getDocument({data}).promise;page=1;scale=1;strokesByPage={};strokes=[];$('fileStatus').textContent='تم فتح: '+label+' — '+source+' — عدد الصفحات: '+pdf.numPages;await render()}
+window.openClassroomPdf=loadPdfData;
+$('pdfFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const data=await f.arrayBuffer();await loadPdfData(data,f.name,'الملف محلي على جهازك فقط')}catch(err){$('fileStatus').textContent='تعذر فتح الملف. تأكد أنه PDF صالح.'}});
+async function changePage(next){if(!pdf||next<1||next>pdf.numPages)return;page=next;strokes=strokesByPage[page]||[];await render();if(liveRole==='teacher')sendBoard({type:'page',page});}
+$('prev').onclick=()=>changePage(page-1);$('next').onclick=()=>changePage(page+1);
+$('zoomIn').onclick=()=>{if(pdf){scale=Math.min(2.5,scale+.15);render()}};$('zoomOut').onclick=()=>{if(pdf){scale=Math.max(.5,scale-.15);render()}};
+$('fit').onclick=()=>{if(pdf){const max=Math.min(($('pageWrap').parentElement.clientWidth-24)/pdfCanvas.width,1.5);scale=Math.max(.5,max);render()}};$('fullscreen').onclick=async()=>{try{if(!$('pageWrap').requestFullscreen)throw new Error('unsupported');await $('pageWrap').requestFullscreen()}catch(e){$('fileStatus').textContent='ملء الشاشة غير مدعوم في هذا المتصفح؛ استخدم التكبير.'}};
+$('pen').onclick=()=>setTool('pen');$('eraser').onclick=()=>setTool('eraser');function setTool(t){tool=t;$('pen').classList.toggle('active',t==='pen');$('eraser').classList.toggle('active',t==='eraser')}
+function point(e){const r=ink.getBoundingClientRect();return{x:Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),y:Math.max(0,Math.min(1,(e.clientY-r.top)/r.height))}}
+ink.addEventListener('pointerdown',e=>{if(!pdf||studentMode||liveRole==='student')return;drawing=true;ink.setPointerCapture(e.pointerId);const p=point(e);current={tool,color:'#e11d48',width:.004,points:[p]};strokes.push(current);strokesByPage[page]=strokes;redraw()});
+ink.addEventListener('pointermove',e=>{if(!drawing||!current)return;current.points.push(point(e));strokesByPage[page]=strokes;redraw()});
+function stop(){if(drawing&&current&&liveRole==='teacher')sendBoard({type:'stroke',page,stroke:compactStroke(current)});drawing=false;current=null}
+ink.addEventListener('pointerup',stop);ink.addEventListener('pointercancel',stop);
+$('studentPreview').onclick=()=>{if(liveRole==='student')return;studentMode=!studentMode;ink.style.pointerEvents=studentMode?'none':'auto';$('studentPreview').classList.toggle('active',studentMode);$('studentPreview').textContent=studentMode?'✏️ العودة لوضع المدرس':'👁️ معاينة الطالب';$('toolStatus').textContent=studentMode?'وضع الطالب: مشاهدة فقط، والكتابة متوقفة.':'وضع المدرس: القلم والممحاة متاحان.'};
+
+function status(message){$('classStatus').textContent=message}
+function workerBase(){const value=$('workerUrl').value.trim().replace(/\/+$/,'');if(!/^https:\/\//i.test(value))throw new Error('اكتب رابط Worker يبدأ بـ https://');return value}
+async function workerPost(path,data){const response=await fetch(workerBase()+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await response.json().catch(()=>({}));if(!response.ok)throw new Error(result.error||'تعذر الاتصال بخادم الفصل.');return result}
+function setConnectedUI(connected){const busy=connected||!!teacherSecret;$('muteMic').disabled=!connected;$('leaveClass').disabled=!connected;$('startClass').disabled=busy;$('joinClass').disabled=busy;$('endClass').disabled=!(liveRole==='teacher'&&!!teacherSecret);}
+async function connectRoom(credentials,role,roomId){
+ if(!window.LivekitClient)throw new Error('تعذر تحميل مكتبة الاتصال. تحقق من الإنترنت ثم أعد المحاولة.');
+ liveRoom=new LivekitClient.Room({adaptiveStream:true,dynacast:true});
+ liveRole=role;liveRoomId=roomId;micMuted=false;$('muteMic').textContent='🎙️ كتم الميكروفون';$('audioTracks').replaceChildren();
+ liveRoom.on(LivekitClient.RoomEvent.TrackSubscribed,(track)=>{const element=track.attach();$('audioTracks').appendChild(element)});
+ liveRoom.on(LivekitClient.RoomEvent.TrackUnsubscribed,(track)=>track.detach());
+ if(role==='teacher')liveRoom.on(LivekitClient.RoomEvent.ParticipantConnected,()=>{setTimeout(async()=>{await sendBoard({type:'page',page});for(const [p,items] of Object.entries(strokesByPage)){for(const stroke of items)await sendBoard({type:'stroke',page:Number(p),stroke:compactStroke(stroke)})}},1200)});
+ liveRoom.on(LivekitClient.RoomEvent.DataReceived,(payload,participant)=>{if(role!=='student'||!participant?.identity?.startsWith('teacher_'))return;try{applyBoard(JSON.parse(new TextDecoder().decode(payload)))}catch(e){}});
+ liveRoom.on(LivekitClient.RoomEvent.Disconnected,()=>{if(studentRefreshTimer){clearInterval(studentRefreshTimer);studentRefreshTimer=null;} $('teacherMicPanel').hidden=true;$('audioTracks').replaceChildren();micMuted=false;$('muteMic').textContent='🎙️ كتم الميكروفون';if(role==='student'){liveRole=null;studentMode=false;$('pen').disabled=false;$('eraser').disabled=false;$('studentPreview').disabled=false;$('studentPreview').classList.remove('active');$('studentPreview').textContent='👁️ معاينة الطالب';$('toolStatus').textContent='وضع المدرس: القلم والممحاة متاحان.';ink.style.pointerEvents='auto';}status(role==='teacher'?'انقطع اتصال المدرس. استخدم زر إنهاء الحصة لإغلاق غرفة الصوت قبل إنشاء حصة جديدة.':'انقطع اتصال الطالب. تم إرجاع أدوات العرض إلى وضعها الطبيعي ويمكنك المحاولة مرة أخرى.');setConnectedUI(false)});
+ await liveRoom.connect(credentials.livekitUrl,credentials.token);
+ await liveRoom.localParticipant.setMicrophoneEnabled(true);
+ setConnectedUI(true);
+ if(role==='teacher'){
+  $('teacherMicPanel').hidden=false;
+  await refreshStudentRoster();
+  if(studentRefreshTimer)clearInterval(studentRefreshTimer);
+  studentRefreshTimer=setInterval(()=>refreshStudentRoster(),5000);
+ }else{$('teacherMicPanel').hidden=true;}
+ status(role==='teacher'?'اتصل المدرس. افتح الميكروفون وشارك رقم الحصة ورمز الدخول مع الطالب.':'تم دخول الطالب. الميكروفون يعمل، والسبورة في وضع المشاهدة فقط.');
+}
+function compactStroke(stroke){const points=stroke.points||[];const max=220;const sampled=points.length<=max?points:points.filter((p,i)=>i===0||i===points.length-1||i%Math.ceil(points.length/max)===0).slice(0,max);return{tool:stroke.tool==='eraser'?'eraser':'pen',color:'#e11d48',width:Math.max(.001,Math.min(.05,Number(stroke.width)||.004)),points:sampled}}
+async function sendBoard(message){if(!liveRoom||liveRole!=='teacher')return;try{await liveRoom.localParticipant.publishData(new TextEncoder().encode(JSON.stringify(message)),{reliable:true,topic:'teacher-board'})}catch(e){status('تعذر إرسال تحديث السبورة: '+e.message)}}
+async function applyBoard(message){
+ if(!message||!pdf)return;
+ if(message.type==='page'&&Number.isInteger(message.page)&&message.page>=1&&message.page<=pdf.numPages){page=message.page;await render();return}
+ if(message.type==='stroke'&&Number.isInteger(message.page)&&message.stroke&&Array.isArray(message.stroke.points)){
+  const target=message.page;if(!strokesByPage[target])strokesByPage[target]=[];
+  const s=message.stroke;
+  const converted={tool:s.tool==='eraser'?'eraser':'pen',color:'#e11d48',width:Math.max(.001,Math.min(.05,Number(s.width)||.004)),points:s.points.slice(0,220).filter(p=>Number.isFinite(p.x)&&Number.isFinite(p.y)).map(p=>({x:Math.max(0,Math.min(1,p.x)),y:Math.max(0,Math.min(1,p.y))}))};
+  strokesByPage[target].push(converted);if(page===target){strokes=strokesByPage[target];redraw()}
+ }
+}
+$('startClass').onclick=async()=>{let created=null;try{const grade=window.getSelectedClassroomGrade();const material=window.getSelectedClassroomMaterial();if(!grade)throw new Error('اختر الصف الدراسي أولًا.');if(!material)throw new Error('اختر الملزمة التي ستشرح منها.');status('جارٍ تجهيز الملزمة وإنشاء الحصة...');await window.loadClassroomMaterialById(material.id);created=await workerPost('/create',{teacherPin:$('teacherPin').value,title:$('classTitle').value,grade,materialId:material.id,materialTitle:material.title,driveFileId:window.getSelectedClassroomFileId()});teacherSecret=created.teacherSecret;liveRoomId=created.roomId;liveRole='teacher';$('roomId').value=created.roomId;$('joinCode').value=created.joinCode;$('teacherCode').hidden=false;$('teacherCode').textContent='رقم الحصة: '+created.roomId+' — رمز دخول الطالب: '+created.joinCode+' — الملزمة: '+material.title+' (احتفظ بالرمز وشاركه مع طلاب الصف فقط).';const token=await workerPost('/token',{role:'teacher',roomId:created.roomId,teacherSecret,participantName:$('participantName').value||'المدرس'});await connectRoom(token,'teacher',created.roomId)}catch(e){if(created?.roomId&&created?.teacherSecret){teacherSecret=created.teacherSecret;liveRoomId=created.roomId;liveRole='teacher';try{await workerPost('/end',{roomId:created.roomId,teacherSecret:created.teacherSecret});if(liveRoom)await liveRoom.disconnect();liveRoom=null;liveRole=null;teacherSecret=null;setConnectedUI(false);status(e.message+' — تم تنظيف بيانات الحصة التجريبية تلقائيًا.')}catch(cleanupError){setConnectedUI(false);status(e.message+' — لم ينجح التنظيف التلقائي. استخدم زر «إنهاء الحصة (المدرس)» لإعادة المحاولة.')} }else{status(e.message)}}};
+$('joinClass').onclick=async()=>{try{status('جارٍ التحقق من الحصة وتحميل الملزمة...');const token=await workerPost('/token',{role:'student',roomId:$('roomId').value.trim(),joinCode:$('joinCode').value.trim(),participantName:$('participantName').value||'طالب'});if(!token.materialId)throw new Error('لم يتم ربط ملزمة بهذه الحصة. اطلب من المدرس إنشاء حصة جديدة بعد اختيار الملزمة.');await window.loadClassroomMaterialById(token.materialId);await connectRoom(token,'student',$('roomId').value.trim());studentMode=true;ink.style.pointerEvents='none';$('pen').disabled=true;$('eraser').disabled=true;$('studentPreview').disabled=true;$('toolStatus').textContent='وضع الطالب: مشاهدة فقط.'}catch(e){status(e.message)}};
+$('muteMic').onclick=async()=>{if(!liveRoom)return;try{micMuted=!micMuted;await liveRoom.localParticipant.setMicrophoneEnabled(!micMuted);$('muteMic').textContent=micMuted?'🎙️ تشغيل الميكروفون':'🎙️ كتم الميكروفون'}catch(e){status(e.message)}};
+$('leaveClass').onclick=async()=>{
+ if(liveRole==='teacher'&&teacherSecret){status('لا تغادر كمدرس قبل إنهاء الحصة. استخدم زر «إنهاء الحصة (المدرس)» حتى يتم إغلاق غرفة الصوت وحفظ بيانات الإنهاء.');return;}
+ if(studentRefreshTimer){clearInterval(studentRefreshTimer);studentRefreshTimer=null;}
+ $('teacherMicPanel').hidden=true;
+ if(liveRoom)await liveRoom.disconnect();
+ liveRoom=null;liveRole=null;teacherSecret=null;micMuted=false;studentMode=false;
+ $('muteMic').textContent='🎙️ كتم الميكروفون';
+ $('audioTracks').replaceChildren();
+ $('pen').disabled=false;$('eraser').disabled=false;$('studentPreview').disabled=false;
+ $('studentPreview').classList.remove('active');$('studentPreview').textContent='👁️ معاينة الطالب';
+ $('toolStatus').textContent='وضع المدرس: القلم والممحاة متاحان.';
+ ink.style.pointerEvents='auto';
+ setConnectedUI(false);status('غادرت الحصة.');
+};
+$('endClass').onclick=async()=>{if(liveRole!=='teacher'||!teacherSecret||!liveRoomId)return;try{await workerPost('/end',{roomId:liveRoomId,teacherSecret});if(studentRefreshTimer){clearInterval(studentRefreshTimer);studentRefreshTimer=null;}if(liveRoom)await liveRoom.disconnect();liveRoom=null;liveRole=null;teacherSecret=null;micMuted=false;$('muteMic').textContent='🎙️ كتم الميكروفون';$('audioTracks').replaceChildren();$('teacherMicPanel').hidden=true;setConnectedUI(false);status('تم إنهاء الحصة.')}catch(e){status(e.message)}};
+
+async function teacherAction(path,body={}){
+ const response=await fetch(workerBase()+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({roomId:liveRoomId,teacherSecret,...body})});
+ const result=await response.json().catch(()=>({}));
+ if(!response.ok)throw new Error(result.error||'تعذر تنفيذ التحكم في الميكروفون.');
+ return result;
+}
+async function refreshStudentRoster(){
+ if(liveRole!=='teacher'||!liveRoomId||!teacherSecret)return;
+ try{
+  const result=await teacherAction('/participants');
+  studentRoster=Array.isArray(result.participants)?result.participants:[];
+  renderStudentRoster();
+ }catch(e){$('studentMicList').textContent='تعذر تحديث قائمة الطلاب: '+e.message;}
+}
+function renderStudentRoster(){
+ const host=$('studentMicList');host.replaceChildren();
+ if(!studentRoster.length){host.textContent='لا يوجد طلاب متصلون حاليًا.';return;}
+ for(const student of studentRoster){
+  const row=document.createElement('div');row.className='toolbar';row.style.cssText='justify-content:space-between;padding:8px 0;border-bottom:1px solid #2b5260';
+  const label=document.createElement('span');label.textContent=(student.name||'طالب')+' — '+(student.hasMic?(student.micMuted?'الميكروفون مكتوم':'الميكروفون مفتوح'):'لا يوجد ميكروفون منشور');
+  const button=document.createElement('button');button.textContent=student.hasMic?(student.micMuted?'مكتوم بالفعل':'كتم الطالب'):'غير متاح';button.disabled=!student.hasMic||student.micMuted;
+  button.onclick=async()=>{button.disabled=true;try{await teacherAction('/mute',{identity:student.identity});await refreshStudentRoster();}catch(e){status(e.message);button.disabled=false;}};
+  row.append(label,button);host.appendChild(row);
+ }
+}
+$('refreshStudents').onclick=refreshStudentRoster;
+$('muteAllStudents').onclick=async()=>{
+ if(liveRole!=='teacher')return;
+ const button=$('muteAllStudents');button.disabled=true;
+ try{const result=await teacherAction('/mute-all');status('تم كتم '+(result.mutedCount||0)+' ميكروفون من الطلاب.');await refreshStudentRoster();}
+ catch(e){status(e.message);}
+ finally{button.disabled=false;}
+};
+})();
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyA3EUyPGWQXi3yEV50QYYCtCASKV-MEE5I",
+  authDomain: "ahmed-elsayed-bf13d.firebaseapp.com",
+  projectId: "ahmed-elsayed-bf13d",
+  storageBucket: "ahmed-elsayed-bf13d.firebasestorage.app",
+  messagingSenderId: "66067955169",
+  appId: "1:66067955169:web:28330bd439b6fd4c73e6a0"
+};
+const app = initializeApp(firebaseConfig, "classroomDemo");
+const db = getFirestore(app);
+const select = document.getElementById("savedDriveMaterial");
+const gradeSelect = document.getElementById("classroomGrade");
+let materials = [];
+function driveResourceKey(link) {
+  try { return new URL(link).searchParams.get("resourcekey") || ""; }
+  catch (error) { return ""; }
+}
+function driveFileId(link) {
+  try {
+    const u = new URL(link);
+    if (u.hostname !== "drive.google.com" && u.hostname !== "docs.google.com") return null;
+    const parts = u.pathname.split("/").filter(Boolean);
+    const kindIndex = parts.findIndex(part => part === "file" || part === "document");
+    const pathId = kindIndex >= 0 && parts[kindIndex + 1] === "d" ? parts[kindIndex + 2] : null;
+    return pathId || u.searchParams.get("id") || null;
+  } catch (error) { return null; }
+}
+function refreshMaterialOptions() {
+  const grade = gradeSelect.value;
+  select.replaceChildren();
+  const first = document.createElement("option");
+  first.value = "";
+  const matching = materials.filter(m => grade && (m.grade === grade || m.grade === "للكل"));
+  first.textContent = !grade ? "اختر الصف أولاً" : matching.length ? "اختر الملزمة التي ستشرح منها" : "لا توجد ملازم لهذا الصف";
+  select.appendChild(first);
+  for (const m of matching) {
+    const option = document.createElement("option");
+    option.value = m.id;
+    option.textContent = m.title || "ملزمة تعليمية";
+    select.appendChild(option);
+  }
+  select.disabled = !grade || matching.length === 0;
+}
+gradeSelect.addEventListener("change", refreshMaterialOptions);
+async function loadMaterials() {
+  try {
+    const snap = await getDocs(collection(db, "materials"));
+    materials = snap.docs.map(d => ({ id:d.id, ...d.data() }))
+      .filter(m => typeof m.link === "string" && driveFileId(m.link))
+      .sort((a,b)=>(b.created||0)-(a.created||0));
+    refreshMaterialOptions();
+  } catch (e) {
+    select.innerHTML = '<option value="">تعذر تحميل قائمة الملازم</option>';
+    document.getElementById("fileStatus").textContent = "تعذر قراءة قائمة الملازم من المنصة: " + (e.message || e);
+  }
+}
+window.getSelectedClassroomGrade = () => gradeSelect.value;
+window.getSelectedClassroomMaterial = () => materials.find(m => m.id === select.value) || null;
+window.getSelectedClassroomFileId = () => { const item = window.getSelectedClassroomMaterial(); return item ? driveFileId(item.link) : ""; };
+async function fetchAndOpenMaterial(item) {
+  const base = document.getElementById("workerUrl").value.trim().replace(/\/+$/, "");
+  if (!/^https:\/\//i.test(base)) throw new Error("اكتب رابط خادم الفصل أولًا.");
+  const fileId = driveFileId(item.link);
+  if (!fileId) throw new Error("رابط الملزمة ليس رابط PDF صالحًا من Google Drive.");
+  document.getElementById("fileStatus").textContent = "جارٍ تحميل الملزمة من Google Drive...";
+  const resourceKey = driveResourceKey(item.link);
+  const pdfUrl = base + "/pdf?fileId=" + encodeURIComponent(fileId) +
+    (resourceKey ? "&resourceKey=" + encodeURIComponent(resourceKey) : "");
+  const response = await fetch(pdfUrl);
+  if (!response.ok) {
+    let message = "";
+    try { const result = await response.json(); message = result.error || ""; } catch (error) {}
+    throw new Error(message || "تعذر تحميل الملف. تأكد من مشاركة الملزمة بصلاحية «أي شخص لديه الرابط - مشاهد».");
+  }
+  const data = await response.arrayBuffer();
+  if (data.byteLength < 100 || data.byteLength > 40 * 1024 * 1024) throw new Error("حجم الملف غير مناسب للعرض التجريبي (الحد الأقصى 40 ميجابايت).");
+  await window.openClassroomPdf(data, item.title || "ملزمة من Google Drive", "Google Drive");
+}
+window.loadClassroomMaterialById = async function(materialId) {
+  if (!materials.length) await loadMaterials();
+  const item = materials.find(m => m.id === materialId);
+  if (!item) throw new Error("لم أجد الملزمة المرتبطة بهذه الحصة في قائمة ملازم المنصة.");
+  await fetchAndOpenMaterial(item);
+};
+document.getElementById("loadDriveMaterial").addEventListener("click", async () => {
+  const item = window.getSelectedClassroomMaterial();
+  if (!gradeSelect.value) { document.getElementById("fileStatus").textContent = "اختر الصف الدراسي أولًا."; return; }
+  if (!item) { document.getElementById("fileStatus").textContent = "اختر الملزمة التي ستشرح منها."; return; }
+  try { await fetchAndOpenMaterial(item); }
+  catch (e) { document.getElementById("fileStatus").textContent = "تعذر فتح الملزمة: " + (e.message || e); }
+});
+loadMaterials();
+</script>
+</body></html>
