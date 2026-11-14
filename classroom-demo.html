@@ -28,16 +28,14 @@ canvas{display:block;max-width:100%;height:auto}#ink{position:absolute;inset:0;w
 <div class="toolbar">
 <label class="primary" for="pdfFile">اختيار ملف PDF من الجهاز</label><input id="pdfFile" type="file" accept="application/pdf">
 <button id="prev">◀ الصفحة السابقة</button><span id="pageInfo">0 / 0</span><button id="next">الصفحة التالية ▶</button>
-<button id="zoomOut">− تصغير</button><button id="zoomIn">تكبير +</button><button id="fit">ملاءمة الشاشة</button>
+<button id="zoomOut">− تصغير</button><button id="zoomIn">تكبير +</button><button id="fit">ملاءمة الشاشة</button><button id="fullscreen">⛶ ملء الشاشة</button>
 </div><div class="status" id="fileStatus">اختر ملف PDF لتجربة عرضه. لا يتم رفع الملف إلى أي خادم.</div>
 </section>
 <section class="panel">
 <div class="toolbar">
 <strong>أدوات المدرس (محاكاة محلية):</strong>
-<button id="pen" class="active">✏️ القلم</button><button id="eraser">⌫ الممحاة</button><button id="undo">تراجع</button><button id="clear">مسح الكتابة</button>
-<select id="color" aria-label="لون القلم"><option value="#e11d48">أحمر</option><option value="#2563eb">أزرق</option><option value="#16a34a">أخضر</option><option value="#111827">أسود</option></select>
-<select id="size" aria-label="سمك القلم"><option value="2">رفيع</option><option value="4" selected>متوسط</option><option value="7">عريض</option></select>
-</div><div class="status">الأدوات تعمل على هذه الشاشة كتجربة فقط. الطالب لن تظهر له أدوات الكتابة في النسخة النهائية.</div>
+<button id="pen" class="active">✏️ القلم</button><button id="eraser">⌫ الممحاة</button><button id="studentPreview">👁️ معاينة الطالب</button>
+</div><div class="status" id="toolStatus">الأدوات تعمل محليًا للتجربة. اضغط «معاينة الطالب» للتأكد أن الكتابة مقفولة في وضع المشاهدة.</div>
 </section>
 <section class="panel">
 <div class="audio"><b>🎙️ الصوت المباشر:</b><span class="status">سيتم تفعيله بعد ربط خدمة الاتصال الآمن.</span></div>
@@ -48,20 +46,20 @@ canvas{display:block;max-width:100%;height:auto}#ink{position:absolute;inset:0;w
 <script>
 (function(){
 const $=id=>document.getElementById(id), pdfCanvas=$('pdfCanvas'),ctx=pdfCanvas.getContext('2d'),ink=$('ink'),ictx=ink.getContext('2d');
-let pdf=null,page=1,scale=1,tool='pen',drawing=false,last=null,strokes=[],current=null;
+let pdf=null,page=1,scale=1,tool='pen',drawing=false,strokesByPage={},strokes=[],current=null,studentMode=false;
 if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 function resizeInk(){ink.width=pdfCanvas.width;ink.height=pdfCanvas.height;redraw()}
 function redraw(){ictx.clearRect(0,0,ink.width,ink.height);for(const s of strokes){ictx.globalCompositeOperation=s.tool==='eraser'?'destination-out':'source-over';ictx.strokeStyle=s.color;ictx.lineWidth=s.width;ictx.lineCap='round';ictx.lineJoin='round';ictx.beginPath();s.points.forEach((p,i)=>i?ictx.lineTo(p.x,p.y):ictx.moveTo(p.x,p.y));ictx.stroke()}ictx.globalCompositeOperation='source-over'}
-async function render(){if(!pdf)return;const p=await pdf.getPage(page),v=p.getViewport({scale});pdfCanvas.width=v.width;pdfCanvas.height=v.height;await p.render({canvasContext:ctx,viewport:v}).promise;ink.style.width=pdfCanvas.width+'px';ink.style.height=pdfCanvas.height+'px';resizeInk();$('pageInfo').textContent=page+' / '+pdf.numPages;$('prev').disabled=page<=1;$('next').disabled=page>=pdf.numPages}
-$('pdfFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const data=await f.arrayBuffer();pdf=await pdfjsLib.getDocument({data}).promise;page=1;scale=1;strokes=[];$('fileStatus').textContent='تم فتح: '+f.name+' — الملف محلي على جهازك فقط.';await render()}catch(err){$('fileStatus').textContent='تعذر فتح الملف. تأكد أنه PDF صالح.'}});
-$('prev').onclick=()=>{if(page>1){page--;strokes=[];render()}};$('next').onclick=()=>{if(pdf&&page<pdf.numPages){page++;strokes=[];render()}};
+async function render(){if(!pdf)return;const p=await pdf.getPage(page),v=p.getViewport({scale});pdfCanvas.width=v.width;pdfCanvas.height=v.height;await p.render({canvasContext:ctx,viewport:v}).promise;ink.style.width=pdfCanvas.width+'px';ink.style.height=pdfCanvas.height+'px';strokes=strokesByPage[page]||[];resizeInk();$('pageInfo').textContent=page+' / '+pdf.numPages;$('prev').disabled=page<=1;$('next').disabled=page>=pdf.numPages}
+$('pdfFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const data=await f.arrayBuffer();pdf=await pdfjsLib.getDocument({data}).promise;page=1;scale=1;strokesByPage={};strokes=[];$('fileStatus').textContent='تم فتح: '+f.name+' — الملف محلي على جهازك فقط.';await render()}catch(err){$('fileStatus').textContent='تعذر فتح الملف. تأكد أنه PDF صالح.'}});
+$('prev').onclick=()=>{if(page>1){strokesByPage[page]=strokes;page--;render()}};$('next').onclick=()=>{if(pdf&&page<pdf.numPages){strokesByPage[page]=strokes;page++;render()}};
 $('zoomIn').onclick=()=>{if(pdf){scale=Math.min(2.5,scale+.15);render()}};$('zoomOut').onclick=()=>{if(pdf){scale=Math.max(.5,scale-.15);render()}};
-$('fit').onclick=()=>{if(pdf){const max=Math.min(($('pageWrap').parentElement.clientWidth-24)/pdfCanvas.width,1.5);scale=Math.max(.5,max);render()}};
+$('fit').onclick=()=>{if(pdf){const max=Math.min(($('pageWrap').parentElement.clientWidth-24)/pdfCanvas.width,1.5);scale=Math.max(.5,max);render()}};$('fullscreen').onclick=async()=>{try{if(!$('pageWrap').requestFullscreen)throw new Error('unsupported');await $('pageWrap').requestFullscreen()}catch(e){$('fileStatus').textContent='ملء الشاشة غير مدعوم في هذا المتصفح؛ استخدم التكبير.'}};
 $('pen').onclick=()=>setTool('pen');$('eraser').onclick=()=>setTool('eraser');function setTool(t){tool=t;$('pen').classList.toggle('active',t==='pen');$('eraser').classList.toggle('active',t==='eraser')}
 function point(e){const r=ink.getBoundingClientRect();return{x:(e.clientX-r.left)*ink.width/r.width,y:(e.clientY-r.top)*ink.height/r.height}}
-ink.addEventListener('pointerdown',e=>{if(!pdf)return;drawing=true;ink.setPointerCapture(e.pointerId);const p=point(e);current={tool,color:$('color').value,width:Number($('size').value),points:[p]};strokes.push(current);redraw()});
-ink.addEventListener('pointermove',e=>{if(!drawing||!current)return;current.points.push(point(e));redraw()});function stop(){drawing=false;current=null}ink.addEventListener('pointerup',stop);ink.addEventListener('pointercancel',stop);
-$('undo').onclick=()=>{strokes.pop();redraw()};$('clear').onclick=()=>{strokes=[];redraw()};
+ink.addEventListener('pointerdown',e=>{if(!pdf||studentMode)return;drawing=true;ink.setPointerCapture(e.pointerId);const p=point(e);current={tool,color:'#e11d48',width:4,points:[p]};strokes.push(current);strokesByPage[page]=strokes;redraw()});
+ink.addEventListener('pointermove',e=>{if(!drawing||!current)return;current.points.push(point(e));strokesByPage[page]=strokes;redraw()});function stop(){drawing=false;current=null}ink.addEventListener('pointerup',stop);ink.addEventListener('pointercancel',stop);
+$('studentPreview').onclick=()=>{studentMode=!studentMode;ink.style.pointerEvents=studentMode?'none':'auto';$('studentPreview').classList.toggle('active',studentMode);$('studentPreview').textContent=studentMode?'✏️ العودة لوضع المدرس':'👁️ معاينة الطالب';$('toolStatus').textContent=studentMode?'وضع الطالب: مشاهدة فقط، والكتابة متوقفة.':'وضع المدرس: القلم والممحاة متاحان.'};
 })();
 </script>
 </body></html>
