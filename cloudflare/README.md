@@ -46,3 +46,13 @@
 5. لا تستخدمه مع طلاب فعليين قبل إكمال المصادقة وحدود الاستخدام واختبارات الأمان والخصوصية.
 
 لا تضع أي Secret أو OAuth Client Secret أو Service Account key في ملفات GitHub أو داخل الصفحة أو المحادثات.
+
+
+## Teacher microphone controls
+
+The experimental classroom includes teacher-only server-side controls:
+- `POST /participants`: validates the teacher secret and returns connected student identities and microphone track state.
+- `POST /mute`: validates the teacher secret and mutes the selected student's published microphone track.
+- `POST /mute-all`: validates the teacher secret and mutes all currently published student microphone tracks.
+
+These routes use a short-lived, room-scoped LiveKit room-admin JWT signed inside the Worker. The LiveKit API secret is never sent to the browser. Remote unmute remains disabled; a student can turn their microphone back on from their own device. This behavior and the LiveKit project setting should be verified during the real two-device test.
