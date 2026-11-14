@@ -70,7 +70,7 @@ canvas{display:block;max-width:100%;height:auto}#ink{position:absolute;inset:0;w
 <div id="classStatus" class="status">الاتصال غير نشط. لا تدخل بيانات سرية إلا في خادمك الموثوق.</div>
 <div id="audioTracks"></div>
 <div id="teacherCode" class="notice" hidden></div>
-<div class="status">قبل الدخول: افتح نفس ملف PDF على جهاز المدرس والطالب مؤقتًا حتى تتطابق الصفحات. مزامنة الملزمة مباشرة من Google Drive لم تُربط بعد. يحتاج الصوت إلى نشر Worker وضبط LiveKit.</div>
+<div class="status">اختر الصف والملزمة من قسم الملازم المجانية. عند دخول الطالب تُحمّل نفس الملزمة تلقائيًا وتتم مزامنة الصفحات والكتابة. يلزم نشر Worker وضبط LiveKit أولًا.</div>
 </section>
 <section class="viewer"><div class="page-wrap" id="pageWrap"><canvas id="pdfCanvas"></canvas><canvas id="ink"></canvas></div></section>
 </main>
@@ -129,8 +129,8 @@ async function applyBoard(message){
   strokesByPage[target].push(converted);if(page===target){strokes=strokesByPage[target];redraw()}
  }
 }
-$('startClass').onclick=async()=>{try{if(!pdf)throw new Error('افتح ملف PDF أولًا قبل إنشاء الحصة.');status('جارٍ إنشاء الحصة...');const created=await workerPost('/create',{teacherPin:$('teacherPin').value,title:$('classTitle').value});teacherSecret=created.teacherSecret;liveRoomId=created.roomId;$('roomId').value=created.roomId;$('joinCode').value=created.joinCode;$('teacherCode').hidden=false;$('teacherCode').textContent='رقم الحصة: '+created.roomId+' — رمز دخول الطالب: '+created.joinCode+' (احتفظ بهما وشاركه مع طلاب حصتك فقط).';const token=await workerPost('/token',{role:'teacher',roomId:created.roomId,teacherSecret,participantName:$('participantName').value||'المدرس'});await connectRoom(token,'teacher',created.roomId)}catch(e){status(e.message)}};
-$('joinClass').onclick=async()=>{try{if(!pdf)throw new Error('افتح نفس ملف PDF على جهاز الطالب أولًا.');status('جارٍ دخول الحصة...');const token=await workerPost('/token',{role:'student',roomId:$('roomId').value.trim(),joinCode:$('joinCode').value.trim(),participantName:$('participantName').value||'طالب'});await connectRoom(token,'student',$('roomId').value.trim());studentMode=true;ink.style.pointerEvents='none';$('pen').disabled=true;$('eraser').disabled=true;$('studentPreview').disabled=true;$('toolStatus').textContent='وضع الطالب: مشاهدة فقط.'}catch(e){status(e.message)}};
+$('startClass').onclick=async()=>{try{const grade=window.getSelectedClassroomGrade();const material=window.getSelectedClassroomMaterial();if(!grade)throw new Error('اختر الصف الدراسي أولًا.');if(!material)throw new Error('اختر الملزمة التي ستشرح منها.');status('جارٍ تجهيز الملزمة وإنشاء الحصة...');await window.loadClassroomMaterialById(material.id);const created=await workerPost('/create',{teacherPin:$('teacherPin').value,title:$('classTitle').value,grade,materialId:material.id,materialTitle:material.title,driveFileId:material.link.match(/(?:\\/d\\/|[?&]id=)([A-Za-z0-9_-]+)/)?.[1]||''});teacherSecret=created.teacherSecret;liveRoomId=created.roomId;$('roomId').value=created.roomId;$('joinCode').value=created.joinCode;$('teacherCode').hidden=false;$('teacherCode').textContent='رقم الحصة: '+created.roomId+' — رمز دخول الطالب: '+created.joinCode+' — الملزمة: '+material.title+' (احتفظ بالرمز وشاركه مع طلاب الصف فقط).';const token=await workerPost('/token',{role:'teacher',roomId:created.roomId,teacherSecret,participantName:$('participantName').value||'المدرس'});await connectRoom(token,'teacher',created.roomId)}catch(e){status(e.message)}};
+$('joinClass').onclick=async()=>{try{status('جارٍ التحقق من الحصة وتحميل الملزمة...');const token=await workerPost('/token',{role:'student',roomId:$('roomId').value.trim(),joinCode:$('joinCode').value.trim(),participantName:$('participantName').value||'طالب'});if(!token.materialId)throw new Error('لم يتم ربط ملزمة بهذه الحصة. اطلب من المدرس إنشاء حصة جديدة بعد اختيار الملزمة.');await window.loadClassroomMaterialById(token.materialId);await connectRoom(token,'student',$('roomId').value.trim());studentMode=true;ink.style.pointerEvents='none';$('pen').disabled=true;$('eraser').disabled=true;$('studentPreview').disabled=true;$('toolStatus').textContent='وضع الطالب: مشاهدة فقط.'}catch(e){status(e.message)}};
 $('muteMic').onclick=async()=>{if(!liveRoom)return;try{micMuted=!micMuted;await liveRoom.localParticipant.setMicrophoneEnabled(!micMuted);$('muteMic').textContent=micMuted?'🎙️ تشغيل الميكروفون':'🎙️ كتم الميكروفون'}catch(e){status(e.message)}};
 $('leaveClass').onclick=async()=>{if(liveRoom)await liveRoom.disconnect();liveRoom=null;liveRole=null;teacherSecret=null;setConnectedUI(false);status('غادرت الحصة.')};
 $('endClass').onclick=async()=>{if(!liveRoom||liveRole!=='teacher'||!teacherSecret)return;try{await workerPost('/end',{roomId:liveRoomId,teacherSecret});await liveRoom.disconnect();liveRoom=null;liveRole=null;teacherSecret=null;setConnectedUI(false);status('تم إنهاء الحصة.')}catch(e){status(e.message)}};
@@ -191,26 +191,36 @@ async function loadMaterials() {
     document.getElementById("fileStatus").textContent = "تعذر قراءة قائمة الملازم من المنصة: " + (e.message || e);
   }
 }
+window.getSelectedClassroomGrade = () => gradeSelect.value;
+window.getSelectedClassroomMaterial = () => materials.find(m => m.id === select.value) || null;
+async function fetchAndOpenMaterial(item) {
+  const base = document.getElementById("workerUrl").value.trim().replace(/\\/+$/, "");
+  if (!/^https:\\/\\//i.test(base)) throw new Error("اكتب رابط خادم الفصل أولًا.");
+  const fileId = driveFileId(item.link);
+  if (!fileId) throw new Error("رابط الملزمة ليس رابط PDF صالحًا من Google Drive.");
+  document.getElementById("fileStatus").textContent = "جارٍ تحميل الملزمة من Google Drive...";
+  const response = await fetch(base + "/pdf?fileId=" + encodeURIComponent(fileId));
+  if (!response.ok) {
+    let message = "";
+    try { const result = await response.json(); message = result.error || ""; } catch (error) {}
+    throw new Error(message || "تعذر تحميل الملف. تأكد من مشاركة الملزمة بصلاحية «أي شخص لديه الرابط - مشاهد».");
+  }
+  const data = await response.arrayBuffer();
+  if (data.byteLength < 100 || data.byteLength > 40 * 1024 * 1024) throw new Error("حجم الملف غير مناسب للعرض التجريبي (الحد الأقصى 40 ميجابايت).");
+  await window.openClassroomPdf(data, item.title || "ملزمة من Google Drive", "Google Drive");
+}
+window.loadClassroomMaterialById = async function(materialId) {
+  if (!materials.length) await loadMaterials();
+  const item = materials.find(m => m.id === materialId);
+  if (!item) throw new Error("لم أجد الملزمة المرتبطة بهذه الحصة في قائمة ملازم المنصة.");
+  await fetchAndOpenMaterial(item);
+};
 document.getElementById("loadDriveMaterial").addEventListener("click", async () => {
-  const item = materials.find(m => m.id === select.value);
+  const item = window.getSelectedClassroomMaterial();
   if (!gradeSelect.value) { document.getElementById("fileStatus").textContent = "اختر الصف الدراسي أولًا."; return; }
   if (!item) { document.getElementById("fileStatus").textContent = "اختر الملزمة التي ستشرح منها."; return; }
-  const id = driveFileId(item.link);
-  try {
-    document.getElementById("fileStatus").textContent = "جارٍ تحميل الملزمة من Google Drive...";
-    const url = "https://www.googleapis.com/drive/v3/files/" + encodeURIComponent(id) + "?alt=media";
-    const response = await fetch(url);
-    if (!response.ok) {
-      let detail = "";
-      try { const data = await response.json(); detail = data.error && data.error.message ? data.error.message : ""; } catch (parseError) {}
-      throw new Error(detail || "تعذر الوصول للملف. تأكد من تفعيل Drive API ومشاركة الملف بصلاحية «أي شخص لديه الرابط».");
-    }
-    const data = await response.arrayBuffer();
-    if (data.byteLength < 100 || data.byteLength > 40 * 1024 * 1024) throw new Error("حجم الملف غير مناسب للعرض التجريبي (الحد الأقصى 40 ميجابايت).");
-    await window.openClassroomPdf(data, item.title || "ملزمة من Google Drive", "Google Drive");
-  } catch (e) {
-    document.getElementById("fileStatus").textContent = "تعذر فتح الملزمة: " + (e.message || e) + " — يمكنك مؤقتًا اختيار PDF من جهازك.";
-  }
+  try { await fetchAndOpenMaterial(item); }
+  catch (e) { document.getElementById("fileStatus").textContent = "تعذر فتح الملزمة: " + (e.message || e); }
 });
 loadMaterials();
 </script>
