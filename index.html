@@ -202,9 +202,70 @@
     .daily-motivation { max-width:940px; margin:9px auto 12px; padding:12px 16px; display:flex; align-items:center; justify-content:center; gap:9px; background:#14283f; border:1px solid rgba(20,184,166,.45); border-radius:12px; color:#d1fae5; text-align:center; font-size:17px; font-weight:800; line-height:1.5; }
     .daily-motivation strong { color:#99f6e4; font-weight:900; }
     @media(max-width:600px) { .daily-motivation { margin:8px 10px 10px; padding:10px 12px; font-size:16px; } }
+
+    /* Multi-page layout: each URL opens one focused section; all original features remain available. */
+    .page-nav { max-width:980px; margin:12px auto 16px; padding:8px 12px; display:flex; align-items:center; gap:8px; overflow-x:auto; scrollbar-width:thin; }
+    .page-nav a { flex:0 0 auto; text-decoration:none; color:#dbeafe; background:#203a57; border:1px solid #3b5877; border-radius:11px; padding:9px 13px; font-size:13px; font-weight:800; white-space:nowrap; }
+    .page-nav a:hover,.page-nav a:focus-visible { background:#0f766e; color:#fff; outline:2px solid #5eead4; outline-offset:2px; }
+    .home-dashboard { max-width:940px; margin:16px auto 30px; padding:0 14px; }
+    .home-welcome { position:relative; overflow:hidden; padding:clamp(22px,4vw,36px); border:1px solid rgba(45,212,191,.32); border-radius:22px; background:linear-gradient(120deg,#173b5d 0%,#14283f 55%,#123c48 100%); box-shadow:0 14px 34px rgba(0,0,0,.22); }
+    .home-welcome:after { content:""; position:absolute; width:190px; height:190px; border-radius:50%; left:-55px; top:-90px; background:rgba(45,212,191,.10); }
+    .home-eyebrow { color:#5eead4; font-size:10px; font-weight:900; letter-spacing:1.4px; }
+    .home-welcome h2 { position:relative; z-index:1; margin:9px 0 7px; color:#fff; font-size:clamp(21px,4vw,30px); line-height:1.45; }
+    .home-welcome p { position:relative; z-index:1; margin:0; color:#cbd5e1; font-size:14px; line-height:1.9; }
+    .home-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:16px; }
+    .home-action { display:flex; align-items:center; gap:12px; min-width:0; padding:15px; border:1px solid #334f70; border-radius:16px; color:#f8fafc; text-decoration:none; background:linear-gradient(145deg,#172f4b,#102238); box-shadow:0 7px 18px rgba(0,0,0,.14); transition:transform .18s ease,border-color .18s ease,background .18s ease; }
+    .home-action:hover { transform:translateY(-2px); border-color:#2dd4bf; background:linear-gradient(145deg,#1b3d5d,#12334a); }
+    .home-action-primary { border-color:rgba(45,212,191,.65); background:linear-gradient(120deg,#0f766e,#164e63); }
+    .home-action-admin { grid-column:1/-1; }
+    .home-action-icon { display:grid; place-items:center; flex:0 0 46px; width:46px; height:46px; border-radius:13px; background:rgba(148,163,184,.14); font-size:23px; }
+    .home-action b { display:block; font-size:15px; line-height:1.5; }
+    .home-action small { display:block; margin-top:3px; color:#cbd5e1; font-size:11px; line-height:1.5; }
+    .home-arrow { margin-right:auto; color:#5eead4; font-size:20px; }
+    .home-footer-note { margin:14px 3px 0; color:#94a3b8; font-size:11px; text-align:center; }
+    .word-day-content { display:block; }
+    .word-day-main-clean { align-items:stretch; padding:17px 19px; }
+    .word-day-word-row { display:flex; align-items:center; justify-content:space-between; gap:14px; width:100%; direction:ltr; }
+    .word-day-word { margin:0; font-size:clamp(29px,5vw,42px); }
+    .word-day-meaning { direction:rtl; text-align:right; color:#a7f3d0; font-size:clamp(20px,3.5vw,25px); font-weight:900; line-height:1.8; white-space:nowrap; }
+    .word-day-actions { margin-top:13px; }
+    .word-day-example,.word-day-image,.word-day-example-audio { display:none!important; }
+    body[data-page="home"] .page-nav, body[data-page="home"] .container { display:none!important; }
+    body:not([data-page="home"]) .word-day-wrap, body:not([data-page="home"]) .daily-motivation { display:none!important; }
+    body[data-page="home"] .home-dashboard { display:block; }
+    body:not([data-page="home"]) .home-dashboard { display:none!important; }
+    body[data-page="register"] #tab-register,
+    body[data-page="student"] #tab-student,
+    body[data-page="parent"] #tab-parent,
+    body[data-page="admin"] #tab-admin,
+    body[data-page="materials"] #tab-public-materials,
+    body[data-page="self-learning"] #tab-self-learning,
+    body[data-page="daily-grammar"] #tab-daily-grammar { display:block!important; }
+    body:not([data-page="home"]) .container { max-width:900px; margin:0 auto; }
+    body[data-page="register"] #tab-student,body[data-page="register"] #tab-parent,body[data-page="register"] #tab-admin,body[data-page="register"] #tab-public-materials,body[data-page="register"] #tab-self-learning,body[data-page="register"] #tab-daily-grammar,
+    body[data-page="student"] #tab-register,body[data-page="student"] #tab-parent,body[data-page="student"] #tab-admin,body[data-page="student"] #tab-public-materials,body[data-page="student"] #tab-self-learning,body[data-page="student"] #tab-daily-grammar,
+    body[data-page="parent"] #tab-register,body[data-page="parent"] #tab-student,body[data-page="parent"] #tab-admin,body[data-page="parent"] #tab-public-materials,body[data-page="parent"] #tab-self-learning,body[data-page="parent"] #tab-daily-grammar,
+    body[data-page="admin"] #tab-register,body[data-page="admin"] #tab-student,body[data-page="admin"] #tab-parent,body[data-page="admin"] #tab-public-materials,body[data-page="admin"] #tab-self-learning,body[data-page="admin"] #tab-daily-grammar,
+    body[data-page="materials"] #tab-register,body[data-page="materials"] #tab-student,body[data-page="materials"] #tab-parent,body[data-page="materials"] #tab-admin,body[data-page="materials"] #tab-self-learning,body[data-page="materials"] #tab-daily-grammar,
+    body[data-page="self-learning"] #tab-register,body[data-page="self-learning"] #tab-student,body[data-page="self-learning"] #tab-parent,body[data-page="self-learning"] #tab-admin,body[data-page="self-learning"] #tab-public-materials,body[data-page="self-learning"] #tab-daily-grammar,
+    body[data-page="daily-grammar"] #tab-register,body[data-page="daily-grammar"] #tab-student,body[data-page="daily-grammar"] #tab-parent,body[data-page="daily-grammar"] #tab-admin,body[data-page="daily-grammar"] #tab-public-materials,body[data-page="daily-grammar"] #tab-self-learning { display:none!important; }
+    @media(max-width:650px) {
+      .home-dashboard { padding:0 10px; margin:12px auto 22px; }
+      .home-actions { grid-template-columns:1fr; gap:9px; }
+      .home-action-admin { grid-column:auto; }
+      .home-action { padding:12px; border-radius:14px; }
+      .home-action-icon { flex-basis:42px; width:42px; height:42px; }
+      .page-nav { margin:8px 0 12px; padding:7px 10px; }
+      .page-nav a { padding:8px 11px; font-size:12px; }
+      .word-day-main-clean { padding:13px 14px; }
+      .word-day-word-row { gap:8px; }
+      .word-day-word { font-size:clamp(25px,7vw,34px); }
+      .word-day-meaning { font-size:clamp(17px,5vw,21px); }
+    }
+
   </style>
 </head>
-<body>
+<body data-page="home">
 
   <header>
     <img src="logo.png" class="logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135755.png'">
@@ -234,33 +295,56 @@
         <div class="word-day-date" id="wordDayDate">كلمة اليوم</div>
       </div>
       <div class="word-day-content">
-        <div class="word-day-main">
-          <div class="word-day-word-row"><div id="wordDayImage" class="word-day-image" role="img" aria-label="Word illustration">✨</div><div class="word-day-word" id="wordDayWord">Brave</div></div>
-          <div class="word-day-meaning" id="wordDayMeaning">شجاع</div>
+        <div class="word-day-main word-day-main-clean">
+          <div class="word-day-word-row">
+            <div class="word-day-word" id="wordDayWord">Brave</div>
+            <div class="word-day-meaning" id="wordDayMeaning" lang="ar" dir="rtl">شُجاع</div>
+          </div>
           <div class="word-day-actions">
             <button type="button" class="word-day-audio" onclick="speakWordOfDay()">🔊 اسمع الكلمة</button>
-            <button type="button" class="word-day-example-audio" onclick="speakWordExample()">▶ اسمع المثال</button>
           </div>
-        </div>
-        <div class="word-day-example">
-          <span class="word-day-example-label">Example</span>
-          <p class="word-day-example-en" id="wordDayExample">The brave boy helped his friend.</p>
-          <p class="word-day-example-ar" id="wordDayExampleAr">ساعد الولد الشجاع صديقه.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <div class="container">
-    <div class="tabs">
-      <div class="tab active" id="tabBtn-student" onclick="showTab('student')">دخول الطلاب</div>
-      <div class="tab" id="tabBtn-register" onclick="showTab('register')">تسجيل</div>
-      <div class="tab" id="tabBtn-parent" onclick="showTab('parent')">ولي أمر</div>
-      <div class="tab" id="tabBtn-admin" onclick="showTab('admin')">لوحة المستر</div>
-      <div class="tab" id="tabBtn-public-materials" onclick="showTab('public-materials')">📚 ملازم مجانية</div>
-      <div class="tab" id="tabBtn-self-learning" onclick="showTab('self-learning')">🧠 علّم نفسك</div>
-      <div class="tab" id="tabBtn-daily-grammar" onclick="showTab('daily-grammar')">📘 قاعدة اليوم</div>
-    </div>
+  <main class="home-dashboard">
+    <section class="home-welcome">
+      <span class="home-eyebrow">WELCOME TO YOUR ENGLISH JOURNEY</span>
+      <h2>ابدأ رحلتك في تعلّم اللغة الإنجليزية</h2>
+      <p>كل أدواتك التعليمية في مكان واحد، بتصميم واضح وسهل من الموبايل والكمبيوتر.</p>
+    </section>
+    <section class="home-actions" aria-label="الخدمات الرئيسية">
+      <a class="home-action home-action-primary" href="register.html"><span class="home-action-icon">✍️</span><span><b>سجل الآن</b><small>أنشئ حسابك وابدأ التعلم</small></span><span class="home-arrow">←</span></a>
+      <a class="home-action" href="student.html"><span class="home-action-icon">🎓</span><span><b>دخول الطالب</b><small>حصصك وواجباتك وتقييماتك</small></span><span class="home-arrow">←</span></a>
+      <a class="home-action" href="parent.html"><span class="home-action-icon">👨‍👩‍👧</span><span><b>دخول ولي الأمر</b><small>تابع الحضور والدرجات</small></span><span class="home-arrow">←</span></a>
+      <a class="home-action" href="materials.html"><span class="home-action-icon">📚</span><span><b>الملازم المجانية</b><small>مذكرات حسب الصف الدراسي</small></span><span class="home-arrow">←</span></a>
+      <a class="home-action" href="self-learning.html"><span class="home-action-icon">🧠</span><span><b>علّم نفسك</b><small>تدريب يومي على القراءة والفهم</small></span><span class="home-arrow">←</span></a>
+      <a class="home-action" href="daily-grammar.html"><span class="home-action-icon">📘</span><span><b>قاعدة اليوم</b><small>قواعد إنجليزية بشرح مبسط</small></span><span class="home-arrow">←</span></a>
+      <a class="home-action home-action-admin" href="admin.html"><span class="home-action-icon">🧑‍🏫</span><span><b>لوحة المستر</b><small>إدارة الطلاب والحصص والمنصة</small></span><span class="home-arrow">←</span></a>
+    </section>
+    <p class="home-footer-note">اختر القسم الذي تريد فتحه. يمكنك الرجوع للصفحة السابقة من زر الرجوع في المتصفح.</p>
+  </main>
+  <nav class="page-nav" aria-label="التنقل الرئيسي">
+    <a class="page-nav-home" href="index.html">الرئيسية</a>
+    <a href="register.html">سجل الآن</a>
+    <a href="student.html">دخول الطالب</a>
+    <a href="parent.html">دخول ولي الأمر</a>
+    <a href="materials.html">📚 الملازم المجانية</a>
+    <a href="self-learning.html">🧠 علّم نفسك</a>
+    <a href="daily-grammar.html">📘 قاعدة اليوم</a>
+    <a href="admin.html">لوحة المستر</a>
+  </nav>  <div class="container">
+  <nav class="page-nav" aria-label="التنقل الرئيسي">
+    <a class="page-nav-home" href="index.html">الرئيسية</a>
+    <a href="register.html">سجل الآن</a>
+    <a href="student.html">دخول الطالب</a>
+    <a href="parent.html">دخول ولي الأمر</a>
+    <a href="materials.html">📚 الملازم المجانية</a>
+    <a href="self-learning.html">🧠 علّم نفسك</a>
+    <a href="daily-grammar.html">📘 قاعدة اليوم</a>
+    <a href="admin.html">لوحة المستر</a>
+  </nav>
 
     <!-- تسجيل طالب -->
     <div id="tab-register" class="card" style="display:none">
