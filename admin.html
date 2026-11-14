@@ -486,11 +486,9 @@
         </div>
 
         <div id="admin-lessons" class="card" style="background:#0f172a">
-          <h4>نشر حصة (ميت + يوتيوب)</h4>
+          <h4>نشر حصة Google Meet</h4>
           <input id="lessonTitle" placeholder="عنوان الحصة">
           <input id="meetLink" placeholder="لينك Google Meet">
-          <input id="ytLink" placeholder="لينك يوتيوب">
-          <input id="teachmintLink" placeholder="لينك Teachmint (اختياري)">
           <select id="lessonGrade">
             <option>للكل</option>
             <option>الصف الأول الابتدائي</option>
@@ -512,6 +510,7 @@
           <h4>🎬 إضافة حصة مسجلة</h4>
           <p style="color:#cbd5e1;font-size:13px">أضف عنوان الدرس والصف ورابط فيديو يوتيوب. سيظهر الفيديو للطلاب من صفحة الحصص المسجلة دون تسجيل دخول.</p>
           <input id="recordedTitle" placeholder="اسم الدرس">
+          <input id="recordedUnit" placeholder="اسم الوحدة (مثال: الوحدة الأولى)">
           <select id="recordedGrade">
             <option value="الصف الأول الابتدائي">الصف الأول الابتدائي</option>
             <option value="الصف الثاني الابتدائي">الصف الثاني الابتدائي</option>
@@ -1319,11 +1318,9 @@
     window.addLesson = async function() {
       const title = document.getElementById('lessonTitle').value.trim();
       const meetLink = document.getElementById('meetLink').value.trim();
-      const ytLink = document.getElementById('ytLink').value.trim();
-      const teachmintLink = document.getElementById('teachmintLink').value.trim();
       const grade = document.getElementById('lessonGrade').value;
-      if (!title) { alert('عنوان'); return; }
-      await setDoc(doc(db, 'lessons', 'current'), { title, meetLink, ytLink, teachmintLink, grade, created: Date.now() });
+      if (!title) { alert('اكتب عنوان الحصة.'); return; }
+      await setDoc(doc(db, 'lessons', 'current'), { title, meetLink, grade, created: Date.now() });
       alert('تم نشر الحصة');
     };
 
@@ -1343,12 +1340,14 @@
     window.addRecordedLesson = async function() {
       try {
         const title = document.getElementById('recordedTitle').value.trim();
+        const unit = document.getElementById('recordedUnit').value.trim();
         const grade = document.getElementById('recordedGrade').value;
         const link = document.getElementById('recordedYoutubeLink').value.trim();
-        if (!title || !grade || !link) { alert('اكتب اسم الدرس واختر الصف وضع رابط يوتيوب.'); return; }
+        if (!title || !unit || !grade || !link) { alert('اكتب اسم الدرس والوحدة واختر الصف وضع رابط يوتيوب.'); return; }
         if (!getYouTubeVideoId(link)) { alert('ضع رابط فيديو صحيح من يوتيوب.'); return; }
-        await addDoc(collection(db, 'materials'), { type: 'recorded_lesson', title, grade, link, created: Date.now() });
+        await addDoc(collection(db, 'materials'), { type: 'recorded_lesson', title, unit, grade, link, created: Date.now() });
         document.getElementById('recordedTitle').value = '';
+        document.getElementById('recordedUnit').value = '';
         document.getElementById('recordedYoutubeLink').value = '';
         await window.loadRecordedLessonsAdmin();
         alert('✅ تم إضافة الحصة المسجلة، وستظهر لطلاب الصف المحدد.');
@@ -1374,7 +1373,7 @@
           const title = document.createElement('b');
           title.textContent = '🎬 ' + (item.title || 'درس مسجل');
           const grade = document.createElement('div');
-          grade.textContent = item.grade || '';
+          grade.textContent = (item.grade || '') + ' • ' + (item.unit || 'وحدة غير محددة');
           const remove = document.createElement('button');
           remove.className = 'btn-small';
           remove.style.background = '#ef4444';
