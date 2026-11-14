@@ -207,6 +207,14 @@
     .page-nav { max-width:980px; margin:12px auto 16px; padding:8px 12px; display:flex; align-items:center; gap:8px; overflow-x:auto; scrollbar-width:thin; }
     .page-nav a { flex:0 0 auto; text-decoration:none; color:#dbeafe; background:#203a57; border:1px solid #3b5877; border-radius:11px; padding:9px 13px; font-size:13px; font-weight:800; white-space:nowrap; }
     .page-nav a:hover,.page-nav a:focus-visible { background:#0f766e; color:#fff; outline:2px solid #5eead4; outline-offset:2px; }
+
+    body[data-page="register"] .page-nav a[href="register.html"],
+    body[data-page="student"] .page-nav a[href="student.html"],
+    body[data-page="parent"] .page-nav a[href="parent.html"],
+    body[data-page="materials"] .page-nav a[href="materials.html"],
+    body[data-page="self-learning"] .page-nav a[href="self-learning.html"],
+    body[data-page="daily-grammar"] .page-nav a[href="daily-grammar.html"],
+    body[data-page="admin"] .page-nav a[href="admin.html"] { background:#0f766e; border-color:#5eead4; color:#fff; }
     .home-dashboard { max-width:940px; margin:16px auto 30px; padding:0 14px; }
     .home-welcome { position:relative; overflow:hidden; padding:clamp(22px,4vw,36px); border:1px solid rgba(45,212,191,.32); border-radius:22px; background:linear-gradient(120deg,#173b5d 0%,#14283f 55%,#123c48 100%); box-shadow:0 14px 34px rgba(0,0,0,.22); }
     .home-welcome:after { content:""; position:absolute; width:190px; height:190px; border-radius:50%; left:-55px; top:-90px; background:rgba(45,212,191,.10); }
@@ -268,7 +276,7 @@
 <body data-page="parent">
 
   <header>
-    <img src="logo.png" class="logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135755.png'">
+    <a href="index.html" aria-label="الصفحة الرئيسية"><img src="logo.png" class="logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135755.png'"></a>
     <h1 style="margin:8px 0 0;font-size:24px">منصة مستر أحمد السيد انجليزي</h1>
     <div style="font-size:13px">(من الصف الأول للثالث الإعدادي)</div>
     <div style="font-size:11px;margin-top:4px;background:rgba(255,255,255,.2);display:inline-block;padding:3px 12px;border-radius:20px">خبرة 20 عام ⭐</div><br>
@@ -326,7 +334,6 @@
     <p class="home-footer-note">اختر القسم الذي تريد فتحه. يمكنك الرجوع للصفحة السابقة من زر الرجوع في المتصفح.</p>
   </main>
   <nav class="page-nav" aria-label="التنقل الرئيسي">
-    <a class="page-nav-home" href="index.html">الرئيسية</a>
     <a href="register.html">سجل الآن</a>
     <a href="student.html">دخول الطالب</a>
     <a href="parent.html">دخول ولي الأمر</a>
