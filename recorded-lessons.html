@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#123c5a"><title>الحصص المسجلة | منصة مستر أحمد السيد</title>
+<link rel="icon" href="logo.png">
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}body{margin:0;background:#0f172a;color:#fff;padding:18px 12px 90px}
+header{max-width:900px;margin:0 auto 18px;padding:22px 16px;text-align:center;border-radius:18px;background:linear-gradient(135deg,#4f46e5,#0f766e)}
+h1{margin:0 0 8px;font-size:clamp(23px,5vw,32px)}header p{margin:0;color:#e2e8f0;font-size:14px}main{max-width:900px;margin:auto}
+.filter,.lesson{background:#1e293b;border:1px solid #334155;border-radius:15px;padding:15px;margin:12px 0}
+label{display:block;margin-bottom:8px;color:#cbd5e1;font-weight:bold}select{width:100%;padding:13px;border:1px solid #475569;border-radius:10px;background:#0f172a;color:#fff;font-size:16px}
+.lesson h2{font-size:19px;margin:0 0 8px}.grade{color:#5eead4;font-size:13px;margin:0 0 12px}
+.video{width:100%;aspect-ratio:16/9;background:#020617;border-radius:12px;overflow:hidden}.video iframe{width:100%;height:100%;border:0}
+.empty,.status{color:#cbd5e1;text-align:center;padding:18px}
+.back{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));z-index:2147483647;min-width:116px;padding:12px 24px;border:2px solid #5eead4;border-radius:999px;background:#115e59;color:#fff;font-size:16px;font-weight:bold;cursor:pointer}
+</style></head><body>
+<header><h1>🎬 الحصص المسجلة</h1><p>اختر صفك الدراسي لمشاهدة تسجيلات الدروس الخاصة بك — بدون تسجيل دخول.</p></header>
+<main><section class="filter"><label for="gradeSelect">الصف الدراسي</label>
+<select id="gradeSelect"><option value="">اختر صفك الدراسي</option>
+<option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option>
+<option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option>
+<option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option></select></section>
+<div id="lessons" class="status">اختر صفك الدراسي لعرض الحصص المسجلة.</div></main>
+<button class="back" type="button" onclick="window.location.assign('/')">← رجوع</button>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getFirestore,collection,getDocs} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyA3EUyPGWQXi3yEV50QYYCtCASKV-MEE5I",authDomain:"ahmed-elsayed-bf13d.firebaseapp.com",projectId:"ahmed-elsayed-bf13d",storageBucket:"ahmed-elsayed-bf13d.firebasestorage.app",messagingSenderId:"66067955169",appId:"1:66067955169:web:28330bd439b6fd4c73e6a0"});
+const db=getFirestore(app),gradeSelect=document.getElementById('gradeSelect'),lessonsBox=document.getElementById('lessons');
+function youtubeId(value){try{const u=new URL(String(value||'').trim()),h=u.hostname.toLowerCase().replace(/^www\./,'');if(h==='youtu.be')return u.pathname.split('/').filter(Boolean)[0]||'';if(['youtube.com','m.youtube.com','youtube-nocookie.com'].includes(h)){if(u.pathname==='/watch')return u.searchParams.get('v')||'';const p=u.pathname.split('/').filter(Boolean);if(['embed','shorts','live'].includes(p[0]))return p[1]||'';}}catch(e){}return'';}
+async function loadLessons(){const grade=gradeSelect.value;if(!grade){lessonsBox.className='status';lessonsBox.textContent='اختر صفك الدراسي لعرض الحصص المسجلة.';return;}lessonsBox.className='status';lessonsBox.textContent='⏳ جاري تحميل الحصص...';try{const snap=await getDocs(collection(db,'materials')),items=[];snap.forEach(d=>{const x=d.data();if(x.type!=='recorded_lesson'||x.grade!==grade)return;const id=youtubeId(x.link);if(id)items.push({title:String(x.title||'درس مسجل'),grade:x.grade,id,created:x.created||0});});items.sort((a,b)=>(b.created||0)-(a.created||0));lessonsBox.replaceChildren();if(!items.length){lessonsBox.className='empty';lessonsBox.textContent='لا توجد حصص مسجلة لهذا الصف حتى الآن.';return;}items.forEach(x=>{const card=document.createElement('article');card.className='lesson';const title=document.createElement('h2');title.textContent='📘 '+x.title;const meta=document.createElement('p');meta.className='grade';meta.textContent=x.grade;const box=document.createElement('div');box.className='video';const frame=document.createElement('iframe');frame.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(x.id);frame.title=x.title;frame.loading='lazy';frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';frame.allowFullscreen=true;box.appendChild(frame);card.append(title,meta,box);lessonsBox.appendChild(card);});}catch(e){lessonsBox.className='empty';lessonsBox.textContent='تعذر تحميل الحصص الآن. حاول مرة أخرى لاحقًا.';}}
+gradeSelect.addEventListener('change',loadLessons);
+</script></body></html>
