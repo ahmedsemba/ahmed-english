@@ -388,80 +388,21 @@
     if (el) el.textContent = value;
   }
 
+  const FIRST_MARK_BY_WORD = {
+    "Brave":"ُ","Happy":"َ","Family":"َ","Friend":"َ","School":"َ","Water":"َ","Beautiful":"َ","Clever":"َ","Morning":"َ","Animal":"َ","Window":"َ","Garden":"َ","Teacher":"ُ","Hungry":"َ","Thirsty":"َ","Funny":"ُ","Market":"ُ","Quiet":"َ","Clean":"َ","Quick":"َ","Strong":"َ","Small":"َ","Different":"ُ","Answer":"ِ","Always":"َ","Sometimes":"َ","Before":"َ","Behind":"َ","Because":"َ","Adventure":"ُ","Improve":"ُ","Healthy":"ِ","Environment":"َ","Journey":"ِ","Polite":"ُ","Careful":"َ","Popular":"َ","Prepare":"َ","Practice":"ُ","Discover":"َ","Invite":"َ","Useful":"ُ","Dangerous":"َ","Celebrate":"َ","Borrow":"َ","Return":"ُ","Arrive":"َ","Advice":"َ","Choose":"َ","Explain":"ُ","Remember":"َ","Forget":"َ","Friendly":"َ","Famous":"َ","Share":"ُ","Collect":"َ","Comfortable":"ُ","Excellent":"ُ","Suddenly":"َ","Achieve":"َ","Confident":"ُ","Opportunity":"ُ","Responsible":"َ","Challenge":"َ","Decision":"َ","Develop":"ُ","Experience":"َ","Independent":"ُ","Encourage":"ُ","Advantage":"َ","Community":"ُ","Reduce":"ُ","Protect":"َ","Benefit":"َ","Suggest":"ُ","Although":"َ","However":"َ","Avoid":"َ","Achievable":"َ","Volunteer":"ُ","Compare":"ُ","Tradition":"َ","Solution":"َ","Imagine":"َ","Respect":"َ","Require":"َ","Successful":"َ","Communicate":"ُ","Protective":"َ","Appointment":"َ","Complain":"َ","Continue":"َ","Conversation":"ُ","Decide":"َ","Describe":"َ","Difficult":"َ","Direction":"ِ","Education":"َ","Email":"َ","Entrance":"َ","Excited":"ُ","Exercise":"َ","Favorite":"ُ","Feeling":"َ","Festival":"َ","Foreign":"َ","Future":"َ","Holiday":"َ","Important":"ُ","Language":"ُ","Learn":"َ","Message":"ِ","Minute":"َ","Mistake":"َ","Neighbor":"َ","Nervous":"َ","Online":"َ","Opinion":"َ","Order":"َ","Package":"ُ","Passport":"َ","Perhaps":"َ","Plan":"ُ","Possible":"ُ","Problem":"ُ","Promise":"َ","Reason":"َ","Receive":"َ","Repeat":"ُ","Reply":"َ","Reservation":"َ","Safe":"َ","Schedule":"َ","Special":"َ","Spend":"َ","Advertise":"َ","Amount":"َ","Ancient":"َ","Anxious":"َ","Argue":"ُ","Arrangement":"َ","Attend":"َ","Available":"ُ","Behavior":"ُ","Career":"َ","Choice":"َ","Competition":"ُ","Confidence":"َ","Connect":"َ","Consider":"َ","Contain":"َ","Convenient":"ُ","Culture":"َ","Customer":"َ","Damage":"َ","Depend":"َ","Development":"َ","Equipment":"َ","Experiment":"َ","Explanation":"َ","Express":"َ","Feature":"َ","Focus":"َ","Freedom":"ُ","Government":"ُ","Habit":"َ","Increase":"َ","Influence":"َ","Information":"َ","Instead":"َ","Knowledge":"َ","Local":"َ","Manage":"َ","Mention":"َ","Necessary":"ُ","Organize":"َ","Patient":"َ","Performance":"َ","Personal":"َ","Population":"َ","Prevent":"َ","Produce":"ُ","Progress":"َ","Provide":"ُ","Purpose":"َ","Quality":"َ","Relationship":"َ","Research":"َ","Result":"َ","Serious":"َ","Skill":"َ","Society":"ُ","Accurate":"َ","Adapt":"َ","Alternative":"َ","Analyze":"َ","Approach":"ُ","Appropriate":"ُ","Assume":"َ","Attitude":"َ","Aware":"َ","Capacity":"َ","Circumstance":"َ","Clarify":"َ","Collapse":"َ","Combine":"َ","Complex":"ُ","Concentrate":"َ","Consequence":"َ","Consistent":"ُ","Contribute":"ُ","Convince":"ُ","Critical":"َ","Debate":"َ","Decline":"ِ","Demonstrate":"ُ","Determine":"َ","Efficient":"َ","Emerge":"ِ","Emphasis":"َ","Enable":"ِ","Encounter":"ُ","Establish":"َ","Evaluate":"ُ","Evidence":"َ","Evident":"َ","Expand":"ِ","Factor":"َ","Flexible":"ُ","Function":"َ","Generate":"َ","Identify":"َ","Impact":"َ","Indicate":"ُ","Individual":"ِ","Interpret":"َ","Involve":"ُ","Issue":"ِ","Maintain":"َ","Method":"َ","Occur":"َ","Obtain":"ِ","Participate":"َ","Perceive":"َ","Period":"ِ","Policy":"ُ","Potential":"ُ","Previous":"َ","Principle":"َ","Priority":"َ","Process":"َ","Promote":"ُ","Requirement":"َ","Resource":"َ","Respond":"َ","Significant":"ُ","Specific":"َ","Strategy":"َ","Structure":"َ","Theory":"ِ","Traditional":"َ","Accomplish":"َ","Accumulate":"َ","Acknowledge":"َ","Acquire":"ِ","Adequate":"َ","Adjust":"َ","Administration":"َ","Advocate":"َ","Allocate":"َ","Annual":"َ","Apparent":"َ","Application":"َ","Appoint":"َ","Approximate":"َ","Aspect":"َ","Assess":"َ","Assign":"َ","Assistance":"َ","Authority":"ُ","Automatically":"َ","Boundary":"َ","Brief":"َ","Capable":"َ","Category":"َ","Civil":"َ","Code":"َ","Commission":"َ","Commitment":"َ","Communication":"َ","Concept":"َ","Conduct":"َ","Confirm":"َ","Conflict":"َ","Conscious":"َ","Construct":"َ","Consume":"َ","Context":"َ","Yield":"ِ",
+"Listen":"َ","Apple":"َ","Banana":"َ","Bread":"ُ","Cheese":"ُ","Chicken":"َ","Coffee":"َ","Milk":"َ","Orange":"ُ","Potato":"َ","Rice":"َ","Tomato":"َ","Egg":"َ","Fish":"َ","Meat":"َ","Sugar":"ُ","Salt":"ِ","Breakfast":"ِ","Dinner":"َ","Kitchen":"َ","Bedroom":"ُ","Bathroom":"َ","Street":"َ","City":"َ","Village":"َ","Country":"َ","Hospital":"ُ","Shop":"َ","Station":"َ","Doctor":"َ","Student":"َ","Driver":"َ","Worker":"َ","Mother":"ُ","Father":"َ","Brother":"َ","Sister":"ُ","Baby":"ِ","Child":"ِ","People":"َ","Man":"َ","Woman":"ِ","Boy":"َ","Girl":"ِ","Book":"ِ","Pen":"َ","Pencil":"َ","Bag":"َ","Chair":"ُ","Table":"َ","Door":"َ","Wall":"َ","Floor":"َ","Clock":"َ","Phone":"َ","Computer":"َ","Picture":"ُ","Music":"ُ","Movie":"ِ","Game":"ُ","Ball":"ُ","Car":"َ","Bus":"َ","Train":"ِ","Airport":"َ","Calendar":"َ"
+  };
+  function meaningWithFirstMark(meaning, englishWord) {
+    const value = String(meaning || '').trim();
+    if (!value) return value;
+    const chars = Array.from(value);
+    const mark = FIRST_MARK_BY_WORD[englishWord] || 'َ';
+    return chars[0] + mark + chars.slice(1).join('');
+  }
+
   function renderWord() {
     setText('wordDayWord', word.word);
-    // Local lightweight pictogram; no external images or extra network requests.
-    const wordImage = document.getElementById('wordDayImage');
-    if (wordImage) {
-      const term = (word.word + ' ' + word.meaning).toLowerCase();
-      const pictureRules = [
-        [/process|workflow|procedure|operation/, '⚙️'],
-        [/apple|banana|bread|cheese|chicken|coffee|milk|orange|potato|rice|tomato|egg|fish|meat|sugar|salt|breakfast|dinner|hungry|thirsty|food|fruit|vegetable|kitchen|cook|meal|restaurant|bake|taste|sweet|fresh|juice/, '🍎'],
-        [/family|mother|father|brother|sister|friend|teacher|student|child|boy|girl|people|person|community|neighbour|volunteer|leader|individual|human|team|partner/, '👨‍👩‍👧'],
-        [/school|class|lesson|book|read|write|learn|study|education|homework|exam|question|answer|explain|practice|dictionary|knowledge|language|word|essay|grammar|college|university/, '📚'],
-        [/water|rain|river|sea|ocean|lake|weather|cloud|storm|wind|environment|nature|tree|flower|garden|forest|earth|planet|protect|reduce|plastic|animal|bird|cat|dog|horse|wildlife/, '🌿'],
-        [/house|home|bedroom|bathroom|window|door|room|building|street|city|village|country|hospital|shop|market|station|airport|journey|travel|trip|adventure|road|map|place/, '🏡'],
-        [/happy|sad|funny|beautiful|clever|brave|confident|polite|careful|friendly|famous|excellent|successful|quiet|strong|small|comfortable|healthy|kind|respect|smile|feel|emotion/, '😊'],
-        [/time|morning|evening|night|day|always|sometimes|before|after|suddenly|calendar|date|annual|period|previous|future|today|tomorrow/, '🕒'],
-        [/car|bus|train|plane|bicycle|vehicle|drive|traffic|transport|arrive|return|move|run|walk|fly|travel|journey/, '🚗'],
-        [/computer|technology|digital|internet|website|application|app|code|data|system|function|software|device|phone|communication|communicate/, '💻'],
-        [/money|price|cost|buy|sell|borrow|bank|business|job|work|career|company|resource|value|benefit|advantage/, '💼'],
-        [/music|song|sing|dance|art|paint|draw|picture|photo|film|movie|story|imagine|creative|design/, '🎨'],
-        [/sport|football|game|play|team|challenge|competition|win|goal|exercise|swim|ball/, '⚽'],
-        [/idea|think|thought|decision|choose|solution|problem|suggest|improve|develop|discover|remember|forget|plan|strategy|method|process|concept|theory|principle/, '💡'],
-        [/danger|dangerous|safe|helmet|doctor|medicine|health/, '🛡️']
-      ];
-      // Match whole words only, so a short sequence inside another word
-      // (for example "car" in "career" or "wind" in "window") cannot mislabel it.
-      const exactWordIcons = {
-        hungry: '🍽️',
-        thirsty: '💧',
-        clean: '🧼',
-        listen: '👂',
-        behind: '↩️',
-        because: '🔗',
-        prepare: '📝',
-        invite: '✉️',
-        celebrate: '🎉',
-        advice: '💬',
-        share: '🤝',
-        collect: '🧺',
-        achieve: '🏆',
-        opportunity: '🚪',
-        responsible: '🧑‍💼',
-        experience: '🧭',
-        independent: '🕊️',
-        encourage: '👏',
-        compare: '⚖️',
-        tradition: '🏛️',
-        communicate: '💬',
-        passport: '🛂',
-        schedule: '🗓️',
-        message: '✉️',
-        mistake: '❗',
-        research: '🔎',
-        application: '📱',
-        appoint: '📅',
-        appropriate: '👌',
-        career: '💼',
-        participate: '🙋',
-        acknowledge: '🤝',
-        advocate: '📣',
-        allocate: '📊',
-        category: '🗂️',
-        communication: '💬'
-      };
-      const exactIcon = exactWordIcons[word.word.toLowerCase()];
-      const match = pictureRules.find(([pattern]) =>
-        new RegExp('\\b(?:' + pattern.source + ')\\b', 'i').test(term)
-      );
-      const symbol = exactIcon || (match ? match[1] : '✨');
-      wordImage.textContent = symbol;
-      wordImage.setAttribute('aria-label', 'Illustration for ' + word.word);
-    }
-    setText('wordDayMeaning', word.meaning);
-    setText('wordDayExample', word.example);
-    setText('wordDayExampleAr', word.exampleAr);
+    setText('wordDayMeaning', meaningWithFirstMark(word.meaning, word.word));
     setText('wordDayDate', new Date(now.getFullYear(), now.getMonth(), now.getDate()).toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' }));
     window.currentWordOfDay = word;
   }
@@ -481,20 +422,7 @@
     window.speechSynthesis.speak(utterance);
   };
 
-  window.speakWordExample = function () {
-    if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
-      alert('عذراً، متصفحك لا يدعم تشغيل النطق الصوتي. جرّب فتح المنصة من Google Chrome.');
-      return;
-    }
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(word.example);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.88;
-    const voices = window.speechSynthesis.getVoices();
-    const englishVoice = voices.find(v => /^en(-|_)/i.test(v.lang));
-    if (englishVoice) utterance.voice = englishVoice;
-    window.speechSynthesis.speak(utterance);
-  };
+
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', renderWord, { once: true });
