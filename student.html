@@ -273,6 +273,12 @@
     }
 
   </style>
+
+<style id="mobile-app-back-button-style">
+  #mobileAppBackButton{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);z-index:99999;min-width:112px;padding:11px 22px;border:1px solid rgba(255,255,255,.25);border-radius:999px;background:#0f766e;color:#fff;font:900 15px/1.2 Arial,sans-serif;box-shadow:0 5px 18px rgba(0,0,0,.28);cursor:pointer;}
+  #mobileAppBackButton:focus-visible{outline:3px solid #5eead4;outline-offset:3px;}
+  body{padding-bottom:76px!important;}
+</style>
 </head>
 <body data-page="student">
 
@@ -1433,5 +1439,29 @@
   </script>
   <script src="word-of-day.js" defer></script>
   <script src="daily-learning.js" defer></script>
+
+<script id="mobile-app-back-button">
+(function(){
+  function addBackButton(){
+    if(document.getElementById('mobileAppBackButton')) return;
+    var isHome = /(?:^|\/)index\.html?$/.test(location.pathname) || location.pathname.endsWith('/');
+    var hasSameOriginReferrer = false;
+    try { hasSameOriginReferrer = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch(e) {}
+    if(isHome && !hasSameOriginReferrer) return;
+    var button=document.createElement('button');
+    button.id='mobileAppBackButton';
+    button.type='button';
+    button.textContent='↩ رجوع للخلف';
+    button.setAttribute('aria-label','رجوع للخلف');
+    button.addEventListener('click',function(){
+      if(hasSameOriginReferrer && history.length>1) history.back();
+      else location.href='index.html';
+    });
+    document.body.appendChild(button);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',addBackButton,{once:true});
+  else addBackButton();
+})();
+</script>
 </body>
 </html>

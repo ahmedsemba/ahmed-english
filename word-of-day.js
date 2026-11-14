@@ -415,7 +415,7 @@
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(word.word);
     utterance.lang = 'en-US';
-    utterance.rate = 0.82;
+    utterance.rate = 0.68;
     const voices = window.speechSynthesis.getVoices();
     const englishVoice = voices.find(v => /^en(-|_)/i.test(v.lang));
     if (englishVoice) utterance.voice = englishVoice;
