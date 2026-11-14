@@ -220,8 +220,18 @@ export default {
           return reply({ error: "Teacher authorization failed." }, 403);
         }
         if (url.pathname === "/end") {
-          await env.CLASSROOMS.delete("room:" + roomId);
-          return reply({ ok: true });
+          try {
+            // Close the LiveKit room first so every connected participant is disconnected.
+            // Keep the KV record if LiveKit cannot close the room, allowing a safe retry.
+            await liveKitRoomService(env, room.roomName, "DeleteRoom");
+            await env.CLASSROOMS.delete("room:" + roomId);
+            return reply({ ok: true, ended: true });
+          } catch (error) {
+            return reply({
+              error: "تعذر إنهاء غرفة الصوت في LiveKit؛ لم يتم حذف بيانات الحصة ويمكن إعادة المحاولة.",
+              details: String(error.message || error).slice(0, 160)
+            }, 502);
+          }
         }
         try {
           const listed = await liveKitRoomService(env, room.roomName, "ListParticipants");
