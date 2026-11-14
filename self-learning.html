@@ -1440,6 +1440,6 @@
   <script src="word-of-day.js" defer></script>
   <script src="daily-learning.js" defer></script>
 
-<button type="button" class="platform-back-button" aria-label="الرجوع للخلف" onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href='index.html'; }">← رجوع</button>
+<button type="button" class="platform-back-button" aria-label="الرجوع للخلف" onclick="if (document.referrer && new URL(document.referrer).origin === window.location.origin) { window.history.back(); } else { window.location.href='index.html'; }">← رجوع</button>
 </body>
 </html>
