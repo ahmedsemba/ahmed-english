@@ -123,6 +123,20 @@ export default {
       if (!sameSecret(String(body.teacherPin || ""), String(env.TEACHER_PIN))) {
         return reply({ error: "Teacher PIN is incorrect." }, 403);
       }
+      const allowedGrades = [
+        "للكل",
+        "الصف الأول الابتدائي", "الصف الثاني الابتدائي", "الصف الثالث الابتدائي",
+        "الصف الرابع الابتدائي", "الصف الخامس الابتدائي", "الصف السادس الابتدائي",
+        "الصف الأول الإعدادي", "الصف الثاني الإعدادي", "الصف الثالث الإعدادي"
+      ];
+      const grade = String(body.grade || "");
+      const materialId = String(body.materialId || "").trim();
+      const materialTitle = String(body.materialTitle || "").trim();
+      const driveFileId = String(body.driveFileId || "").trim();
+      if (!allowedGrades.includes(grade)) return reply({ error: "اختر صفًا دراسيًا صحيحًا." }, 400);
+      if (!materialId || materialId.length > 160 || !materialTitle || !/^[A-Za-z0-9_-]{10,200}$/.test(driveFileId)) {
+        return reply({ error: "يجب اختيار ملزمة PDF صالحة من قسم الملازم قبل إنشاء الحصة." }, 400);
+      }
       const roomId = randomText(18);
       const roomName = "ahmed_class_" + roomId;
       const joinCode = randomText(9);
@@ -131,10 +145,10 @@ export default {
         roomId, roomName, joinCode,
         teacherSecretHash: await hashSecret(teacherSecret),
         title: safeName(body.title || "حصة مباشرة"),
-        grade: safeName(body.grade || "للكل"),
-        materialId: String(body.materialId || "").slice(0, 160),
-        materialTitle: safeName(body.materialTitle || "ملزمة الحصة"),
-        driveFileId: /^[A-Za-z0-9_-]{10,200}$/.test(String(body.driveFileId || "")) ? String(body.driveFileId) : "",
+        grade,
+        materialId,
+        materialTitle: safeName(materialTitle),
+        driveFileId,
         createdAt: Date.now()
       };
       await env.CLASSROOMS.put("room:" + roomId, JSON.stringify(room), { expirationTtl: 4 * 60 * 60 });
