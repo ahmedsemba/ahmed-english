@@ -1440,38 +1440,7 @@
   <script src="word-of-day.js?v=20261114fix1" defer></script>
   <script src="daily-learning.js" defer></script>
 
-<button type="button" class="platform-back-button" id="platformBackButton" aria-label="الرجوع للخلف">← رجوع</button>
-<script>
-(function () {
-  var backButton = document.getElementById('platformBackButton');
-  if (!backButton) return;
-  window.addEventListener('pagehide', function () {
-    try {
-      if (location.origin === window.location.origin) {
-        sessionStorage.setItem('platformPreviousPage', location.href);
-      }
-    } catch (error) {}
-  });
-  backButton.addEventListener('click', function () {
-    var sameOriginReferrer = false;
-    try {
-      sameOriginReferrer = !!document.referrer && new URL(document.referrer).origin === location.origin;
-    } catch (error) {}
-    if (sameOriginReferrer && window.history.length > 1) {
-      window.history.back();
-      return;
-    }
-    var previousPage = '';
-    try { previousPage = sessionStorage.getItem('platformPreviousPage') || ''; } catch (error) {}
-    try {
-      if (previousPage && new URL(previousPage).origin === location.origin && previousPage !== location.href) {
-        location.assign(previousPage);
-        return;
-      }
-    } catch (error) {}
-    location.assign('index.html');
-  });
-})();
-</script>
+<a class="platform-back-button" href="index.html" aria-label="العودة للصفحة الرئيسية" style="position:fixed;bottom:14px;left:14px;z-index:2147483000;display:flex;align-items:center;justify-content:center;min-width:104px;min-height:48px;padding:10px 18px;border:2px solid #5eead4;border-radius:14px;background:#123c5a;color:#fff;font-size:16px;font-weight:900;text-decoration:none;box-shadow:0 5px 18px rgba(0,0,0,.35);cursor:pointer">← رجوع</a>
+
 </body>
 </html>
