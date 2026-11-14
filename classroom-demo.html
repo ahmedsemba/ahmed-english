@@ -83,7 +83,7 @@ $('pen').onclick=()=>setTool('pen');$('eraser').onclick=()=>setTool('eraser');fu
 function point(e){const r=ink.getBoundingClientRect();return{x:Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),y:Math.max(0,Math.min(1,(e.clientY-r.top)/r.height))}}
 ink.addEventListener('pointerdown',e=>{if(!pdf||studentMode||liveRole==='student')return;drawing=true;ink.setPointerCapture(e.pointerId);const p=point(e);current={tool,color:'#e11d48',width:.004,points:[p]};strokes.push(current);strokesByPage[page]=strokes;redraw()});
 ink.addEventListener('pointermove',e=>{if(!drawing||!current)return;current.points.push(point(e));strokesByPage[page]=strokes;redraw()});
-function stop(){if(drawing&&current&&liveRole==='teacher')sendBoard({type:'stroke',page,stroke:current});drawing=false;current=null}
+function stop(){if(drawing&&current&&liveRole==='teacher')sendBoard({type:'stroke',page,stroke:compactStroke(current)});drawing=false;current=null}
 ink.addEventListener('pointerup',stop);ink.addEventListener('pointercancel',stop);
 $('studentPreview').onclick=()=>{if(liveRole==='student')return;studentMode=!studentMode;ink.style.pointerEvents=studentMode?'none':'auto';$('studentPreview').classList.toggle('active',studentMode);$('studentPreview').textContent=studentMode?'✏️ العودة لوضع المدرس':'👁️ معاينة الطالب';$('toolStatus').textContent=studentMode?'وضع الطالب: مشاهدة فقط، والكتابة متوقفة.':'وضع المدرس: القلم والممحاة متاحان.'};
 
@@ -97,13 +97,14 @@ async function connectRoom(credentials,role,roomId){
  liveRole=role;liveRoomId=roomId;
  liveRoom.on(LivekitClient.RoomEvent.TrackSubscribed,(track)=>{const element=track.attach();$('audioTracks').appendChild(element)});
  liveRoom.on(LivekitClient.RoomEvent.TrackUnsubscribed,(track)=>track.detach());
- if(role==='teacher')liveRoom.on(LivekitClient.RoomEvent.ParticipantConnected,()=>{setTimeout(async()=>{await sendBoard({type:'page',page});for(const [p,items] of Object.entries(strokesByPage)){for(const stroke of items)await sendBoard({type:'stroke',page:Number(p),stroke})}},1200)});
+ if(role==='teacher')liveRoom.on(LivekitClient.RoomEvent.ParticipantConnected,()=>{setTimeout(async()=>{await sendBoard({type:'page',page});for(const [p,items] of Object.entries(strokesByPage)){for(const stroke of items)await sendBoard({type:'stroke',page:Number(p),stroke:compactStroke(stroke)})}},1200)});
  liveRoom.on(LivekitClient.RoomEvent.DataReceived,(payload,participant)=>{if(role!=='student'||!participant?.identity?.startsWith('teacher_'))return;try{applyBoard(JSON.parse(new TextDecoder().decode(payload)))}catch(e){}});
  liveRoom.on(LivekitClient.RoomEvent.Disconnected,()=>{status('انقطع الاتصال. يمكنك إعادة الدخول برمز الحصة.');setConnectedUI(false)});
  await liveRoom.connect(credentials.livekitUrl,credentials.token);
  await liveRoom.localParticipant.setMicrophoneEnabled(true);
  setConnectedUI(true);status(role==='teacher'?'اتصل المدرس. افتح الميكروفون وشارك رقم الحصة ورمز الدخول مع الطالب.':'تم دخول الطالب. الميكروفون يعمل، والسبورة في وضع المشاهدة فقط.');
 }
+function compactStroke(stroke){const points=stroke.points||[];const max=220;const sampled=points.length<=max?points:points.filter((p,i)=>i===0||i===points.length-1||i%Math.ceil(points.length/max)===0).slice(0,max);return{tool:stroke.tool==='eraser'?'eraser':'pen',color:'#e11d48',width:Math.max(.001,Math.min(.05,Number(stroke.width)||.004)),points:sampled}}
 async function sendBoard(message){if(!liveRoom||liveRole!=='teacher')return;try{await liveRoom.localParticipant.publishData(new TextEncoder().encode(JSON.stringify(message)),{reliable:true,topic:'teacher-board'})}catch(e){status('تعذر إرسال تحديث السبورة: '+e.message)}}
 async function applyBoard(message){
  if(!message||!pdf)return;
@@ -111,7 +112,7 @@ async function applyBoard(message){
  if(message.type==='stroke'&&Number.isInteger(message.page)&&message.stroke&&Array.isArray(message.stroke.points)){
   const target=message.page;if(!strokesByPage[target])strokesByPage[target]=[];
   const s=message.stroke;
-  const converted={tool:s.tool==='eraser'?'eraser':'pen',color:'#e11d48',width:Math.max(.001,Math.min(.05,Number(s.width)||.004)),points:s.points.slice(0,2500).filter(p=>Number.isFinite(p.x)&&Number.isFinite(p.y)).map(p=>({x:Math.max(0,Math.min(1,p.x)),y:Math.max(0,Math.min(1,p.y))}))};
+  const converted={tool:s.tool==='eraser'?'eraser':'pen',color:'#e11d48',width:Math.max(.001,Math.min(.05,Number(s.width)||.004)),points:s.points.slice(0,220).filter(p=>Number.isFinite(p.x)&&Number.isFinite(p.y)).map(p=>({x:Math.max(0,Math.min(1,p.x)),y:Math.max(0,Math.min(1,p.y))}))};
   strokesByPage[target].push(converted);if(page===target){strokes=strokesByPage[target];redraw()}
  }
 }
