@@ -344,6 +344,7 @@
     <a href="student.html">دخول الطالب</a>
     <a href="parent.html">دخول ولي الأمر</a>
     <a href="materials.html">📚 الملازم المجانية</a>
+    <a href="recorded-lessons.html">🎬 الحصص المسجلة</a>
     <a href="self-learning.html">🧠 علّم نفسك</a>
     <a href="daily-grammar.html">📘 قاعدة اليوم</a>
     <a href="admin.html">لوحة المستر</a>
@@ -354,6 +355,7 @@
     <a href="student.html">دخول الطالب</a>
     <a href="parent.html">دخول ولي الأمر</a>
     <a href="materials.html">📚 الملازم المجانية</a>
+    <a href="recorded-lessons.html">🎬 الحصص المسجلة</a>
     <a href="self-learning.html">🧠 علّم نفسك</a>
     <a href="daily-grammar.html">📘 قاعدة اليوم</a>
     <a href="admin.html">لوحة المستر</a>
@@ -873,8 +875,7 @@
           }
           html = '<div class="card"><h3>' + l.title + '</h3>' +
             (l.meetLink ? '<a target="_blank" href="' + l.meetLink + '" style="background:#10b981;display:block;padding:12px;border-radius:10px;color:#fff;text-decoration:none;margin-top:10px">🎥 ميت</a>' : '') +
-            (l.ytLink ? '<a target="_blank" rel="noopener" href="' + l.ytLink + '" style="background:#ef4444;display:block;padding:10px;border-radius:10px;color:#fff;text-decoration:none;margin-top:8px">▶️ يوتيوب</a>' : '') +
-            (l.teachmintLink ? '<a target="_blank" rel="noopener" href="' + l.teachmintLink + '" style="background:#2563eb;display:block;padding:10px;border-radius:10px;color:#fff;text-decoration:none;margin-top:8px">🎓 Teachmint</a>' : '') + '</div>';
+ '</div>';
         });
         document.getElementById('lessonsList').innerHTML = html || '<p>لا يوجد حصص حاليا</p>';
       } catch (e) { console.log(e); }
@@ -935,6 +936,7 @@
         const items = [];
         snap.forEach(function(d) {
           const m = d.data();
+          if (m.type === 'recorded_lesson') return;
           if (m.grade !== grade && m.grade !== 'للكل') return;
           if (typeof m.link !== 'string' || !/^https?:\/\//i.test(m.link)) return;
           items.push({ id: d.id, title: String(m.title || 'ملزمة تعليمية'), link: m.link, grade: m.grade || grade, created: m.created || 0 });
@@ -1440,7 +1442,7 @@
   <script src="word-of-day.js?v=20261114fix1" defer></script>
   <script src="daily-learning.js" defer></script>
 
-<a class="platform-back-button" href="index.html" aria-label="العودة للصفحة الرئيسية" style="position:fixed;bottom:14px;left:14px;z-index:2147483000;display:flex;align-items:center;justify-content:center;min-width:104px;min-height:48px;padding:10px 18px;border:2px solid #5eead4;border-radius:14px;background:#123c5a;color:#fff;font-size:16px;font-weight:900;text-decoration:none;box-shadow:0 5px 18px rgba(0,0,0,.35);cursor:pointer">← رجوع</a>
+<button type="button" class="platform-back-button" aria-label="العودة للصفحة الرئيسية" onclick="window.location.assign('/')" style="position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));z-index:2147483647;display:flex;align-items:center;justify-content:center;width:auto!important;min-width:116px;min-height:48px;margin:0;padding:10px 24px;border:2px solid #5eead4;border-radius:999px;background:#115e59;color:#fff;font-size:16px;font-weight:900;box-shadow:0 5px 18px rgba(0,0,0,.35);cursor:pointer;touch-action:manipulation">← رجوع</button>
 
 </body>
 </html>
