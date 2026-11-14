@@ -58,7 +58,7 @@ async function createRoomAdminToken(env, roomName) {
     sub: "classroom_worker",
     nbf: now - 5,
     exp: now + 5 * 60,
-    video: { room: roomName, roomAdmin: true }
+    video: { room: roomName, roomAdmin: true, roomCreate: true }
   }, env.LIVEKIT_API_SECRET);
 }
 async function liveKitRoomService(env, roomName, method, payload = {}) {
