@@ -26,11 +26,16 @@ canvas{display:block;max-width:100%;height:auto}#ink{position:absolute;inset:0;w
 <div class="notice"><b>تنبيه مهم:</b> هذه شاشة تجريبية لاختبار شكل عرض الملزمة وأدوات المدرس على الجهاز فقط. الصوت المباشر ومزامنة الطالب مع المدرس لم يتم ربطهما بعد، ولن يتم نشرها للطلاب قبل اكتمال الاختبار.</div>
 <section class="panel">
 <div class="toolbar">
-<select id="savedDriveMaterial" style="min-width:220px;flex:1"><option value="">تحميل ملازم المنصة...</option></select>
-<input id="driveApiKey" placeholder="مفتاح Google Drive API" style="min-width:180px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px">
-<button id="loadDriveMaterial" class="primary">فتح الملزمة المختارة من Google Drive</button>
+<select id="classroomGrade" style="min-width:180px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px">
+<option value="">اختر الصف الدراسي أولاً</option>
+<option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option>
+<option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option>
+<option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option><option>للكل</option>
+</select>
+<select id="savedDriveMaterial" disabled style="min-width:220px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px"><option value="">اختر الصف أولاً</option></select>
+<button id="loadDriveMaterial" class="primary">فتح الملزمة</button>
 </div>
-<div class="status">يمكنك اختيار ملزمة موجودة بالفعل في قسم الملازم بالمنصة. يلزم أن يكون ملف PDF متاحًا للطلاب عبر الرابط، مع إعداد مفتاح Google Drive API. ويمكنك استخدام الاختيار المحلي أدناه للتجربة.</div>
+<div class="status">الملازم هنا تُسحب تلقائيًا من نفس قسم «الملازم المجانية» في المنصة. اختر الصف ثم الملزمة التي تريد الشرح منها؛ لا تحتاج لإعادة كتابة الرابط كل حصة.</div>
 <div class="toolbar" style="margin-top:9px">
 <label class="primary" for="pdfFile">اختيار ملف PDF من الجهاز</label><input id="pdfFile" type="file" accept="application/pdf">
 <button id="prev">◀ الصفحة السابقة</button><span id="pageInfo">0 / 0</span><button id="next">الصفحة التالية ▶</button>
@@ -145,6 +150,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig, "classroomDemo");
 const db = getFirestore(app);
 const select = document.getElementById("savedDriveMaterial");
+const gradeSelect = document.getElementById("classroomGrade");
 let materials = [];
 function driveFileId(link) {
   try {
@@ -156,23 +162,30 @@ function driveFileId(link) {
     return pathId || u.searchParams.get("id") || null;
   } catch (error) { return null; }
 }
+function refreshMaterialOptions() {
+  const grade = gradeSelect.value;
+  select.replaceChildren();
+  const first = document.createElement("option");
+  first.value = "";
+  const matching = materials.filter(m => grade && (m.grade === grade || m.grade === "للكل"));
+  first.textContent = !grade ? "اختر الصف أولاً" : matching.length ? "اختر الملزمة التي ستشرح منها" : "لا توجد ملازم لهذا الصف";
+  select.appendChild(first);
+  for (const m of matching) {
+    const option = document.createElement("option");
+    option.value = m.id;
+    option.textContent = m.title || "ملزمة تعليمية";
+    select.appendChild(option);
+  }
+  select.disabled = !grade || matching.length === 0;
+}
+gradeSelect.addEventListener("change", refreshMaterialOptions);
 async function loadMaterials() {
   try {
     const snap = await getDocs(collection(db, "materials"));
     materials = snap.docs.map(d => ({ id:d.id, ...d.data() }))
       .filter(m => typeof m.link === "string" && driveFileId(m.link))
       .sort((a,b)=>(b.created||0)-(a.created||0));
-    select.replaceChildren();
-    const first = document.createElement("option");
-    first.value = "";
-    first.textContent = materials.length ? "اختر ملزمة من قسم الملازم" : "لا توجد روابط Google Drive صالحة";
-    select.appendChild(first);
-    for (const m of materials) {
-      const option = document.createElement("option");
-      option.value = m.id;
-      option.textContent = (m.title || "ملزمة") + " — " + (m.grade || "بدون صف");
-      select.appendChild(option);
-    }
+    refreshMaterialOptions();
   } catch (e) {
     select.innerHTML = '<option value="">تعذر تحميل قائمة الملازم</option>';
     document.getElementById("fileStatus").textContent = "تعذر قراءة قائمة الملازم من المنصة: " + (e.message || e);
@@ -180,13 +193,12 @@ async function loadMaterials() {
 }
 document.getElementById("loadDriveMaterial").addEventListener("click", async () => {
   const item = materials.find(m => m.id === select.value);
-  const apiKey = document.getElementById("driveApiKey").value.trim();
-  if (!item) { document.getElementById("fileStatus").textContent = "اختر ملزمة أولًا."; return; }
-  if (!apiKey) { document.getElementById("fileStatus").textContent = "أدخل مفتاح Google Drive API أولًا."; return; }
+  if (!gradeSelect.value) { document.getElementById("fileStatus").textContent = "اختر الصف الدراسي أولًا."; return; }
+  if (!item) { document.getElementById("fileStatus").textContent = "اختر الملزمة التي ستشرح منها."; return; }
   const id = driveFileId(item.link);
   try {
     document.getElementById("fileStatus").textContent = "جارٍ تحميل الملزمة من Google Drive...";
-    const url = "https://www.googleapis.com/drive/v3/files/" + encodeURIComponent(id) + "?alt=media&key=" + encodeURIComponent(apiKey);
+    const url = "https://www.googleapis.com/drive/v3/files/" + encodeURIComponent(id) + "?alt=media";
     const response = await fetch(url);
     if (!response.ok) {
       let detail = "";
