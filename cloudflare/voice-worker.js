@@ -47,6 +47,40 @@ async function signToken(payload, secret) {
   return input + "." + base64url(new Uint8Array(signature));
 }
 
+
+function liveKitHttpUrl(value) {
+  return String(value || "").replace(/^wss:/i, "https:").replace(/^ws:/i, "http:").replace(/\/+$/, "");
+}
+async function createRoomAdminToken(env, roomName) {
+  const now = Math.floor(Date.now() / 1000);
+  return signToken({
+    iss: env.LIVEKIT_API_KEY,
+    sub: "classroom_worker",
+    nbf: now - 5,
+    exp: now + 5 * 60,
+    video: { room: roomName, roomAdmin: true }
+  }, env.LIVEKIT_API_SECRET);
+}
+async function liveKitRoomService(env, roomName, method, payload = {}) {
+  const token = await createRoomAdminToken(env, roomName);
+  const response = await fetch(liveKitHttpUrl(env.LIVEKIT_URL) + "/twirp/livekit.RoomService/" + method, {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + token,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ room: roomName, ...payload })
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(result.msg || result.error || "LiveKit room management request failed.");
+  }
+  return result;
+}
+function isMicrophoneTrack(track) {
+  return track && (track.source === 2 || track.source === "MICROPHONE");
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -170,7 +204,7 @@ export default {
       return reply({ ok: true, roomId, roomName, joinCode, teacherSecret, livekitUrl: env.LIVEKIT_URL });
     }
 
-    if (url.pathname === "/token" || url.pathname === "/end") {
+    if (url.pathname === "/token" || url.pathname === "/end" || url.pathname === "/participants" || url.pathname === "/mute" || url.pathname === "/mute-all") {
       const roomId = String(body.roomId || "");
       if (!validRoomId(roomId)) return reply({ error: "Invalid classroom ID." }, 400);
       const roomRaw = await env.CLASSROOMS.get("room:" + roomId);
@@ -179,13 +213,50 @@ export default {
       try { room = JSON.parse(roomRaw); }
       catch { return reply({ error: "Classroom data is unavailable." }, 500); }
 
-      if (url.pathname === "/end") {
+      if (url.pathname === "/end" || url.pathname === "/participants" ||
+          url.pathname === "/mute" || url.pathname === "/mute-all") {
         const suppliedHash = await hashSecret(String(body.teacherSecret || ""));
         if (!sameSecret(suppliedHash, room.teacherSecretHash)) {
           return reply({ error: "Teacher authorization failed." }, 403);
         }
-        await env.CLASSROOMS.delete("room:" + roomId);
-        return reply({ ok: true });
+        if (url.pathname === "/end") {
+          await env.CLASSROOMS.delete("room:" + roomId);
+          return reply({ ok: true });
+        }
+        try {
+          const listed = await liveKitRoomService(env, room.roomName, "ListParticipants");
+          const students = (listed.participants || [])
+            .filter(participant => String(participant.identity || "").startsWith("student_"))
+            .map(participant => {
+              const mic = (participant.tracks || []).find(isMicrophoneTrack);
+              return {
+                identity: participant.identity,
+                name: safeName(participant.name || "طالب"),
+                hasMic: Boolean(mic && mic.sid),
+                micMuted: Boolean(mic && mic.muted),
+                trackSid: mic && mic.sid ? mic.sid : null
+              };
+            });
+          if (url.pathname === "/participants") return reply({ ok: true, participants: students });
+          const targets = url.pathname === "/mute-all"
+            ? students.filter(student => student.hasMic && !student.micMuted)
+            : students.filter(student => student.identity === String(body.identity || "") && student.hasMic);
+          if (url.pathname === "/mute" && !targets.length) {
+            return reply({ error: "لم يتم العثور على ميكروفون نشط لهذا الطالب." }, 404);
+          }
+          let mutedCount = 0;
+          for (const student of targets) {
+            await liveKitRoomService(env, room.roomName, "MutePublishedTrack", {
+              identity: student.identity,
+              track_sid: student.trackSid,
+              muted: true
+            });
+            mutedCount++;
+          }
+          return reply({ ok: true, mutedCount });
+        } catch (error) {
+          return reply({ error: "تعذر التحكم في الميكروفون عبر LiveKit: " + String(error.message || error).slice(0, 180) }, 502);
+        }
       }
 
       const role = body.role === "teacher" ? "teacher" : "student";
