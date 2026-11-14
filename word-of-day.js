@@ -411,48 +411,57 @@
     const textToSpeak = String(word && word.word || '').trim();
     if (!textToSpeak) return;
 
-    // Keep a real audio fallback for Android WebViews/devices with a broken speech engine.
-    const playAudioFallback = function () {
-      try {
-        if (window._wordDayAudio) {
-          window._wordDayAudio.pause();
-          window._wordDayAudio.currentTime = 0;
-        }
-        const audioUrl = 'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=' + encodeURIComponent(textToSpeak);
-        window._wordDayAudio = new Audio(audioUrl);
-        window._wordDayAudio.play().catch(function () {
-          alert('تعذر تشغيل الصوت. تأكد من اتصال الإنترنت، ثم جرّب فتح المنصة من Google Chrome.');
+    // Prefer a real pronunciation audio file so this also works in Android app WebViews.
+    if (window._wordDayAudio) {
+      window._wordDayAudio.pause();
+      window._wordDayAudio.currentTime = 0;
+    }
+
+    const audio = new Audio();
+    window._wordDayAudio = audio;
+    audio.playbackRate = 0.88;
+
+    const playSource = function (url, onFailure) {
+      audio.onerror = function () {
+        if (typeof onFailure === 'function') onFailure();
+      };
+      audio.src = url;
+      const playPromise = audio.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(function () {
+          if (typeof onFailure === 'function') onFailure();
         });
-      } catch (error) {
-        alert('تعذر تشغيل الصوت على هذا الجهاز. جرّب فتح المنصة من Google Chrome.');
       }
     };
 
-    if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
-      playAudioFallback();
-      return;
-    }
+    const playDictionaryFallback = function () {
+      const apiUrl = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(textToSpeak);
+      fetch(apiUrl).then(function (response) {
+        if (!response.ok) throw new Error('No dictionary audio');
+        return response.json();
+      }).then(function (entries) {
+        let audioUrl = '';
+        (entries || []).some(function (entry) {
+          return (entry.phonetics || []).some(function (phonetic) {
+            if (phonetic.audio) {
+              audioUrl = phonetic.audio;
+              return true;
+            }
+            return false;
+          });
+        });
+        if (!audioUrl) throw new Error('No audio file');
+        playSource(audioUrl, function () {
+          alert('تعذر تشغيل نطق الكلمة حاليًا. حاول مرة أخرى بعد قليل.');
+        });
+      }).catch(function () {
+        alert('تعذر تحميل الصوت حاليًا. تأكد من اتصال الإنترنت وحاول مرة أخرى.');
+      });
+    };
 
-    try {
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.resume();
-      const utterance = new SpeechSynthesisUtterance(textToSpeak);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.82;
-      const voices = window.speechSynthesis.getVoices();
-      const englishVoice = voices.find(function (voice) { return /^en(-|_)/i.test(voice.lang); });
-      if (englishVoice) utterance.voice = englishVoice;
-
-      let started = false;
-      utterance.onstart = function () { started = true; };
-      utterance.onerror = function () { if (!started) playAudioFallback(); };
-      window.speechSynthesis.speak(utterance);
-      window.setTimeout(function () {
-        if (!started) playAudioFallback();
-      }, 2200);
-    } catch (error) {
-      playAudioFallback();
-    }
+    // Youdao serves a direct English pronunciation MP3 without requiring Chrome TTS support.
+    const primaryUrl = 'https://dict.youdao.com/dictvoice?audio=' + encodeURIComponent(textToSpeak) + '&type=2';
+    playSource(primaryUrl, playDictionaryFallback);
   };
 
 
