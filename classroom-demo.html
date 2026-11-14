@@ -150,9 +150,11 @@ function driveFileId(link) {
   try {
     const u = new URL(link);
     if (u.hostname !== "drive.google.com" && u.hostname !== "docs.google.com") return null;
-    const path = u.pathname.match(/\\/(?:file|document)\\/d\\/([A-Za-z0-9_-]+)/);
-    return (path && path[1]) || u.searchParams.get("id") || null;
-  } catch { return null; }
+    const parts = u.pathname.split("/").filter(Boolean);
+    const kindIndex = parts.findIndex(part => part === "file" || part === "document");
+    const pathId = kindIndex >= 0 && parts[kindIndex + 1] === "d" ? parts[kindIndex + 2] : null;
+    return pathId || u.searchParams.get("id") || null;
+  } catch (error) { return null; }
 }
 async function loadMaterials() {
   try {
@@ -188,7 +190,7 @@ document.getElementById("loadDriveMaterial").addEventListener("click", async () 
     const response = await fetch(url);
     if (!response.ok) {
       let detail = "";
-      try { const data = await response.json(); detail = data.error?.message || ""; } catch {}
+      try { const data = await response.json(); detail = data.error && data.error.message ? data.error.message : ""; } catch (parseError) {}
       throw new Error(detail || "تعذر الوصول للملف. تأكد من تفعيل Drive API ومشاركة الملف بصلاحية «أي شخص لديه الرابط».");
     }
     const data = await response.arrayBuffer();
