@@ -152,6 +152,10 @@ const db = getFirestore(app);
 const select = document.getElementById("savedDriveMaterial");
 const gradeSelect = document.getElementById("classroomGrade");
 let materials = [];
+function driveResourceKey(link) {
+  try { return new URL(link).searchParams.get("resourcekey") || ""; }
+  catch (error) { return ""; }
+}
 function driveFileId(link) {
   try {
     const u = new URL(link);
@@ -200,7 +204,10 @@ async function fetchAndOpenMaterial(item) {
   const fileId = driveFileId(item.link);
   if (!fileId) throw new Error("رابط الملزمة ليس رابط PDF صالحًا من Google Drive.");
   document.getElementById("fileStatus").textContent = "جارٍ تحميل الملزمة من Google Drive...";
-  const response = await fetch(base + "/pdf?fileId=" + encodeURIComponent(fileId));
+  const resourceKey = driveResourceKey(item.link);
+  const pdfUrl = base + "/pdf?fileId=" + encodeURIComponent(fileId) +
+    (resourceKey ? "&resourceKey=" + encodeURIComponent(resourceKey) : "");
+  const response = await fetch(pdfUrl);
   if (!response.ok) {
     let message = "";
     try { const result = await response.json(); message = result.error || ""; } catch (error) {}
