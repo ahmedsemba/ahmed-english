@@ -83,11 +83,26 @@ export default {
         if (!upstream.ok) return reply({ error: "Google Drive could not provide this file. Check that link sharing is enabled." }, 502);
         const contentLength = Number(upstream.headers.get("Content-Length") || 0);
         if (contentLength > 40 * 1024 * 1024) return reply({ error: "PDF is larger than the 40 MB classroom demo limit." }, 413);
-        const bytes = await upstream.arrayBuffer();
-        if (bytes.byteLength < 5 || bytes.byteLength > 40 * 1024 * 1024) {
-          return reply({ error: "The Drive response is empty or exceeds the 40 MB classroom demo limit." }, 502);
+        const maxPdfBytes = 40 * 1024 * 1024;
+        if (!upstream.body) return reply({ error: "Google Drive returned an empty response." }, 502);
+        const reader = upstream.body.getReader();
+        const chunks = [];
+        let totalBytes = 0;
+        while (true) {
+          const part = await reader.read();
+          if (part.done) break;
+          totalBytes += part.value.byteLength;
+          if (totalBytes > maxPdfBytes) {
+            await reader.cancel();
+            return reply({ error: "PDF is larger than the 40 MB classroom demo limit." }, 413);
+          }
+          chunks.push(part.value);
         }
-        const signature = new TextDecoder().decode(bytes.slice(0, 5));
+        if (totalBytes < 5) return reply({ error: "The Drive response is empty or incomplete." }, 502);
+        const bytes = new Uint8Array(totalBytes);
+        let offset = 0;
+        for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+        const signature = new TextDecoder().decode(bytes.subarray(0, 5));
         if (signature !== "%PDF-") {
           return reply({ error: "Google Drive returned a preview or confirmation page instead of a PDF. The file may be too large or have restricted downloads." }, 502);
         }
