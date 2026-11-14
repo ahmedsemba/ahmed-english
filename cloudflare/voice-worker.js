@@ -1,4 +1,4 @@
-const ALLOWED_ORIGIN = "https://ahmedsemba.github.io";
+const ALLOWED_ORIGIN = "https://ahmed-english-b9x.pages.dev";
 const CORS = {
   "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
