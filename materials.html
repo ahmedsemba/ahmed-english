@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الملازم المجانية | منصة مستر أحمد السيد</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="logo.png">
+  <meta name="theme-color" content="#4f46e5">
+  <style>
+    * { font-family: 'Cairo', sans-serif; box-sizing: border-box; }
+    body { margin: 0; background: #0f172a; color: #fff; }
+    header { background: linear-gradient(135deg, #4f46e5, #7c3aed); padding: 20px; text-align: center; }
+    .logo { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #fff; background: #fff; object-fit: cover; }
+    .payBox { background: #1e293b; border: 2px dashed #10b981; border-radius: 14px; padding: 12px; margin: 12px auto; max-width: 900px; text-align: center; }
+    .payBox a { color: #25D366; text-decoration: none; font-weight: 900; font-size: 18px; background: #0f172a; padding: 8px 16px; border-radius: 10px; display: inline-block; margin-top: 6px; border: 1px solid #25D366; }
+    .container { max-width: 900px; margin: auto; padding: 12px; }
+    .card { background: #1e293b; border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+    input, select, button, textarea { width: 100%; padding: 11px; border-radius: 10px; border: none; margin-top: 8px; font-size: 14px; }
+    input, select, textarea { background: #0f172a; color: #fff; border: 1px solid #334155; }
+    button { background: #4f46e5; color: #fff; font-weight: 700; cursor: pointer; }
+    .tab { flex: 1; text-align: center; padding: 10px; background: #1e293b; border-radius: 10px; cursor: pointer; font-size: 11px; }
+    .tab.active { background: #4f46e5; }
+    .tabs { display: flex; gap: 5px; margin-bottom: 12px; }
+    .student-row { background: #0f172a; padding: 12px; border-radius: 12px; margin-top: 10px; border: 1px solid #334155; }
+    .btn-small { width: auto; padding: 6px 12px; font-size: 11px; border-radius: 7px; display: inline-block; margin: 2px; font-weight: 900; }
+    .subTab { padding: 8px 12px; background: #0f172a; border-radius: 8px; cursor: pointer; display: inline-block; margin: 4px; font-size: 11px; }
+    .subTab.active { background: #f59e0b; color: #000; font-weight: 900; }
+    .gradeTab { padding: 8px 10px; background: #1e293b; border-radius: 8px; cursor: pointer; display: inline-block; margin: 3px; font-size: 11px; border: 1px solid #334155; }
+    .gradeTab.active { background: #4f46e5; }
+    .score-control { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .score-control select { width: 82px; margin: 4px 0; padding: 7px; }
+    .attendance-control { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 9px; }
+    .attendance-control select { width: 125px; margin: 4px 0; padding: 7px; }
+    .attendance-history { background: #111827; border-radius: 9px; padding: 9px; margin-top: 8px; }
+    .certCard { background: linear-gradient(135deg, #fff 0%, #fef9c3 100%); color: #000; padding: 28px; border-radius: 20px; border: 5px solid #f59e0b; text-align: center; margin-top: 15px; }
+    .scheduleBox { background: linear-gradient(135deg, #10b981, #059669); padding: 12px; border-radius: 12px; margin-bottom: 12px; font-weight: 900; text-align: center; }
+
+    /* تحديث الهوية البصرية: أزرق تعليمي هادئ مع لمسات تركواز */
+    :root { --brand-900:#102a43; --brand-800:#173f6b; --brand-700:#1d4f91; --brand-600:#2563eb; --brand-500:#3b82f6; --accent:#14b8a6; --surface:#172b43; --surface-2:#203a57; --line:#36516f; }
+    body { background:#0b1728; color:#f1f5f9; }
+    header { background:linear-gradient(125deg,#102a43 0%,#174b7e 58%,#2563a6 100%); border-bottom:3px solid #14b8a6; }
+    .payBox { background:#14283f; border:1px solid rgba(20,184,166,.65); }
+    .payBox a { background:#0b1b2e; color:#5eead4; border-color:#14b8a6; }
+    .card { background:#172b43; border:1px solid rgba(148,163,184,.12); box-shadow:0 8px 22px rgba(0,0,0,.12); }
+    button { background:linear-gradient(135deg,#2563eb,#1d4ed8); }
+    button:hover { filter:brightness(1.08); }
+    .tab { background:#172b43; border:1px solid #294563; transition:background .18s ease,border-color .18s ease; }
+    .tab.active { background:linear-gradient(135deg,#2563eb,#1d4ed8); border-color:#60a5fa; box-shadow:0 4px 12px rgba(37,99,235,.2); }
+    .subTab { background:#203a57; }
+    .subTab.active { background:#14b8a6; color:#062b2a; }
+    input, select, textarea { background:#102238; border-color:#36516f; }
+    .student-row { background:#102238; border-color:#36516f; }
+    .gradeTab.active { background:#2563eb; border-color:#60a5fa; }
+    .public-materials-wrap { max-width:900px; margin:0 auto; }
+    .public-materials-intro { background:linear-gradient(130deg,#173f6b,#1e5b91); border:1px solid #3b82f6; border-radius:14px; padding:15px; margin-bottom:12px; }
+    .public-materials-intro h3 { margin:0 0 6px; font-size:19px; }
+    .public-materials-intro p { color:#dbeafe; margin:0; font-size:13px; line-height:1.7; }
+    .public-materials-controls { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:9px; align-items:end; }
+    .public-materials-controls select { margin:0; min-height:44px; }
+    .public-materials-controls button { width:auto; min-width:120px; margin:0; min-height:44px; }
+    .public-material-card { background:#102238; border:1px solid #36516f; border-radius:12px; padding:13px; margin-top:10px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .public-material-card h4 { margin:0 0 5px; color:#f8fafc; font-size:14px; }
+    .public-material-card p { margin:0; color:#b6c7d9; font-size:11px; }
+    .public-material-link { flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; background:#14b8a6; color:#062b2a; padding:9px 12px; border-radius:9px; text-decoration:none; font-size:12px; font-weight:900; }
+    .public-material-empty { text-align:center; color:#cbd5e1; background:#102238; border:1px dashed #496582; border-radius:12px; padding:18px 12px; margin-top:12px; font-size:13px; }
+    @media(max-width:600px) {
+      .tabs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
+      .tab { min-width:0; padding:10px 4px; font-size:10px; line-height:1.5; }
+      .public-materials-controls { grid-template-columns:1fr; }
+      .public-materials-controls button { width:100%; }
+      .public-material-card { align-items:flex-start; flex-direction:column; }
+      .public-material-link { width:100%; }
+    }
+
+    /* الصفحة الرئيسية: بطاقة كلمة اليوم */
+    header { padding: 16px 12px; }
+    .logo { width: 78px; height: 78px; }
+    .payBox { padding: 10px; margin: 10px auto; }
+    .payBox a { font-size: 16px; }
+    .word-day-wrap { max-width: 900px; margin: 12px auto; padding: 0 12px; }
+    .word-day-card { overflow: hidden; border: 1px solid #334f78; border-radius: 18px; padding: 18px; background: radial-gradient(circle at 10% 0%, #254b78 0, #172d4d 38%, #14243b 100%); box-shadow: 0 10px 26px rgba(0,0,0,.20); }
+    .word-day-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .word-day-kicker { display: inline-block; color: #a7f3d0; font-size: 11px; font-weight: 900; letter-spacing: .5px; }
+    .word-day-heading { margin: 3px 0 0; font-size: 22px; line-height: 1.35; }
+    .word-day-subtitle { color: #cbd5e1; font-size: 12px; margin: 4px 0 0; }
+    .word-day-date { flex-shrink: 0; background: rgba(255,255,255,.10); color: #e2e8f0; border: 1px solid rgba(255,255,255,.13); border-radius: 10px; padding: 7px 10px; font-size: 11px; }
+    .word-day-content { display: grid; grid-template-columns: minmax(0,1.05fr) minmax(0,.95fr); gap: 14px; align-items: stretch; }
+    .word-day-main { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; background: rgba(7,18,35,.48); border: 1px solid rgba(148,163,184,.18); border-radius: 14px; padding: 16px 18px; min-width: 0; }
+    .word-day-level { display: inline-block; background: #10b981; color: #052e2b; border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 900; }
+    .word-day-word { color: #fff; font-size: clamp(30px,5vw,42px); line-height: 1.2; font-weight: 900; margin: 8px 0 2px; overflow-wrap: anywhere; direction: ltr; }
+    .word-day-word-row { display: flex; align-items: center; justify-content: flex-start; gap: 13px; width: 100%; min-width: 0; direction: ltr; }
+    .word-day-image { display: flex; flex: 0 0 58px; width: 58px; height: 58px; align-items: center; justify-content: center; font-size: 34px; line-height: 1; border-radius: 13px; background: linear-gradient(135deg,#dbeafe,#a7f3d0); border: 1px solid rgba(255,255,255,.35); }
+    @media (max-width: 600px) { .word-day-image { width: 52px; height: 52px; flex-basis: 52px; } .word-day-word-row { gap: 10px; } }
+    .word-day-meaning { color: #a7f3d0; font-size: 20px; font-weight: 800; }
+    .word-day-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 13px; width: 100%; }
+    .word-day-actions button { width: auto; flex: 0 1 auto; margin: 0; padding: 9px 13px; border-radius: 9px; font-size: 12px; }
+    .word-day-audio { background: #10b981; color: #052e2b; }
+    .word-day-example-audio { background: #334155; color: #fff; }
+    .word-day-example { display: flex; flex-direction: column; justify-content: center; background: rgba(255,255,255,.07); border: 1px solid rgba(148,163,184,.16); border-radius: 14px; padding: 16px; min-width: 0; }
+    .word-day-example-label { color: #93c5fd; font-size: 11px; font-weight: 900; text-transform: uppercase; }
+    .word-day-example-en { direction: ltr; text-align: left; color: #fff; font-size: 17px; line-height: 1.6; font-weight: 700; margin: 8px 0; overflow-wrap: anywhere; }
+    .word-day-example-ar { color: #cbd5e1; font-size: 13px; line-height: 1.7; margin: 0; }
+    .word-day-footer { border-top: 1px solid rgba(148,163,184,.18); margin-top: 14px; padding-top: 10px; color: #cbd5e1; font-size: 11px; text-align: center; }
+    @media (max-width: 600px) {
+      header { padding: 13px 10px; }
+      header h1 { font-size: 20px !important; }
+      .logo { width: 68px; height: 68px; }
+      .payBox { margin: 9px 10px; padding: 9px; }
+      .payBox a { font-size: 14px; padding: 7px 12px; }
+      .container { padding: 10px; }
+      .tabs { gap: 4px; }
+      .tab { padding: 9px 3px; font-size: 10px; }
+      .word-day-wrap { margin: 10px auto; padding: 0 10px; }
+      .word-day-card { padding: 13px; border-radius: 15px; }
+      .word-day-top { align-items: flex-start; margin-bottom: 11px; }
+      .word-day-heading { font-size: 20px; }
+      .word-day-date { max-width: 112px; text-align: center; font-size: 10px; padding: 6px 7px; }
+      .word-day-content { grid-template-columns: 1fr; gap: 9px; }
+      .word-day-main { padding: 13px 14px; }
+      .word-day-word { font-size: 35px; }
+      .word-day-meaning { font-size: 18px; }
+      .word-day-actions button { flex: 1 1 auto; }
+      .word-day-example { padding: 12px 14px; }
+      .word-day-example-en { font-size: 15px; margin: 5px 0; }
+      .word-day-footer { margin-top: 10px; padding-top: 8px; }
+    }
+
+    /* تنظيم الصفحة الرئيسية: تقليل الزحام مع الحفاظ على كل الأقسام */
+    body { line-height: 1.65; }
+    header { padding: 14px 12px 16px; }
+    header h1 { line-height: 1.4; }
+    .container { max-width: 980px; padding: 12px 14px 28px; }
+    .payBox { max-width: 940px; margin: 12px auto; padding: 10px 14px; }
+    .word-day-wrap { max-width: 940px; margin: 12px auto; }
+    .word-day-card { padding: 15px; border-radius: 16px; }
+    .word-day-top { margin-bottom: 10px; }
+    .word-day-content { gap: 10px; }
+    .word-day-main, .word-day-example { padding: 13px 15px; }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin: 14px 0 12px;
+      padding: 3px 2px 8px;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scrollbar-width: thin;
+      scroll-snap-type: x proximity;
+    }
+    .tab {
+      flex: 1 0 125px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 10px;
+      white-space: nowrap;
+      font-size: 12px;
+      scroll-snap-align: start;
+    }
+    .card { border-radius: 15px; padding: 17px; margin-bottom: 13px; }
+    .tabs + .card, .tabs + section { margin-top: 0; }
+    @media (max-width: 600px) {
+      header { padding: 12px 10px 14px; }
+      .container { padding: 9px 10px 22px; }
+      .payBox { margin: 9px 10px; padding: 9px 10px; }
+      .word-day-wrap { margin: 9px auto; padding: 0 10px; }
+      .word-day-card { padding: 12px; }
+      .tabs { gap: 6px; margin: 10px 0; }
+      .tab { flex: 0 0 112px; min-height: 42px; padding: 8px 7px; font-size: 11px; }
+      .card { padding: 14px; border-radius: 13px; }
+    }
+
+    .daily-learning-wrap { max-width: 900px; margin: 0 auto; }
+    .daily-intro { color:#cbd5e1; font-size:13px; line-height:1.8; margin:4px 0 14px; }
+    .daily-meta { display:inline-block; padding:5px 10px; border-radius:20px; background:#123e59; color:#99f6e4; font-size:12px; font-weight:800; margin-bottom:12px; }
+    .daily-passage-text { background:#102238; border:1px solid #36516f; border-radius:13px; padding:14px 16px; direction:ltr; text-align:left; }
+    .daily-passage-text p { margin:5px 0; line-height:1.8; color:#f8fafc; }
+    .daily-questions { display:grid; gap:10px; margin-top:14px; }
+    .daily-question { background:#102238; border:1px solid #36516f; border-radius:12px; padding:13px; }
+    .daily-question h4 { margin:0 0 10px; font-size:14px; }
+    .daily-options { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+    .daily-option { margin:0; min-height:42px; background:#203a57; border:1px solid #45617e; font-size:13px; }
+    .daily-option:disabled { opacity:1; cursor:default; }
+    .daily-option.is-correct { background:#14532d; border-color:#22c55e; color:#dcfce7; }
+    .daily-option.is-wrong { background:#7f1d1d; border-color:#ef4444; color:#fee2e2; }
+    .daily-result { min-height:24px; margin-top:13px; padding:10px; border-radius:10px; color:#cbd5e1; font-size:13px; }
+    .daily-result.is-perfect { background:#14532d; color:#dcfce7; font-weight:900; }
+    .daily-result.is-complete { background:#203a57; }
+    .daily-grammar-title { color:#99f6e4; margin:4px 0 8px; }
+    .daily-grammar-explain { font-size:15px; line-height:1.9; margin:0 0 14px; }
+    .daily-examples { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .daily-example { background:#102238; border:1px solid #36516f; border-radius:12px; padding:12px; }
+    .daily-example-en { direction:ltr; text-align:left; font-weight:800; margin:0 0 7px; }
+    .daily-example-ar { color:#cbd5e1; margin:0; font-size:13px; }
+    .daily-grammar-note { margin-top:12px; padding:12px; border-right:3px solid #14b8a6; border-radius:9px; background:#102238; line-height:1.8; font-size:13px; }
+    @media(max-width:600px) {
+      .daily-options { grid-template-columns:1fr; }
+      .daily-examples { grid-template-columns:1fr; }
+      .daily-passage-text { padding:11px 12px; }
+    }
+    .daily-motivation { max-width:940px; margin:9px auto 12px; padding:12px 16px; display:flex; align-items:center; justify-content:center; gap:9px; background:#14283f; border:1px solid rgba(20,184,166,.45); border-radius:12px; color:#d1fae5; text-align:center; font-size:17px; font-weight:800; line-height:1.5; }
+    .daily-motivation strong { color:#99f6e4; font-weight:900; }
+    @media(max-width:600px) { .daily-motivation { margin:8px 10px 10px; padding:10px 12px; font-size:16px; } }
+
+    /* Multi-page layout: each URL opens one focused section; all original features remain available. */
+    .page-nav { max-width:980px; margin:12px auto 16px; padding:8px 12px; display:flex; align-items:center; gap:8px; overflow-x:auto; scrollbar-width:thin; }
+    .page-nav a { flex:0 0 auto; text-decoration:none; color:#dbeafe; background:#203a57; border:1px solid #3b5877; border-radius:11px; padding:9px 13px; font-size:13px; font-weight:800; white-space:nowrap; }
+    .page-nav a:hover,.page-nav a:focus-visible { background:#0f766e; color:#fff; outline:2px solid #5eead4; outline-offset:2px; }
+    .home-dashboard { max-width:940px; margin:16px auto 30px; padding:0 14px; }
+    .home-welcome { position:relative; overflow:hidden; padding:clamp(22px,4vw,36px); border:1px solid rgba(45,212,191,.32); border-radius:22px; background:linear-gradient(120deg,#173b5d 0%,#14283f 55%,#123c48 100%); box-shadow:0 14px 34px rgba(0,0,0,.22); }
+    .home-welcome:after { content:""; position:absolute; width:190px; height:190px; border-radius:50%; left:-55px; top:-90px; background:rgba(45,212,191,.10); }
+    .home-eyebrow { color:#5eead4; font-size:10px; font-weight:900; letter-spacing:1.4px; }
+    .home-welcome h2 { position:relative; z-index:1; margin:9px 0 7px; color:#fff; font-size:clamp(21px,4vw,30px); line-height:1.45; }
+    .home-welcome p { position:relative; z-index:1; margin:0; color:#cbd5e1; font-size:14px; line-height:1.9; }
+    .home-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:16px; }
+    .home-action { display:flex; align-items:center; gap:12px; min-width:0; padding:15px; border:1px solid #334f70; border-radius:16px; color:#f8fafc; text-decoration:none; background:linear-gradient(145deg,#172f4b,#102238); box-shadow:0 7px 18px rgba(0,0,0,.14); transition:transform .18s ease,border-color .18s ease,background .18s ease; }
+    .home-action:hover { transform:translateY(-2px); border-color:#2dd4bf; background:linear-gradient(145deg,#1b3d5d,#12334a); }
+    .home-action-primary { border-color:rgba(45,212,191,.65); background:linear-gradient(120deg,#0f766e,#164e63); }
+    .home-action-admin { grid-column:1/-1; }
+    .home-action-icon { display:grid; place-items:center; flex:0 0 46px; width:46px; height:46px; border-radius:13px; background:rgba(148,163,184,.14); font-size:23px; }
+    .home-action b { display:block; font-size:15px; line-height:1.5; }
+    .home-action small { display:block; margin-top:3px; color:#cbd5e1; font-size:11px; line-height:1.5; }
+    .home-arrow { margin-right:auto; color:#5eead4; font-size:20px; }
+    .home-footer-note { margin:14px 3px 0; color:#94a3b8; font-size:11px; text-align:center; }
+    .word-day-content { display:block; }
+    .word-day-main-clean { align-items:stretch; padding:17px 19px; }
+    .word-day-word-row { display:flex; align-items:center; justify-content:space-between; gap:14px; width:100%; direction:ltr; }
+    .word-day-word { margin:0; font-size:clamp(29px,5vw,42px); }
+    .word-day-meaning { direction:rtl; text-align:right; color:#a7f3d0; font-size:clamp(20px,3.5vw,25px); font-weight:900; line-height:1.8; white-space:nowrap; }
+    .word-day-actions { margin-top:13px; }
+    .word-day-example,.word-day-image,.word-day-example-audio { display:none!important; }
+    body[data-page="home"] .page-nav, body[data-page="home"] .container { display:none!important; }
+    body:not([data-page="home"]) .word-day-wrap, body:not([data-page="home"]) .daily-motivation { display:none!important; }
+    body[data-page="home"] .home-dashboard { display:block; }
+    body:not([data-page="home"]) .home-dashboard { display:none!important; }
+    body[data-page="register"] #tab-register,
+    body[data-page="student"] #tab-student,
+    body[data-page="parent"] #tab-parent,
+    body[data-page="admin"] #tab-admin,
+    body[data-page="materials"] #tab-public-materials,
+    body[data-page="self-learning"] #tab-self-learning,
+    body[data-page="daily-grammar"] #tab-daily-grammar { display:block!important; }
+    body:not([data-page="home"]) .container { max-width:900px; margin:0 auto; }
+    body[data-page="register"] #tab-student,body[data-page="register"] #tab-parent,body[data-page="register"] #tab-admin,body[data-page="register"] #tab-public-materials,body[data-page="register"] #tab-self-learning,body[data-page="register"] #tab-daily-grammar,
+    body[data-page="student"] #tab-register,body[data-page="student"] #tab-parent,body[data-page="student"] #tab-admin,body[data-page="student"] #tab-public-materials,body[data-page="student"] #tab-self-learning,body[data-page="student"] #tab-daily-grammar,
+    body[data-page="parent"] #tab-register,body[data-page="parent"] #tab-student,body[data-page="parent"] #tab-admin,body[data-page="parent"] #tab-public-materials,body[data-page="parent"] #tab-self-learning,body[data-page="parent"] #tab-daily-grammar,
+    body[data-page="admin"] #tab-register,body[data-page="admin"] #tab-student,body[data-page="admin"] #tab-parent,body[data-page="admin"] #tab-public-materials,body[data-page="admin"] #tab-self-learning,body[data-page="admin"] #tab-daily-grammar,
+    body[data-page="materials"] #tab-register,body[data-page="materials"] #tab-student,body[data-page="materials"] #tab-parent,body[data-page="materials"] #tab-admin,body[data-page="materials"] #tab-self-learning,body[data-page="materials"] #tab-daily-grammar,
+    body[data-page="self-learning"] #tab-register,body[data-page="self-learning"] #tab-student,body[data-page="self-learning"] #tab-parent,body[data-page="self-learning"] #tab-admin,body[data-page="self-learning"] #tab-public-materials,body[data-page="self-learning"] #tab-daily-grammar,
+    body[data-page="daily-grammar"] #tab-register,body[data-page="daily-grammar"] #tab-student,body[data-page="daily-grammar"] #tab-parent,body[data-page="daily-grammar"] #tab-admin,body[data-page="daily-grammar"] #tab-public-materials,body[data-page="daily-grammar"] #tab-self-learning { display:none!important; }
+    @media(max-width:650px) {
+      .home-dashboard { padding:0 10px; margin:12px auto 22px; }
+      .home-actions { grid-template-columns:1fr; gap:9px; }
+      .home-action-admin { grid-column:auto; }
+      .home-action { padding:12px; border-radius:14px; }
+      .home-action-icon { flex-basis:42px; width:42px; height:42px; }
+      .page-nav { margin:8px 0 12px; padding:7px 10px; }
+      .page-nav a { padding:8px 11px; font-size:12px; }
+      .word-day-main-clean { padding:13px 14px; }
+      .word-day-word-row { gap:8px; }
+      .word-day-word { font-size:clamp(25px,7vw,34px); }
+      .word-day-meaning { font-size:clamp(17px,5vw,21px); }
+    }
+
+  </style>
+</head>
+<body data-page="materials">
+
+  <header>
+    <img src="logo.png" class="logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135755.png'">
+    <h1 style="margin:8px 0 0;font-size:24px">منصة مستر أحمد السيد انجليزي</h1>
+    <div style="font-size:13px">(من الصف الأول للثالث الإعدادي)</div>
+    <div style="font-size:11px;margin-top:4px;background:rgba(255,255,255,.2);display:inline-block;padding:3px 12px;border-radius:20px">خبرة 20 عام ⭐</div><br>
+    <button id="installBtn" style="display:inline-block;margin-top:10px;background:#10b981;color:#fff;padding:8px 14px;border-radius:10px;border:none;font-weight:900" onclick="installApp()">📲 ثبّت التطبيق</button>
+  </header>
+
+  <div class="payBox">
+    💰 للدفع انستا باي واتصالات كاش<br>
+    <a href="https://wa.me/201116811324">📱 01116811324 - واتساب</a>
+  </div>
+
+  <section class="daily-motivation" aria-label="رسالة اليوم">
+    <span aria-hidden="true">✨</span>
+    <strong id="dailyMotivationText">كل يوم خطوة للأمام</strong>
+  </section>
+
+  <!-- كلمة اليوم: متاحة للزوار والطلاب دون تسجيل دخول -->
+  <section class="word-day-wrap" aria-labelledby="wordDayHeading">
+    <div class="word-day-card">
+      <div class="word-day-top">
+        <div>
+          <h2 class="word-day-heading" id="wordDayHeading">Word of the Day</h2>
+        </div>
+        <div class="word-day-date" id="wordDayDate">كلمة اليوم</div>
+      </div>
+      <div class="word-day-content">
+        <div class="word-day-main word-day-main-clean">
+          <div class="word-day-word-row">
+            <div class="word-day-word" id="wordDayWord">Brave</div>
+            <div class="word-day-meaning" id="wordDayMeaning" lang="ar" dir="rtl">شُجاع</div>
+          </div>
+          <div class="word-day-actions">
+            <button type="button" class="word-day-audio" onclick="speakWordOfDay()">🔊 اسمع الكلمة</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="home-dashboard">
+    <section class="home-welcome">
+      <span class="home-eyebrow">WELCOME TO YOUR ENGLISH JOURNEY</span>
+      <h2>ابدأ رحلتك في تعلّم اللغة الإنجليزية</h2>
+      <p>كل أدواتك التعليمية في مكان واحد، بتصميم واضح وسهل من الموبايل والكمبيوتر.</p>
+    </section>
+    <section class="home-actions" aria-label="الخدمات الرئيسية">
+      <a class="home-action home-action-primary" href="register.html"><span class="home-action-icon">✍️</span><span><b>سجل الآن</b><small>أنشئ حسابك وابدأ التعلم</small></span><span class="home-arrow">←</span></a>
+      <a class="home-action" href="student.html"><span class="home-action-icon">🎓</span><span><b>دخول الطالب</b><small>حصصك وواجباتك وتقييماتك</small></span><span class="home-arrow">←</span></a>
+      <a class="home-action" href="parent.html"><span class="home-action-icon">👨‍👩‍👧</span><span><b>دخول ولي الأمر</b><small>تابع الحضور والدرجات</small></span><span class="home-arrow">←</span></a>
+      <a class="home-action" href="materials.html"><span class="home-action-icon">📚</span><span><b>الملازم المجانية</b><small>مذكرات حسب الصف الدراسي</small></span><span class="home-arrow">←</span></a>
+      <a class="home-action" href="self-learning.html"><span class="home-action-icon">🧠</span><span><b>علّم نفسك</b><small>تدريب يومي على القراءة والفهم</small></span><span class="home-arrow">←</span></a>
+      <a class="home-action" href="daily-grammar.html"><span class="home-action-icon">📘</span><span><b>قاعدة اليوم</b><small>قواعد إنجليزية بشرح مبسط</small></span><span class="home-arrow">←</span></a>
+      <a class="home-action home-action-admin" href="admin.html"><span class="home-action-icon">🧑‍🏫</span><span><b>لوحة المستر</b><small>إدارة الطلاب والحصص والمنصة</small></span><span class="home-arrow">←</span></a>
+    </section>
+    <p class="home-footer-note">اختر القسم الذي تريد فتحه. يمكنك الرجوع للصفحة السابقة من زر الرجوع في المتصفح.</p>
+  </main>
+  <nav class="page-nav" aria-label="التنقل الرئيسي">
+    <a class="page-nav-home" href="index.html">الرئيسية</a>
+    <a href="register.html">سجل الآن</a>
+    <a href="student.html">دخول الطالب</a>
+    <a href="parent.html">دخول ولي الأمر</a>
+    <a href="materials.html">📚 الملازم المجانية</a>
+    <a href="self-learning.html">🧠 علّم نفسك</a>
+    <a href="daily-grammar.html">📘 قاعدة اليوم</a>
+    <a href="admin.html">لوحة المستر</a>
+  </nav>  <div class="container">
+  <nav class="page-nav" aria-label="التنقل الرئيسي">
+    <a class="page-nav-home" href="index.html">الرئيسية</a>
+    <a href="register.html">سجل الآن</a>
+    <a href="student.html">دخول الطالب</a>
+    <a href="parent.html">دخول ولي الأمر</a>
+    <a href="materials.html">📚 الملازم المجانية</a>
+    <a href="self-learning.html">🧠 علّم نفسك</a>
+    <a href="daily-grammar.html">📘 قاعدة اليوم</a>
+    <a href="admin.html">لوحة المستر</a>
+  </nav>
+
+    <!-- تسجيل طالب -->
+    <div id="tab-register" class="card" style="display:none">
+      <h3>تسجيل جديد</h3>
+      <input id="name" placeholder="الاسم ثلاثي">
+      <input id="phone" placeholder="رقم الواتساب">
+      <input id="parentPhone" placeholder="رقم ولي الأمر">
+      <select id="grade">
+        <option>الصف الأول الابتدائي</option>
+        <option>الصف الثاني الابتدائي</option>
+        <option>الصف الثالث الابتدائي</option>
+        <option>الصف الرابع الابتدائي</option>
+        <option>الصف الخامس الابتدائي</option>
+        <option>الصف السادس الابتدائي</option>
+        <option>الصف الأول الإعدادي</option>
+        <option>الصف الثاني الإعدادي</option>
+        <option>الصف الثالث الإعدادي</option>
+      </select>
+      <button onclick="registerStudent()">تسجيل</button>
+      <p id="regMsg"></p>
+    </div>
+
+    <!-- دخول ولي الأمر -->
+    <div id="tab-parent" class="card" style="display:none">
+      <h3>دخول ولي الأمر</h3>
+      <input id="parentLoginPhone" placeholder="رقم ولي الأمر">
+      <button onclick="loginParent()" style="background:#f59e0b;color:#000">دخول</button>
+      <div id="parentArea" style="display:none"></div>
+    </div>
+
+    <!-- دخول الطالب -->
+    <div id="tab-student" class="card">
+      <h3>دخول الطالب</h3>
+      <input id="loginPhone" placeholder="رقم الواتساب">
+      <button onclick="loginStudent()">دخول</button>
+      <p id="loginMsg"></p>
+
+      <div id="studentArea" style="display:none">
+        <h2 id="welcome"></h2>
+        <div id="studentSchedule"></div>
+
+        <div id="evalDisplay" class="card" style="background:#0f172a;border:2px solid #f59e0b"></div>
+        <div id="studentAttendanceDisplay"></div>
+        <div class="card" style="background:#0f172a;border:2px solid #10b981">
+          <h4>💳 موقف الدفع</h4>
+          <div id="paymentHistory" style="margin-top:10px">جاري تحميل موقف الدفع...</div>
+        </div>
+        <div id="certArea"></div>
+        <div id="lessonsList"></div>
+        <div class="card" style="background:#0f172a;border:2px solid #06b6d4">
+          <h4>📷 الواجب الورقي</h4>
+          <div id="paperHomeworkStudent">جاري تحميل الواجبات الورقية...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- مكتبة الملازم المجانية: متاحة دون تسجيل دخول -->
+    <section id="tab-public-materials" class="card" style="display:none">
+      <div class="public-materials-wrap">
+        <div class="public-materials-intro">
+          <h3>📚 الملازم المجانية</h3>
+          <p>اختر صفك الدراسي للوصول إلى الملازم المجانية المتاحة. لا تحتاج إلى إنشاء حساب أو تسجيل الدخول.</p>
+        </div>
+        <div class="public-materials-controls">
+          <div>
+            <label for="publicMaterialsGrade" style="display:block;font-size:12px;color:#cbd5e1;margin:0 0 5px">الصف الدراسي</label>
+            <select id="publicMaterialsGrade">
+              <option value="">-- اختر الصف الدراسي --</option>
+              <option>الصف الأول الابتدائي</option>
+              <option>الصف الثاني الابتدائي</option>
+              <option>الصف الثالث الابتدائي</option>
+              <option>الصف الرابع الابتدائي</option>
+              <option>الصف الخامس الابتدائي</option>
+              <option>الصف السادس الابتدائي</option>
+              <option>الصف الأول الإعدادي</option>
+              <option>الصف الثاني الإعدادي</option>
+              <option>الصف الثالث الإعدادي</option>
+            </select>
+          </div>
+          <button type="button" onclick="loadPublicMaterials()">عرض الملازم</button>
+        </div>
+        <div id="publicMaterialsList" aria-live="polite">
+          <div class="public-material-empty">اختر الصف الدراسي لعرض الملازم المتاحة له.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- تدريب يومي متاح للجميع دون تسجيل -->
+    <section id="tab-self-learning" class="card" style="display:none">
+      <div class="daily-learning-wrap">
+        <h3>🧠 علّم نفسك</h3>
+        <p class="daily-intro">اقرأ فقرة اليوم، ثم أجب عن الأسئلة الثلاثة. اختر إجابة واحدة لكل سؤال وستظهر لك النتيجة تلقائيًا.</p>
+        <div id="dailyPassage" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- قاعدة لغوية يومية متاحة للجميع دون تسجيل -->
+    <section id="tab-daily-grammar" class="card" style="display:none">
+      <div class="daily-learning-wrap">
+        <h3>📘 قاعدة اليوم</h3>
+        <p class="daily-intro">شرح مبسط باللغة العربية مع أمثلة باللغة الإنجليزية وترجمتها.</p>
+        <div id="dailyGrammar" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- لوحة المستر -->
+    <div id="tab-admin" class="card" style="display:none">
+      <h3>لوحة المستر 🔒</h3>
+      <input id="adminEmail" type="email" placeholder="إيميل المستر" autocomplete="username">
+      <input id="adminPass" type="password" placeholder="الباسورد" autocomplete="current-password">
+      <button onclick="loginAdmin()">دخول</button>
+
+      <div id="adminArea" style="display:none">
+        <button onclick="logoutAdmin()" style="background:#64748b;width:auto;padding:6px 14px;font-size:12px;margin:0 0 8px">تسجيل خروج</button>
+        <div style="margin:10px 0">
+          <span class="subTab active" onclick="showAdminTab('lessons')" id="atab-lessons">الحصة</span>
+          <span class="subTab" onclick="showAdminTab('schedules')" id="atab-schedules">المواعيد</span>
+          <span class="subTab" onclick="showAdminTab('students')" id="atab-students">الطلاب</span>
+          <span class="subTab" onclick="showAdminTab('homeworks')" id="atab-homeworks">الواجبات</span>
+          <span class="subTab" onclick="showAdminTab('materials')" id="atab-materials">الملازم</span>
+          <span class="subTab" onclick="showAdminTab('payments')" id="atab-payments">المدفوعات</span>
+          <span class="subTab" onclick="showAdminTab('backup')" id="atab-backup">النسخ الاحتياطي</span>
+        </div>
+
+        <div id="admin-lessons" class="card" style="background:#0f172a">
+          <h4>نشر حصة (ميت + يوتيوب)</h4>
+          <input id="lessonTitle" placeholder="عنوان الحصة">
+          <input id="meetLink" placeholder="لينك Google Meet">
+          <input id="ytLink" placeholder="لينك يوتيوب">
+          <input id="teachmintLink" placeholder="لينك Teachmint (اختياري)">
+          <select id="lessonGrade">
+            <option>للكل</option>
+            <option>الصف الأول الابتدائي</option>
+            <option>الصف الثاني الابتدائي</option>
+            <option>الصف الثالث الابتدائي</option>
+            <option>الصف الرابع الابتدائي</option>
+            <option>الصف الخامس الابتدائي</option>
+            <option>الصف السادس الابتدائي</option>
+            <option>الصف الأول الإعدادي</option>
+            <option>الصف الثاني الإعدادي</option>
+            <option>الصف الثالث الإعدادي</option>
+          </select>
+          <button onclick="addLesson()" style="background:#10b981">نشر الحصة والروابط</button>
+          <button onclick="clearLesson()" style="background:#ef4444;margin-top:6px">إنهاء الحصة وإخفاء الروابط</button>
+
+        </div>
+
+        <div id="admin-schedules" style="display:none" class="card">
+          <h4>⏰ مواعيد كل صف</h4>
+          <select id="schedGrade">
+            <option>الصف الأول الابتدائي</option>
+            <option>الصف الثاني الابتدائي</option>
+            <option>الصف الثالث الابتدائي</option>
+            <option>الصف الرابع الابتدائي</option>
+            <option>الصف الخامس الابتدائي</option>
+            <option>الصف السادس الابتدائي</option>
+            <option>الصف الأول الإعدادي</option>
+            <option>الصف الثاني الإعدادي</option>
+            <option>الصف الثالث الإعدادي</option>
+          </select>
+          <input id="schedTime" placeholder="مثال: السبت والثلاثاء 5 مساء">
+          <button onclick="saveSchedule()" style="background:#10b981">حفظ</button>
+          <div id="schedulesList"></div>
+        </div>
+
+        <div id="admin-students" style="display:none">
+          <input id="studentSearch" placeholder="بحث..." oninput="loadAdminFiltered()">
+          <div id="gradeFilter"></div>
+          <div id="studentsCounter" style="background:#4f46e5;padding:8px;border-radius:8px;margin-top:8px;font-weight:900;text-align:center"></div>
+          <div id="pendingList"></div>
+          <div id="approvedList"></div>
+          <div id="blockedList"></div>
+        </div>
+
+        <div id="admin-homeworks" style="display:none">
+          <div class="card" style="background:#0f172a;border:1px solid #06b6d4">
+            <h4>📷 نشر واجب ورقي</h4>
+            <input id="paperTitle" placeholder="عنوان الواجب (مثال: صفحة 25 — تدريبات الوحدة)">
+            <select id="paperGrade">
+              <option>للكل</option>
+              <option>الصف الأول الابتدائي</option>
+              <option>الصف الثاني الابتدائي</option>
+              <option>الصف الثالث الابتدائي</option>
+              <option>الصف الرابع الابتدائي</option>
+              <option>الصف الخامس الابتدائي</option>
+              <option>الصف السادس الابتدائي</option>
+              <option>الصف الأول الإعدادي</option>
+              <option>الصف الثاني الإعدادي</option>
+              <option>الصف الثالث الإعدادي</option>
+            </select>
+            <button onclick="publishPaperHomework()" style="background:#0891b2">📢 نشر الواجب الورقي</button>
+            <div id="paperHomeworkAdminMsg" style="font-size:12px;margin-top:7px"></div>
+            <hr style="border-color:#334155;margin:14px 0">
+            <h4>📥 تسليمات الطلاب والتصحيح</h4>
+            <input id="paperSubmissionSearch" placeholder="بحث باسم الطالب" oninput="loadPaperHomeworkAdmin()">
+            <div id="paperHomeworkAdminList">جاري التحميل...</div>
+          </div>
+        </div>
+
+        <div id="admin-materials" style="display:none">
+          <div class="card" style="background:#0f172a;border:1px solid #334155">
+            <h4>📚 إضافة ملزمة</h4>
+            <input id="matTitle" placeholder="عنوان الملزمة (مثال: ملزمة الوحدة الأولى)">
+            <input id="matLink" placeholder="لينك جوجل درايف">
+            <select id="matGrade">
+              <option>للكل</option>
+              <option>الصف الأول الابتدائي</option>
+              <option>الصف الثاني الابتدائي</option>
+              <option>الصف الثالث الابتدائي</option>
+              <option>الصف الرابع الابتدائي</option>
+              <option>الصف الخامس الابتدائي</option>
+              <option>الصف السادس الابتدائي</option>
+              <option>الصف الأول الإعدادي</option>
+              <option>الصف الثاني الإعدادي</option>
+              <option>الصف الثالث الإعدادي</option>
+            </select>
+            <button onclick="addMaterial()" style="background:#10b981;margin-top:10px">💾 إضافة الملزمة</button>
+            <p id="matMsg" style="font-size:12px;color:#10b981"></p>
+          </div>
+          <div class="card" style="background:#0f172a;margin-top:12px;border:1px solid #334155">
+            <h4>📋 الملازم المرفوعة</h4>
+            <div id="materialsAdminList">جاري التحميل...</div>
+          </div>
+        </div>
+
+        <div id="admin-payments" style="display:none">
+          <div class="card" style="background:#0f172a">
+            <h4>💳 طلبات الدفع</h4>
+            <div id="paymentsAdminList">اضغط على المدفوعات لعرض الطلبات.</div>
+          </div>
+        </div>
+
+        <div id="admin-backup" style="display:none">
+          <div class="card" style="background:#0f172a;border:1px solid #10b981">
+            <h4>🛡️ النسخ الاحتياطي واستعادة البيانات</h4>
+            <p style="font-size:13px;color:#cbd5e1">ينزّل نسخة JSON من مجموعات بيانات المنصة، بما فيها سجلات الواجبات وصور الواجبات المحفوظة حاليًا. احتفظ بالملف في مكان آمن.</p>
+            <button onclick="exportPlatformBackup()" style="background:#10b981">⬇️ تنزيل نسخة احتياطية الآن</button>
+            <hr style="border-color:#334155;margin:14px 0">
+            <p style="font-size:13px;color:#fbbf24">استعادة النسخة تكتب المستندات الموجودة في الملف باستخدام معرّفاتها الأصلية. لا تحذف المستندات الأخرى غير الموجودة في النسخة، لكنها قد تستبدل مستندًا حاليًا إذا كان له نفس المعرّف.</p>
+            <input id="backupRestoreFile" type="file" accept=".json,application/json">
+            <button onclick="restorePlatformBackup()" style="background:#d97706">♻️ استعادة من ملف JSON</button>
+            <div id="backupStatus" style="font-size:12px;margin-top:8px;color:#cbd5e1"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showTab(t) {
+      document.querySelectorAll('[id^=tab-]').forEach(function(e) { e.style.display = 'none'; });
+      var target = document.getElementById('tab-' + t);
+      if (target) target.style.display = 'block';
+      document.querySelectorAll('.tab').forEach(function(e) { e.classList.remove('active'); });
+      var btn = document.getElementById('tabBtn-' + t);
+      if (btn) btn.classList.add('active');
+    }
+
+    function showAdminTab(t) {
+      ['lessons', 'schedules', 'students', 'homeworks', 'materials', 'payments', 'backup'].forEach(function(x) {
+        var el = document.getElementById('admin-' + x);
+        if (el) el.style.display = (x === t) ? 'block' : 'none';
+        var tab = document.getElementById('atab-' + x);
+        if (tab) tab.classList.toggle('active', x === t);
+      });
+      if (t === 'students' && window.loadAdmin) window.loadAdmin();
+      if (t === 'homeworks' && window.loadPaperHomeworkAdmin) window.loadPaperHomeworkAdmin();
+      if (t === 'schedules' && window.loadSchedulesAdmin) window.loadSchedulesAdmin();
+      if (t === 'materials' && window.loadMaterialsAdmin) window.loadMaterialsAdmin();
+      if (t === 'payments' && window.loadPaymentsAdmin) window.loadPaymentsAdmin();
+    }
+
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      deferredPrompt = e;
+      var b = document.getElementById('installBtn');
+      if (b) { b.style.display = 'inline-block'; b.innerText = '📲 ثبّت التطبيق'; }
+    });
+    window.addEventListener('appinstalled', function() {
+      deferredPrompt = null;
+      var b = document.getElementById('installBtn');
+      if (b) { b.innerText = '✅ التطبيق تم تثبيته'; b.disabled = true; }
+    });
+    window.installApp = async function() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        try { await deferredPrompt.userChoice; } catch (e) {}
+        deferredPrompt = null;
+        return;
+      }
+      alert('لتثبيت المنصة على موبايلك: افتحها بمتصفح Google Chrome، واضغط على الثلاث نقاط ⋮ أعلى الشاشة، ثم اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».');
+    };
+  </script>
+
+  <!-- سكربت Firebase المدمج والمحدث -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, setDoc, deleteDoc, query, where, Timestamp, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA3EUyPGWQXi3yEV50QYYCtCASKV-MEE5I",
+      authDomain: "ahmed-elsayed-bf13d.firebaseapp.com",
+      projectId: "ahmed-elsayed-bf13d",
+      storageBucket: "ahmed-elsayed-bf13d.firebasestorage.app",
+      messagingSenderId: "66067955169",
+      appId: "1:66067955169:web:28330bd439b6fd4c73e6a0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    let currentStudent = null;
+    let currentGradeFilter = 'الكل';
+    const GRADES = [
+      "الصف الأول الابتدائي", "الصف الثاني الابتدائي", "الصف الثالث الابتدائي",
+      "الصف الرابع الابتدائي", "الصف الخامس الابتدائي", "الصف السادس الابتدائي",
+      "الصف الأول الإعدادي", "الصف الثاني الإعدادي", "الصف الثالث الإعدادي"
+    ];
+
+    window.escHtml = function(s) {
+      if (!s) return '';
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    };
+    window.safeImg = function(u) {
+      u = String(u || '');
+      return /^data:image\/(png|jpe?g|webp|gif);base64,[A-Za-z0-9+\/=]+$/.test(u) ? u : '';
+    };
+
+    // الدرجات الجديدة من 10، مع قراءة القيم القديمة من 5 دون تغيير بياناتها.
+    function score10(student, type) {
+      const current = student[type + '10'];
+      if (current !== undefined && current !== null && current !== '') {
+        const n = Number(current);
+        return Number.isFinite(n) ? Math.max(0, Math.min(10, n)) : 0;
+      }
+      const old = Number(student[type] || 0);
+      return Number.isFinite(old) ? Math.max(0, Math.min(10, old * 2)) : 0;
+    }
+
+    function editableScore(id, type, val) {
+      let options = '';
+      for (let i = 0; i <= 10; i++) options += '<option value="' + i + '"' + (i === Number(val) ? ' selected' : '') + '>' + i + '</option>';
+      return '<span class="score-control"><select id="score_' + id + '_' + type + '" aria-label="الدرجة من 10">' + options + '</select><small>/ 10</small><button class="btn-small" style="background:#10b981" onclick="setEvalFromInput(\'' + id + '\',\'' + type + '\')">حفظ</button></span>';
+    }
+
+    window.setEvalFromInput = async function(id, type) {
+      const input = document.getElementById('score_' + id + '_' + type);
+      const val = Number(input && input.value);
+      if (!Number.isInteger(val) || val < 0 || val > 10) { alert('اختر درجة من 0 إلى 10'); return; }
+      try {
+        await updateDoc(doc(db, 'students', id), { [type + '10']: val });
+        loadAdminFiltered();
+      } catch (e) { alert('تعذر حفظ الدرجة: ' + (e.message || e)); }
+    };
+
+    function todayAttendanceKey() {
+      const d = new Date();
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+
+    function attendanceHistoryHtml(attendanceByDate) {
+      const records = attendanceByDate && typeof attendanceByDate === 'object' ? attendanceByDate : {};
+      const keys = Object.keys(records)
+        .filter(k => records[k] === 'present' || records[k] === 'absent')
+        .sort().reverse();
+      const presentCount = keys.filter(k => records[k] === 'present').length;
+      const absentCount = keys.length - presentCount;
+      const summary = '<div style="margin:8px 0;color:#cbd5e1;font-size:12px">الحصص المسجلة: <b>' + keys.length + '</b> — حضور: <b style="color:#10b981">' + presentCount + '</b> — غياب: <b style="color:#f87171">' + absentCount + '</b></div>';
+      const note = '<small style="display:block;color:#93c5fd;margin-top:9px;line-height:1.7">يُسجَّل الحضور في أيام الحصص فقط (مرة أو مرتين أسبوعيًا بحد أقصى). اليوم الذي لا يظهر في السجل ليس غيابًا؛ بل لا توجد له حصة مسجلة.</small>';
+      if (!keys.length) return '<div class="attendance-history"><b>📅 سجل الحصص</b><div style="margin-top:7px;color:#cbd5e1">لا توجد حصص مسجلة حتى الآن.</div>' + note + '</div>';
+      return '<div class="attendance-history"><b>📅 سجل الحصص (آخر 10 حصص)</b>' + summary + keys.slice(0, 10).map(k =>
+        '<div style="margin-top:7px;padding-top:6px;border-top:1px solid #334155"><small>' + window.escHtml(k) + '</small> — ' +
+        (records[k] === 'present' ? '<b style="color:#10b981">✅ حاضر</b>' : '<b style="color:#f87171">❌ غائب</b>') +
+        '</div>'
+      ).join('') + note + '</div>';
+    }
+
+    function attendanceEditor(id, attendanceByDate) {
+      const key = todayAttendanceKey();
+      const records = attendanceByDate && typeof attendanceByDate === 'object' ? attendanceByDate : {};
+      const current = records[key] || '';
+      return '<div class="attendance-control"><b>حضور الحصة بتاريخ ' + key + ':</b><select id="attendance_' + id + '"><option value=""' + (!current ? ' selected' : '') + '>لم يحدد</option><option value="present"' + (current === 'present' ? ' selected' : '') + '>نعم - حاضر</option><option value="absent"' + (current === 'absent' ? ' selected' : '') + '>لا - غائب</option></select><button class="btn-small" style="background:#0891b2" onclick="saveStudentAttendance(\'' + id + '\')">حفظ الحضور</button></div>';
+    }
+
+    window.saveStudentAttendance = async function(id) {
+      const input = document.getElementById('attendance_' + id);
+      const status = input ? input.value : '';
+      if (!['present', 'absent'].includes(status)) { alert('اختر حاضر أو غائب أولاً'); return; }
+      const key = todayAttendanceKey();
+      try {
+        await updateDoc(doc(db, 'students', id), {
+          ['attendanceByDate.' + key]: status,
+          ['attendanceUpdatedAt.' + key]: Date.now()
+        });
+        alert('✅ تم حفظ حضور الطالب بتاريخ ' + key);
+        loadAdminFiltered();
+      } catch (e) { alert('تعذر حفظ الحضور: ' + (e.message || e)); }
+    };
+
+    window.registerStudent = async function() {
+      try {
+        const name = document.getElementById('name').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const parentPhone = document.getElementById('parentPhone').value.trim();
+        const grade = document.getElementById('grade').value;
+        if (!name || !phone) { alert('اكمل البيانات'); return; }
+        await addDoc(collection(db, 'students'), {
+          name, phone, parentPhone, grade, status: 'pending', created: Date.now(),
+          eval_interaction: 0, eval_homework: 0, eval_month: 0
+        });
+        document.getElementById('regMsg').innerHTML = '✅ تم التسجيل - انتظر الموافقة';
+      } catch (e) {
+        alert('خطأ: ' + e.message);
+      }
+    };
+
+    window.saveSchedule = async function() {
+      const grade = document.getElementById('schedGrade').value;
+      const time = document.getElementById('schedTime').value.trim();
+      if (!time) { alert('اكتب الموعد'); return; }
+      await setDoc(doc(db, 'schedules', grade), { grade, time, updated: Date.now() });
+      alert('✅ تم حفظ موعد ' + grade);
+      loadSchedulesAdmin();
+    };
+
+    window.loadSchedulesAdmin = async function() {
+      try {
+        const snap = await getDocs(collection(db, 'schedules'));
+        let html = '';
+        snap.forEach(function(d) {
+          html += '<div class="student-row">📅 <b>' + d.data().grade + ':</b> ' + d.data().time + ' <button class="btn-small" style="background:#ef4444" onclick="deleteSchedule(\'' + d.id + '\')">حذف</button></div>';
+        });
+        document.getElementById('schedulesList').innerHTML = html || 'لا يوجد مواعيد';
+      } catch (e) { console.log(e); }
+    };
+
+    window.deleteSchedule = async function(id) {
+      await deleteDoc(doc(db, 'schedules', id));
+      loadSchedulesAdmin();
+    };
+
+    async function getScheduleForGrade(grade) {
+      try {
+        const snap = await getDocs(collection(db, 'schedules'));
+        let txt = 'لم يحدد بعد';
+        snap.forEach(function(d) { if (d.data().grade === grade) txt = d.data().time; });
+        return txt;
+      } catch (e) { return 'لم يحدد بعد'; }
+    }
+
+    window.loginParent = async function() {
+      try {
+        const pPhone = document.getElementById('parentLoginPhone').value.trim();
+        if (!pPhone) { alert('اكتب رقم ولي الأمر'); return; }
+        const q = query(collection(db, 'students'), where('parentPhone', '==', pPhone));
+        const snap = await getDocs(q);
+        if (snap.empty) {
+          document.getElementById('parentArea').innerHTML = '<p>❌ لا يوجد طالب بهذا الرقم</p>';
+          document.getElementById('parentArea').style.display = 'block';
+          return;
+        }
+        let html = '';
+        for (const d of snap.docs) {
+          const s = d.data(), sid = d.id;
+          const sched = await getScheduleForGrade(s.grade);
+          const attendanceHtml = attendanceHistoryHtml(s.attendanceByDate);
+          const monthScore = score10(s, 'eval_month');
+          const paySnap = await getDocs(query(collection(db, 'payments'), where('studentId', '==', sid)));
+          let payments = [];
+          paySnap.forEach(p => payments.push({ id: p.id, ...p.data() }));
+          payments.sort((a, b) => (b.created || 0) - (a.created || 0));
+          const labels = { pending: '⏳ قيد المراجعة', approved: '✅ تم تأكيد الدفع', rejected: '❌ لم يتم قبول الإيصال' };
+          const history = payments.length ? payments.slice(0, 5).map(p =>
+            '<div class="student-row"><b>' + window.escHtml(String(p.amount || 0)) + ' جنيه</b> — ' + (p.method === 'InstaPay' ? 'إنستاباي' : 'اتصالات كاش') + '<br><small>' + (labels[p.status] || 'قيد المراجعة') + '</small></div>'
+          ).join('') : '<small style="color:#94a3b8">لا توجد مدفوعات مسجلة حتى الآن.</small>';
+
+          html += '<div class="card" style="background:#0f172a;border:2px solid #f59e0b"><h3>👦 ' + window.escHtml(s.name || '') + ' - ' + window.escHtml(s.grade || '') + '</h3><div class="scheduleBox">⏰ ' + sched + '</div><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:12px 0"><div style="background:#102238;padding:9px;border-radius:9px;text-align:center">التفاعل<br><b style="color:#99f6e4;font-size:18px">' + score10(s, 'eval_interaction') + '/10</b></div><div style="background:#102238;padding:9px;border-radius:9px;text-align:center">الواجب<br><b style="color:#99f6e4;font-size:18px">' + score10(s, 'eval_homework') + '/10</b></div><div style="background:#102238;padding:9px;border-radius:9px;text-align:center">امتحان الشهر<br><b style="color:#99f6e4;font-size:18px">' + monthScore + '/10</b></div></div>' + (monthScore >= 9 ? '<div style="color:#fbbf24;font-weight:900;margin-top:7px">🏆 درع التفوق</div>' : '') + attendanceHtml + '<hr style="border-color:#334155;margin:12px 0"><h4>💳 مدفوعات الطالب</h4><p style="font-size:12px;color:#cbd5e1">سجّل المبلغ وطريقة التحويل، ثم أرسل صورة الإيصال عبر واتساب.</p><select id="parentPaymentMethod_' + sid + '"><option value="InstaPay">إنستاباي</option><option value="Etisalat Cash">اتصالات كاش</option></select><input id="parentPaymentAmount_' + sid + '" type="number" min="1" step="1" placeholder="المبلغ المحوّل بالجنيه"><input id="parentPaymentNote_' + sid + '" maxlength="120" placeholder="ملاحظة (اختياري)"><button onclick="submitParentPayment(\'' + sid + '\',\'' + window.escHtml(s.name || '').replace(/'/g, '&#39;') + '\',\'' + window.escHtml(s.grade || '').replace(/'/g, '&#39;') + '\')" style="background:#10b981">تسجيل الدفع وإرسال صورة الإيصال</button><div id="parentPaymentMsg_' + sid + '" style="font-size:12px;margin-top:8px"></div><h4 style="margin-top:14px">سجل المدفوعات</h4><div>' + history + '</div></div>';
+        }
+        document.getElementById('parentArea').innerHTML = html;
+        document.getElementById('parentArea').style.display = 'block';
+      } catch (e) { alert('خطأ: ' + e.message); }
+    };
+
+    window.submitParentPayment = async function(studentId, studentName, grade) {
+      try {
+        const method = document.getElementById('parentPaymentMethod_' + studentId).value;
+        const amount = Number(document.getElementById('parentPaymentAmount_' + studentId).value);
+        const note = document.getElementById('parentPaymentNote_' + studentId).value.trim();
+        if (!Number.isFinite(amount) || amount <= 0) { alert('اكتب المبلغ بشكل صحيح'); return; }
+        const ref = await addDoc(collection(db, 'payments'), {
+          studentId, studentName, phone: '', grade, method, amount, note, status: 'pending', created: Date.now(), submittedBy: 'parent'
+        });
+        const message = 'طلب دفع جديد\nالطالب: ' + studentName + '\nالصف: ' + grade + '\nالمبلغ: ' + amount + ' جنيه\nالطريقة: ' + (method === 'InstaPay' ? 'إنستاباي' : 'اتصالات كاش') + '\nرقم الطلب: ' + ref.id + '\nسأرفق صورة الإيصال.';
+        document.getElementById('parentPaymentMsg_' + studentId).innerHTML = '✅ تم تسجيل الدفع. <a target="_blank" rel="noopener" style="color:#25D366;font-weight:900" href="https://wa.me/201116811324?text=' + encodeURIComponent(message) + '">اضغط هنا لإرسال صورة الإيصال على واتساب</a>';
+        document.getElementById('parentPaymentAmount_' + studentId).value = '';
+        document.getElementById('parentPaymentNote_' + studentId).value = '';
+      } catch (e) { alert('تعذر تسجيل الدفع: ' + (e.message || e)); }
+    };
+
+    async function loadStudentLesson() {
+      try {
+        const snapL = await getDocs(collection(db, 'lessons'));
+        let html = '';
+        snapL.forEach(function(docD) {
+          const l = docD.data();
+          if (l.grade && l.grade !== 'للكل' && l.grade !== currentStudent.grade) return;
+          const TWO = 2 * 60 * 60 * 1000;
+          if (Date.now() - (l.created || 0) > TWO) {
+            html = '<div class="card">⏰ انتهت الحصة</div>';
+            return;
+          }
+          html = '<div class="card"><h3>' + l.title + '</h3>' +
+            (l.meetLink ? '<a target="_blank" href="' + l.meetLink + '" style="background:#10b981;display:block;padding:12px;border-radius:10px;color:#fff;text-decoration:none;margin-top:10px">🎥 ميت</a>' : '') +
+            (l.ytLink ? '<a target="_blank" rel="noopener" href="' + l.ytLink + '" style="background:#ef4444;display:block;padding:10px;border-radius:10px;color:#fff;text-decoration:none;margin-top:8px">▶️ يوتيوب</a>' : '') +
+            (l.teachmintLink ? '<a target="_blank" rel="noopener" href="' + l.teachmintLink + '" style="background:#2563eb;display:block;padding:10px;border-radius:10px;color:#fff;text-decoration:none;margin-top:8px">🎓 Teachmint</a>' : '') + '</div>';
+        });
+        document.getElementById('lessonsList').innerHTML = html || '<p>لا يوجد حصص حاليا</p>';
+      } catch (e) { console.log(e); }
+    }
+
+    window.addMaterial = async function() {
+      try {
+        const title = document.getElementById('matTitle').value.trim();
+        const link = document.getElementById('matLink').value.trim();
+        const grade = document.getElementById('matGrade').value;
+        if (!title || !link) { alert('اكتب العنوان واللينك'); return; }
+        if (link.indexOf('http') !== 0) { alert('اللينك لازم يبدأ بـ http'); return; }
+        await addDoc(collection(db, 'materials'), { title, link, grade, created: Date.now() });
+        document.getElementById('matMsg').innerText = '✅ تم إضافة الملزمة';
+        document.getElementById('matTitle').value = '';
+        document.getElementById('matLink').value = '';
+        loadMaterialsAdmin();
+        alert('تم إضافة الملزمة');
+      } catch (e) { alert('خطأ: ' + e.message); }
+    };
+
+    window.loadMaterialsAdmin = async function() {
+      try {
+        const list = document.getElementById('materialsAdminList');
+        if (!list) return;
+        const snap = await getDocs(collection(db, 'materials'));
+        let items = [];
+        snap.forEach(function(d) { items.push({ id: d.id, ...d.data() }); });
+        items.sort(function(a, b) { return (b.created || 0) - (a.created || 0); });
+        if (items.length === 0) { list.innerHTML = '<p style="color:#94a3b8">لا يوجد ملازم حالياً</p>'; return; }
+        let html = '';
+        items.forEach(function(m) {
+          html += '<div class="student-row" style="border:1px solid #334155;margin-top:8px"><b>📚 ' + m.title + '</b><br><small>' + m.grade + '</small><br><a href="' + m.link + '" target="_blank" style="color:#60a5fa;font-size:12px">فتح اللينك</a><br><button class="btn-small" style="background:#ef4444;margin-top:6px" onclick="deleteMaterial(\'' + m.id + '\')">🗑️ حذف</button></div>';
+        });
+        list.innerHTML = html;
+      } catch (e) { console.log(e); }
+    };
+
+    window.deleteMaterial = async function(id) {
+      if (!confirm('هل تريد حذف هذه الملزمة؟')) return;
+      await deleteDoc(doc(db, 'materials', id));
+      loadMaterialsAdmin();
+      alert('تم الحذف');
+    };
+
+    window.loadPublicMaterials = async function() {
+      const gradeSelect = document.getElementById('publicMaterialsGrade');
+      const container = document.getElementById('publicMaterialsList');
+      if (!gradeSelect || !container) return;
+      const grade = gradeSelect.value;
+      if (!grade) {
+        container.innerHTML = '<div class="public-material-empty">من فضلك اختر الصف الدراسي أولاً.</div>';
+        return;
+      }
+      container.innerHTML = '<div class="public-material-empty">⏳ جاري تحميل الملازم...</div>';
+      try {
+        const snap = await getDocs(collection(db, 'materials'));
+        const items = [];
+        snap.forEach(function(d) {
+          const m = d.data();
+          if (m.grade !== grade && m.grade !== 'للكل') return;
+          if (typeof m.link !== 'string' || !/^https?:\/\//i.test(m.link)) return;
+          items.push({ id: d.id, title: String(m.title || 'ملزمة تعليمية'), link: m.link, grade: m.grade || grade, created: m.created || 0 });
+        });
+        items.sort(function(a, b) { return (b.created || 0) - (a.created || 0); });
+        container.replaceChildren();
+        if (!items.length) {
+          const empty = document.createElement('div');
+          empty.className = 'public-material-empty';
+          empty.textContent = 'لا توجد ملازم مرفوعة لهذا الصف حالياً. تابعنا قريباً.';
+          container.appendChild(empty);
+          return;
+        }
+        items.forEach(function(m) {
+          const card = document.createElement('article');
+          card.className = 'public-material-card';
+          const info = document.createElement('div');
+          const title = document.createElement('h4');
+          title.textContent = '📘 ' + m.title;
+          const meta = document.createElement('p');
+          meta.textContent = m.grade === 'للكل' ? 'متاحة لجميع الصفوف' : m.grade;
+          info.append(title, meta);
+          const link = document.createElement('a');
+          link.className = 'public-material-link';
+          link.href = m.link;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.textContent = 'فتح / تحميل الملزمة ↗';
+          card.append(info, link);
+          container.appendChild(card);
+        });
+      } catch (e) {
+        console.error('Public materials error:', e);
+        container.innerHTML = '<div class="public-material-empty">تعذر تحميل الملازم حالياً. حاول مرة أخرى بعد قليل.</div>';
+      }
+    };
+
+    window.loadStudentMaterials = async function() {
+      try {
+        const cont = document.getElementById('materialsList');
+        if (!cont || !currentStudent) return;
+        const snap = await getDocs(collection(db, 'materials'));
+        let items = [];
+        snap.forEach(function(d) {
+          const m = d.data();
+          if (m.grade !== 'للكل' && m.grade !== currentStudent.grade) return;
+          items.push({ id: d.id, ...m });
+        });
+        items.sort(function(a, b) { return (b.created || 0) - (a.created || 0); });
+        if (items.length === 0) { cont.innerHTML = '<p style="color:#94a3b8">مفيش ملازم لصفك حالياً</p>'; return; }
+        let html = '';
+        items.forEach(function(m) {
+          html += '<div class="student-row" style="border:1px solid #8b5cf6;margin-top:8px"><b>📚 ' + m.title + '</b><br><a href="' + m.link + '" target="_blank" style="display:inline-block;margin-top:8px;background:#8b5cf6;color:#fff;padding:8px 14px;border-radius:8px;text-decoration:none;font-weight:700">📂 فتح / تحميل الملزمة</a></div>';
+        });
+        cont.innerHTML = html;
+      } catch (e) { console.log(e); cont.innerHTML = '<p>خطأ في التحميل</p>'; }
+    };
+
+    async function compressQuizPhoto(file) {
+      return new Promise(function(resolve, reject) {
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error('تعذر قراءة الصورة'));
+        reader.onload = function() {
+          const img = new Image();
+          img.onerror = () => reject(new Error('صيغة الصورة غير مدعومة'));
+          img.onload = function() {
+            const scale = Math.min(1, 1100 / Math.max(img.width, img.height));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.max(1, Math.round(img.width * scale));
+            canvas.height = Math.max(1, Math.round(img.height * scale));
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            let data = canvas.toDataURL('image/jpeg', 0.62);
+            if (data.length > 850000) {
+              const c2 = document.createElement('canvas');
+              c2.width = Math.max(1, Math.round(canvas.width * 0.75));
+              c2.height = Math.max(1, Math.round(canvas.height * 0.75));
+              c2.getContext('2d').drawImage(canvas, 0, 0, c2.width, c2.height);
+              data = c2.toDataURL('image/jpeg', 0.42);
+            }
+            if (data.length > 850000) {
+              reject(new Error('حجم الصورة كبير بعد الضغط. اختَر صورة بحجم أصغر.'));
+              return;
+            }
+            resolve(data);
+          };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    window.publishPaperHomework = async function() {
+      try {
+        const title = document.getElementById('paperTitle').value.trim();
+        const grade = document.getElementById('paperGrade').value;
+        if (!title) { alert('اكتب عنوان الواجب الورقي'); return; }
+        await addDoc(collection(db, 'paper_homeworks'), { title, grade, created: Date.now(), active: true });
+        document.getElementById('paperTitle').value = '';
+        document.getElementById('paperHomeworkAdminMsg').innerText = '✅ تم نشر الواجب الورقي للصف المحدد.';
+        loadPaperHomeworkAdmin();
+      } catch (e) { alert('تعذر نشر الواجب: ' + (e.message || e)); }
+    };
+
+    window.loadPaperHomeworkStudent = async function() {
+      const box = document.getElementById('paperHomeworkStudent');
+      if (!box || !currentStudent) return;
+      try {
+        const [hwSnap, subSnap] = await Promise.all([
+          getDocs(collection(db, 'paper_homeworks')),
+          getDocs(query(collection(db, 'paper_submissions'), where('studentId', '==', currentStudent.id)))
+        ]);
+        const submitted = {};
+        subSnap.forEach(d => { const v = { id: d.id, ...d.data() }; submitted[v.homeworkId] = v; });
+        const now = Date.now(), WEEK = 7 * 24 * 60 * 60 * 1000;
+        let nextExpiry = Infinity;
+        let html = '<h4 style="color:#67e8f9">الواجبات الورقية ونتائج التصحيح</h4>', shown = 0;
+
+        hwSnap.forEach(d => {
+          const h = d.data(), sub = submitted[d.id];
+          if (h.grade !== 'للكل' && h.grade !== currentStudent.grade) return;
+          if (sub && sub.reviewed) {
+            if (sub.acknowledged) return;
+            const reviewedAt = Number(sub.reviewedAt || 0);
+            if (!reviewedAt || now - reviewedAt > WEEK) return;
+            nextExpiry = Math.min(nextExpiry, reviewedAt + WEEK);
+            shown++;
+            html += '<div class="student-row"><b>📷 ' + window.escHtml(h.title || sub.title || 'واجب ورقي') + '</b><br><small>تم التصحيح — يمكنك إخفاء النتيجة من زر «تم»</small><div style="color:#10b981;margin-top:8px;font-size:18px;font-weight:900">الدرجة: ' + Number(sub.score || 0) + '/10</div><div style="white-space:pre-wrap;margin-top:5px">ملاحظات المستر: ' + window.escHtml(sub.feedback || 'لا توجد ملاحظات') + '</div><button class="btn-small" style="background:#10b981;width:100%;margin-top:8px" onclick="acknowledgePaperCorrection(\'' + sub.id + '\')">تم</button></div>';
+            return;
+          }
+          if (h.active === false) return;
+          shown++;
+          html += '<div class="student-row"><b>📷 ' + window.escHtml(h.title || 'واجب ورقي') + '</b><br><small>' + window.escHtml(h.grade || '') + '</small>';
+          if (sub) {
+            html += '<div style="color:#fbbf24;margin-top:7px">✅ تم إرسال الواجب</div><div style="color:#cbd5e1;margin-top:6px">⏳ في انتظار تصحيح المستر</div>';
+          } else {
+            html += '<p style="font-size:12px;color:#cbd5e1">صوّر صفحات الواجب بوضوح — مسموح حتى 3 صور.</p><input type="file" id="paperFiles_' + d.id + '" accept="image/*" capture="environment" multiple><button class="btn-small" style="background:#0891b2;width:100%;margin-top:8px" onclick="submitPaperHomework(\'' + d.id + '\',\'' + window.escHtml(h.title || 'واجب ورقي').replace(/'/g, '&#39;') + '\')">📤 إرسال صور الواجب</button>';
+          }
+          html += '</div>';
+        });
+        box.innerHTML = html + (shown ? '' : '<p style="color:#94a3b8">لا توجد واجبات ورقية مطلوبة حالياً أو نتائج حديثة.</p>');
+      } catch (e) {
+        box.innerHTML = '<p style="color:#ef4444">تعذر تحميل الواجب الورقي: ' + window.escHtml(e.message || e) + '</p>';
+      }
+    };
+
+    window.acknowledgePaperCorrection = async function(id) {
+      try {
+        await updateDoc(doc(db, 'paper_submissions', id), { acknowledged: true, acknowledgedAt: Date.now() });
+        await loadPaperHomeworkStudent();
+      } catch (e) {
+        alert('تعذر إخفاء التصحيح: ' + (e.message || e));
+      }
+    };
+
+    window.submitPaperHomework = async function(homeworkId, title) {
+      try {
+        if (!currentStudent) { alert('سجّل دخولك أولاً'); return; }
+        const input = document.getElementById('paperFiles_' + homeworkId);
+        const files = input && input.files ? Array.from(input.files) : [];
+        if (!files.length) { alert('صوّر الواجب أو اختر الصور أولاً'); return; }
+        if (files.length > 3) { alert('مسموح بحد أقصى 3 صور'); return; }
+        // ضغط كل الصور أولاً، ثم حفظ التسليم وصوره في دفعة ذرية واحدة حتى لا يبقى تسليم ناقص.
+        const compressedPhotos = await Promise.all(files.map(file => compressQuizPhoto(file)));
+        const submissionRef = doc(collection(db, 'paper_submissions'));
+        const batch = writeBatch(db);
+        batch.set(submissionRef, {
+          homeworkId, title, studentId: currentStudent.id, studentName: currentStudent.name,
+          grade: currentStudent.grade, photoCount: compressedPhotos.length, created: Date.now(),
+          reviewed: false, acknowledged: false, score: 0, feedback: ''
+        });
+        compressedPhotos.forEach((dataUrl, i) => {
+          const photoRef = doc(collection(db, 'paper_submission_photos'));
+          batch.set(photoRef, {
+            submissionId: submissionRef.id, studentId: currentStudent.id, index: i + 1,
+            dataUrl, created: Date.now()
+          });
+        });
+        await batch.commit();
+        alert('✅ تم إرسال صور الواجب للمستر بنجاح.');
+        loadPaperHomeworkStudent();
+      } catch (e) { alert('تعذر إرسال صور الواجب: ' + (e.message || e)); }
+    };
+
+    window.loadPaperHomeworkAdmin = async function() {
+      const box = document.getElementById('paperHomeworkAdminList');
+      if (!box) return;
+      try {
+        const [subSnap, photoSnap] = await Promise.all([
+          getDocs(collection(db, 'paper_submissions')),
+          getDocs(collection(db, 'paper_submission_photos'))
+        ]);
+        const photos = {};
+        photoSnap.forEach(d => { const p = d.data(); (photos[p.submissionId] || (photos[p.submissionId] = [])).push(p); });
+        const term = (document.getElementById('paperSubmissionSearch')?.value || '').trim().toLowerCase();
+        let rows = [];
+        subSnap.forEach(d => {
+          const x = { id: d.id, ...d.data() };
+          if (!x.archivedAt && (!term || (x.studentName || '').toLowerCase().includes(term))) rows.push(x);
+        });
+        rows.sort((a, b) => (b.created || 0) - (a.created || 0));
+        if (!rows.length) { box.innerHTML = '<p style="color:#94a3b8">لا توجد تسليمات ظاهرة حالياً.</p>'; return; }
+        box.innerHTML = rows.map(x => {
+          const imgs = (photos[x.id] || []).sort((a, b) => (a.index || 0) - (b.index || 0));
+          const imageHtml = imgs.map(p => '<a href="' + window.safeImg(p.dataUrl) + '" target="_blank" rel="noopener"><img src="' + window.safeImg(p.dataUrl) + '" alt="صورة الواجب" style="width:100px;height:130px;object-fit:contain;background:#fff;border-radius:8px;margin:4px"></a>').join('');
+          const correction = x.reviewed ? '<small style="color:#10b981;display:block;margin-top:6px">✅ تم التصحيح — الدرجة ' + Number(x.score || 0) + '/10</small><button class="btn-small" style="background:#64748b;width:100%;margin-top:7px" onclick="archivePaperSubmission(\'' + x.id + '\')">إخفاء من قائمتي</button>' : '<small style="color:#fbbf24;display:block;margin-top:6px">⏳ في انتظار التصحيح</small>';
+          const editor = x.reviewed ? '' : '<textarea id="paperFeedback_' + x.id + '" placeholder="ملاحظات وتصحيح الواجب" style="min-height:75px">' + window.escHtml(x.feedback || '') + '</textarea><input id="paperScore_' + x.id + '" type="number" min="0" max="10" step="0.5" placeholder="الدرجة من 10"><button class="btn-small" style="background:#10b981;width:100%;margin-top:7px" onclick="savePaperCorrection(\'' + x.id + '\')">💾 حفظ التصحيح وإظهاره للطالب</button>';
+          return '<div class="student-row"><b>👦 ' + window.escHtml(x.studentName || 'طالب') + '</b> — ' + window.escHtml(x.grade || '') + '<br><b>📝 ' + window.escHtml(x.title || 'واجب ورقي') + '</b><br><small>' + new Date(x.created || Date.now()).toLocaleString('ar-EG') + '</small><div style="display:flex;flex-wrap:wrap;margin-top:8px">' + imageHtml + '</div>' + editor + correction + '</div>';
+        }).join('');
+      } catch (e) { box.innerHTML = '<p style="color:#ef4444">تعذر تحميل الواجبات: ' + window.escHtml(e.message || e) + '</p>'; }
+    };
+
+    window.archivePaperSubmission = async function(id) {
+      if (!confirm('إخفاء هذا التسليم المصحح من قائمتك؟')) return;
+      await updateDoc(doc(db, 'paper_submissions', id), { archivedAt: Date.now() });
+      loadPaperHomeworkAdmin();
+    };
+
+    window.savePaperCorrection = async function(id) {
+      const score = Number(document.getElementById('paperScore_' + id).value);
+      const feedback = document.getElementById('paperFeedback_' + id).value.trim();
+      if (!Number.isFinite(score) || score < 0 || score > 10) { alert('اكتب الدرجة من 0 إلى 10'); return; }
+      const photoSnap = await getDocs(query(collection(db, 'paper_submission_photos'), where('submissionId', '==', id)));
+      await Promise.all(photoSnap.docs.map(p => deleteDoc(doc(db, 'paper_submission_photos', p.id))));
+      const correctedAt = Date.now();
+      await updateDoc(doc(db, 'paper_submissions', id), { score, feedback, reviewed: true, reviewedAt: correctedAt, archivedAt: correctedAt });
+      alert('✅ تم حفظ التصحيح للطالب وحذف صور الإجابة من قائمة المعلم.');
+      loadPaperHomeworkAdmin();
+    };
+
+    window.loadPaymentHistory = async function() {
+      try {
+        const box = document.getElementById('paymentHistory');
+        if (!box || !currentStudent) return;
+        const snap = await getDocs(query(collection(db, 'payments'), where('studentId', '==', currentStudent.id)));
+        let items = [];
+        snap.forEach(function(d) { items.push({ id: d.id, ...d.data() }); });
+        items.sort(function(a, b) { return (b.created || 0) - (a.created || 0); });
+        if (!items.length) { box.innerHTML = '<small style="color:#94a3b8">لا توجد حالة دفع مسجلة حاليًا.</small>'; return; }
+        const labels = { pending: '⏳ قيد المراجعة', approved: '✅ تم تأكيد الدفع', rejected: '❌ لم يتم قبول الإيصال' };
+        box.innerHTML = '<b>حالة الدفع</b>' + items.slice(0, 3).map(function(p) {
+          return '<div class="student-row"><b>' + (labels[p.status] || 'قيد المراجعة') + '</b></div>';
+        }).join('');
+      } catch (e) { console.log('payment history', e); }
+    };
+
+    window.loadPaymentsAdmin = async function() {
+      try {
+        const box = document.getElementById('paymentsAdminList');
+        if (!box) return;
+        const snap = await getDocs(collection(db, 'payments'));
+        let items = [];
+        snap.forEach(function(d) { items.push({ id: d.id, ...d.data() }); });
+        items.sort(function(a, b) { return (b.created || 0) - (a.created || 0); });
+        if (!items.length) { box.innerHTML = '<p style="color:#94a3b8">لا توجد طلبات دفع حتى الآن.</p>'; return; }
+        const labels = { pending: '⏳ قيد المراجعة', approved: '✅ مؤكد', rejected: '❌ مرفوض' };
+        box.innerHTML = items.map(function(p) {
+          const date = p.created ? new Date(p.created).toLocaleString('ar-EG') : '';
+          return '<div class="student-row"><b>' + window.escHtml(p.studentName || 'طالب') + '</b> - ' + window.escHtml(p.grade || '') + '<br>المبلغ: <b>' + window.escHtml(String(p.amount || 0)) + ' جنيه</b><br>الطريقة: ' + (p.method === 'InstaPay' ? 'إنستاباي' : 'اتصالات كاش') + '<br><small>' + window.escHtml(p.note || '') + ' | ' + window.escHtml(date) + '</small><br><b>' + (labels[p.status] || 'قيد المراجعة') + '</b>' + (p.status === 'pending' ? '<div style="display:flex;gap:6px;margin-top:8px"><button class="btn-small" style="background:#10b981;flex:1" onclick="reviewPayment(\'' + p.id + '\',\'approved\')">تأكيد الدفع</button><button class="btn-small" style="background:#ef4444;flex:1" onclick="reviewPayment(\'' + p.id + '\',\'rejected\')">رفض</button></div>' : '') + '</div>';
+        }).join('');
+      } catch (e) { console.log(e); }
+    };
+
+    window.reviewPayment = async function(id, status) {
+      if (!['approved', 'rejected'].includes(status)) return;
+      if (!confirm('هل تريد ' + (status === 'approved' ? 'تأكيد الدفع' : 'رفض الإيصال') + '؟')) return;
+      await updateDoc(doc(db, 'payments', id), { status, reviewed: Date.now() });
+      loadPaymentsAdmin();
+    };
+
+    window.loginStudent = async function() {
+      try {
+        const phone = document.getElementById('loginPhone').value.trim();
+        if (!phone) { alert('اكتب رقمك'); return; }
+        const q = query(collection(db, 'students'), where('phone', '==', phone));
+        const snap = await getDocs(q);
+        if (snap.empty) { document.getElementById('loginMsg').innerText = '❌ رقم مش متسجل'; return; }
+        const d = snap.docs[0];
+        const data = d.data();
+        if (data.status === 'pending') { document.getElementById('loginMsg').innerText = '⏳ لسه موافقناش - تواصل 01116811324'; return; }
+        if (data.status === 'blocked') { document.getElementById('loginMsg').innerText = '🚫 محظور'; return; }
+        currentStudent = { id: d.id, ...data };
+        window.currentStudent = currentStudent;
+        document.getElementById('studentArea').style.display = 'block';
+        document.getElementById('welcome').innerText = 'أهلا يا ' + data.name;
+        const sched = await getScheduleForGrade(data.grade);
+        document.getElementById('studentSchedule').innerHTML = '<div class="scheduleBox">⏰ ' + data.grade + ': ' + sched + '</div>';
+        const monthScore = score10(data, 'eval_month');
+        document.getElementById('evalDisplay').innerHTML = '<h4>📊 تقييمك</h4><div>التفاعل: ' + score10(data, 'eval_interaction') + '/10</div><div>الواجب: ' + score10(data, 'eval_homework') + '/10</div><div>امتحان الشهر: ' + monthScore + '/10</div>';
+        document.getElementById('studentAttendanceDisplay').innerHTML = attendanceHistoryHtml(data.attendanceByDate);
+        document.getElementById('certArea').innerHTML = '';
+        if (monthScore >= 9) {
+          const today = new Date().toLocaleDateString('ar-EG');
+          document.getElementById('certArea').innerHTML = '<div class="certCard"><h2>🏆 درع التفوق</h2><h2>' + data.name + '</h2><p>' + today + '</p></div>';
+        }
+        loadStudentLesson();
+        loadStudentMaterials();
+        loadPaperHomeworkStudent();
+        loadPaymentHistory();
+      } catch (e) { document.getElementById('loginMsg').innerText = 'خطأ: ' + e.message; }
+    };
+
+    window.loadAdmin = async function() { loadAdminFiltered(); };
+
+    window.loadAdminFiltered = async function() {
+      try {
+        const allStudentsSnap = await getDocs(collection(db, 'students'));
+        const snap2 = await getDocs(collection(db, 'quiz_submissions'));
+        let studentCountMap = {};
+        let hwCountMap = {};
+        GRADES.forEach(function(g) { studentCountMap[g] = 0; hwCountMap[g] = 0; });
+        allStudentsSnap.forEach(function(d) { const g = d.data().grade; if (studentCountMap[g] !== undefined) studentCountMap[g]++; });
+        snap2.forEach(function(d) { const g = d.data().grade; if (hwCountMap[g] !== undefined) hwCountMap[g]++; });
+
+        var gf = document.getElementById('gradeFilter');
+        if (gf) {
+          gf.innerHTML = '<span class="gradeTab ' + (currentGradeFilter === 'الكل' ? 'active' : '') + '" onclick="filterGrade(\'الكل\')">الكل (' + allStudentsSnap.size + ')</span>' +
+            GRADES.map(function(g) {
+              return '<span class="gradeTab ' + (currentGradeFilter === g ? 'active' : '') + '" onclick="filterGrade(\'' + g + '\')">' + g.replace('الصف ', '') + ' (' + studentCountMap[g] + '👦|' + hwCountMap[g] + '📝)</span>';
+            }).join('');
+        }
+        const searchTerm = document.getElementById('studentSearch') ? document.getElementById('studentSearch').value.trim().toLowerCase() : '';
+        let students = [];
+        allStudentsSnap.forEach(function(d) { students.push({ id: d.id, data: d.data() }); });
+        if (currentGradeFilter !== 'الكل') students = students.filter(function(s) { return s.data.grade === currentGradeFilter; });
+        if (searchTerm) students = students.filter(function(s) { return s.data.name.toLowerCase().includes(searchTerm); });
+
+        const pending = document.getElementById('pendingList');
+        const approved = document.getElementById('approvedList');
+        const blocked = document.getElementById('blockedList');
+        if (pending) pending.innerHTML = '';
+        if (approved) approved.innerHTML = '';
+        if (blocked) blocked.innerHTML = '';
+
+        students.forEach(function(item) {
+          const s = item.data;
+          const id = item.id;
+          if (s.status == 'pending') {
+            if (pending) pending.innerHTML += '<div class="student-row"><div>⏳ ' + window.escHtml(s.name) + ' - ' + window.escHtml(s.phone) + '</div><div><button class="btn-small" onclick="approve(\'' + id + '\')" style="background:#10b981">موافقة</button><button class="btn-small" onclick="deleteStudent(\'' + id + '\')" style="background:#ef4444">حذف</button></div></div>';
+          } else if (s.status == 'blocked') {
+            if (blocked) blocked.innerHTML += '<div class="student-row" style="border:2px solid #ef4444"><div><b>🚫 ' + window.escHtml(s.name) + '</b> - ' + window.escHtml(s.phone) + '</div><div><button class="btn-small" onclick="approve(\'' + id + '\')" style="background:#10b981">✅ فك الحظر</button><button class="btn-small" onclick="deleteStudent(\'' + id + '\')" style="background:#ef4444">🗑️ حذف</button></div></div>';
+          } else {
+            if (approved) approved.innerHTML += '<div class="student-row" style="border:2px solid #f59e0b"><div style="width:100%"><b>✅ ' + window.escHtml(s.name) + '</b> - ' + window.escHtml(s.phone) + '<br><small>' + window.escHtml(s.grade) + '</small><div>تفاعل: ' + editableScore(id, 'eval_interaction', score10(s, 'eval_interaction')) + '</div><div>واجب: ' + editableScore(id, 'eval_homework', score10(s, 'eval_homework')) + '</div><div>امتحان الشهر: ' + editableScore(id, 'eval_month', score10(s, 'eval_month')) + '</div>' + attendanceEditor(id, s.attendanceByDate) + '<div style="margin-top:10px;display:flex;gap:6px"><button class="btn-small" onclick="blockStudent(\'' + id + '\')" style="background:#f97316;flex:1">🚫 حظر</button><button class="btn-small" onclick="deleteStudent(\'' + id + '\')" style="background:#ef4444;flex:1">🗑️ حذف</button></div></div></div>';
+          }
+        });
+      } catch (e) { console.log(e); }
+    };
+
+    window.filterGrade = function(g) { currentGradeFilter = g; loadAdminFiltered(); };
+    window.approve = async function(id) { await updateDoc(doc(db, 'students', id), { status: 'approved' }); loadAdminFiltered(); };
+    window.blockStudent = async function(id) { if (!confirm('حظر؟')) return; await updateDoc(doc(db, 'students', id), { status: 'blocked' }); loadAdminFiltered(); };
+    window.deleteStudent = async function(id) { if (!confirm('حذف نهائي؟')) return; await deleteDoc(doc(db, 'students', id)); loadAdminFiltered(); };
+
+    window.addLesson = async function() {
+      const title = document.getElementById('lessonTitle').value.trim();
+      const meetLink = document.getElementById('meetLink').value.trim();
+      const ytLink = document.getElementById('ytLink').value.trim();
+      const teachmintLink = document.getElementById('teachmintLink').value.trim();
+      const grade = document.getElementById('lessonGrade').value;
+      if (!title) { alert('عنوان'); return; }
+      await setDoc(doc(db, 'lessons', 'current'), { title, meetLink, ytLink, teachmintLink, grade, created: Date.now() });
+      alert('تم نشر الحصة');
+    };
+
+    window.clearLesson = async function() {
+      await deleteDoc(doc(db, 'lessons', 'current'));
+      alert('تم إنهاء الحصة');
+    };
+
+    window.loginAdmin = async function() {
+      const email = document.getElementById('adminEmail').value.trim();
+      const pass = document.getElementById('adminPass').value;
+      if (!email || !pass) { alert('اكتب الإيميل والباسورد'); return; }
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+        showAdminArea();
+      } catch (e) {
+        alert('خطأ في الدخول: تأكد من الإيميل والباسورد (' + e.message + ')');
+      }
+    };
+
+    function showAdminArea() {
+      const area = document.getElementById('adminArea');
+      if (area.style.display === 'block') return;
+      area.style.display = 'block';
+      document.getElementById('adminPass').value = '';
+      loadAdmin();
+      loadSchedulesAdmin();
+    }
+
+    window.logoutAdmin = async function() {
+      await signOut(auth);
+      document.getElementById('adminArea').style.display = 'none';
+    };
+
+    // مجموعات بيانات المنصة المعروفة. لا يتم حذف أي مستند عند الاستعادة.
+    const BACKUP_COLLECTIONS = [
+      'students', 'schedules', 'payments', 'lessons', 'materials',
+      'paper_homeworks', 'paper_submissions', 'paper_submission_photos',
+      'quiz_submissions', 'live_classes', 'paragraph_homeworks', 'paragraph_submissions'
+    ];
+
+    window.exportPlatformBackup = async function() {
+      const status = document.getElementById('backupStatus');
+      try {
+        if (!auth.currentUser) { alert('سجّل دخولك بحساب المدرس أولاً.'); return; }
+        status.textContent = 'جاري تجهيز النسخة الاحتياطية...';
+        const collectionsData = {};
+        for (const name of BACKUP_COLLECTIONS) {
+          const snap = await getDocs(collection(db, name));
+          collectionsData[name] = snap.docs.map(d => ({
+            id: d.id,
+            data: JSON.parse(JSON.stringify(d.data(), (key, value) =>
+              value instanceof Timestamp || (value && value.type === 'firestore/timestamp/1.0')
+                ? { __platformBackupType: 'Timestamp', seconds: value.seconds, nanoseconds: value.nanoseconds }
+                : value
+            ))
+          }));
+        }
+        const backup = {
+          format: 'ahmed-english-platform-backup',
+          version: 1,
+          projectId: firebaseConfig.projectId,
+          createdAt: new Date().toISOString(),
+          collections: collectionsData
+        };
+        const blob = new Blob([JSON.stringify(backup)], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'ahmed-english-backup-' + new Date().toISOString().replace(/[:.]/g, '-') + '.json';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        const total = Object.values(collectionsData).reduce((n, arr) => n + arr.length, 0);
+        status.textContent = '✅ تم تجهيز النسخة: ' + total + ' مستندًا من ' + BACKUP_COLLECTIONS.length + ' مجموعة.';
+      } catch (e) {
+        status.textContent = 'تعذر إنشاء النسخة: ' + (e.message || e);
+        alert('تعذر إنشاء النسخة الاحتياطية: ' + (e.message || e));
+      }
+    };
+
+    window.restorePlatformBackup = async function() {
+      const status = document.getElementById('backupStatus');
+      const input = document.getElementById('backupRestoreFile');
+      try {
+        if (!auth.currentUser) { alert('سجّل دخولك بحساب المدرس أولاً.'); return; }
+        const file = input && input.files && input.files[0];
+        if (!file) { alert('اختر ملف النسخة الاحتياطية أولاً.'); return; }
+        if (file.size > 100 * 1024 * 1024) { alert('حجم الملف أكبر من 100 ميجابايت.'); return; }
+        const raw = await file.text();
+        const backup = JSON.parse(raw, (key, value) => {
+          if (value && value.__platformBackupType === 'Timestamp') {
+            return new Timestamp(value.seconds, value.nanoseconds);
+          }
+          return value;
+        });
+        if (!backup || backup.format !== 'ahmed-english-platform-backup' ||
+            backup.version !== 1 || backup.projectId !== firebaseConfig.projectId ||
+            !backup.collections || typeof backup.collections !== 'object') {
+          throw new Error('ملف النسخة غير صحيح أو تابع لمشروع Firebase آخر.');
+        }
+        const entries = [];
+        for (const name of BACKUP_COLLECTIONS) {
+          const docs = backup.collections[name];
+          if (docs === undefined) continue;
+          if (!Array.isArray(docs)) throw new Error('بيانات المجموعة غير صحيحة: ' + name);
+          for (const item of docs) {
+            if (!item || typeof item.id !== 'string' || !item.id || item.id.includes('/') || !item.data || typeof item.data !== 'object' || Array.isArray(item.data)) {
+              throw new Error('يوجد مستند غير صالح داخل المجموعة: ' + name);
+            }
+            entries.push({ name, id: item.id, data: item.data });
+          }
+        }
+        if (!entries.length) { alert('الملف لا يحتوي على مستندات للاستعادة.'); return; }
+        const ok = confirm(
+          'سيتم استعادة ' + entries.length + ' مستندًا.\n' +
+          'المستندات التي تحمل نفس المعرّف سيتم استبدالها، والمستندات الأخرى لن تُحذف.\n' +
+          'تأكد أنك نزّلت نسخة احتياطية حديثة قبل المتابعة. هل تريد الاستمرار؟'
+        );
+        if (!ok) return;
+        status.textContent = 'جاري الاستعادة... لا تغلق الصفحة.';
+        for (let i = 0; i < entries.length; i += 400) {
+          const batch = writeBatch(db);
+          entries.slice(i, i + 400).forEach(item => {
+            batch.set(doc(db, item.name, item.id), item.data);
+          });
+          await batch.commit();
+          status.textContent = 'جاري الاستعادة: ' + Math.min(i + 400, entries.length) + ' من ' + entries.length;
+        }
+        status.textContent = '✅ تمت استعادة ' + entries.length + ' مستندًا. أعد تحميل الصفحة لمراجعة البيانات.';
+        alert('تمت الاستعادة بنجاح.');
+      } catch (e) {
+        status.textContent = 'تعذرت الاستعادة: ' + (e.message || e);
+        alert('تعذرت الاستعادة: ' + (e.message || e));
+      }
+    };
+
+    onAuthStateChanged(auth, function(u) { if (u) showAdminArea(); });
+
+  </script>
+  <script src="word-of-day.js" defer></script>
+  <script src="daily-learning.js" defer></script>
+</body>
+</html>
