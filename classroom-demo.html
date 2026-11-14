@@ -23,7 +23,7 @@ canvas{display:block;max-width:100%;height:auto}#ink{position:absolute;inset:0;w
 <body>
 <header><h1>📚 الفصل التفاعلي — نموذج أولي</h1><small>نسخة اختبار منفصلة عن المنصة الأساسية</small></header>
 <main class="wrap">
-<div class="notice"><b>تنبيه مهم:</b> هذه شاشة تجريبية لاختبار شكل عرض الملزمة وأدوات المدرس على الجهاز فقط. الصوت المباشر ومزامنة الطالب مع المدرس لم يتم ربطهما بعد، ولن يتم نشرها للطلاب قبل اكتمال الاختبار.</div>
+<div class="notice"><b>تنبيه مهم:</b> هذه شاشة تجريبية للفصل التفاعلي. تتضمن النسخة التجريبية مسار الاتصال الصوتي ومزامنة السبورة، مع لوحة للمدرس لكتم ميكروفون طالب محدد أو كتم الجميع. يلزم إعداد LiveKit وCloudflare واختبارهما قبل استخدامها مع الطلاب.</div>
 <section class="panel">
 <div class="toolbar">
 <select id="classroomGrade" style="min-width:180px;flex:1;background:#243b59;color:white;border:1px solid #49617f;padding:10px;border-radius:9px">
@@ -121,7 +121,7 @@ async function connectRoom(credentials,role,roomId){
  liveRoom.on(LivekitClient.RoomEvent.TrackUnsubscribed,(track)=>track.detach());
  if(role==='teacher')liveRoom.on(LivekitClient.RoomEvent.ParticipantConnected,()=>{setTimeout(async()=>{await sendBoard({type:'page',page});for(const [p,items] of Object.entries(strokesByPage)){for(const stroke of items)await sendBoard({type:'stroke',page:Number(p),stroke:compactStroke(stroke)})}},1200)});
  liveRoom.on(LivekitClient.RoomEvent.DataReceived,(payload,participant)=>{if(role!=='student'||!participant?.identity?.startsWith('teacher_'))return;try{applyBoard(JSON.parse(new TextDecoder().decode(payload)))}catch(e){}});
- liveRoom.on(LivekitClient.RoomEvent.Disconnected,()=>{status('انقطع الاتصال. يمكنك إعادة الدخول برمز الحصة.');setConnectedUI(false)});
+ liveRoom.on(LivekitClient.RoomEvent.Disconnected,()=>{if(studentRefreshTimer){clearInterval(studentRefreshTimer);studentRefreshTimer=null;} $('teacherMicPanel').hidden=true;status('انقطع الاتصال. يمكنك إعادة الدخول برمز الحصة.');setConnectedUI(false)});
  await liveRoom.connect(credentials.livekitUrl,credentials.token);
  await liveRoom.localParticipant.setMicrophoneEnabled(true);
  setConnectedUI(true);
