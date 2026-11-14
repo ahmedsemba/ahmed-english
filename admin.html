@@ -509,8 +509,21 @@
         <div id="admin-recorded" style="display:none" class="card">
           <h4>🎬 إضافة حصة مسجلة</h4>
           <p style="color:#cbd5e1;font-size:13px">أضف عنوان الدرس والصف ورابط فيديو يوتيوب. سيظهر الفيديو للطلاب من صفحة الحصص المسجلة دون تسجيل دخول.</p>
-          <input id="recordedTitle" placeholder="اسم الدرس">
-          <input id="recordedUnit" placeholder="اسم الوحدة (مثال: الوحدة الأولى)">
+          <input id="recordedTitle" placeholder="اسم الدرس أو القصة">
+          <label for="recordedUnit">الوحدة</label>
+          <select id="recordedUnit">
+            <option value="">اختر الوحدة</option>
+            <option value="الوحدة 1">الوحدة 1</option><option value="الوحدة 2">الوحدة 2</option>
+            <option value="الوحدة 3">الوحدة 3</option><option value="الوحدة 4">الوحدة 4</option>
+            <option value="الوحدة 5">الوحدة 5</option><option value="الوحدة 6">الوحدة 6</option>
+          </select>
+          <label for="recordedLessonNumber">رقم الدرس</label>
+          <select id="recordedLessonNumber">
+            <option value="">اختر الدرس</option>
+            <option value="1">الدرس 1</option><option value="2">الدرس 2</option>
+            <option value="3">الدرس 3</option><option value="4">الدرس 4</option>
+            <option value="5">الدرس 5</option>
+          </select>
           <select id="recordedGrade">
             <option value="الصف الأول الابتدائي">الصف الأول الابتدائي</option>
             <option value="الصف الثاني الابتدائي">الصف الثاني الابتدائي</option>
@@ -1340,14 +1353,16 @@
     window.addRecordedLesson = async function() {
       try {
         const title = document.getElementById('recordedTitle').value.trim();
-        const unit = document.getElementById('recordedUnit').value.trim();
+        const unit = document.getElementById('recordedUnit').value;
+        const lessonNumber = document.getElementById('recordedLessonNumber').value;
         const grade = document.getElementById('recordedGrade').value;
         const link = document.getElementById('recordedYoutubeLink').value.trim();
-        if (!title || !unit || !grade || !link) { alert('اكتب اسم الدرس والوحدة واختر الصف وضع رابط يوتيوب.'); return; }
+        if (!title || !unit || !lessonNumber || !grade || !link) { alert('اكتب اسم الدرس أو القصة، واختر الوحدة ورقم الدرس والصف، ثم ضع رابط يوتيوب.'); return; }
         if (!getYouTubeVideoId(link)) { alert('ضع رابط فيديو صحيح من يوتيوب.'); return; }
-        await addDoc(collection(db, 'materials'), { type: 'recorded_lesson', title, unit, grade, link, created: Date.now() });
+        await addDoc(collection(db, 'materials'), { type: 'recorded_lesson', title, unit, lessonNumber, grade, link, created: Date.now() });
         document.getElementById('recordedTitle').value = '';
         document.getElementById('recordedUnit').value = '';
+        document.getElementById('recordedLessonNumber').value = '';
         document.getElementById('recordedYoutubeLink').value = '';
         await window.loadRecordedLessonsAdmin();
         alert('✅ تم إضافة الحصة المسجلة، وستظهر لطلاب الصف المحدد.');
@@ -1373,7 +1388,7 @@
           const title = document.createElement('b');
           title.textContent = '🎬 ' + (item.title || 'درس مسجل');
           const grade = document.createElement('div');
-          grade.textContent = (item.grade || '') + ' • ' + (item.unit || 'وحدة غير محددة');
+          grade.textContent = (item.grade || '') + ' • ' + (item.unit || 'وحدة غير محددة') + ' • الدرس ' + (item.lessonNumber || '—');
           const remove = document.createElement('button');
           remove.className = 'btn-small';
           remove.style.background = '#ef4444';
