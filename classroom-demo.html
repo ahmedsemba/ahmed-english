@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>الفصل التفاعلي - نموذج تجريبي</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#142238;--line:#2b405b;--blue:#2563eb;--teal:#0d9488}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f8fafc;font-family:Tahoma,Arial,sans-serif}
+header{padding:14px 18px;background:linear-gradient(120deg,#1d4ed8,#0f766e);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font-size:19px;margin:0}small{color:#cbd5e1}.wrap{max-width:1100px;margin:auto;padding:14px}
+.notice{background:#3b2d12;border:1px solid #a16207;color:#fde68a;padding:11px 13px;border-radius:10px;line-height:1.7;margin-bottom:12px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.toolbar button,.toolbar label,.toolbar select{background:#243b59;color:#fff;border:1px solid #49617f;padding:9px 12px;border-radius:9px;font-size:14px}
+button:disabled{opacity:.4}.primary{background:var(--blue)!important}.active{outline:2px solid #5eead4}
+input[type=file]{display:none}.viewer{background:#334155;border-radius:12px;min-height:55vh;padding:12px;display:flex;justify-content:center;align-items:flex-start;overflow:auto}
+.page-wrap{position:relative;background:white;max-width:100%;line-height:0;box-shadow:0 5px 24px #0008}
+canvas{display:block;max-width:100%;height:auto}#ink{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.status{font-size:13px;color:#cbd5e1;margin-top:9px}.audio{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+@media(max-width:600px){h1{font-size:16px}.wrap{padding:9px}.viewer{min-height:48vh;padding:6px}.toolbar button,.toolbar label,.toolbar select{padding:8px 9px;font-size:13px}}
+</style>
+</head>
+<body>
+<header><h1>📚 الفصل التفاعلي — نموذج أولي</h1><small>نسخة اختبار منفصلة عن المنصة الأساسية</small></header>
+<main class="wrap">
+<div class="notice"><b>تنبيه مهم:</b> هذه شاشة تجريبية لاختبار شكل عرض الملزمة وأدوات المدرس على الجهاز فقط. الصوت المباشر ومزامنة الطالب مع المدرس لم يتم ربطهما بعد، ولن يتم نشرها للطلاب قبل اكتمال الاختبار.</div>
+<section class="panel">
+<div class="toolbar">
+<label class="primary" for="pdfFile">اختيار ملف PDF من الجهاز</label><input id="pdfFile" type="file" accept="application/pdf">
+<button id="prev">◀ الصفحة السابقة</button><span id="pageInfo">0 / 0</span><button id="next">الصفحة التالية ▶</button>
+<button id="zoomOut">− تصغير</button><button id="zoomIn">تكبير +</button><button id="fit">ملاءمة الشاشة</button>
+</div><div class="status" id="fileStatus">اختر ملف PDF لتجربة عرضه. لا يتم رفع الملف إلى أي خادم.</div>
+</section>
+<section class="panel">
+<div class="toolbar">
+<strong>أدوات المدرس (محاكاة محلية):</strong>
+<button id="pen" class="active">✏️ القلم</button><button id="eraser">⌫ الممحاة</button><button id="undo">تراجع</button><button id="clear">مسح الكتابة</button>
+<select id="color" aria-label="لون القلم"><option value="#e11d48">أحمر</option><option value="#2563eb">أزرق</option><option value="#16a34a">أخضر</option><option value="#111827">أسود</option></select>
+<select id="size" aria-label="سمك القلم"><option value="2">رفيع</option><option value="4" selected>متوسط</option><option value="7">عريض</option></select>
+</div><div class="status">الأدوات تعمل على هذه الشاشة كتجربة فقط. الطالب لن تظهر له أدوات الكتابة في النسخة النهائية.</div>
+</section>
+<section class="panel">
+<div class="audio"><b>🎙️ الصوت المباشر:</b><span class="status">سيتم تفعيله بعد ربط خدمة الاتصال الآمن.</span></div>
+</section>
+<section class="viewer"><div class="page-wrap" id="pageWrap"><canvas id="pdfCanvas"></canvas><canvas id="ink"></canvas></div></section>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id), pdfCanvas=$('pdfCanvas'),ctx=pdfCanvas.getContext('2d'),ink=$('ink'),ictx=ink.getContext('2d');
+let pdf=null,page=1,scale=1,tool='pen',drawing=false,last=null,strokes=[],current=null;
+if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+function resizeInk(){ink.width=pdfCanvas.width;ink.height=pdfCanvas.height;redraw()}
+function redraw(){ictx.clearRect(0,0,ink.width,ink.height);for(const s of strokes){ictx.globalCompositeOperation=s.tool==='eraser'?'destination-out':'source-over';ictx.strokeStyle=s.color;ictx.lineWidth=s.width;ictx.lineCap='round';ictx.lineJoin='round';ictx.beginPath();s.points.forEach((p,i)=>i?ictx.lineTo(p.x,p.y):ictx.moveTo(p.x,p.y));ictx.stroke()}ictx.globalCompositeOperation='source-over'}
+async function render(){if(!pdf)return;const p=await pdf.getPage(page),v=p.getViewport({scale});pdfCanvas.width=v.width;pdfCanvas.height=v.height;await p.render({canvasContext:ctx,viewport:v}).promise;ink.style.width=pdfCanvas.width+'px';ink.style.height=pdfCanvas.height+'px';resizeInk();$('pageInfo').textContent=page+' / '+pdf.numPages;$('prev').disabled=page<=1;$('next').disabled=page>=pdf.numPages}
+$('pdfFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const data=await f.arrayBuffer();pdf=await pdfjsLib.getDocument({data}).promise;page=1;scale=1;strokes=[];$('fileStatus').textContent='تم فتح: '+f.name+' — الملف محلي على جهازك فقط.';await render()}catch(err){$('fileStatus').textContent='تعذر فتح الملف. تأكد أنه PDF صالح.'}});
+$('prev').onclick=()=>{if(page>1){page--;strokes=[];render()}};$('next').onclick=()=>{if(pdf&&page<pdf.numPages){page++;strokes=[];render()}};
+$('zoomIn').onclick=()=>{if(pdf){scale=Math.min(2.5,scale+.15);render()}};$('zoomOut').onclick=()=>{if(pdf){scale=Math.max(.5,scale-.15);render()}};
+$('fit').onclick=()=>{if(pdf){const max=Math.min(($('pageWrap').parentElement.clientWidth-24)/pdfCanvas.width,1.5);scale=Math.max(.5,max);render()}};
+$('pen').onclick=()=>setTool('pen');$('eraser').onclick=()=>setTool('eraser');function setTool(t){tool=t;$('pen').classList.toggle('active',t==='pen');$('eraser').classList.toggle('active',t==='eraser')}
+function point(e){const r=ink.getBoundingClientRect();return{x:(e.clientX-r.left)*ink.width/r.width,y:(e.clientY-r.top)*ink.height/r.height}}
+ink.addEventListener('pointerdown',e=>{if(!pdf)return;drawing=true;ink.setPointerCapture(e.pointerId);const p=point(e);current={tool,color:$('color').value,width:Number($('size').value),points:[p]};strokes.push(current);redraw()});
+ink.addEventListener('pointermove',e=>{if(!drawing||!current)return;current.points.push(point(e));redraw()});function stop(){drawing=false;current=null}ink.addEventListener('pointerup',stop);ink.addEventListener('pointercancel',stop);
+$('undo').onclick=()=>{strokes.pop();redraw()};$('clear').onclick=()=>{strokes=[];redraw()};
+})();
+</script>
+</body></html>
