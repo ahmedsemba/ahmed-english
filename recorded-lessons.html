@@ -84,19 +84,22 @@ function setOptions(select,values,placeholder){
 function gradeItems(){return allLessons.filter(item=>item.grade===gradeSelect.value);}
 function refreshUnits(){
   const items=gradeItems();
-  setOptions(unitSelect,unique(items.map(item=>item.unit)),'اختر الوحدة');
+  setOptions(unitSelect,Array.from({length:6},(_,i)=>'الوحدة '+(i+1)),'اختر الوحدة من 1 إلى 6');
   unitSelect.disabled=!items.length;
-  setOptions(lessonSelect,[],'اختر الدرس');
+  setOptions(lessonSelect,[],'اختر الدرس من 1 إلى 5');
   lessonSelect.disabled=true;
   playerCard.style.display='none';
-  statusBox.textContent=items.length?'اختر الوحدة ثم الدرس.':'لا توجد حصص مسجلة لهذا الصف حتى الآن.';
+  player.src='';
+  statusBox.textContent=items.length?'اختر الوحدة من 1 إلى 6.':'لا توجد حصص مسجلة لهذا الصف حتى الآن.';
 }
 function refreshLessons(){
   const items=gradeItems().filter(item=>item.unit===unitSelect.value);
-  setOptions(lessonSelect,unique(items.map(item=>item.title)),'اختر الدرس');
+  setOptions(lessonSelect,Array.from({length:5},(_,i)=>String(i+1)),'اختر الدرس من 1 إلى 5');
+  Array.from(lessonSelect.options).forEach((option,index)=>{if(index>0)option.textContent='الدرس '+option.value;});
   lessonSelect.disabled=!items.length;
   playerCard.style.display='none';
-  statusBox.textContent=items.length?'اختر الدرس ثم اضغط بحث وعرض الدرس.':'لا توجد دروس مسجلة في هذه الوحدة.';
+  player.src='';
+  statusBox.textContent=items.length?'اختر رقم الدرس من 1 إلى 5.':'لا توجد دروس مسجلة في هذه الوحدة.';
 }
 async function loadAll(){
   statusBox.textContent='⏳ جاري تحميل الحصص المسجلة...';
@@ -112,11 +115,12 @@ async function loadAll(){
         id,
         title:String(item.title||'درس مسجل'),
         unit:String(item.unit||'وحدة غير محددة'),
+        lessonNumber:String(item.lessonNumber||''),
         grade:String(item.grade||''),
         created:item.created||0
       });
     });
-    statusBox.textContent='اختَر الصف والوحدة والدرس للبدء.';
+    statusBox.textContent='اختَر الصف ثم الوحدة من 1 إلى 6 ثم الدرس من 1 إلى 5.';
   }catch(error){
     statusBox.textContent='تعذر تحميل الحصص الآن. حاول مرة أخرى لاحقًا.';
   }
@@ -124,11 +128,11 @@ async function loadAll(){
 function showChosenLesson(){
   const grade=gradeSelect.value;
   const unit=unitSelect.value;
-  const title=lessonSelect.value;
+  const lessonNumber=lessonSelect.value;
   const query=searchInput.value.trim().toLocaleLowerCase('ar');
   if(!grade){statusBox.textContent='اختر الصف الدراسي أولاً.';playerCard.style.display='none';return;}
   const matches=gradeItems().filter(item=>
-    (!unit||item.unit===unit)&&(!title||item.title===title)&&
+    (!unit||item.unit===unit)&&(!lessonNumber||item.lessonNumber===lessonNumber)&&
     (!query||item.title.toLocaleLowerCase('ar').includes(query))
   );
   if(matches.length!==1){
