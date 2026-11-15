@@ -537,7 +537,8 @@
             <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
           </select>
           <input id="recordedYoutubeLink" type="url" placeholder="رابط تسجيل الحصة على يوتيوب">
-          <button onclick="addRecordedLesson()" style="background:#10b981">➕ إضافة الحصة المسجلة</button>
+          <button id="recordedSaveButton" onclick="addRecordedLesson()" style="background:#10b981">➕ إضافة الحصة المسجلة</button>
+          <button id="recordedCancelEditButton" onclick="cancelRecordedLessonEdit()" style="background:#64748b;display:none;margin-top:6px">إلغاء التعديل</button>
           <div id="recordedLessonsAdminList" style="margin-top:12px"></div>
         </div>
 
@@ -610,7 +611,8 @@
               <option>الصف الثاني الإعدادي</option>
               <option>الصف الثالث الإعدادي</option>
             </select>
-            <button onclick="addMaterial()" style="background:#10b981;margin-top:10px">💾 إضافة الملزمة</button>
+            <button id="materialSaveButton" onclick="addMaterial()" style="background:#10b981;margin-top:10px">💾 إضافة الملزمة</button>
+          <button id="materialCancelEditButton" onclick="cancelMaterialEdit()" style="background:#64748b;display:none;margin-top:6px">إلغاء التعديل</button>
             <p id="matMsg" style="font-size:12px;color:#10b981"></p>
           </div>
           <div class="card" style="background:#0f172a;margin-top:12px;border:1px solid #334155">
@@ -917,6 +919,24 @@
       } catch (e) { console.log(e); }
     }
 
+    let editingMaterialId = null;
+    window.cancelMaterialEdit = function() {
+      editingMaterialId = null;
+      document.getElementById("matTitle").value = "";
+      document.getElementById("matLink").value = "";
+      document.getElementById("matGrade").selectedIndex = 0;
+      document.getElementById("materialSaveButton").textContent = "💾 إضافة الملزمة";
+      document.getElementById("materialCancelEditButton").style.display = "none";
+    };
+    window.editMaterial = function(item) {
+      editingMaterialId = item.id;
+      document.getElementById("matTitle").value = item.title || "";
+      document.getElementById("matLink").value = item.link || "";
+      document.getElementById("matGrade").value = item.grade || "للكل";
+      document.getElementById("materialSaveButton").textContent = "💾 حفظ تعديل الملزمة";
+      document.getElementById("materialCancelEditButton").style.display = "block";
+      document.getElementById("matTitle").scrollIntoView({ behavior: "smooth", block: "center" });
+    };
     window.addMaterial = async function() {
       try {
         const title = document.getElementById('matTitle').value.trim();
@@ -924,12 +944,18 @@
         const grade = document.getElementById('matGrade').value;
         if (!title || !link) { alert('اكتب العنوان واللينك'); return; }
         if (link.indexOf('http') !== 0) { alert('اللينك لازم يبدأ بـ http'); return; }
-        await addDoc(collection(db, 'materials'), { title, link, grade, created: Date.now() });
-        document.getElementById('matMsg').innerText = '✅ تم إضافة الملزمة';
-        document.getElementById('matTitle').value = '';
-        document.getElementById('matLink').value = '';
-        loadMaterialsAdmin();
-        alert('تم إضافة الملزمة');
+        if (editingMaterialId) {
+          await updateDoc(doc(db, 'materials', editingMaterialId), { title, link, grade, updated: Date.now() });
+          window.cancelMaterialEdit();
+          document.getElementById('matMsg').innerText = '✅ تم تعديل الملزمة';
+          alert('تم تعديل الملزمة');
+        } else {
+          await addDoc(collection(db, 'materials'), { title, link, grade, created: Date.now() });
+          window.cancelMaterialEdit();
+          document.getElementById('matMsg').innerText = '✅ تم إضافة الملزمة';
+          alert('تم إضافة الملزمة');
+        }
+        await loadMaterialsAdmin();
       } catch (e) { alert('خطأ: ' + e.message); }
     };
 
@@ -947,12 +973,20 @@
         if (items.length === 0) { list.innerHTML = '<p style="color:#94a3b8">لا يوجد ملازم حالياً</p>'; return; }
         let html = '';
         items.forEach(function(m) {
-          html += '<div class="student-row" style="border:1px solid #334155;margin-top:8px"><b>📚 ' + m.title + '</b><br><small>' + m.grade + '</small><br><a href="' + m.link + '" target="_blank" style="color:#60a5fa;font-size:12px">فتح اللينك</a><br><button class="btn-small" style="background:#ef4444;margin-top:6px" onclick="deleteMaterial(\'' + m.id + '\')">🗑️ حذف</button></div>';
+          html += '<div class="student-row" style="border:1px solid #334155;margin-top:8px"><b>📚 ' + m.title + '</b><br><small>' + m.grade + '</small><br><a href="' + m.link + '" target="_blank" style="color:#60a5fa;font-size:12px">فتح اللينك</a><br><button class="btn-small" style="background:#2563eb;margin-top:6px" onclick="editMaterialById(\'' + m.id + '\')">✏️ تعديل</button> <button class="btn-small" style="background:#ef4444;margin-top:6px" onclick="deleteMaterial(\'' + m.id + '\')">🗑️ حذف</button></div>';
         });
         list.innerHTML = html;
       } catch (e) { console.log(e); }
     };
 
+    window.editMaterialById = async function(id) {
+      try {
+        const snap = await getDocs(collection(db, 'materials'));
+        const found = snap.docs.find(d => d.id === id);
+        if (!found || found.data().type === 'recorded_lesson') { alert('تعذر العثور على الملزمة.'); return; }
+        window.editMaterial({ id, ...found.data() });
+      } catch (e) { alert('تعذر فتح الملزمة للتعديل: ' + (e.message || e)); }
+    };
     window.deleteMaterial = async function(id) {
       if (!confirm('هل تريد حذف هذه الملزمة؟')) return;
       await deleteDoc(doc(db, 'materials', id));
@@ -1351,6 +1385,25 @@
       } catch (e) {}
       return '';
     }
+    let editingRecordedId = null;
+    window.cancelRecordedLessonEdit = function() {
+      editingRecordedId = null;
+      ["recordedTitle", "recordedUnit", "recordedLessonNumber", "recordedYoutubeLink"].forEach(id => { document.getElementById(id).value = ""; });
+      document.getElementById("recordedGrade").selectedIndex = 0;
+      document.getElementById("recordedSaveButton").textContent = "➕ إضافة الحصة المسجلة";
+      document.getElementById("recordedCancelEditButton").style.display = "none";
+    };
+    window.editRecordedLesson = function(item) {
+      editingRecordedId = item.id;
+      document.getElementById("recordedTitle").value = item.title || "";
+      document.getElementById("recordedUnit").value = item.unit || "";
+      document.getElementById("recordedLessonNumber").value = String(item.lessonNumber || "");
+      document.getElementById("recordedGrade").value = item.grade || "";
+      document.getElementById("recordedYoutubeLink").value = item.link || "";
+      document.getElementById("recordedSaveButton").textContent = "💾 حفظ تعديل الفيديو";
+      document.getElementById("recordedCancelEditButton").style.display = "block";
+      document.getElementById("recordedTitle").scrollIntoView({ behavior: "smooth", block: "center" });
+    };
     window.addRecordedLesson = async function() {
       try {
         const title = document.getElementById('recordedTitle').value.trim();
@@ -1360,13 +1413,16 @@
         const link = document.getElementById('recordedYoutubeLink').value.trim();
         if (!title || !unit || !lessonNumber || !grade || !link) { alert('اكتب اسم الدرس أو القصة، واختر الوحدة ورقم الدرس والصف، ثم ضع رابط يوتيوب.'); return; }
         if (!getYouTubeVideoId(link)) { alert('ضع رابط فيديو صحيح من يوتيوب.'); return; }
-        await addDoc(collection(db, 'materials'), { type: 'recorded_lesson', title, unit, lessonNumber, grade, link, created: Date.now() });
-        document.getElementById('recordedTitle').value = '';
-        document.getElementById('recordedUnit').value = '';
-        document.getElementById('recordedLessonNumber').value = '';
-        document.getElementById('recordedYoutubeLink').value = '';
+        if (editingRecordedId) {
+          await updateDoc(doc(db, 'materials', editingRecordedId), { type: 'recorded_lesson', title, unit, lessonNumber, grade, link, updated: Date.now() });
+          window.cancelRecordedLessonEdit();
+          alert('✅ تم حفظ تعديل الحصة المسجلة.');
+        } else {
+          await addDoc(collection(db, 'materials'), { type: 'recorded_lesson', title, unit, lessonNumber, grade, link, created: Date.now() });
+          window.cancelRecordedLessonEdit();
+          alert('✅ تم إضافة الحصة المسجلة، وستظهر لطلاب الصف المحدد.');
+        }
         await window.loadRecordedLessonsAdmin();
-        alert('✅ تم إضافة الحصة المسجلة، وستظهر لطلاب الصف المحدد.');
       } catch (e) { alert('تعذرت إضافة الحصة: ' + (e.message || e)); }
     };
     window.loadRecordedLessonsAdmin = async function() {
@@ -1390,12 +1446,20 @@
           title.textContent = '🎬 ' + (item.title || 'درس مسجل');
           const grade = document.createElement('div');
           grade.textContent = (item.grade || '') + ' • ' + (item.unit || 'وحدة غير محددة') + ' • الدرس ' + (item.lessonNumber || '—');
+          const edit = document.createElement('button');
+          edit.className = 'btn-small';
+          edit.style.background = '#2563eb';
+          edit.textContent = 'تعديل';
+          edit.onclick = function() { window.editRecordedLesson(item); };
           const remove = document.createElement('button');
           remove.className = 'btn-small';
           remove.style.background = '#ef4444';
           remove.textContent = 'حذف';
           remove.onclick = function() { window.deleteRecordedLesson(item.id); };
-          card.append(title, grade, remove);
+          const actions = document.createElement('div');
+          actions.style.cssText = 'display:flex;gap:6px;margin-top:8px';
+          actions.append(edit, remove);
+          card.append(title, grade, actions);
           list.appendChild(card);
         });
       } catch (e) { list.textContent = 'تعذر تحميل القائمة: ' + (e.message || e); }
