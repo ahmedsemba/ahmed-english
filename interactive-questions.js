@@ -250,7 +250,12 @@
     "Facing Challenges":[["challenge","تحدٍ"],["determination","إصرار"],["obstacle","عقبة"],["proud","فخور"],["brave","شجاع"],["courage","شجاعة"],["solve","يحل"],["progress","تقدم"],["effort","مجهود"],["succeed","ينجح"]],
     "Art and Expressions":[["sculpture","تمثال"],["imagination","خيال"],["valuable","قيّم"],["innovative","مبتكر"],["performance","عرض"],["audience","جمهور"],["create","يبدع"],["artist","فنان"],["expression","تعبير"],["design","تصميم"]],
     "Around the World":[["continent","قارة"],["landmark","معلم"],["souvenir","تذكار"],["tradition","تقليد"],["capital","عاصمة"],["community","مجتمع"],["ancient","قديم"],["culture","ثقافة"],["impressive","مبهر"],["visit","يزور"]],
-    "Young Innovators":[["innovator","مبتكر"],["patience","صبر"],["achievement","إنجاز"],["inspire","يلهم"],["invent","يخترع"],["idea","فكرة"],["competition","مسابقة"],["scientist","عالم"],["create","ينشئ"],["improve","يطور"]]
+    "Young Innovators":[["innovator","مبتكر"],["patience","صبر"],["achievement","إنجاز"],["inspire","يلهم"],["invent","يخترع"],["idea","فكرة"],["competition","مسابقة"],["scientist","عالم"],["create","ينشئ"],["improve","يطور"]],
+    "Amazing Places in Egypt":[["souvenir","هدية تذكارية"],["furniture","أثاث"],["bracelet","سوار"],["necklace","قلادة"],["design","تصميم"],["coin","عملة معدنية"],["culture","ثقافة"],["museum","متحف"],["ancient site","موقع أثري"],["wooden gate","بوابة خشبية"]],
+    "The Nile":[["river","نهر"],["flood","فيضان"],["soil","تربة"],["farmer","مزارع"],["wheat","قمح"],["vegetable","خضروات"],["provide","يوفر"],["animal","حيوان"],["boat","قارب"],["travel","يسافر"]],
+    "The Rose and the Cactus":[["rose","وردة"],["cactus","صبار"],["bird","طائر"],["peck","ينقر"],["gently","برفق"],["water","ماء"],["inside","بالداخل"],["fly","يطير"],["refreshed","منتعش"],["thirsty","عطشان"]],
+    "Oil and Minerals":[["oil","بترول"],["mineral","معدن"],["rock","صخر"],["metal","فلز"],["ground","أرض"],["resource","مورد"],["deep","عميق"],["black liquid","سائل أسود"],["Western Desert","الصحراء الغربية"],["Sinai","سيناء"]],
+    "Clean Energy":[["solar energy","طاقة شمسية"],["sunny","مشمس"],["solar station","محطة طاقة شمسية"],["electricity","كهرباء"],["clean energy","طاقة نظيفة"],["pollution","تلوث"],["environment","بيئة"],["protect","يحمي"],["Benban Solar Park","مجمع بنبان للطاقة الشمسية"],["Aswan","أسوان"]]
   };
   const primary6Units = [
     {title:"Amazing Places in Egypt",groups:[
