@@ -237,9 +237,53 @@
     ["قصة","What was more important than winning a trophy?","Showing good values as a team",["Showing good values as a team","Being famous","Working alone","Finishing first at any cost"]]
   ];
 
+
+  const vocabularyBanks = {
+    "Life in a Digital World":[["application","تطبيق"],["device","جهاز"],["digital","رقمي"],["online games","ألعاب عبر الإنترنت"],["smartboard","سبورة ذكية"],["night mode","الوضع الليلي"],["search","يبحث"],["habit","عادة"],["protect","يحمي"],["technology","تكنولوجيا"]],
+    "Learning to Learn":[["visual learner","متعلم بصري"],["learning style","أسلوب التعلم"],["organize","ينظم"],["notes","ملاحظات"],["distraction","مشتت"],["study plan","خطة مذاكرة"],["learning together","التعلم معًا"],["quiet","هادئ"],["practice","يتدرب"],["improve","يحسن"]],
+    "Role Models":[["role model","قدوة"],["hero","بطل"],["community","مجتمع"],["science","علم"],["research","بحث"],["achievement","إنجاز"],["responsible","مسؤول"],["inspire","يلهم"],["helpful","متعاون"],["success","نجاح"]],
+    "Smart Choices":[["choice","اختيار"],["consequence","نتيجة"],["advice","نصيحة"],["positive","إيجابي"],["decision","قرار"],["careful","حريص"],["responsible","مسؤول"],["effect","تأثير"],["should","ينبغي"],["result","نتيجة"]],
+    "Future Dreams":[["ambition","طموح"],["career","مهنة"],["profession","وظيفة"],["talent","موهبة"],["ability","قدرة"],["future","مستقبل"],["achieve","يحقق"],["university","جامعة"],["training","تدريب"],["plan","خطة"]],
+    "Global Citizens":[["global citizen","مواطن عالمي"],["environment","بيئة"],["pollution","تلوث"],["ocean","محيط"],["volunteer","متطوع"],["protect","يحمي"],["recycle","يعيد التدوير"],["responsibility","مسؤولية"],["clean energy","طاقة نظيفة"],["community","مجتمع"]],
+    "Gen Alpha":[["generation","جيل"],["digital native","مولود رقميًا"],["balance","توازن"],["creator","صانع محتوى"],["viewer","مشاهد"],["advice","نصيحة"],["screen time","وقت الشاشة"],["online","متصل بالإنترنت"],["habit","عادة"],["communicate","يتواصل"]],
+    "My Digital Footprint":[["footprint","أثر"],["private","خاص"],["password","كلمة مرور"],["data","بيانات"],["secure","آمن"],["website","موقع إلكتروني"],["trusted","موثوق"],["share","يشارك"],["protect","يحمي"],["message","رسالة"]],
+    "Facing Challenges":[["challenge","تحدٍ"],["determination","إصرار"],["obstacle","عقبة"],["proud","فخور"],["brave","شجاع"],["courage","شجاعة"],["solve","يحل"],["progress","تقدم"],["effort","مجهود"],["succeed","ينجح"]],
+    "Art and Expressions":[["sculpture","تمثال"],["imagination","خيال"],["valuable","قيّم"],["innovative","مبتكر"],["performance","عرض"],["audience","جمهور"],["create","يبدع"],["artist","فنان"],["expression","تعبير"],["design","تصميم"]],
+    "Around the World":[["continent","قارة"],["landmark","معلم"],["souvenir","تذكار"],["tradition","تقليد"],["capital","عاصمة"],["community","مجتمع"],["ancient","قديم"],["culture","ثقافة"],["impressive","مبهر"],["visit","يزور"]],
+    "Young Innovators":[["innovator","مبتكر"],["patience","صبر"],["achievement","إنجاز"],["inspire","يلهم"],["invent","يخترع"],["idea","فكرة"],["competition","مسابقة"],["scientist","عالم"],["create","ينشئ"],["improve","يطور"]]
+  };
+  const primary6Units = [
+    {title:"Amazing Places in Egypt",groups:[
+      {label:"الدرس 1",qs:[["مفردات","People buy souvenirs to … a visit.","remember",["remember","forget","cancel","damage"]],["مفردات","Khan El Khalili is a famous … in Cairo.","market",["market","planet","factory","river"]],["قواعد","Maged … photos yesterday.","took",["take","takes","took","taking"]]]},
+      {label:"الدرس 2",qs:[["مفردات","A museum shows things from …","the past",["the past","the future only","the sea","space"]],["قواعد","His sister … a colorful necklace.","chose",["choose","chooses","chose","choosing"]],["فهم","The passage describes a day in …","Old Cairo",["Old Cairo","London","Aswan","Alexandria"]]]},
+      {label:"الدرس 3",qs:[["مفردات","A wooden gate is made of …","wood",["glass","wood","paper","cloth"]],["قواعد","They … through the old streets.","walked",["walk","walks","walked","walking"]],["فهم","The family enjoyed learning about Egyptian …","culture",["culture","weather","sports","computers"]]]}
+    ]},
+    {title:"The Nile",groups:[
+      {label:"الدرس 1",qs:[["مفردات","The Nile is an important …","river",["river","mountain","desert","island"]],["قواعد","Farmers … wheat in the past.","grew",["grow","grows","grew","growing"]],["فهم","The Nile brought good soil for …","farming",["farming","driving","painting","flying"]]]},
+      {label:"الدرس 2",qs:[["مفردات","The word 'flooded' means …","covered with water",["covered with water","became dry","became cold","stopped moving"]],["قواعد","People … boats on the river.","used",["use","uses","used","using"]],["فهم","People and animals need the Nile for …","water",["water","clothes","books","phones"]]]},
+      {label:"الدرس 3",qs:[["مفردات","Vegetables are a kind of …","food",["food","tool","building","transport"]],["قواعد","The river … people in many ways.","helps",["help","helps","helped yesterday","helping"]],["فهم","The Nile has been important to Egyptians for …","a long time",["a long time","one day","one week","one hour"]]]}
+    ]},
+    {title:"The Rose and the Cactus",groups:[
+      {label:"الدرس 1",qs:[["مفردات","A cactus can store …","water",["water","sand","wood","oil"]],["قواعد","The bird … some water.","drank",["drink","drinks","drank","drinking"]],["فهم","The bird felt … after drinking.","refreshed",["tired","refreshed","angry","afraid"]]]},
+      {label:"الدرس 2",qs:[["مفردات","Gently means …","softly",["loudly","softly","quickly","angrily"]],["قواعد","The bird … away.","flew",["fly","flies","flew","flying"]],["فهم","The cactus helped the bird by giving it …","water",["water","food","a nest","a toy"]]]},
+      {label:"الدرس 3",qs:[["مفردات","A rose is a kind of …","flower",["tree","flower","bird","river"]],["قواعد","The bird … happy.","was",["were","was","are","be"]],["فهم","The passage teaches us about kindness and …","help",["help","noise","speed","money"]]]}
+    ]},
+    {title:"Oil and Minerals",groups:[
+      {label:"الدرس 1",qs:[["مفردات","Oil is found deep … the ground.","under",["over","under","beside","between"]],["قواعد","Egypt … oil to other countries.","sells",["sell","sells","selling","sold tomorrow"]],["فهم","Oil is described as a … liquid.","black",["blue","black","white","green"]]]},
+      {label:"الدرس 2",qs:[["مفردات","Minerals are found in …","rocks",["clouds","rocks","rivers only","trees"]],["قواعد","Workers … minerals from the ground.","take",["takes","take","taking","took tomorrow"]],["فهم","The passage mentions the Western Desert and …","Sinai",["Sinai","Cairo","Alexandria","Luxor"]]]},
+      {label:"الدرس 3",qs:[["مفردات","A natural resource comes from …","nature",["nature","a computer","a classroom","a shop"]],["قواعد","Egypt … many natural resources.","has",["have","has","having","had tomorrow"]],["فهم","Oil is important because it is a natural …","resource",["resource","holiday","sport","language"]]]}
+    ]},
+    {title:"Clean Energy",groups:[
+      {label:"الدرس 1",qs:[["مفردات","Solar energy comes from the …","sun",["moon","sun","wind only","sea"]],["قواعد","The sun … energy.","provides",["provide","provides","providing","provided tomorrow"]],["فهم","Benban Solar Park is near …","Aswan",["Aswan","Cairo","Giza","Tanta"]]]},
+      {label:"الدرس 2",qs:[["مفردات","A solar station makes …","electricity",["electricity","plastic","paper","clothes"]],["قواعد","Egypt … a sunny country.","is",["am","is","are","be"]],["فهم","Solar energy is a kind of … energy.","clean",["dirty","clean","dangerous","old"]]]},
+      {label:"الدرس 3",qs:[["مفردات","We should save energy to protect the …","environment",["environment","screen","uniform","keyboard"]],["قواعد","People … use clean energy.","should",["should","shouldn't","was","did"]],["فهم","Clean energy can help reduce …","pollution",["pollution","homework","traffic lights","noise only"]]]}
+    ]}
+  ];
+
   let activeUnits = units;
   let activeStory = story;
   let activeGrade = "الصف الثاني الإعدادي";
+  let activePrimary6 = false;
   let current = null;
   let selected = {};
   let submitted = false;
@@ -269,89 +313,79 @@
     $("iqPanel").innerHTML = '<p class="iq-hint">اختر الجزء المطلوب ثم اضغط «ابدأ التدريب».</p>';
     $("iqStart").disabled = false;
   }
-  function buildMixedQuestions(source, title, addParagraph) {
-    const out = [];
-    source.forEach((q, index) => {
-      const [category, prompt, answer, options] = q;
-      out.push({ type:"mcq", category, text:prompt, answer, options:options || [] });
-      if (category === "مفردات" || category === "قصة") {
-        out.push({ type:"fill", category, text:"Complete the sentence: " + prompt.replace(/…|\.\.\./g, "________"), answer });
-      } else if (category === "قواعد") {
-        const wrong = (options || []).find(x => x !== answer);
-        if (wrong) {
-          const useTrue = index % 2 === 0;
-          out.push({ type:"truefalse", category, text:prompt.replace(/…|\.\.\./g, useTrue ? answer : wrong), answer:useTrue });
-        }
-      }
-      if (index % 3 === 2) {
-        out.push({ type:"short", category, text:"Write the correct answer: " + prompt.replace(/…|\.\.\./g, "________"), answer });
-      }
-    });
 
-    if (source.length) {
-      const firstAnswer = String(source[0][2] || "").trim();
-      const words = firstAnswer.split(/\s+/).filter(Boolean);
-      if (words.length >= 2 && words.length <= 7) {
-        out.push({ type:"reorder", category:"ترتيب كلمات", text:"Rearrange the words to make the correct answer:", words:words.slice().reverse(), answer:firstAnswer });
-      }
-    }
-
-    if (addParagraph) {
-      const isGenAlpha = /gen alpha|meet gen alpha/i.test(title);
-      const passage = isGenAlpha
-        ? "Generation Z and Generation Alpha are two young generations. They both grow up in a digital world. They use smartphones and computers every day. They watch videos, play online games and communicate with friends. Technology helps them learn new things and share ideas. However, they should balance screen time with real-life activities."
-        : "People learn about " + title.replace(/\s*[-–].*$/, "") + " in different ways. They can read, ask questions and share ideas with others. Technology can help students find information and practise new skills. Good learners use their time wisely, check information and work together. They should also think carefully and use what they learn in real life.";
-      out.push({ type:"passage-mcq", category:"قطعة وفهم", passage, text:"The passage is mainly about …", answer:isGenAlpha ? "two young generations and technology" : "learning about the unit topic", options:isGenAlpha ? ["two young generations and technology","sports competitions","famous places","healthy food"] : ["learning about the unit topic","a school trip","a football match","a shopping list"] });
-      out.push({ type:"passage-short", category:"قطعة وفهم", passage, text:isGenAlpha ? "What do the two generations use every day?" : "How can students learn about the topic?", answer:isGenAlpha ? ["smartphones and computers","smartphones","computers"] : ["read and ask questions","read","ask questions"] });
-      out.push({ type:"passage-short", category:"قطعة وفهم", passage, text:isGenAlpha ? "What should they balance?" : "What should good learners do with their time?", answer:isGenAlpha ? ["screen time with real life activities","screen time","real life activities"] : ["use their time wisely","use time wisely"] });
-
-      const storyQuestions = activeStory.slice(0, 2);
-      storyQuestions.forEach(q => out.push({ type:"mcq", category:"قصة", text:q[1], answer:q[2], options:q[3] || [] }));
-
-      out.push({ type:"short", category:"حوار", text:"Complete the dialogue. A: What's your favourite digital device? B: My favourite device is a ______.", answer:["tablet","smartphone","computer","laptop","mobile phone"] });
-      out.push({ type:"short", category:"حوار", text:"A: What do you use it for? B: I use it for ______.", answer:["learning","studying","watching videos","communication","doing homework","learning and communication"] });
-      out.push({ type:"short", category:"حوار", text:"A: Do you use it at school? B: ______.", answer:["yes i do","no i dont","sometimes"] });
-
-      const topic = title.replace(/\s*[-–].*$/, "").trim() || "Technology";
-      out.push({ type:"paragraph", category:"Writing", text:'Write a paragraph of 60–80 words about: "' + topic + ' and its importance in our lives".', answer:"", maxMarks:5 });
-    }
+  function hintFor(answer) {
+    const s=String(answer||"").trim();
+    if (/ies$/i.test(s)) return s.replace(/ies$/i,"y");
+    if (/(ches|shes|xes|zes|sses)$/i.test(s)) return s.replace(/es$/i,"");
+    if (/s$/i.test(s) && !/ss$/i.test(s)) return s.slice(0,-1);
+    return s;
+  }
+  function lessonQuestions(unit, group) {
+    const source=group.qs||[], out=[];
+    source.slice(0,3).forEach(q=>out.push({type:"mcq",category:q[0],text:q[1],answer:q[2],options:q[3]||[]}));
+    source.slice(0,3).forEach(q=>out.push({type:"fill",category:"Complete",text:"Complete using the word in brackets: "+String(q[1]).replace(/…|\.\.\./g,"________")+" ("+hintFor(q[2])+")",answer:q[2]}));
+    const vocab=(unit.vocab||vocabularyBanks[unit.title]||[]).slice(0,10);
+    vocab.forEach(v=>out.push({type:"short",category:"معاني الكلمات",text:"Write the Arabic meaning of: "+v[0],answer:[v[1]],maxMarks:1}));
+    out.push({type:"paragraph",category:"Paragraph",text:'Write a paragraph of 40–60 words about: "'+unit.title+'".',answer:"",maxMarks:5});
     return out;
   }
-
-  function startQuiz() {
-    const u = $("iqUnit").value, g = $("iqGroup").value;
-    let source = [], title = "", isExam = false;
-    if (u === "story") { source = activeStory; title = "تدريب القصة"; }
-    else if (u === "term") {
-      source = activeUnits.flatMap(x=>x.groups.map((y,yi)=>y.qs[Math.min(yi,y.qs.length-1)])).concat(activeStory.slice(0,3));
-      title = "الامتحان الشامل للترم"; isExam = true;
-    } else {
-      const unit = activeUnits[Number(u)];
-      title = unit.title + " - " + (g === "exam" ? "امتحان الوحدة" : unit.groups[Number(g)].label);
-      source = g === "exam" ? unit.groups.flatMap(x=>x.qs) : unit.groups[Number(g)].qs;
-      isExam = g === "exam";
+  function unitExamQuestions(unit) {
+    const source=unit.groups.flatMap(g=>g.qs||[]), out=[];
+    source.slice(0,5).forEach(q=>out.push({type:"mcq",category:q[0],text:q[1],answer:q[2],options:q[3]||[]}));
+    const grammar=source.filter(q=>q[0]==="قواعد");
+    const fills=(grammar.length?grammar:source).slice(0,3);
+    fills.forEach(q=>out.push({type:"fill",category:"Complete",text:"Complete using the word in brackets: "+String(q[1]).replace(/…|\.\.\./g,"________")+" ("+hintFor(q[2])+")",answer:q[2]}));
+    (grammar.length?grammar:source).slice(0,3).forEach(q=>{
+      const wrong=(q[3]||[]).find(x=>x!==q[2])||"wrong";
+      out.push({type:"correct",category:"Correct the mistake",text:"Correct the mistake: "+String(q[1]).replace(/…|\.\.\./g,wrong),answer:q[2]});
+    });
+    if (!activePrimary6) {
+      out.push({type:"short",category:"Situations & Dialogue",text:"Complete: A: What do you think about "+unit.title+"? B: I think it is ______.",answer:["interesting","important","useful","great"]});
+      out.push({type:"short",category:"Situations & Dialogue",text:"Complete: A: Why is "+unit.title+" important? B: Because it helps us ______.",answer:["learn","understand","protect the environment","work together","improve"]});
     }
-    current = { title, qs:buildMixedQuestions(source, title, isExam) };
-    submitted = false;
-    $("iqPanel").innerHTML = '<h4>'+esc(title)+'</h4><p class="iq-hint">عدد الأسئلة: '+current.qs.length+' — أجب عن الأسئلة ثم اضغط «صحّح إجاباتي».</p>' +
+    const passage="This passage is about "+unit.title+". Students can learn new words and ideas about this topic. They should read carefully, think about the information and use what they learn in everyday life. Working hard and sharing ideas can help everyone understand the topic better.";
+    out.push({type:"passage-mcq",category:"Reading Comprehension",passage,text:"What is the passage mainly about?",answer:"learning about "+unit.title.toLowerCase(),options:["learning about "+unit.title.toLowerCase(),"a football match","a shopping trip","a birthday party"]});
+    out.push({type:"passage-short",category:"Reading Comprehension",passage,text:"What should students do after reading?",answer:["think about the information","use what they learn","think about the information and use what they learn"]});
+    out.push({type:"passage-short",category:"Reading Comprehension",passage,text:"How can students understand the topic better?",answer:["working hard and sharing ideas","sharing ideas","working hard"]});
+    out.push({type:"paragraph",category:"Paragraph",text:'Write a paragraph of 60–80 words about: "'+unit.title+'".',answer:"",maxMarks:5});
+    return out;
+  }
+  function storyChapterQuestions(items, chapterTitle) {
+    const out=[];
+    items.slice(0,3).forEach((q,i)=>out.push({type:"truefalse",category:chapterTitle,text:i===1?"The opposite of this statement is true.":q[1].replace(/\?$/,"."),answer:i!==1}));
+    items.slice(0,2).forEach(q=>out.push({type:"essay",category:chapterTitle,text:"Answer in a short sentence: "+q[1],answer:[q[2]],keywords:String(q[2]).toLowerCase().split(/\s+/),maxMarks:2}));
+    return out;
+  }
+  function startQuiz() {
+    const u=$("iqUnit").value, g=$("iqGroup").value;
+    let title="", questions=[];
+    if (u==="story") {
+      title="تدريب القصة";
+      [activeStory.slice(0,3),activeStory.slice(3,6),activeStory.slice(6,10)].forEach((items,i)=>questions.push(...storyChapterQuestions(items,"الفصل "+(i+1))));
+    } else if (u==="term") {
+      title="امتحان شامل للترم";
+      const all=activeUnits.flatMap(x=>x.groups.flatMap(y=>y.qs||[]));
+      questions=unitExamQuestions({title:"المنهج بالكامل",groups:[{qs:all}]});
+    } else {
+      const unit=activeUnits[Number(u)];
+      if (!unit) return;
+      title=unit.title+" - "+(g==="exam"?"امتحان الوحدة":unit.groups[Number(g)].label);
+      questions=g==="exam"?unitExamQuestions(unit):lessonQuestions(unit,unit.groups[Number(g)]);
+    }
+    current={title,qs:questions}; submitted=false;
+    $("iqPanel").innerHTML='<h4>'+esc(title)+'</h4><p class="iq-hint">عدد الأسئلة: '+current.qs.length+' — أجب ثم اضغط «صحّح إجاباتي».</p>'+
       current.qs.map((q,i)=>{
-        let body = "";
-        if (q.passage) body += '<div class="iq-passage" style="white-space:pre-line;padding:12px;margin:10px 0;border-radius:10px;background:#172554;color:#fff">'+esc(q.passage)+'</div>';
-        if (q.type === "mcq" || q.type === "passage-mcq") {
-          body += '<div class="iq-options">'+(q.options || []).map((op,j)=>'<label><input type="radio" name="iq_'+i+'" value="'+j+'"><span>'+esc(op)+'</span></label>').join('')+'</div>';
-        } else if (q.type === "truefalse") {
-          body += '<div class="iq-options"><label><input type="radio" name="iq_'+i+'" value="true"><span>True</span></label><label><input type="radio" name="iq_'+i+'" value="false"><span>False</span></label></div>';
-        } else if (q.type === "paragraph") {
-          body += '<textarea class="iq-free-answer" id="iq_answer_'+i+'" rows="6" maxlength="1200" placeholder="Write your paragraph here..."></textarea><small>التصحيح آلي تقديري، وليس بديلًا عن مراجعة المدرس للمعنى والقواعد.</small>';
-        } else if (q.type === "reorder") {
-          body += '<div class="iq-word-bank">'+q.words.map(w=>'<span>'+esc(w)+'</span>').join(' / ')+'</div><input class="iq-free-answer" id="iq_answer_'+i+'" type="text" placeholder="Write the correct sentence">';
-        } else {
-          body += '<input class="iq-free-answer" id="iq_answer_'+i+'" type="text" placeholder="اكتب إجابتك هنا">';
-        }
-        const typeLabel = ({mcq:"Choose", "passage-mcq":"Reading – Choose", "passage-short":"Reading – Answer", fill:"Complete", truefalse:"True or False", short:"Short answer", reorder:"Rearrange", paragraph:"Writing"}[q.type] || "");
-        return '<article class="iq-question"><div class="iq-question-title"><span>'+(i+1)+'.</span> '+esc(q.text)+'</div><small class="iq-type">'+esc(q.category || "سؤال")+' — '+typeLabel+'</small>'+body+'</article>';
+        let body="";
+        if(q.passage) body+='<div class="iq-passage" style="white-space:pre-line;padding:12px;margin:10px 0;border-radius:10px;background:#172554;color:#fff">'+esc(q.passage)+'</div>';
+        if(q.type==="mcq"||q.type==="passage-mcq") body+='<div class="iq-options">'+(q.options||[]).map((op,j)=>'<label><input type="radio" name="iq_'+i+'" value="'+j+'"><span>'+esc(op)+'</span></label>').join('')+'</div>';
+        else if(q.type==="truefalse") body+='<div class="iq-options"><label><input type="radio" name="iq_'+i+'" value="true"><span>True</span></label><label><input type="radio" name="iq_'+i+'" value="false"><span>False</span></label></div>';
+        else if(q.type==="paragraph") body+='<textarea class="iq-free-answer" id="iq_answer_'+i+'" rows="6" maxlength="1200" placeholder="Write your paragraph here..."></textarea><small>التصحيح آلي تقديري، وليس بديلًا عن مراجعة المدرس.</small>';
+        else body+='<input class="iq-free-answer" id="iq_answer_'+i+'" type="text" placeholder="اكتب إجابتك هنا">';
+        const labels={mcq:"Choose","passage-mcq":"Reading – Choose","passage-short":"Reading – Answer",fill:"Complete",correct:"Correct the mistake",truefalse:"True or False",short:"Short answer",essay:"Written answer",paragraph:"Writing"};
+        return '<article class="iq-question"><div class="iq-question-title"><span>'+(i+1)+'.</span> '+esc(q.text)+'</div><small class="iq-type">'+esc(q.category||"سؤال")+' — '+(labels[q.type]||"")+'</small>'+body+'</article>';
       }).join('');
-    $("iqSubmit").hidden = false; $("iqRetry").hidden = true; $("iqResult").innerHTML = "";
+    $("iqSubmit").hidden=false;$("iqRetry").hidden=true;$("iqResult").innerHTML="";
   }
 
   function normalizeAnswer(value) {
@@ -403,6 +437,16 @@
           score += result.score;
           feedback.push((i+1)+". "+result.feedback+" ("+result.score+"/5)");
           ok = result.score >= 3;
+        } else if (q.type === "essay") {
+          const normalized=normalizeAnswer(response);
+          const hits=(q.keywords||[]).filter(k=>k.length>2&&normalized.includes(normalizeAnswer(k))).length;
+          const threshold=Math.max(1,Math.ceil((q.keywords||[]).length*0.45));
+          const earned=hits>=threshold?q.maxMarks:(hits>0?1:0);
+          score+=earned; ok=earned===q.maxMarks;
+          feedback.push((i+1)+". تقييم إجابة مقالي: "+earned+"/"+q.maxMarks+" — راجع الإجابة مع المدرس.");
+        } else if (q.type === "correct") {
+          const normalized=normalizeAnswer(response);
+          ok=accepted.some(a=>normalizeAnswer(a)===normalized || normalized.includes(normalizeAnswer(a)));
         } else {
           const normalized = normalizeAnswer(response);
           ok = accepted.some(a => normalizeAnswer(a) === normalized);
@@ -415,7 +459,7 @@
         }
       }
       if (ok && q.type !== "paragraph") score += marks;
-      if (q.type !== "paragraph") feedback.push((i+1)+". "+(ok ? "صحيح" : "الإجابة المقبولة: "+(Array.isArray(q.answer) ? q.answer.join(" / ") : q.answer)));
+      if (q.type !== "paragraph" && q.type !== "essay") feedback.push((i+1)+". "+(ok ? "صحيح" : "الإجابة المقبولة: "+(Array.isArray(q.answer) ? q.answer.join(" / ") : q.answer)));
       const fields = document.querySelectorAll('input[name="iq_'+i+'"]');
       fields.forEach(el => { el.disabled = true; const label = el.closest("label"); if (label) label.classList.toggle(ok ? "iq-correct" : "iq-wrong", el.checked); });
       const free = $("iq_answer_"+i);
@@ -437,12 +481,13 @@
     const root = $("interactiveQuestions");
     if (!root) return;
     root.style.display = "block";
-    if (student && ["الصف الأول الإعدادي","الصف الثاني الإعدادي"].includes(student.grade)) {
+    if (student && ["الصف الأول الإعدادي","الصف الثاني الإعدادي","الصف السادس الابتدائي"].includes(student.grade)) {
       activeGrade = student.grade;
-      activeUnits = student.grade === "الصف الأول الإعدادي" ? prep1Units : units;
+      activePrimary6 = student.grade === "الصف السادس الابتدائي";
+      activeUnits = activePrimary6 ? primary6Units : (student.grade === "الصف الأول الإعدادي" ? prep1Units : units);
       activeStory = student.grade === "الصف الأول الإعدادي" ? prep1Story : story;
       $("iqUnavailable").hidden = true; $("iqControls").hidden = false;
-      $("iqUnit").innerHTML = activeUnits.map((u,i)=>'<option value="'+i+'">الوحدة '+["الأولى","الثانية","الثالثة","الرابعة","الخامسة","السادسة"][i]+" — "+esc(u.title)+'</option>').join('') + '<option value="story">القصة</option><option value="term">امتحان شامل للترم</option>';
+      $("iqUnit").innerHTML = activeUnits.map((u,i)=>'<option value="'+i+'">الوحدة '+["الأولى","الثانية","الثالثة","الرابعة","الخامسة","السادسة"][i]+" — "+esc(u.title)+'</option>').join('') + (activePrimary6 ? "" : '<option value="story">القصة</option>') + '<option value="term">امتحان شامل للترم</option>';
       renderGroups();
     } else {
       $("iqControls").hidden = true; $("iqUnavailable").hidden = false;
