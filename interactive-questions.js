@@ -269,49 +269,142 @@
     $("iqPanel").innerHTML = '<p class="iq-hint">اختر الجزء المطلوب ثم اضغط «ابدأ التدريب».</p>';
     $("iqStart").disabled = false;
   }
+  function buildMixedQuestions(source, title, addParagraph) {
+    const out = [];
+    source.forEach((q, index) => {
+      const [category, prompt, answer, options] = q;
+      out.push({ type:"mcq", category, text:prompt, answer, options:options || [] });
+      if (category === "مفردات" || category === "قصة") {
+        out.push({ type:"fill", category, text:"Complete the sentence: " + prompt.replace(/…|\.\.\./g, "________"), answer });
+      } else if (category === "قواعد") {
+        const wrong = (options || []).find(x => x !== answer);
+        if (wrong) out.push({
+          type:"truefalse", category,
+          text:prompt.replace(/…|\.\.\./g, answer),
+          answer:true,
+          falseText:prompt.replace(/…|\.\.\./g, wrong)
+        });
+      } else {
+        out.push({ type:"short", category, text:"Write the correct answer: " + prompt, answer });
+      }
+    });
+    if (source.length) {
+      const firstAnswer = String(source[0][2] || "").trim();
+      const words = firstAnswer.split(/\s+/).filter(Boolean);
+      if (words.length >= 2 && words.length <= 7) {
+        const shuffled = words.slice().reverse();
+        out.push({ type:"reorder", category:"ترتيب كلمات", text:"Rearrange the words to make the correct answer:", words:shuffled, answer:firstAnswer });
+      }
+    }
+    if (addParagraph) {
+      const topic = title.includes("الوحدة") ? title.split(" - ")[0] : "the topics you studied this term";
+      out.push({
+        type:"paragraph", category:"Writing",
+        text:'Write a paragraph of 50–70 words about: "' + topic + ' and what you have learned".',
+        answer:"",
+        maxMarks:5
+      });
+    }
+    return out;
+  }
+
   function startQuiz() {
     const u = $("iqUnit").value, g = $("iqGroup").value;
-    let qs = [], title = "";
-    if (u === "story") { qs = activeStory; title = "تدريب القصة"; }
-    else if (u === "term") { qs = activeUnits.flatMap(x=>x.groups.map(y=>y.qs[0])); title = "الامتحان الشامل للترم"; }
-    else {
+    let source = [], title = "", isExam = false;
+    if (u === "story") { source = activeStory; title = "تدريب القصة"; }
+    else if (u === "term") {
+      source = activeUnits.flatMap(x=>x.groups.flatMap(y=>y.qs)).concat(activeStory.slice(0,4));
+      title = "الامتحان الشامل للترم"; isExam = true;
+    } else {
       const unit = activeUnits[Number(u)];
       title = unit.title + " - " + (g === "exam" ? "امتحان الوحدة" : unit.groups[Number(g)].label);
-      qs = g === "exam" ? unit.groups.flatMap(x=>x.qs) : unit.groups[Number(g)].qs;
+      source = g === "exam" ? unit.groups.flatMap(x=>x.qs) : unit.groups[Number(g)].qs;
+      isExam = g === "exam";
     }
-    current = {title,qs:qs.map(q=>({type:q[0],text:q[1],answer:q[2],options:q[3]}))};
+    current = { title, qs:buildMixedQuestions(source, title, isExam) };
     selected = {}; submitted = false;
-    $("iqPanel").innerHTML = '<h4>'+esc(title)+'</h4><p class="iq-hint">عدد الأسئلة: '+qs.length+' — اختر إجابة واحدة لكل سؤال ثم اضغط «صحّح إجاباتي».</p>' +
-      current.qs.map((q,i)=>'<article class="iq-question"><div class="iq-question-title"><span>'+(i+1)+'.</span> '+esc(q.text)+'</div><small class="iq-type">'+esc(q.type)+'</small><div class="iq-options">'+q.options.map((op,j)=>'<label><input type="radio" name="iq_'+i+'" value="'+j+'"><span>'+esc(op)+'</span></label>').join('')+'</div></article>').join('');
+    $("iqPanel").innerHTML = '<h4>'+esc(title)+'</h4><p class="iq-hint">عدد الأسئلة: '+current.qs.length+' — أجب عن كل الأسئلة ثم اضغط «صحّح إجاباتي».</p>' +
+      current.qs.map((q,i)=>{
+        let body = "";
+        if (q.type === "mcq") {
+          body = '<div class="iq-options">'+q.options.map((op,j)=>'<label><input type="radio" name="iq_'+i+'" value="'+j+'"><span>'+esc(op)+'</span></label>').join('')+'</div>';
+        } else if (q.type === "truefalse") {
+          body = '<div class="iq-options"><label><input type="radio" name="iq_'+i+'" value="true"><span>True</span></label><label><input type="radio" name="iq_'+i+'" value="false"><span>False</span></label></div>';
+        } else if (q.type === "paragraph") {
+          body = '<textarea class="iq-free-answer" id="iq_answer_'+i+'" rows="6" maxlength="1200" placeholder="Write your paragraph here..."></textarea><small>سيتم تقدير الدرجة آليًا حسب عدد الكلمات والمفردات والقواعد والتنظيم.</small>';
+        } else if (q.type === "reorder") {
+          body = '<div class="iq-word-bank">'+q.words.map(w=>'<span>'+esc(w)+'</span>').join(' / ')+'</div><input class="iq-free-answer" id="iq_answer_'+i+'" type="text" placeholder="Write the correct sentence">';
+        } else {
+          body = '<input class="iq-free-answer" id="iq_answer_'+i+'" type="text" placeholder="اكتب إجابتك هنا">';
+        }
+        return '<article class="iq-question"><div class="iq-question-title"><span>'+(i+1)+'.</span> '+esc(q.text)+'</div><small class="iq-type">'+esc(q.category || "سؤال")+' — '+({mcq:"Choose",fill:"Complete",truefalse:"True or False",short:"Short answer",reorder:"Rearrange",paragraph:"Writing"}[q.type] || "")+'</small>'+body+'</article>';
+      }).join('');
     $("iqSubmit").hidden = false; $("iqRetry").hidden = true; $("iqResult").innerHTML = "";
   }
+
+  function normalizeAnswer(value) {
+    return String(value || "").toLowerCase().trim().replace(/[.,!?;:'"()]/g,"").replace(/\s+/g," ");
+  }
+
+  function gradeParagraph(value) {
+    const text = String(value || "").trim();
+    const words = text.split(/\s+/).filter(Boolean);
+    if (!words.length) return {score:0, feedback:"لم تكتب فقرة."};
+    const lower = text.toLowerCase();
+    let score = 0;
+    if (words.length >= 35) score += 1;
+    if (words.length >= 50) score += 1;
+    if (/[.!?]/.test(text)) score += 1;
+    if (/\b(and|but|because|also|so|first|finally)\b/i.test(text)) score += 1;
+    if (/\b(is|are|was|were|have|has|can|should|use|uses|helps|help|technology|students|people)\b/i.test(lower)) score += 1;
+    score = Math.min(5, score);
+    return {score, feedback:"عدد الكلمات: "+words.length+". الدرجة تقديرية آليًا من 5، وتركّز على الطول وعلامات الترقيم والروابط وبعض مؤشرات اللغة. راجع المعنى وصحة الجمل بنفسك أو مع المدرس."};
+  }
+
   function gradeQuiz() {
     if (!current || submitted) return;
-    let score = 0, answered = 0;
+    let score = 0, total = 0, answered = 0;
+    const feedback = [];
     current.qs.forEach((q,i)=>{
-      const chosen = document.querySelector('input[name="iq_'+i+'"]:checked');
-      if (chosen) { answered++; if (q.options[Number(chosen.value)] === q.answer) score++; }
+      const marks = q.type === "paragraph" ? 5 : 1;
+      total += marks;
+      let ok = false, response = "";
+      if (q.type === "mcq" || q.type === "truefalse") {
+        const chosen = document.querySelector('input[name="iq_'+i+'"]:checked');
+        if (chosen) {
+          answered++;
+          response = chosen.value;
+          ok = q.type === "mcq" ? q.options[Number(chosen.value)] === q.answer : (chosen.value === "true") === q.answer;
+        }
+      } else {
+        const field = $("iq_answer_"+i);
+        response = field ? field.value.trim() : "";
+        if (response) answered++;
+        if (q.type === "paragraph") {
+          const result = gradeParagraph(response);
+          score += result.score;
+          feedback.push((i+1)+". "+result.feedback+" ("+result.score+"/5)");
+          ok = result.score >= 3;
+        } else {
+          ok = normalizeAnswer(response) === normalizeAnswer(q.answer);
+        }
+      }
+      if (ok && q.type !== "paragraph") score += marks;
+      if (q.type !== "paragraph") feedback.push((i+1)+". "+(ok ? "صحيح" : "الإجابة الصحيحة: "+q.answer));
+      const fields = document.querySelectorAll('input[name="iq_'+i+'"]');
+      fields.forEach(el => { el.disabled = true; const label = el.closest("label"); if (label) label.classList.toggle(ok ? "iq-correct" : "iq-wrong", el.checked); });
+      const free = $("iq_answer_"+i);
+      if (free) free.disabled = true;
     });
-    const total = current.qs.length, pct = Math.round(score/total*100);
+    const pct = total ? Math.round(score/total*100) : 0;
     const message = pct <= 50 ? "معلش حاول تاني" : pct <= 80 ? "حلو اتشطر وذاكر أكتر" : "برافو عليك ممتاز";
     submitted = true;
-    current.qs.forEach((q,i)=>{
-      const chosen = document.querySelector('input[name="iq_'+i+'"]:checked');
-      const rightIndex = q.options.indexOf(q.answer);
-      document.querySelectorAll('input[name="iq_'+i+'"]').forEach((el,j)=>{
-        el.disabled = true;
-        const label = el.closest("label");
-        if (j === rightIndex) label.classList.add("iq-correct");
-        else if (chosen && Number(chosen.value) === j) label.classList.add("iq-wrong");
-      });
-    });
-    $("iqResult").innerHTML = '<div class="iq-score"><strong>نتيجتك: '+score+' من '+total+'</strong><span>'+pct+'%</span><p>'+message+'</p><small>أجبت عن '+answered+' من '+total+' سؤالًا.</small></div><details class="iq-answers"><summary>مراجعة الإجابات الصحيحة</summary>'+current.qs.map((q,i)=>'<p>'+(i+1)+'. '+esc(q.answer)+'</p>').join('')+'</details>';
+    $("iqResult").innerHTML = '<div class="iq-score"><strong>نتيجتك التقديرية: '+score+' من '+total+'</strong><span>'+pct+'%</span><p>'+message+'</p><small>أجبت عن '+answered+' من '+current.qs.length+' سؤالًا.</small></div><details class="iq-answers"><summary>مراجعة الإجابات والملاحظات</summary>'+feedback.map(x=>'<p>'+esc(x)+'</p>').join('')+'</details>';
     $("iqSubmit").hidden = true; $("iqRetry").hidden = false;
     if (window.saveInteractiveAttempt) {
-      const activity = current.title;
-      window.saveInteractiveAttempt({ activity, score, total, percentage:pct, answered })
+      window.saveInteractiveAttempt({ activity:current.title, score, total, percentage:pct, answered })
         .then(() => { $("iqResult").insertAdjacentHTML("beforeend", '<p class="iq-hint">تم حفظ نتيجتك عند المدرس.</p>'); })
-        .catch(() => { $("iqResult").insertAdjacentHTML("beforeend", '<p class="iq-hint">تعذر حفظ النتيجة على المنصة، لكن يمكنك مراجعة إجاباتك هنا.</p>'); });
+        .catch((e) => { $("iqResult").insertAdjacentHTML("beforeend", '<p class="iq-hint">تعذر حفظ النتيجة: '+esc(e && (e.code || e.message) || "خطأ غير معروف")+'</p>'); });
     }
   }
   window.initInteractiveQuestions = function(student) {
