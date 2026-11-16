@@ -1050,7 +1050,7 @@
       box.replaceChildren(card);
     };
 
-        window.loadStudentRecordedLessons = async function() {
+    window.loadStudentRecordedLessons = async function() {
       const box = document.getElementById('studentRecordedLessonsList');
       if (!box || !currentStudent || !currentStudent.grade) return;
       box.innerHTML = '<div class="student-recorded-empty">⏳ جاري تحميل فيديوهات صفك...</div>';
@@ -1063,7 +1063,7 @@
           let videoId = '';
           try {
             const url = new URL(String(item.link || '').trim());
-            const host = url.hostname.toLowerCase().replace(/^www\\./, '');
+            const host = url.hostname.toLowerCase().replace(/^www\./, '');
             if (host === 'youtu.be') videoId = url.pathname.split('/').filter(Boolean)[0] || '';
             else if (['youtube.com', 'm.youtube.com', 'youtube-nocookie.com'].includes(host)) {
               if (url.pathname === '/watch') videoId = url.searchParams.get('v') || '';
@@ -1106,7 +1106,7 @@
       }
     };
 
-        window.addMaterial = async function() {
+    window.addMaterial = async function() {
       try {
         const title = document.getElementById('matTitle').value.trim();
         const link = document.getElementById('matLink').value.trim();
