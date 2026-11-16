@@ -478,7 +478,7 @@
           </div>
           <div class="student-recorded-filters">
             <label for="studentRecordedUnitFilter">اختر الوحدة أو القصة</label>
-            <select id="studentRecordedUnitFilter" onchange="filterStudentRecordedLessons()">
+            <select id="studentRecordedUnitFilter" onchange="changeStudentRecordedUnit()">
               <option value="">اختر الوحدة أو القصة</option>
               <option value="الوحدة 1">الوحدة الأولى</option><option value="الوحدة 2">الوحدة الثانية</option>
               <option value="الوحدة 3">الوحدة الثالثة</option><option value="الوحدة 4">الوحدة الرابعة</option>
@@ -971,6 +971,12 @@
     recordedFilterStyle.textContent = '.student-recorded-filters{display:grid;grid-template-columns:1fr;gap:8px;margin:14px 0}.student-recorded-filters label{font-weight:700;color:inherit}.student-recorded-filters select{width:100%;min-height:44px;padding:10px 12px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;color:#111827;font:inherit}.student-recorded-filters select:disabled{opacity:.65}';
     document.head.appendChild(recordedFilterStyle);
     window.studentRecordedLessonItems = [];
+    window.changeStudentRecordedUnit = function() {
+      const lessonSelect = document.getElementById('studentRecordedLessonFilter');
+      if (lessonSelect) lessonSelect.value = '';
+      window.filterStudentRecordedLessons();
+    };
+
     window.filterStudentRecordedLessons = function() {
       const box = document.getElementById('studentRecordedLessonsList');
       const unitSelect = document.getElementById('studentRecordedUnitFilter');
