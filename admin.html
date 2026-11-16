@@ -580,6 +580,8 @@
             </select>
             <input id="interactiveResultsSearch" placeholder="ابحث باسم الطالب أو رقم الهاتف أو الامتحان" oninput="loadInteractiveResultsAdmin()">
             <button type="button" onclick="loadInteractiveResultsAdmin()">تحديث النتائج</button>
+            <button type="button" onclick="deleteVisibleInteractiveAttempts()" style="background:#dc2626">حذف النتائج المعروضة</button>
+            <small style="display:block;color:#fbbf24;margin:6px 0">يحذف كل المحاولات الظاهرة بعد تطبيق فلتر الصف والبحث.</small>
             <div id="interactiveResultsSummary"></div>
             <div id="interactiveResultsList">اضغط تحديث لعرض النتائج.</div>
           </div>
@@ -1508,6 +1510,7 @@
           .filter(x => (grade === 'الكل' || x.grade === grade))
           .filter(x => !term || [x.studentName,x.studentPhone,x.activity,x.grade].some(v => String(v || '').toLowerCase().includes(term)))
           .sort((a,b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+        window.visibleInteractiveAttemptIds = rows.map(x => x.id);
         const avg = rows.length ? Math.round(rows.reduce((n,x)=>n+Number(x.percentage || 0),0)/rows.length) : 0;
         summary.innerHTML = '<div class="student-row">عدد المحاولات: <b>' + rows.length + '</b> — متوسط النتائج: <b>' + avg + '%</b></div>';
         if (!rows.length) { list.innerHTML = '<div class="student-row">لا توجد نتائج مطابقة حتى الآن.</div>'; return; }
@@ -1522,6 +1525,20 @@
         }).join('');
       } catch (e) {
         list.textContent = 'تعذر تحميل النتائج من قاعدة البيانات: ' + (e.message || e);
+      }
+    };
+
+    window.deleteVisibleInteractiveAttempts = async function() {
+      if (!auth.currentUser) { alert('سجّل دخولك بحساب المدرس أولاً.'); return; }
+      const ids = Array.isArray(window.visibleInteractiveAttemptIds) ? window.visibleInteractiveAttemptIds.slice() : [];
+      if (!ids.length) { alert('لا توجد نتائج معروضة لحذفها.'); return; }
+      if (!confirm('سيتم حذف '+ids.length+' محاولة ظاهرة حاليًا نهائيًا. هل تريد المتابعة؟')) return;
+      try {
+        for (const id of ids) await deleteDoc(doc(db, 'interactive_attempts', id));
+        alert('تم حذف '+ids.length+' محاولة.');
+        await window.loadInteractiveResultsAdmin();
+      } catch (e) {
+        alert('تعذر حذف النتائج. راجع قواعد Firestore للسماح للمدرس بالحذف. ' + (e.code || e.message || e));
       }
     };
 
