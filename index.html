@@ -280,6 +280,62 @@
   body:not([data-page="home"]) { padding-bottom: 78px; }
   .platform-back-button { position:fixed; z-index:9999; left:50%; transform:translateX(-50%); bottom:calc(12px + env(safe-area-inset-bottom)); width:auto!important; min-width:116px; margin:0!important; padding:10px 24px!important; border:1px solid #5eead4!important; border-radius:999px!important; background:linear-gradient(135deg,#0f766e,#115e59)!important; color:#fff!important; box-shadow:0 5px 18px rgba(0,0,0,.32); font-size:14px!important; font-weight:900; }
 </style>
+<style id="student-dashboard-refresh">
+  body[data-page="student"] #tab-student { background:transparent; border:0; box-shadow:none; padding:0; }
+  body[data-page="student"] #tab-student > h3 { margin:4px 4px 12px; font-size:21px; }
+  .student-dashboard { display:block; }
+  .student-welcome-panel { padding:20px; margin:10px 0 14px; border:1px solid rgba(45,212,191,.35); border-radius:18px; background:linear-gradient(125deg,#173f61,#123044 72%,#115e59); box-shadow:0 10px 25px rgba(0,0,0,.16); }
+  .student-welcome-kicker { color:#99f6e4; font-size:11px; font-weight:900; }
+  .student-welcome-panel h2 { margin:5px 0 10px; font-size:24px; }
+  .student-welcome-panel .scheduleBox { margin:0; background:rgba(7,25,42,.55); border:1px solid rgba(153,246,228,.25); }
+  .student-summary-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-bottom:12px; }
+  .student-summary-card { margin:0; min-width:0; }
+  .student-section-card { min-width:0; margin:0 0 12px; padding:16px; border:1px solid #294765; border-radius:16px; background:#172b43; box-shadow:0 7px 20px rgba(0,0,0,.12); }
+  .student-section-heading { display:flex; align-items:center; gap:11px; margin-bottom:12px; }
+  .student-section-heading > span { display:grid; place-items:center; flex:0 0 42px; width:42px; height:42px; border-radius:12px; background:#203f5b; font-size:21px; }
+  .student-section-heading h3 { margin:0; font-size:16px; }
+  .student-section-heading p { margin:3px 0 0; color:#aebfd0; font-size:11px; line-height:1.6; }
+  .student-live-section #lessonsList > .card { margin:0; background:#102238!important; }
+  .student-recorded-list { display:grid; gap:9px; }
+  .student-recorded-empty { padding:15px; text-align:center; color:#cbd5e1; background:#102238; border:1px dashed #496582; border-radius:12px; font-size:13px; line-height:1.8; }
+  .student-recorded-item { padding:12px; border:1px solid #36516f; border-radius:12px; background:#102238; }
+  .student-recorded-info h4 { margin:0; font-size:14px; }
+  .student-recorded-info p { margin:4px 0 10px; color:#a9c2d8; font-size:11px; }
+  .student-recorded-watch { width:auto; margin:0; padding:9px 14px; border-radius:9px; background:#0f766e; color:#fff; font-size:12px; }
+  .student-recorded-player { margin-top:10px; overflow:hidden; border-radius:11px; background:#020617; aspect-ratio:16/9; }
+  .student-recorded-player[hidden] { display:none; }
+  .student-recorded-player iframe { display:block; width:100%; height:100%; min-height:180px; border:0; }
+  .student-section-card #paperHomeworkStudent { line-height:1.8; }
+  @media(max-width:600px) {
+    .student-welcome-panel { padding:16px; border-radius:15px; }
+    .student-welcome-panel h2 { font-size:21px; }
+    .student-summary-grid { grid-template-columns:1fr; }
+    .student-section-card { padding:13px; border-radius:14px; }
+    .student-section-heading > span { flex-basis:38px; width:38px; height:38px; }
+  }
+</style>
+<style id="interactive-questions-style">
+.iq-card{background:linear-gradient(145deg,#102b46,#0f1d31)!important;border:1px solid #2dd4bf!important;padding:16px!important}
+.iq-heading{margin-bottom:14px}.iq-kicker{font-size:10px;letter-spacing:1px;color:#5eead4;font-weight:900}
+.iq-heading h3{margin:4px 0;font-size:21px}.iq-heading p,.iq-hint{color:#cbd5e1;font-size:13px;line-height:1.8;margin:5px 0 12px}
+#iqControls label{display:block;color:#cbd5e1;font-size:12px;font-weight:800;margin:10px 0 5px}
+#iqControls select{width:100%;background:#203a57;color:#fff;border:1px solid #45617e;border-radius:10px;padding:12px;min-height:44px}
+.iq-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.iq-actions button{flex:1 1 140px;margin:0;min-height:44px}
+#iqStart{background:#0f766e}#iqSubmit{background:#2563eb}#iqRetry{background:#475569}
+.iq-question{background:#0b1a2b;border:1px solid #36516f;border-radius:12px;padding:13px;margin:11px 0}
+.iq-question-title{font-size:14px;line-height:1.8;font-weight:800}.iq-question-title span{color:#5eead4}
+.iq-type{display:inline-block;color:#93c5fd;font-size:10px;margin:3px 0 8px}
+.iq-options{display:grid;gap:7px}.iq-options label{display:flex;align-items:center;gap:9px;background:#1e344e;border:1px solid #3c5876;border-radius:9px;padding:10px;font-size:13px;line-height:1.6;cursor:pointer}
+.iq-options input{width:17px;height:17px;flex:0 0 auto;margin:0;accent-color:#2dd4bf}
+.iq-options label.iq-correct{background:#14532d;border-color:#22c55e;color:#dcfce7}
+.iq-options label.iq-wrong{background:#7f1d1d;border-color:#ef4444;color:#fee2e2}
+.iq-score{background:#123c48;border:1px solid #2dd4bf;border-radius:12px;padding:15px;margin-top:14px;text-align:center}
+.iq-score strong{display:block;font-size:20px}.iq-score span{font-size:25px;color:#5eead4;font-weight:900}.iq-score p{font-size:17px;font-weight:900;margin:7px 0}.iq-score small{color:#cbd5e1}
+.iq-answers{background:#0b1a2b;border-radius:10px;padding:12px;margin-top:10px;font-size:13px}.iq-answers summary{cursor:pointer;font-weight:900;color:#99f6e4}
+.iq-unavailable{background:#422006;color:#fde68a;border:1px solid #a16207;border-radius:10px;padding:12px;line-height:1.8}
+.iq-footnote{font-size:11px;color:#94a3b8;margin:12px 0 0}
+@media(max-width:600px){.iq-card{padding:12px!important}.iq-actions{display:grid;grid-template-columns:1fr}.iq-question{padding:11px}}
+</style>
 </head>
 <body data-page="home">
 
@@ -397,22 +453,71 @@
       <button onclick="loginStudent()">دخول</button>
       <p id="loginMsg"></p>
 
-      <div id="studentArea" style="display:none">
-        <h2 id="welcome"></h2>
-        <div id="studentSchedule"></div>
+      <div id="studentArea" class="student-dashboard" style="display:none">
+        <div class="student-welcome-panel">
+          <span class="student-welcome-kicker">مساحتك التعليمية</span>
+          <h2 id="welcome"></h2>
+          <div id="studentSchedule"></div>
+        </div>
 
-        <div id="evalDisplay" class="card" style="background:#0f172a;border:2px solid #f59e0b"></div>
-        <div id="studentAttendanceDisplay"></div>
-        <div class="card" style="background:#0f172a;border:2px solid #10b981">
-          <h4>💳 موقف الدفع</h4>
-          <div id="paymentHistory" style="margin-top:10px">جاري تحميل موقف الدفع...</div>
+        <div class="student-summary-grid">
+          <div id="evalDisplay" class="card student-summary-card"></div>
+          <div id="certArea"></div>
         </div>
-        <div id="certArea"></div>
-        <div id="lessonsList"></div>
-        <div class="card" style="background:#0f172a;border:2px solid #06b6d4">
-          <h4>📷 الواجب الورقي</h4>
+
+        <section class="student-section-card student-live-section">
+          <div class="student-section-heading">
+            <span>🎥</span><div><h3>الحصة المباشرة</h3><p>موعد حصتك وروابط الدخول المتاحة.</p></div>
+          </div>
+          <div id="lessonsList"></div>
+        </section>
+
+        <section id="studentRecordedLessons" class="student-section-card">
+          <div class="student-section-heading">
+            <span>🎬</span><div><h3>الحصص المسجلة</h3><p>فيديوهات الصف الخاص بك، وتظهر هنا عند إضافتها من لوحة المدرس.</p></div>
+          </div>
+          <div id="studentRecordedLessonsList" class="student-recorded-list" aria-live="polite">
+            <div class="student-recorded-empty">سجّل الدخول لعرض فيديوهات صفك.</div>
+          </div>
+        </section>
+
+        <section class="student-section-card">
+          <div class="student-section-heading">
+            <span>📷</span><div><h3>الواجب الورقي</h3><p>تابع الواجبات المطلوبة منك.</p></div>
+          </div>
           <div id="paperHomeworkStudent">جاري تحميل الواجبات الورقية...</div>
-        </div>
+        </section>
+        <section id="interactiveQuestions" class="card iq-card student-section-card" style="display:none">
+          <div class="iq-heading">
+            <span class="iq-kicker">PRACTICE & TESTS</span>
+            <h3>📝 أسئلة تفاعلية</h3>
+            <p>تدريب على مفردات وقواعد وفهم المنهج، مع تصحيح فوري ونتيجة بعد الانتهاء.</p>
+          </div>
+          <div id="iqUnavailable" class="iq-unavailable" hidden></div>
+          <div id="iqControls">
+            <label for="iqUnit">اختر الوحدة أو الاختبار</label>
+            <select id="iqUnit">
+              <option value="0">الوحدة الأولى — Gen Alpha</option>
+              <option value="1">الوحدة الثانية — My Digital Footprint</option>
+              <option value="2">الوحدة الثالثة — Facing Challenges</option>
+              <option value="3">الوحدة الرابعة — Art and Expressions</option>
+              <option value="4">الوحدة الخامسة — Around the World</option>
+              <option value="5">الوحدة السادسة — Young Innovators</option>
+              <option value="story">القصة</option>
+              <option value="term">امتحان شامل للترم</option>
+            </select>
+            <label for="iqGroup">اختر الدروس</label>
+            <select id="iqGroup"></select>
+            <div class="iq-actions">
+              <button type="button" id="iqStart">ابدأ التدريب</button>
+              <button type="button" id="iqSubmit" hidden>صحّح إجاباتي</button>
+              <button type="button" id="iqRetry" hidden>حاول مرة أخرى</button>
+            </div>
+          </div>
+          <div id="iqPanel" aria-live="polite"></div>
+          <div id="iqResult" aria-live="polite"></div>
+          <p class="iq-footnote">التدريبات للتعلم والمراجعة، ويمكن إعادة المحاولة أكثر من مرة.</p>
+        </section>
       </div>
     </div>
 
@@ -480,7 +585,6 @@
           <span class="subTab" onclick="showAdminTab('students')" id="atab-students">الطلاب</span>
           <span class="subTab" onclick="showAdminTab('homeworks')" id="atab-homeworks">الواجبات</span>
           <span class="subTab" onclick="showAdminTab('materials')" id="atab-materials">الملازم</span>
-          <span class="subTab" onclick="showAdminTab('payments')" id="atab-payments">المدفوعات</span>
           <span class="subTab" onclick="showAdminTab('backup')" id="atab-backup">النسخ الاحتياطي</span>
         </div>
 
@@ -585,13 +689,6 @@
           </div>
         </div>
 
-        <div id="admin-payments" style="display:none">
-          <div class="card" style="background:#0f172a">
-            <h4>💳 طلبات الدفع</h4>
-            <div id="paymentsAdminList">اضغط على المدفوعات لعرض الطلبات.</div>
-          </div>
-        </div>
-
         <div id="admin-backup" style="display:none">
           <div class="card" style="background:#0f172a;border:1px solid #10b981">
             <h4>🛡️ النسخ الاحتياطي واستعادة البيانات</h4>
@@ -619,7 +716,7 @@
     }
 
     function showAdminTab(t) {
-      ['lessons', 'schedules', 'students', 'homeworks', 'materials', 'payments', 'backup'].forEach(function(x) {
+      ['lessons', 'schedules', 'students', 'homeworks', 'materials', 'backup'].forEach(function(x) {
         var el = document.getElementById('admin-' + x);
         if (el) el.style.display = (x === t) ? 'block' : 'none';
         var tab = document.getElementById('atab-' + x);
@@ -629,7 +726,6 @@
       if (t === 'homeworks' && window.loadPaperHomeworkAdmin) window.loadPaperHomeworkAdmin();
       if (t === 'schedules' && window.loadSchedulesAdmin) window.loadSchedulesAdmin();
       if (t === 'materials' && window.loadMaterialsAdmin) window.loadMaterialsAdmin();
-      if (t === 'payments' && window.loadPaymentsAdmin) window.loadPaymentsAdmin();
     }
 
     let deferredPrompt;
@@ -829,36 +925,11 @@
           const sched = await getScheduleForGrade(s.grade);
           const attendanceHtml = attendanceHistoryHtml(s.attendanceByDate);
           const monthScore = score10(s, 'eval_month');
-          const paySnap = await getDocs(query(collection(db, 'payments'), where('studentId', '==', sid)));
-          let payments = [];
-          paySnap.forEach(p => payments.push({ id: p.id, ...p.data() }));
-          payments.sort((a, b) => (b.created || 0) - (a.created || 0));
-          const labels = { pending: '⏳ قيد المراجعة', approved: '✅ تم تأكيد الدفع', rejected: '❌ لم يتم قبول الإيصال' };
-          const history = payments.length ? payments.slice(0, 5).map(p =>
-            '<div class="student-row"><b>' + window.escHtml(String(p.amount || 0)) + ' جنيه</b> — ' + (p.method === 'InstaPay' ? 'إنستاباي' : 'اتصالات كاش') + '<br><small>' + (labels[p.status] || 'قيد المراجعة') + '</small></div>'
-          ).join('') : '<small style="color:#94a3b8">لا توجد مدفوعات مسجلة حتى الآن.</small>';
-
-          html += '<div class="card" style="background:#0f172a;border:2px solid #f59e0b"><h3>👦 ' + window.escHtml(s.name || '') + ' - ' + window.escHtml(s.grade || '') + '</h3><div class="scheduleBox">⏰ ' + sched + '</div><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:12px 0"><div style="background:#102238;padding:9px;border-radius:9px;text-align:center">التفاعل<br><b style="color:#99f6e4;font-size:18px">' + score10(s, 'eval_interaction') + '/10</b></div><div style="background:#102238;padding:9px;border-radius:9px;text-align:center">الواجب<br><b style="color:#99f6e4;font-size:18px">' + score10(s, 'eval_homework') + '/10</b></div><div style="background:#102238;padding:9px;border-radius:9px;text-align:center">امتحان الشهر<br><b style="color:#99f6e4;font-size:18px">' + monthScore + '/10</b></div></div>' + (monthScore >= 9 ? '<div style="color:#fbbf24;font-weight:900;margin-top:7px">🏆 درع التفوق</div>' : '') + attendanceHtml + '<hr style="border-color:#334155;margin:12px 0"><h4>💳 مدفوعات الطالب</h4><p style="font-size:12px;color:#cbd5e1">سجّل المبلغ وطريقة التحويل، ثم أرسل صورة الإيصال عبر واتساب.</p><select id="parentPaymentMethod_' + sid + '"><option value="InstaPay">إنستاباي</option><option value="Etisalat Cash">اتصالات كاش</option></select><input id="parentPaymentAmount_' + sid + '" type="number" min="1" step="1" placeholder="المبلغ المحوّل بالجنيه"><input id="parentPaymentNote_' + sid + '" maxlength="120" placeholder="ملاحظة (اختياري)"><button onclick="submitParentPayment(\'' + sid + '\',\'' + window.escHtml(s.name || '').replace(/'/g, '&#39;') + '\',\'' + window.escHtml(s.grade || '').replace(/'/g, '&#39;') + '\')" style="background:#10b981">تسجيل الدفع وإرسال صورة الإيصال</button><div id="parentPaymentMsg_' + sid + '" style="font-size:12px;margin-top:8px"></div><h4 style="margin-top:14px">سجل المدفوعات</h4><div>' + history + '</div></div>';
+          html += '<div class="card" style="background:#0f172a;border:2px solid #f59e0b"><h3>👦 ' + window.escHtml(s.name || '') + ' - ' + window.escHtml(s.grade || '') + '</h3><div class="scheduleBox">⏰ ' + sched + '</div><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:12px 0"><div style="background:#102238;padding:9px;border-radius:9px;text-align:center">التفاعل<br><b style="color:#99f6e4;font-size:18px">' + score10(s, 'eval_interaction') + '/10</b></div><div style="background:#102238;padding:9px;border-radius:9px;text-align:center">الواجب<br><b style="color:#99f6e4;font-size:18px">' + score10(s, 'eval_homework') + '/10</b></div><div style="background:#102238;padding:9px;border-radius:9px;text-align:center">امتحان الشهر<br><b style="color:#99f6e4;font-size:18px">' + monthScore + '/10</b></div></div>' + (monthScore >= 9 ? '<div style="color:#fbbf24;font-weight:900;margin-top:7px">🏆 درع التفوق</div>' : '') + attendanceHtml + '</div>';
         }
         document.getElementById('parentArea').innerHTML = html;
         document.getElementById('parentArea').style.display = 'block';
       } catch (e) { alert('خطأ: ' + e.message); }
-    };
-
-    window.submitParentPayment = async function(studentId, studentName, grade) {
-      try {
-        const method = document.getElementById('parentPaymentMethod_' + studentId).value;
-        const amount = Number(document.getElementById('parentPaymentAmount_' + studentId).value);
-        const note = document.getElementById('parentPaymentNote_' + studentId).value.trim();
-        if (!Number.isFinite(amount) || amount <= 0) { alert('اكتب المبلغ بشكل صحيح'); return; }
-        const ref = await addDoc(collection(db, 'payments'), {
-          studentId, studentName, phone: '', grade, method, amount, note, status: 'pending', created: Date.now(), submittedBy: 'parent'
-        });
-        const message = 'طلب دفع جديد\nالطالب: ' + studentName + '\nالصف: ' + grade + '\nالمبلغ: ' + amount + ' جنيه\nالطريقة: ' + (method === 'InstaPay' ? 'إنستاباي' : 'اتصالات كاش') + '\nرقم الطلب: ' + ref.id + '\nسأرفق صورة الإيصال.';
-        document.getElementById('parentPaymentMsg_' + studentId).innerHTML = '✅ تم تسجيل الدفع. <a target="_blank" rel="noopener" style="color:#25D366;font-weight:900" href="https://wa.me/201116811324?text=' + encodeURIComponent(message) + '">اضغط هنا لإرسال صورة الإيصال على واتساب</a>';
-        document.getElementById('parentPaymentAmount_' + studentId).value = '';
-        document.getElementById('parentPaymentNote_' + studentId).value = '';
-      } catch (e) { alert('تعذر تسجيل الدفع: ' + (e.message || e)); }
     };
 
     async function loadStudentLesson() {
@@ -881,6 +952,93 @@
         document.getElementById('lessonsList').innerHTML = html || '<p>لا يوجد حصص حاليا</p>';
       } catch (e) { console.log(e); }
     }
+
+    window.loadStudentRecordedLessons = async function() {
+      const box = document.getElementById('studentRecordedLessonsList');
+      if (!box || !currentStudent || !currentStudent.grade) return;
+      box.innerHTML = '<div class="student-recorded-empty">⏳ جاري تحميل فيديوهات صفك...</div>';
+      try {
+        const snap = await getDocs(collection(db, 'materials'));
+        const items = [];
+        snap.forEach(function(d) {
+          const item = d.data();
+          if (item.type !== 'recorded_lesson' || item.grade !== currentStudent.grade) return;
+          let videoId = '';
+          try {
+            const url = new URL(String(item.link || '').trim());
+            const host = url.hostname.toLowerCase().replace(/^www\./, '');
+            if (host === 'youtu.be') videoId = url.pathname.split('/').filter(Boolean)[0] || '';
+            else if (['youtube.com', 'm.youtube.com', 'youtube-nocookie.com'].includes(host)) {
+              if (url.pathname === '/watch') videoId = url.searchParams.get('v') || '';
+              else {
+                const parts = url.pathname.split('/').filter(Boolean);
+                if (['embed', 'shorts', 'live'].includes(parts[0])) videoId = parts[1] || '';
+              }
+            }
+          } catch (e) {}
+          if (!videoId) return;
+          items.push({
+            id: d.id,
+            videoId,
+            title: String(item.title || 'حصة مسجلة'),
+            unit: String(item.unit || 'وحدة غير محددة'),
+            lessonNumber: String(item.lessonNumber || ''),
+            created: Number(item.created || 0)
+          });
+        });
+        const unitOrder = value => {
+          if (value === 'القصة') return 7;
+          const match = String(value).match(/(\d+)/);
+          return match ? Number(match[1]) : 8;
+        };
+        items.sort((a, b) => unitOrder(a.unit) - unitOrder(b.unit) ||
+          Number(a.lessonNumber || 99) - Number(b.lessonNumber || 99) || b.created - a.created);
+        box.replaceChildren();
+        if (!items.length) {
+          const empty = document.createElement('div');
+          empty.className = 'student-recorded-empty';
+          empty.textContent = 'لسه مفيش فيديوهات مضافة لصفك. أول ما أضيف حصة مسجلة هتظهر هنا تلقائيًا.';
+          box.appendChild(empty);
+          return;
+        }
+        items.forEach(function(item) {
+          const card = document.createElement('article');
+          card.className = 'student-recorded-item';
+          const info = document.createElement('div');
+          info.className = 'student-recorded-info';
+          const title = document.createElement('h4');
+          title.textContent = item.title;
+          const meta = document.createElement('p');
+          meta.textContent = item.unit + (item.lessonNumber ? ' • الدرس ' + item.lessonNumber : '');
+          const watch = document.createElement('button');
+          watch.type = 'button';
+          watch.className = 'student-recorded-watch';
+          watch.textContent = '▶ مشاهدة الحصة';
+          const playerWrap = document.createElement('div');
+          playerWrap.className = 'student-recorded-player';
+          playerWrap.hidden = true;
+          watch.addEventListener('click', function() {
+            if (!playerWrap.firstChild) {
+              const frame = document.createElement('iframe');
+              frame.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(item.videoId);
+              frame.title = item.title;
+              frame.loading = 'lazy';
+              frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+              frame.allowFullscreen = true;
+              playerWrap.appendChild(frame);
+            }
+            playerWrap.hidden = !playerWrap.hidden;
+            watch.textContent = playerWrap.hidden ? '▶ مشاهدة الحصة' : 'إخفاء الفيديو';
+          });
+          info.append(title, meta);
+          card.append(info, watch, playerWrap);
+          box.appendChild(card);
+        });
+      } catch (e) {
+        box.innerHTML = '<div class="student-recorded-empty">تعذر تحميل الفيديوهات حاليًا. حاول مرة أخرى لاحقًا.</div>';
+        console.log('student recorded lessons', e);
+      }
+    };
 
     window.addMaterial = async function() {
       try {
@@ -1221,22 +1379,22 @@
         if (data.status === 'blocked') { document.getElementById('loginMsg').innerText = '🚫 محظور'; return; }
         currentStudent = { id: d.id, ...data };
         window.currentStudent = currentStudent;
+        if (window.initInteractiveQuestions) window.initInteractiveQuestions(currentStudent);
         document.getElementById('studentArea').style.display = 'block';
         document.getElementById('welcome').innerText = 'أهلا يا ' + data.name;
         const sched = await getScheduleForGrade(data.grade);
         document.getElementById('studentSchedule').innerHTML = '<div class="scheduleBox">⏰ ' + data.grade + ': ' + sched + '</div>';
         const monthScore = score10(data, 'eval_month');
         document.getElementById('evalDisplay').innerHTML = '<h4>📊 تقييمك</h4><div>التفاعل: ' + score10(data, 'eval_interaction') + '/10</div><div>الواجب: ' + score10(data, 'eval_homework') + '/10</div><div>امتحان الشهر: ' + monthScore + '/10</div>';
-        document.getElementById('studentAttendanceDisplay').innerHTML = attendanceHistoryHtml(data.attendanceByDate);
         document.getElementById('certArea').innerHTML = '';
         if (monthScore >= 9) {
           const today = new Date().toLocaleDateString('ar-EG');
           document.getElementById('certArea').innerHTML = '<div class="certCard"><h2>🏆 درع التفوق</h2><h2>' + data.name + '</h2><p>' + today + '</p></div>';
         }
         loadStudentLesson();
+        loadStudentRecordedLessons();
         loadStudentMaterials();
         loadPaperHomeworkStudent();
-        loadPaymentHistory();
       } catch (e) { document.getElementById('loginMsg').innerText = 'خطأ: ' + e.message; }
     };
 
@@ -1442,5 +1600,6 @@
   </script>
   <script src="word-of-day.js?v=20261114fix2" defer></script>
   <script src="daily-learning.js" defer></script>
+  <script src="interactive-questions.js" defer></script>
 </body>
 </html>
