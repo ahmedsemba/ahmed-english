@@ -474,7 +474,21 @@
 
         <section id="studentRecordedLessons" class="student-section-card">
           <div class="student-section-heading">
-            <span>🎬</span><div><h3>الحصص المسجلة</h3><p>فيديوهات الصف الخاص بك، وتظهر هنا عند إضافتها من لوحة المدرس.</p></div>
+            <span>🎬</span><div><h3>الحصص المسجلة</h3><p>اختار الوحدة أو القصة، ثم رقم الدرس لعرض فيديو الحصة المطلوبة فقط.</p></div>
+          </div>
+          <div class="student-recorded-filters">
+            <label for="studentRecordedUnitFilter">اختر الوحدة أو القصة</label>
+            <select id="studentRecordedUnitFilter" onchange="changeStudentRecordedUnit()">
+              <option value="">اختر الوحدة أو القصة</option>
+              <option value="الوحدة 1">الوحدة الأولى</option><option value="الوحدة 2">الوحدة الثانية</option>
+              <option value="الوحدة 3">الوحدة الثالثة</option><option value="الوحدة 4">الوحدة الرابعة</option>
+              <option value="الوحدة 5">الوحدة الخامسة</option><option value="الوحدة 6">الوحدة السادسة</option>
+              <option value="القصة 1">القصة 1</option><option value="القصة 2">القصة 2</option>
+            </select>
+            <label for="studentRecordedLessonFilter">اختر الدرس</label>
+            <select id="studentRecordedLessonFilter" disabled onchange="filterStudentRecordedLessons()">
+              <option value="">اختر الوحدة أو القصة أولاً</option>
+            </select>
           </div>
           <div id="studentRecordedLessonsList" class="student-recorded-list" aria-live="polite">
             <div class="student-recorded-empty">سجّل الدخول لعرض فيديوهات صفك.</div>
@@ -953,6 +967,89 @@
       } catch (e) { console.log(e); }
     }
 
+    const recordedFilterStyle = document.createElement('style');
+    recordedFilterStyle.textContent = '.student-recorded-filters{display:grid;grid-template-columns:1fr;gap:8px;margin:14px 0}.student-recorded-filters label{font-weight:700;color:inherit}.student-recorded-filters select{width:100%;min-height:44px;padding:10px 12px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;color:#111827;font:inherit}.student-recorded-filters select:disabled{opacity:.65}';
+    document.head.appendChild(recordedFilterStyle);
+    window.studentRecordedLessonItems = [];
+    window.changeStudentRecordedUnit = function() {
+      const lessonSelect = document.getElementById('studentRecordedLessonFilter');
+      if (lessonSelect) lessonSelect.value = '';
+      window.filterStudentRecordedLessons();
+    };
+
+    window.filterStudentRecordedLessons = function() {
+      const box = document.getElementById('studentRecordedLessonsList');
+      const unitSelect = document.getElementById('studentRecordedUnitFilter');
+      const lessonSelect = document.getElementById('studentRecordedLessonFilter');
+      if (!box || !unitSelect || !lessonSelect) return;
+      const selectedUnit = unitSelect.value;
+      const previousLesson = lessonSelect.value;
+      lessonSelect.replaceChildren();
+      const firstOption = document.createElement('option');
+      firstOption.value = '';
+      firstOption.textContent = selectedUnit ? 'اختر الدرس' : 'اختر الوحدة أو القصة أولاً';
+      lessonSelect.appendChild(firstOption);
+      lessonSelect.disabled = !selectedUnit;
+      if (!selectedUnit) {
+        box.innerHTML = '<div class="student-recorded-empty">اختار الوحدة أو القصة ثم الدرس لعرض فيديو واحد فقط.</div>';
+        return;
+      }
+      const matchesUnit = item => {
+        if (selectedUnit === 'القصة 1') return item.unit === 'القصة' || item.unit === 'القصة 1';
+        if (selectedUnit === 'القصة 2') return item.unit === 'القصة 2';
+        return item.unit === selectedUnit;
+      };
+      const available = window.studentRecordedLessonItems.filter(matchesUnit);
+      const lessons = [...new Set(available.map(item => item.lessonNumber).filter(Boolean))]
+        .sort((a,b) => Number(a) - Number(b));
+      lessons.forEach(number => {
+        const option = document.createElement('option');
+        option.value = number;
+        option.textContent = 'الدرس ' + number;
+        lessonSelect.appendChild(option);
+      });
+      if (lessons.includes(previousLesson)) lessonSelect.value = previousLesson;
+      box.innerHTML = available.length
+        ? '<div class="student-recorded-empty">اختار رقم الدرس لعرض الحصة المطلوبة.</div>'
+        : '<div class="student-recorded-empty">لا توجد فيديوهات مضافة لهذا الاختيار حتى الآن.</div>';
+      if (!lessons.length) lessonSelect.disabled = true;
+      if (!lessonSelect.value) return;
+      const chosen = available.filter(item => item.lessonNumber === lessonSelect.value)
+        .sort((a,b) => b.created - a.created)[0];
+      if (!chosen) return;
+      const card = document.createElement('article');
+      card.className = 'student-recorded-item';
+      const info = document.createElement('div');
+      info.className = 'student-recorded-info';
+      const title = document.createElement('h4');
+      title.textContent = chosen.title;
+      const meta = document.createElement('p');
+      meta.textContent = chosen.unit + ' • الدرس ' + chosen.lessonNumber;
+      const watch = document.createElement('button');
+      watch.type = 'button';
+      watch.className = 'student-recorded-watch';
+      watch.textContent = '▶ مشاهدة الحصة';
+      const playerWrap = document.createElement('div');
+      playerWrap.className = 'student-recorded-player';
+      playerWrap.hidden = true;
+      watch.addEventListener('click', function() {
+        if (!playerWrap.firstChild) {
+          const frame = document.createElement('iframe');
+          frame.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(chosen.videoId);
+          frame.title = chosen.title;
+          frame.loading = 'lazy';
+          frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+          frame.allowFullscreen = true;
+          playerWrap.appendChild(frame);
+        }
+        playerWrap.hidden = !playerWrap.hidden;
+        watch.textContent = playerWrap.hidden ? '▶ مشاهدة الحصة' : 'إخفاء الفيديو';
+      });
+      info.append(title, meta);
+      card.append(info, watch, playerWrap);
+      box.replaceChildren(card);
+    };
+
     window.loadStudentRecordedLessons = async function() {
       const box = document.getElementById('studentRecordedLessonsList');
       if (!box || !currentStudent || !currentStudent.grade) return;
@@ -983,57 +1080,26 @@
             title: String(item.title || 'حصة مسجلة'),
             unit: String(item.unit || 'وحدة غير محددة'),
             lessonNumber: String(item.lessonNumber || ''),
-            created: Number(item.created || 0)
+            created: Number(item.created || item.updated || 0)
           });
         });
-        const unitOrder = value => {
-          if (value === 'القصة') return 7;
-          const match = String(value).match(/(\d+)/);
-          return match ? Number(match[1]) : 8;
-        };
-        items.sort((a, b) => unitOrder(a.unit) - unitOrder(b.unit) ||
-          Number(a.lessonNumber || 99) - Number(b.lessonNumber || 99) || b.created - a.created);
-        box.replaceChildren();
+        window.studentRecordedLessonItems = items;
+        const unitSelect = document.getElementById('studentRecordedUnitFilter');
+        const lessonSelect = document.getElementById('studentRecordedLessonFilter');
+        if (unitSelect) unitSelect.value = '';
+        if (lessonSelect) {
+          lessonSelect.replaceChildren();
+          const option = document.createElement('option');
+          option.value = '';
+          option.textContent = 'اختر الوحدة أو القصة أولاً';
+          lessonSelect.appendChild(option);
+          lessonSelect.disabled = true;
+        }
         if (!items.length) {
-          const empty = document.createElement('div');
-          empty.className = 'student-recorded-empty';
-          empty.textContent = 'لسه مفيش فيديوهات مضافة لصفك. أول ما أضيف حصة مسجلة هتظهر هنا تلقائيًا.';
-          box.appendChild(empty);
+          box.innerHTML = '<div class="student-recorded-empty">لسه مفيش فيديوهات مضافة لصفك.</div>';
           return;
         }
-        items.forEach(function(item) {
-          const card = document.createElement('article');
-          card.className = 'student-recorded-item';
-          const info = document.createElement('div');
-          info.className = 'student-recorded-info';
-          const title = document.createElement('h4');
-          title.textContent = item.title;
-          const meta = document.createElement('p');
-          meta.textContent = item.unit + (item.lessonNumber ? ' • الدرس ' + item.lessonNumber : '');
-          const watch = document.createElement('button');
-          watch.type = 'button';
-          watch.className = 'student-recorded-watch';
-          watch.textContent = '▶ مشاهدة الحصة';
-          const playerWrap = document.createElement('div');
-          playerWrap.className = 'student-recorded-player';
-          playerWrap.hidden = true;
-          watch.addEventListener('click', function() {
-            if (!playerWrap.firstChild) {
-              const frame = document.createElement('iframe');
-              frame.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(item.videoId);
-              frame.title = item.title;
-              frame.loading = 'lazy';
-              frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-              frame.allowFullscreen = true;
-              playerWrap.appendChild(frame);
-            }
-            playerWrap.hidden = !playerWrap.hidden;
-            watch.textContent = playerWrap.hidden ? '▶ مشاهدة الحصة' : 'إخفاء الفيديو';
-          });
-          info.append(title, meta);
-          card.append(info, watch, playerWrap);
-          box.appendChild(card);
-        });
+        box.innerHTML = '<div class="student-recorded-empty">اختار الوحدة أو القصة ثم رقم الدرس لعرض فيديو الحصة المطلوبة فقط.</div>';
       } catch (e) {
         box.innerHTML = '<div class="student-recorded-empty">تعذر تحميل الفيديوهات حاليًا. حاول مرة أخرى لاحقًا.</div>';
         console.log('student recorded lessons', e);

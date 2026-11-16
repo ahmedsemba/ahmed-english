@@ -619,7 +619,7 @@
             <option value="الوحدة 1">الوحدة 1</option><option value="الوحدة 2">الوحدة 2</option>
             <option value="الوحدة 3">الوحدة 3</option><option value="الوحدة 4">الوحدة 4</option>
             <option value="الوحدة 5">الوحدة 5</option><option value="الوحدة 6">الوحدة 6</option>
-            <option value="القصة">القصة</option>
+            <option value="القصة 1">القصة 1</option><option value="القصة 2">القصة 2</option>
           </select>
           <label for="recordedLessonNumber">رقم الدرس</label>
           <select id="recordedLessonNumber">
@@ -1569,7 +1569,7 @@
     window.editRecordedLesson = function(item) {
       editingRecordedId = item.id;
       document.getElementById("recordedTitle").value = item.title || "";
-      document.getElementById("recordedUnit").value = item.unit || "";
+      document.getElementById("recordedUnit").value = item.unit === "القصة" ? "القصة 1" : (item.unit || "");
       document.getElementById("recordedLessonNumber").value = String(item.lessonNumber || "");
       document.getElementById("recordedGrade").value = item.grade || "";
       document.getElementById("recordedYoutubeLink").value = item.link || "";
