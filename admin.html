@@ -479,6 +479,7 @@
           <span class="subTab" onclick="showAdminTab('recorded')" id="atab-recorded">الحصص المسجلة</span>
           <span class="subTab" onclick="showAdminTab('schedules')" id="atab-schedules">المواعيد</span>
           <span class="subTab" onclick="showAdminTab('students')" id="atab-students">الطلاب</span>
+          <span class="subTab" onclick="showAdminTab('interactive-results')" id="atab-interactive-results">نتائج الأسئلة</span>
           <span class="subTab" onclick="showAdminTab('homeworks')" id="atab-homeworks">الواجبات</span>
           <span class="subTab" onclick="showAdminTab('materials')" id="atab-materials">الملازم</span>
           <span class="subTab" onclick="showAdminTab('payments')" id="atab-payments">المدفوعات</span>
@@ -569,6 +570,21 @@
           <div id="blockedList"></div>
         </div>
 
+        <div id="admin-interactive-results" style="display:none">
+          <div class="card" style="background:#0f172a">
+            <h4>📊 نتائج الأسئلة التفاعلية</h4>
+            <select id="interactiveResultsGrade" onchange="loadInteractiveResultsAdmin()">
+              <option value="الكل">كل الصفوف</option>
+              <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+              <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+            </select>
+            <input id="interactiveResultsSearch" placeholder="ابحث باسم الطالب أو رقم الهاتف أو الامتحان" oninput="loadInteractiveResultsAdmin()">
+            <button type="button" onclick="loadInteractiveResultsAdmin()">تحديث النتائج</button>
+            <div id="interactiveResultsSummary"></div>
+            <div id="interactiveResultsList">اضغط تحديث لعرض النتائج.</div>
+          </div>
+        </div>
+
         <div id="admin-homeworks" style="display:none">
           <div class="card" style="background:#0f172a;border:1px solid #06b6d4">
             <h4>📷 نشر واجب ورقي</h4>
@@ -655,7 +671,7 @@
     }
 
     function showAdminTab(t) {
-      ['lessons', 'recorded', 'schedules', 'students', 'homeworks', 'materials', 'payments', 'backup'].forEach(function(x) {
+      ['lessons', 'recorded', 'schedules', 'students', 'interactive-results', 'homeworks', 'materials', 'payments', 'backup'].forEach(function(x) {
         var el = document.getElementById('admin-' + x);
         if (el) el.style.display = (x === t) ? 'block' : 'none';
         var tab = document.getElementById('atab-' + x);
@@ -663,6 +679,7 @@
       });
       if (t === 'recorded' && window.loadRecordedLessonsAdmin) window.loadRecordedLessonsAdmin();
       if (t === 'students' && window.loadAdmin) window.loadAdmin();
+      if (t === 'interactive-results' && window.loadInteractiveResultsAdmin) window.loadInteractiveResultsAdmin();
       if (t === 'homeworks' && window.loadPaperHomeworkAdmin) window.loadPaperHomeworkAdmin();
       if (t === 'schedules' && window.loadSchedulesAdmin) window.loadSchedulesAdmin();
       if (t === 'materials' && window.loadMaterialsAdmin) window.loadMaterialsAdmin();
@@ -1477,6 +1494,36 @@
       alert('تم إنهاء الحصة');
     };
 
+    window.loadInteractiveResultsAdmin = async function() {
+      const list = document.getElementById('interactiveResultsList');
+      const summary = document.getElementById('interactiveResultsSummary');
+      if (!list || !summary) return;
+      if (!auth.currentUser) { list.textContent = 'سجّل دخولك بحساب المدرس لعرض النتائج.'; return; }
+      list.textContent = 'جاري تحميل النتائج...';
+      try {
+        const snap = await getDocs(collection(db, 'interactive_attempts'));
+        const grade = document.getElementById('interactiveResultsGrade')?.value || 'الكل';
+        const term = (document.getElementById('interactiveResultsSearch')?.value || '').trim().toLowerCase();
+        const rows = snap.docs.map(d => ({ id:d.id, ...d.data() }))
+          .filter(x => (grade === 'الكل' || x.grade === grade))
+          .filter(x => !term || [x.studentName,x.studentPhone,x.activity,x.grade].some(v => String(v || '').toLowerCase().includes(term)))
+          .sort((a,b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+        const avg = rows.length ? Math.round(rows.reduce((n,x)=>n+Number(x.percentage || 0),0)/rows.length) : 0;
+        summary.innerHTML = '<div class="student-row">عدد المحاولات: <b>' + rows.length + '</b> — متوسط النتائج: <b>' + avg + '%</b></div>';
+        if (!rows.length) { list.innerHTML = '<div class="student-row">لا توجد نتائج مطابقة حتى الآن.</div>'; return; }
+        list.innerHTML = rows.map(x => {
+          const date = x.createdAt ? new Date(x.createdAt).toLocaleString('ar-EG') : '—';
+          return '<div class="student-row"><b>' + escHtml(x.studentName || 'طالب') + '</b> — ' + escHtml(x.grade || '') +
+            '<br>📱 ' + escHtml(x.studentPhone || '—') +
+            '<br>📝 ' + escHtml(x.activity || 'نشاط تفاعلي') +
+            '<br>🏆 ' + Number(x.score || 0) + ' من ' + Number(x.total || 0) + ' (' + Number(x.percentage || 0) + '%)' +
+            '<br><small>' + escHtml(date) + '</small></div>';
+        }).join('');
+      } catch (e) {
+        list.textContent = 'تعذر تحميل النتائج من قاعدة البيانات: ' + (e.message || e);
+      }
+    };
+
     window.loginAdmin = async function() {
       const email = document.getElementById('adminEmail').value.trim();
       const pass = document.getElementById('adminPass').value;
@@ -1506,7 +1553,7 @@
     // مجموعات بيانات المنصة المعروفة. لا يتم حذف أي مستند عند الاستعادة.
     const BACKUP_COLLECTIONS = [
       'students', 'schedules', 'payments', 'lessons', 'materials',
-      'paper_homeworks', 'paper_submissions', 'paper_submission_photos',
+      'paper_homeworks', 'paper_submissions', 'paper_submission_photos', 'interactive_attempts',
       'quiz_submissions', 'live_classes', 'paragraph_homeworks', 'paragraph_submissions'
     ];
 
