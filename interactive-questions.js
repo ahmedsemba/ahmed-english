@@ -320,7 +320,7 @@
     let source = [], title = "", isExam = false;
     if (u === "story") { source = activeStory; title = "تدريب القصة"; }
     else if (u === "term") {
-      source = activeUnits.flatMap(x=>x.groups.map(y=>y.qs[0])).concat(activeStory.slice(0,3));
+      source = activeUnits.flatMap(x=>x.groups.map((y,yi)=>y.qs[Math.min(yi,y.qs.length-1)])).concat(activeStory.slice(0,3));
       title = "الامتحان الشامل للترم"; isExam = true;
     } else {
       const unit = activeUnits[Number(u)];
