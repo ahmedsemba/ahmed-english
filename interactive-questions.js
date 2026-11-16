@@ -278,12 +278,14 @@
         out.push({ type:"fill", category, text:"Complete the sentence: " + prompt.replace(/…|\.\.\./g, "________"), answer });
       } else if (category === "قواعد") {
         const wrong = (options || []).find(x => x !== answer);
-        if (wrong) out.push({
-          type:"truefalse", category,
-          text:prompt.replace(/…|\.\.\./g, answer),
-          answer:true,
-          falseText:prompt.replace(/…|\.\.\./g, wrong)
-        });
+        if (wrong) {
+          const useTrue = index % 2 === 0;
+          out.push({
+            type:"truefalse", category,
+            text:prompt.replace(/…|\.\.\./g, useTrue ? answer : wrong),
+            answer:useTrue
+          });
+        }
       } else {
         out.push({ type:"short", category, text:"Write the correct answer: " + prompt, answer });
       }
@@ -297,6 +299,11 @@
       }
     }
     if (addParagraph) {
+      out.push({
+        type:"dialogue", category:"حوار",
+        text:"Complete the dialogue: A: What do you use the internet for? B: I use it to ______.",
+        answer:"learn new things"
+      });
       const topic = title.includes("الوحدة") ? title.split(" - ")[0] : "the topics you studied this term";
       out.push({
         type:"paragraph", category:"Writing",
@@ -313,7 +320,7 @@
     let source = [], title = "", isExam = false;
     if (u === "story") { source = activeStory; title = "تدريب القصة"; }
     else if (u === "term") {
-      source = activeUnits.flatMap(x=>x.groups.flatMap(y=>y.qs)).concat(activeStory.slice(0,4));
+      source = activeUnits.flatMap(x=>x.groups.map(y=>y.qs[0])).concat(activeStory.slice(0,3));
       title = "الامتحان الشامل للترم"; isExam = true;
     } else {
       const unit = activeUnits[Number(u)];
@@ -385,6 +392,8 @@
           score += result.score;
           feedback.push((i+1)+". "+result.feedback+" ("+result.score+"/5)");
           ok = result.score >= 3;
+        } else if (q.type === "dialogue") {
+          ok = normalizeAnswer(response) === normalizeAnswer(q.answer);
         } else {
           ok = normalizeAnswer(response) === normalizeAnswer(q.answer);
         }
