@@ -827,36 +827,11 @@
           const sched = await getScheduleForGrade(s.grade);
           const attendanceHtml = attendanceHistoryHtml(s.attendanceByDate);
           const monthScore = score10(s, 'eval_month');
-          const paySnap = await getDocs(query(collection(db, 'payments'), where('studentId', '==', sid)));
-          let payments = [];
-          paySnap.forEach(p => payments.push({ id: p.id, ...p.data() }));
-          payments.sort((a, b) => (b.created || 0) - (a.created || 0));
-          const labels = { pending: '⏳ قيد المراجعة', approved: '✅ تم تأكيد الدفع', rejected: '❌ لم يتم قبول الإيصال' };
-          const history = payments.length ? payments.slice(0, 5).map(p =>
-            '<div class="student-row"><b>' + window.escHtml(String(p.amount || 0)) + ' جنيه</b> — ' + (p.method === 'InstaPay' ? 'إنستاباي' : 'اتصالات كاش') + '<br><small>' + (labels[p.status] || 'قيد المراجعة') + '</small></div>'
-          ).join('') : '<small style="color:#94a3b8">لا توجد مدفوعات مسجلة حتى الآن.</small>';
-
-          html += '<div class="card" style="background:#0f172a;border:2px solid #f59e0b"><h3>👦 ' + window.escHtml(s.name || '') + ' - ' + window.escHtml(s.grade || '') + '</h3><div class="scheduleBox">⏰ ' + sched + '</div><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:12px 0"><div style="background:#102238;padding:9px;border-radius:9px;text-align:center">التفاعل<br><b style="color:#99f6e4;font-size:18px">' + score10(s, 'eval_interaction') + '/10</b></div><div style="background:#102238;padding:9px;border-radius:9px;text-align:center">الواجب<br><b style="color:#99f6e4;font-size:18px">' + score10(s, 'eval_homework') + '/10</b></div><div style="background:#102238;padding:9px;border-radius:9px;text-align:center">امتحان الشهر<br><b style="color:#99f6e4;font-size:18px">' + monthScore + '/10</b></div></div>' + (monthScore >= 9 ? '<div style="color:#fbbf24;font-weight:900;margin-top:7px">🏆 درع التفوق</div>' : '') + attendanceHtml + '<hr style="border-color:#334155;margin:12px 0"><h4>💳 مدفوعات الطالب</h4><p style="font-size:12px;color:#cbd5e1">سجّل المبلغ وطريقة التحويل، ثم أرسل صورة الإيصال عبر واتساب.</p><select id="parentPaymentMethod_' + sid + '"><option value="InstaPay">إنستاباي</option><option value="Etisalat Cash">اتصالات كاش</option></select><input id="parentPaymentAmount_' + sid + '" type="number" min="1" step="1" placeholder="المبلغ المحوّل بالجنيه"><input id="parentPaymentNote_' + sid + '" maxlength="120" placeholder="ملاحظة (اختياري)"><button onclick="submitParentPayment(\'' + sid + '\',\'' + window.escHtml(s.name || '').replace(/'/g, '&#39;') + '\',\'' + window.escHtml(s.grade || '').replace(/'/g, '&#39;') + '\')" style="background:#10b981">تسجيل الدفع وإرسال صورة الإيصال</button><div id="parentPaymentMsg_' + sid + '" style="font-size:12px;margin-top:8px"></div><h4 style="margin-top:14px">سجل المدفوعات</h4><div>' + history + '</div></div>';
+          html += '<div class="card" style="background:#0f172a;border:2px solid #f59e0b"><h3>👦 ' + window.escHtml(s.name || '') + ' - ' + window.escHtml(s.grade || '') + '</h3><div class="scheduleBox">⏰ ' + sched + '</div><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:12px 0"><div style="background:#102238;padding:9px;border-radius:9px;text-align:center">التفاعل<br><b style="color:#99f6e4;font-size:18px">' + score10(s, 'eval_interaction') + '/10</b></div><div style="background:#102238;padding:9px;border-radius:9px;text-align:center">الواجب<br><b style="color:#99f6e4;font-size:18px">' + score10(s, 'eval_homework') + '/10</b></div><div style="background:#102238;padding:9px;border-radius:9px;text-align:center">امتحان الشهر<br><b style="color:#99f6e4;font-size:18px">' + monthScore + '/10</b></div></div>' + (monthScore >= 9 ? '<div style="color:#fbbf24;font-weight:900;margin-top:7px">🏆 درع التفوق</div>' : '') + attendanceHtml + '</div>';
         }
         document.getElementById('parentArea').innerHTML = html;
         document.getElementById('parentArea').style.display = 'block';
       } catch (e) { alert('خطأ: ' + e.message); }
-    };
-
-    window.submitParentPayment = async function(studentId, studentName, grade) {
-      try {
-        const method = document.getElementById('parentPaymentMethod_' + studentId).value;
-        const amount = Number(document.getElementById('parentPaymentAmount_' + studentId).value);
-        const note = document.getElementById('parentPaymentNote_' + studentId).value.trim();
-        if (!Number.isFinite(amount) || amount <= 0) { alert('اكتب المبلغ بشكل صحيح'); return; }
-        const ref = await addDoc(collection(db, 'payments'), {
-          studentId, studentName, phone: '', grade, method, amount, note, status: 'pending', created: Date.now(), submittedBy: 'parent'
-        });
-        const message = 'طلب دفع جديد\nالطالب: ' + studentName + '\nالصف: ' + grade + '\nالمبلغ: ' + amount + ' جنيه\nالطريقة: ' + (method === 'InstaPay' ? 'إنستاباي' : 'اتصالات كاش') + '\nرقم الطلب: ' + ref.id + '\nسأرفق صورة الإيصال.';
-        document.getElementById('parentPaymentMsg_' + studentId).innerHTML = '✅ تم تسجيل الدفع. <a target="_blank" rel="noopener" style="color:#25D366;font-weight:900" href="https://wa.me/201116811324?text=' + encodeURIComponent(message) + '">اضغط هنا لإرسال صورة الإيصال على واتساب</a>';
-        document.getElementById('parentPaymentAmount_' + studentId).value = '';
-        document.getElementById('parentPaymentNote_' + studentId).value = '';
-      } catch (e) { alert('تعذر تسجيل الدفع: ' + (e.message || e)); }
     };
 
     async function loadStudentLesson() {
