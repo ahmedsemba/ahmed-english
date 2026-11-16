@@ -398,7 +398,7 @@
   }
 
   function normalizeAnswer(value) {
-    return String(value || "").toLowerCase().trim().replace(/[.,!?;:'"()]/g,"").replace(/\s+/g," ");
+    return String(value||"").toLowerCase().trim().normalize("NFD").replace(/[\\u064B-\\u065F\\u0670ـ]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/[.,!?;:'"()]/g,"").replace(/\\s+/g," ");
   }
 
   function gradeParagraph(value, topic) {
