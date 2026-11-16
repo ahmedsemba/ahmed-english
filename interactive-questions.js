@@ -327,12 +327,35 @@
     if(/s$/i.test(s)&&!/ss$/i.test(s))return s.slice(0,-1);
     return s;
   }
+  function paragraphTopicFor(unit) {
+    const topics = {
+      "Gen Alpha":"How young people can use technology in a balanced way",
+      "My Digital Footprint":"How to stay safe and responsible online",
+      "Facing Challenges":"The importance of determination when facing challenges",
+      "Art and Expressions":"How art helps people express their ideas",
+      "Around the World":"A famous place you would like to visit and why",
+      "Young Innovators":"How young people can use new ideas to solve problems",
+      "Life in a Digital World":"How digital devices help us in everyday life",
+      "Learning to Learn":"The best way to organize your study time",
+      "Role Models":"A person you admire and what you learn from them",
+      "Smart Choices":"Why we should think carefully before making choices",
+      "Future Dreams":"Your future ambition and how you plan to achieve it",
+      "Global Citizens":"How students can help protect the environment",
+      "Amazing Places in Egypt":"A famous place in Egypt that you would like to visit",
+      "The Nile":"Why the Nile is important to life in Egypt",
+      "The Rose and the Cactus":"The importance of kindness and helping others",
+      "Oil and Minerals":"Why natural resources are important",
+      "Clean Energy":"How clean energy can help protect the environment"
+    };
+    return topics[unit.title] || ("An important idea from "+unit.title);
+  }
   function lessonQuestions(unit, group) {
     const source=group.qs||[], out=[];
     source.slice(0,3).forEach(q=>out.push({type:"mcq",category:q[0],text:q[1],answer:q[2],options:q[3]||[]}));
     const vocab=(unit.vocab||vocabularyBanks[unit.title]||[]).slice(0,10);
     vocab.forEach(v=>out.push({type:"short",category:"معاني الكلمات",text:"Write the Arabic meaning of: "+v[0],answer:[v[1]],maxMarks:1}));
-    out.push({type:"paragraph",category:"Paragraph",topic:unit.title,text:'Write a paragraph of 40–60 words about: "'+unit.title+'".',answer:"",maxMarks:5});
+    const topic=unit.paragraphTopic || paragraphTopicFor(unit);
+    out.push({type:"paragraph",category:"Paragraph",topic,text:'Write a paragraph of 40–60 words about: "'+topic+'".',answer:"",maxMarks:5});
     return out;
   }
   function unitExamQuestions(unit) {
@@ -345,7 +368,8 @@
       const correctSentence=String(q[1]).replace(/…|\.\.\./g,q[2]);
       out.push({type:"correct",category:"Correct the mistake",text:"Correct the mistake: "+incorrectSentence,answer:correctSentence});
     });
-    out.push({type:"paragraph",category:"Paragraph",topic:unit.title,text:'Write a paragraph of 60–80 words about: "'+unit.title+'".',answer:"",maxMarks:5});
+    const topic=paragraphTopicFor(unit);
+    out.push({type:"paragraph",category:"Paragraph",topic,text:'Write a paragraph of 60–80 words about: "'+topic+'".',answer:"",maxMarks:5});
     return out;
   }
   function storyChapterQuestions(items, chapterTitle) {
@@ -371,8 +395,8 @@
     }else if(u==="term"){
       title="امتحان شامل للترم";
       const all=activeUnits.flatMap(x=>x.groups.flatMap(y=>y.qs||[]));
-      const paragraphTopic=activeUnits[Math.floor(Math.random()*activeUnits.length)].title;
-      questions=unitExamQuestions({title:paragraphTopic,groups:[{qs:all}]});
+      const paragraphTopic=paragraphTopicFor(activeUnits[Math.floor(Math.random()*activeUnits.length)]);
+      questions=unitExamQuestions({title:"امتحان الترم",groups:[{qs:all}],paragraphTopic});
     }else{
       const unit=activeUnits[Number(u)];
       if(!unit)return;
