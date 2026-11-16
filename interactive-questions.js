@@ -273,7 +273,7 @@
     const u = $("iqUnit").value, g = $("iqGroup").value;
     let qs = [], title = "";
     if (u === "story") { qs = activeStory; title = "تدريب القصة"; }
-    else if (u === "term") { qs = activeUnits.flatMap(x=>x.groups.flatMap(y=>y.qs)).filter((q,i)=>i%3===0 || i%3===1).slice(0,18); title = "الامتحان الشامل للترم"; }
+    else if (u === "term") { qs = activeUnits.flatMap(x=>x.groups.map(y=>y.qs[0])); title = "الامتحان الشامل للترم"; }
     else {
       const unit = activeUnits[Number(u)];
       title = unit.title + " - " + (g === "exam" ? "امتحان الوحدة" : unit.groups[Number(g)].label);
