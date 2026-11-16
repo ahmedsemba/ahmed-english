@@ -301,24 +301,25 @@
     renderGroups();
   }
   function renderGroups() {
-    const unit = $("iqUnit").value;
-    const sel = $("iqGroup");
-    if (unit === "story" || unit === "term") {
-      sel.innerHTML = unit === "story" ? '<option value="story">تدريب القصة</option>' : '<option value="term">امتحان شامل للترم</option>';
-      sel.disabled = true;
+    const unit=$("iqUnit").value, sel=$("iqGroup");
+    if (unit==="story1"||unit==="story2"||unit==="term") {
+      sel.innerHTML=unit==="term"?'<option value="term">امتحان شامل للترم</option>':'<option value="'+unit+'">تدريب '+(unit==="story1"?"القصة الأولى":"القصة الثانية")+'</option>';
+      sel.disabled=true;
     } else {
-      sel.disabled = false;
-      sel.innerHTML = activeUnits[Number(unit)].groups.map((g,i)=>'<option value="'+i+'">'+g.label+'</option>').join('') + '<option value="exam">امتحان الوحدة</option>';
+      sel.disabled=false;
+      sel.innerHTML=activeUnits[Number(unit)].groups.map((g,i)=>'<option value="'+i+'">'+g.label+'</option>').join('')+'<option value="exam">امتحان الوحدة</option>';
     }
-    $("iqPanel").innerHTML = '<p class="iq-hint">اختر الجزء المطلوب ثم اضغط «ابدأ التدريب».</p>';
-    $("iqStart").disabled = false;
+    $("iqPanel").innerHTML='<p class="iq-hint">اختر الجزء المطلوب ثم اضغط «ابدأ التدريب».</p>';
+    $("iqStart").disabled=false;
   }
 
   function hintFor(answer) {
     const s=String(answer||"").trim();
-    if (/ies$/i.test(s)) return s.replace(/ies$/i,"y");
-    if (/(ches|shes|xes|zes|sses)$/i.test(s)) return s.replace(/es$/i,"");
-    if (/s$/i.test(s) && !/ss$/i.test(s)) return s.slice(0,-1);
+    const irregular={"are making":"make","is doing":"do","are visiting":"visit","are studying":"study","is making":"make","was studying":"study","were playing":"play","will get":"get","will join":"join","might create":"create","took":"take","chose":"choose","grew":"grow","drank":"drink","flew":"fly","was":"be","were":"be","sold":"sell","bought":"buy","made":"make","went":"go","did":"do","had":"have","saw":"see"};
+    if(irregular[s.toLowerCase()])return irregular[s.toLowerCase()];
+    if(/ies$/i.test(s))return s.replace(/ies$/i,"y");
+    if(/(ches|shes|xes|zes|sses)$/i.test(s))return s.replace(/es$/i,"");
+    if(/s$/i.test(s)&&!/ss$/i.test(s))return s.slice(0,-1);
     return s;
   }
   function lessonQuestions(unit, group) {
@@ -352,35 +353,43 @@
     return out;
   }
   function storyChapterQuestions(items, chapterTitle) {
-    const out=[];
-    items.slice(0,3).forEach((q,i)=>out.push({type:"truefalse",category:chapterTitle,text:i===1?"The opposite of this statement is true.":q[1].replace(/\?$/,"."),answer:i!==1}));
-    items.slice(0,2).forEach(q=>out.push({type:"essay",category:chapterTitle,text:"Answer in a short sentence: "+q[1],answer:[q[2]],keywords:String(q[2]).toLowerCase().split(/\s+/),maxMarks:2}));
+    const out=[],pool=items.length?items:[activeStory[0]];
+    for(let i=0;i<3;i++){
+      const q=pool[i%pool.length], statementAnswer=i===1?((q[3]||[]).find(x=>x!==q[2])||q[2]):q[2];
+      out.push({type:"truefalse",category:chapterTitle,text:'True or False: According to the story, the answer to "'+q[1]+'" is "'+statementAnswer+'".',answer:statementAnswer===q[2]});
+    }
+    for(let i=0;i<2;i++){
+      const q=pool[i%pool.length];
+      out.push({type:"essay",category:chapterTitle,text:"Answer in a short sentence: "+q[1],answer:[q[2]],keywords:String(q[2]).toLowerCase().split(/\\s+/),maxMarks:2});
+    }
     return out;
   }
   function startQuiz() {
-    const u=$("iqUnit").value, g=$("iqGroup").value;
-    let title="", questions=[];
-    if (u==="story") {
-      title="تدريب القصة";
-      [activeStory.slice(0,3),activeStory.slice(3,6),activeStory.slice(6,10)].forEach((items,i)=>questions.push(...storyChapterQuestions(items,"الفصل "+(i+1))));
-    } else if (u==="term") {
+    const u=$("iqUnit").value,g=$("iqGroup").value;
+    let title="",questions=[];
+    if(u==="story1"||u==="story2"){
+      const storyItems=u==="story2"?activeStory.slice(5,10):(activeGrade==="الصف الثاني الإعدادي"?activeStory.slice(0,5):activeStory);
+      title=u==="story2"?"القصة الثانية":"القصة الأولى";
+      const chunks=activeGrade==="الصف الثاني الإعدادي"?[storyItems.slice(0,2),storyItems.slice(2,4),storyItems.slice(4)]:[storyItems.slice(0,3),storyItems.slice(3,6),storyItems.slice(6)];
+      chunks.forEach((items,i)=>questions.push(...storyChapterQuestions(items,"الفصل "+(i+1))));
+    }else if(u==="term"){
       title="امتحان شامل للترم";
       const all=activeUnits.flatMap(x=>x.groups.flatMap(y=>y.qs||[]));
       questions=unitExamQuestions({title:"المنهج بالكامل",groups:[{qs:all}]});
-    } else {
+    }else{
       const unit=activeUnits[Number(u)];
-      if (!unit) return;
+      if(!unit)return;
       title=unit.title+" - "+(g==="exam"?"امتحان الوحدة":unit.groups[Number(g)].label);
       questions=g==="exam"?unitExamQuestions(unit):lessonQuestions(unit,unit.groups[Number(g)]);
     }
-    current={title,qs:questions}; submitted=false;
+    current={title,qs:questions};submitted=false;
     $("iqPanel").innerHTML='<h4>'+esc(title)+'</h4><p class="iq-hint">عدد الأسئلة: '+current.qs.length+' — أجب ثم اضغط «صحّح إجاباتي».</p>'+
       current.qs.map((q,i)=>{
         let body="";
-        if(q.passage) body+='<div class="iq-passage" style="white-space:pre-line;padding:12px;margin:10px 0;border-radius:10px;background:#172554;color:#fff">'+esc(q.passage)+'</div>';
-        if(q.type==="mcq"||q.type==="passage-mcq") body+='<div class="iq-options">'+(q.options||[]).map((op,j)=>'<label><input type="radio" name="iq_'+i+'" value="'+j+'"><span>'+esc(op)+'</span></label>').join('')+'</div>';
-        else if(q.type==="truefalse") body+='<div class="iq-options"><label><input type="radio" name="iq_'+i+'" value="true"><span>True</span></label><label><input type="radio" name="iq_'+i+'" value="false"><span>False</span></label></div>';
-        else if(q.type==="paragraph") body+='<textarea class="iq-free-answer" id="iq_answer_'+i+'" rows="6" maxlength="1200" placeholder="Write your paragraph here..."></textarea><small>التصحيح آلي تقديري، وليس بديلًا عن مراجعة المدرس.</small>';
+        if(q.passage)body+='<div class="iq-passage" style="white-space:pre-line;padding:12px;margin:10px 0;border-radius:10px;background:#172554;color:#fff">'+esc(q.passage)+'</div>';
+        if(q.type==="mcq"||q.type==="passage-mcq")body+='<div class="iq-options">'+(q.options||[]).map((op,j)=>'<label><input type="radio" name="iq_'+i+'" value="'+j+'"><span>'+esc(op)+'</span></label>').join('')+'</div>';
+        else if(q.type==="truefalse")body+='<div class="iq-options"><label><input type="radio" name="iq_'+i+'" value="true"><span>True</span></label><label><input type="radio" name="iq_'+i+'" value="false"><span>False</span></label></div>';
+        else if(q.type==="paragraph")body+='<textarea class="iq-free-answer" id="iq_answer_'+i+'" rows="6" maxlength="1200" placeholder="Write your paragraph here..."></textarea><small>التصحيح آلي تقديري، وليس بديلًا عن مراجعة المدرس.</small>';
         else body+='<input class="iq-free-answer" id="iq_answer_'+i+'" type="text" placeholder="اكتب إجابتك هنا">';
         const labels={mcq:"Choose","passage-mcq":"Reading – Choose","passage-short":"Reading – Answer",fill:"Complete",correct:"Correct the mistake",truefalse:"True or False",short:"Short answer",essay:"Written answer",paragraph:"Writing"};
         return '<article class="iq-question"><div class="iq-question-title"><span>'+(i+1)+'.</span> '+esc(q.text)+'</div><small class="iq-type">'+esc(q.category||"سؤال")+' — '+(labels[q.type]||"")+'</small>'+body+'</article>';
@@ -458,7 +467,7 @@
           }
         }
       }
-      if (ok && q.type !== "paragraph") score += marks;
+      if (ok && q.type !== "paragraph" && q.type !== "essay") score += marks;
       if (q.type !== "paragraph" && q.type !== "essay") feedback.push((i+1)+". "+(ok ? "صحيح" : "الإجابة المقبولة: "+(Array.isArray(q.answer) ? q.answer.join(" / ") : q.answer)));
       const fields = document.querySelectorAll('input[name="iq_'+i+'"]');
       fields.forEach(el => { el.disabled = true; const label = el.closest("label"); if (label) label.classList.toggle(ok ? "iq-correct" : "iq-wrong", el.checked); });
@@ -487,7 +496,7 @@
       activeUnits = activePrimary6 ? primary6Units : (student.grade === "الصف الأول الإعدادي" ? prep1Units : units);
       activeStory = student.grade === "الصف الأول الإعدادي" ? prep1Story : story;
       $("iqUnavailable").hidden = true; $("iqControls").hidden = false;
-      $("iqUnit").innerHTML = activeUnits.map((u,i)=>'<option value="'+i+'">الوحدة '+["الأولى","الثانية","الثالثة","الرابعة","الخامسة","السادسة"][i]+" — "+esc(u.title)+'</option>').join('') + (activePrimary6 ? "" : '<option value="story">القصة</option>') + '<option value="term">امتحان شامل للترم</option>';
+      $("iqUnit").innerHTML = activeUnits.map((u,i)=>'<option value="'+i+'">الوحدة '+["الأولى","الثانية","الثالثة","الرابعة","الخامسة","السادسة"][i]+" — "+esc(u.title)+'</option>').join('') + (activePrimary6 ? "" : (activeGrade==="الصف الثاني الإعدادي" ? '<option value="story1">القصة الأولى</option><option value="story2">القصة الثانية</option>' : '<option value="story1">القصة</option>')) + '<option value="term">امتحان شامل للترم</option>';
       renderGroups();
     } else {
       $("iqControls").hidden = true; $("iqUnavailable").hidden = false;
