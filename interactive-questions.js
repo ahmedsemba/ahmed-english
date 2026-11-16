@@ -368,7 +368,7 @@
       const correctSentence=String(q[1]).replace(/…|\.\.\./g,q[2]);
       out.push({type:"correct",category:"Correct the mistake",text:"Correct the mistake: "+incorrectSentence,answer:correctSentence});
     });
-    const topic=paragraphTopicFor(unit);
+    const topic=unit.paragraphTopic || paragraphTopicFor(unit);
     out.push({type:"paragraph",category:"Paragraph",topic,text:'Write a paragraph of 60–80 words about: "'+topic+'".',answer:"",maxMarks:5});
     return out;
   }
