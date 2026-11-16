@@ -307,6 +307,12 @@
     });
     $("iqResult").innerHTML = '<div class="iq-score"><strong>نتيجتك: '+score+' من '+total+'</strong><span>'+pct+'%</span><p>'+message+'</p><small>أجبت عن '+answered+' من '+total+' سؤالًا.</small></div><details class="iq-answers"><summary>مراجعة الإجابات الصحيحة</summary>'+current.qs.map((q,i)=>'<p>'+(i+1)+'. '+esc(q.answer)+'</p>').join('')+'</details>';
     $("iqSubmit").hidden = true; $("iqRetry").hidden = false;
+    if (window.saveInteractiveAttempt) {
+      const activity = current.title;
+      window.saveInteractiveAttempt({ activity, score, total, percentage:pct, answered })
+        .then(() => { $("iqResult").insertAdjacentHTML("beforeend", '<p class="iq-hint">تم حفظ نتيجتك عند المدرس.</p>'); })
+        .catch(() => { $("iqResult").insertAdjacentHTML("beforeend", '<p class="iq-hint">تعذر حفظ النتيجة على المنصة، لكن يمكنك مراجعة إجاباتك هنا.</p>'); });
+    }
   }
   window.initInteractiveQuestions = function(student) {
     ensureUI();
