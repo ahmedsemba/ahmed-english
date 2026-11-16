@@ -1517,10 +1517,22 @@
             '<br>📱 ' + escHtml(x.studentPhone || '—') +
             '<br>📝 ' + escHtml(x.activity || 'نشاط تفاعلي') +
             '<br>🏆 ' + Number(x.score || 0) + ' من ' + Number(x.total || 0) + ' (' + Number(x.percentage || 0) + '%)' +
-            '<br><small>' + escHtml(date) + '</small></div>';
+            '<br><small>' + escHtml(date) + '</small>' +
+            '<br><button class="btn-small" style="background:#dc2626" onclick="deleteInteractiveAttempt(\'' + x.id + '\')">حذف المحاولة</button></div>';
         }).join('');
       } catch (e) {
         list.textContent = 'تعذر تحميل النتائج من قاعدة البيانات: ' + (e.message || e);
+      }
+    };
+
+    window.deleteInteractiveAttempt = async function(id) {
+      if (!auth.currentUser) { alert('سجّل دخولك بحساب المدرس أولاً.'); return; }
+      if (!confirm('هل تريد حذف هذه المحاولة نهائيًا؟')) return;
+      try {
+        await deleteDoc(doc(db, 'interactive_attempts', id));
+        await window.loadInteractiveResultsAdmin();
+      } catch (e) {
+        alert('تعذر حذف المحاولة. تأكد من تحديث قواعد Firestore للسماح للمدرس بالحذف. ' + (e.code || e.message || e));
       }
     };
 
