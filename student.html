@@ -1000,7 +1000,7 @@
           let videoId = '';
           try {
             const url = new URL(String(item.link || '').trim());
-            const host = url.hostname.toLowerCase().replace(/^www\\./, '');
+            const host = url.hostname.toLowerCase().replace(/^www\./, '');
             if (host === 'youtu.be') videoId = url.pathname.split('/').filter(Boolean)[0] || '';
             else if (['youtube.com', 'm.youtube.com', 'youtube-nocookie.com'].includes(host)) {
               if (url.pathname === '/watch') videoId = url.searchParams.get('v') || '';
@@ -1022,7 +1022,7 @@
         });
         const unitOrder = value => {
           if (value === 'القصة') return 7;
-          const match = String(value).match(/(\\d+)/);
+          const match = String(value).match(/(\d+)/);
           return match ? Number(match[1]) : 8;
         };
         items.sort((a, b) => unitOrder(a.unit) - unitOrder(b.unit) ||
@@ -1358,22 +1358,6 @@
       await updateDoc(doc(db, 'paper_submissions', id), { score, feedback, reviewed: true, reviewedAt: correctedAt, archivedAt: correctedAt });
       alert('✅ تم حفظ التصحيح للطالب وحذف صور الإجابة من قائمة المعلم.');
       loadPaperHomeworkAdmin();
-    };
-
-    window.loadPaymentHistory = async function() {
-      try {
-        const box = document.getElementById('paymentHistory');
-        if (!box || !currentStudent) return;
-        const snap = await getDocs(query(collection(db, 'payments'), where('studentId', '==', currentStudent.id)));
-        let items = [];
-        snap.forEach(function(d) { items.push({ id: d.id, ...d.data() }); });
-        items.sort(function(a, b) { return (b.created || 0) - (a.created || 0); });
-        if (!items.length) { box.innerHTML = '<small style="color:#94a3b8">لا توجد حالة دفع مسجلة حاليًا.</small>'; return; }
-        const labels = { pending: '⏳ قيد المراجعة', approved: '✅ تم تأكيد الدفع', rejected: '❌ لم يتم قبول الإيصال' };
-        box.innerHTML = '<b>حالة الدفع</b>' + items.slice(0, 3).map(function(p) {
-          return '<div class="student-row"><b>' + (labels[p.status] || 'قيد المراجعة') + '</b></div>';
-        }).join('');
-      } catch (e) { console.log('payment history', e); }
     };
 
     window.loadPaymentsAdmin = async function() {
