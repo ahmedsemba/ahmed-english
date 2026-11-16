@@ -977,6 +977,7 @@
       const lessonSelect = document.getElementById('studentRecordedLessonFilter');
       if (!box || !unitSelect || !lessonSelect) return;
       const selectedUnit = unitSelect.value;
+      const previousLesson = lessonSelect.value;
       lessonSelect.replaceChildren();
       const firstOption = document.createElement('option');
       firstOption.value = '';
@@ -1001,6 +1002,7 @@
         option.textContent = 'الدرس ' + number;
         lessonSelect.appendChild(option);
       });
+      if (lessons.includes(previousLesson)) lessonSelect.value = previousLesson;
       box.innerHTML = available.length
         ? '<div class="student-recorded-empty">اختار رقم الدرس لعرض الحصة المطلوبة.</div>'
         : '<div class="student-recorded-empty">لا توجد فيديوهات مضافة لهذا الاختيار حتى الآن.</div>';
@@ -1042,7 +1044,7 @@
       box.replaceChildren(card);
     };
 
-    window.loadStudentRecordedLessons = async function() {
+        window.loadStudentRecordedLessons = async function() {
       const box = document.getElementById('studentRecordedLessonsList');
       if (!box || !currentStudent || !currentStudent.grade) return;
       box.innerHTML = '<div class="student-recorded-empty">⏳ جاري تحميل فيديوهات صفك...</div>';
