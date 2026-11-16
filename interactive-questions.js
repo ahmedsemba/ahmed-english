@@ -360,7 +360,7 @@
     }
     for(let i=0;i<2;i++){
       const q=pool[i%pool.length];
-      out.push({type:"essay",category:chapterTitle,text:"Answer in a short sentence: "+q[1],answer:[q[2]],keywords:String(q[2]).toLowerCase().split(/\\s+/),maxMarks:2});
+      out.push({type:"essay",category:chapterTitle,text:"Answer in a short sentence: "+q[1],answer:[q[2]],keywords:String(q[2]).toLowerCase().split(/\s+/),maxMarks:2});
     }
     return out;
   }
@@ -398,7 +398,7 @@
   }
 
   function normalizeAnswer(value) {
-    return String(value||"").toLowerCase().trim().normalize("NFD").replace(/[\\u064B-\\u065F\\u0670ـ]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/[.,!?;:'"()]/g,"").replace(/\\s+/g," ");
+    return String(value||"").toLowerCase().trim().normalize("NFD").replace(/[\u064B-\u065F\u0670ـ]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/[.,!?;:'"()]/g,"").replace(/\s+/g," ");
   }
 
   function gradeParagraph(value, topic) {
