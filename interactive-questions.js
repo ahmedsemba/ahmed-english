@@ -119,6 +119,127 @@
     ["قصة","At the end of the adventure, the friends returned home feeling …","closer as friends",["angry with each other","closer as friends","afraid of teamwork","uninterested"]]
   ];
 
+
+  const prep1Units = [
+    { title:"Life in a Digital World", groups:[
+      { label:"الدروس 1 و2", qs:[
+        ["مفردات","A tablet is a digital …","device",["device","continent","tradition","sculpture"]],
+        ["قواعد","Mariam usually … her homework after school.","does",["do","does","is doing","did"]],
+        ["قواعد","Omar … forgets his school bag. He remembers it every day.","never",["never","always","usually","often"]]
+      ]},
+      { label:"الدروس 3 و4", qs:[
+        ["مفردات","We use a keyboard to …","type words",["type words","wash clothes","cook food","open a door"]],
+        ["قواعد","My brother … the internet every evening.","uses",["use","uses","using","is use"]],
+        ["فهم","A digital routine is about the way we … technology every day.","use",["use","repair","paint","avoid"]]
+      ]},
+      { label:"الدروس 5 و6", qs:[
+        ["مفردات","An email is a message sent …","electronically",["by post only","electronically","by train","on paper only"]],
+        ["قواعد","Sara … checks her messages before school.","often",["often","yesterday","now","tomorrow"]],
+        ["فهم","A successful team project needs …","cooperation",["cooperation","silence","one person's ideas only","no plan"]]
+      ]}
+    ]},
+    { title:"Learning to Learn", groups:[
+      { label:"الدروس 1 و2", qs:[
+        ["مفردات","A visual learner learns well by …","seeing pictures and diagrams",["seeing pictures and diagrams","running fast","listening to music only","sleeping"]],
+        ["قواعد","I … speak English, but I can't speak French.","can",["can","am","was","did"]],
+        ["قواعد","Look! The students … together now.","are studying",["study","studies","are studying","studied"]]
+      ]},
+      { label:"الدروس 3 و4", qs:[
+        ["مفردات","Learning together means studying …","with other people",["with other people","without books","only at night","without asking questions"]],
+        ["قواعد","Can Zain solve the puzzle? Yes, he …","can",["can","does","is","was"]],
+        ["قواعد","Sara … a study plan at the moment.","is making",["makes","make","is making","made"]]
+      ]},
+      { label:"الدروس 5 و6", qs:[
+        ["مفردات","A study plan helps you organize your …","learning",["learning","holidays","clothes","meals"]],
+        ["قواعد","They … playing a learning game now.","are",["is","am","are","be"]],
+        ["فهم","A good study space should be …","quiet and organized",["noisy and messy","quiet and organized","dark and crowded","full of distractions"]]
+      ]}
+    ]},
+    { title:"Role Models", groups:[
+      { label:"الدروس 1 و2", qs:[
+        ["مفردات","A role model is a person we …","admire and learn from",["admire and learn from","try to avoid","never listen to","do not know"]],
+        ["قواعد","Dr Samira Moussa … important work in science.","did",["do","does","did","doing"]],
+        ["قواعد","The scientist … born in Egypt.","was",["were","was","is","are"]]
+      ]},
+      { label:"الدروس 3 و4", qs:[
+        ["مفردات","A hero often helps …","other people",["other people","only himself","no one","machines only"]],
+        ["قواعد","They … proud of their teacher yesterday.","were",["was","were","are","be"]],
+        ["قواعد","Ahmed … a useful book last week.","read",["reads","reading","read","is reading"]]
+      ]},
+      { label:"الدروس 5 و6", qs:[
+        ["مفردات","Community service means helping …","the people around us",["the people around us","only famous people","nobody","machines"]],
+        ["قواعد","My friends … the school garden last Friday.","visited",["visit","visits","visited","visiting"]],
+        ["فهم","A good role model teaches us to be …","helpful and responsible",["careless","helpful and responsible","unkind","lazy"]]
+      ]}
+    ]},
+    { title:"Smart Choices", groups:[
+      { label:"الدروس 1 و2", qs:[
+        ["مفردات","A consequence is a … of an action.","result",["result","question","hobby","device"]],
+        ["قواعد","If you study hard, you … better results.","will get",["got","get yesterday","will get","getting"]],
+        ["قواعد","You … think carefully before making an important choice.","should",["should","shouldn't","can't","was"]]
+      ]},
+      { label:"الدروس 3 و4", qs:[
+        ["مفردات","A smart choice can have a … effect.","positive",["careless","positive","dangerous","weak"]],
+        ["قواعد","If it rains, we … the match indoors.","will play",["played","plays","will play","playing"]],
+        ["قواعد","You … ignore a friend's good advice.","shouldn't",["should","shouldn't","are","were"]]
+      ]},
+      { label:"الدروس 5 و6", qs:[
+        ["مفردات","Giving advice means telling someone what they … do.","should",["should","did","are","has"]],
+        ["فهم","Before making a choice, it is wise to think about …","the consequences",["the consequences","the colour","the weather only","the price only"]],
+        ["قواعد","If you don't hurry, you … miss the bus.","will",["would","will","were","did"]]
+      ]}
+    ]},
+    { title:"Future Dreams", groups:[
+      { label:"الدروس 1 و2", qs:[
+        ["مفردات","An ambition is something you hope to …","achieve",["achieve","forget","break","avoid"]],
+        ["قواعد","I am … to be a scientist when I grow up.","going",["go","goes","going","went"]],
+        ["قواعد","She … going to study medicine.","is",["am","is","are","be"]]
+      ]},
+      { label:"الدروس 3 و4", qs:[
+        ["مفردات","A career is a job or profession you do for a …","long time",["short game","long time","single day","holiday"]],
+        ["قواعد","They are going … visit the science museum.","to",["for","to","at","in"]],
+        ["فهم","A good future plan should match your …","interests and abilities",["interests and abilities","friends' choices only","favourite colour","lunch time"]]
+      ]},
+      { label:"الدروس 5 و6", qs:[
+        ["مفردات","A talent is a natural …","ability",["ability","problem","mistake","rule"]],
+        ["قواعد","We … going to take part in the school project.","are",["is","am","are","be"]],
+        ["قواعد","He is going to … an engineer.","be",["is","being","be","was"]]
+      ]}
+    ]},
+    { title:"Global Citizens", groups:[
+      { label:"الدروس 1 و2", qs:[
+        ["مفردات","A global citizen cares about people and the …","environment",["environment","screen","keyboard","uniform"]],
+        ["قواعد","We … keep our streets clean.","must",["must","mustn't","was","did"]],
+        ["قواعد","People … throw rubbish into the sea.","mustn't",["must","mustn't","are","were"]]
+      ]},
+      { label:"الدروس 3 و4", qs:[
+        ["مفردات","Ocean pollution is harmful to …","sea life",["sea life","school bags","mountains only","computers"]],
+        ["قواعد","My friends … the beach every month.","clean",["cleans","clean","cleaning","is clean"]],
+        ["قواعد","Look! Volunteers … the beach now.","are cleaning",["clean","cleans","are cleaning","cleaned"]]
+      ]},
+      { label:"الدروس 5 و6", qs:[
+        ["مفردات","To make a difference means to …","help create a positive change",["help create a positive change","make a problem worse","stop helping","forget a promise"]],
+        ["قواعد","Yesterday, we … trees near our school.","planted",["plant","plants","planted","planting"]],
+        ["فهم","A global citizen should …","respect others and protect nature",["waste water","respect others and protect nature","ignore the community","pollute the sea"]]
+      ]}
+    ]}
+  ];
+  const prep1Story = [
+    ["قصة","Where did the children enter in the first challenge?","The Magic Classroom",["The library","The Magic Classroom","A sports club","A museum"]],
+    ["قصة","What did the children face in the Magic Classroom?","Floating puzzles",["A cooking lesson","Floating puzzles","A football match","A long journey"]],
+    ["قصة","Which quality helped the children solve the challenge?","Teamwork",["Selfishness","Teamwork","Anger","Carelessness"]],
+    ["قصة","What did the invisible bridge teach the children?","The power of unity",["The value of money","The power of unity","How to drive","How to paint"]],
+    ["قصة","What helped the children open the golden door?","Working together",["Arguing","Working together","Leaving the room","Breaking the door"]],
+    ["قصة","What did the glowing book show the children?","Important values",["A shopping list","Important values","A bus timetable","A weather report"]],
+    ["قصة","Which value is important in the children's adventure?","Responsibility",["Carelessness","Responsibility","Dishonesty","Disrespect"]],
+    ["قصة","What were the children preparing for the village fair?","A water-saving machine",["A new computer game","A water-saving machine","A school bus","A sports trophy"]],
+    ["قصة","What helped the team continue when they faced problems?","Friendship and determination",["Giving up","Friendship and determination","Blaming each other","Working separately"]],
+    ["قصة","What was more important than winning a trophy?","Showing good values as a team",["Showing good values as a team","Being famous","Working alone","Finishing first at any cost"]]
+  ];
+
+  let activeUnits = units;
+  let activeStory = story;
+  let activeGrade = "الصف الثاني الإعدادي";
   let current = null;
   let selected = {};
   let submitted = false;
@@ -143,7 +264,7 @@
       sel.disabled = true;
     } else {
       sel.disabled = false;
-      sel.innerHTML = units[Number(unit)].groups.map((g,i)=>'<option value="'+i+'">'+g.label+'</option>').join('') + '<option value="exam">امتحان الوحدة</option>';
+      sel.innerHTML = activeUnits[Number(unit)].groups.map((g,i)=>'<option value="'+i+'">'+g.label+'</option>').join('') + '<option value="exam">امتحان الوحدة</option>';
     }
     $("iqPanel").innerHTML = '<p class="iq-hint">اختر الجزء المطلوب ثم اضغط «ابدأ التدريب».</p>';
     $("iqStart").disabled = false;
@@ -193,7 +314,12 @@
     if (!root) return;
     root.style.display = "block";
     if (student && student.grade === "الصف الثاني الإعدادي") {
+      activeGrade = student.grade;
+      activeUnits = student.grade === "الصف الأول الإعدادي" ? prep1Units : units;
+      activeStory = student.grade === "الصف الأول الإعدادي" ? prep1Story : story;
       $("iqUnavailable").hidden = true; $("iqControls").hidden = false;
+      $("iqUnit").innerHTML = activeUnits.map((u,i)=>'<option value="'+i+'">الوحدة '+["الأولى","الثانية","الثالثة","الرابعة","الخامسة","السادسة"][i]+" — "+esc(u.title)+'</option>').join('') + '<option value="story">القصة</option><option value="term">امتحان شامل للترم</option>';
+      renderGroups();
     } else {
       $("iqControls").hidden = true; $("iqUnavailable").hidden = false;
       $("iqUnavailable").textContent = "الأسئلة التفاعلية ستظهر عند تجهيز بنك الأسئلة الخاص بصفك الدراسي.";
