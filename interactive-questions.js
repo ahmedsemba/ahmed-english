@@ -272,10 +272,10 @@
   function startQuiz() {
     const u = $("iqUnit").value, g = $("iqGroup").value;
     let qs = [], title = "";
-    if (u === "story") { qs = story; title = "تدريب القصة"; }
-    else if (u === "term") { qs = units.flatMap(x=>x.groups.flatMap(y=>y.qs)).filter((q,i)=>i%3===0 || i%3===1).slice(0,18); title = "الامتحان الشامل للترم"; }
+    if (u === "story") { qs = activeStory; title = "تدريب القصة"; }
+    else if (u === "term") { qs = activeUnits.flatMap(x=>x.groups.flatMap(y=>y.qs)).filter((q,i)=>i%3===0 || i%3===1).slice(0,18); title = "الامتحان الشامل للترم"; }
     else {
-      const unit = units[Number(u)];
+      const unit = activeUnits[Number(u)];
       title = unit.title + " - " + (g === "exam" ? "امتحان الوحدة" : unit.groups[Number(g)].label);
       qs = g === "exam" ? unit.groups.flatMap(x=>x.qs) : unit.groups[Number(g)].qs;
     }
@@ -313,7 +313,7 @@
     const root = $("interactiveQuestions");
     if (!root) return;
     root.style.display = "block";
-    if (student && student.grade === "الصف الثاني الإعدادي") {
+    if (student && ["الصف الأول الإعدادي","الصف الثاني الإعدادي"].includes(student.grade)) {
       activeGrade = student.grade;
       activeUnits = student.grade === "الصف الأول الإعدادي" ? prep1Units : units;
       activeStory = student.grade === "الصف الأول الإعدادي" ? prep1Story : story;
