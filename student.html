@@ -1261,6 +1261,24 @@
       loadPaymentsAdmin();
     };
 
+    window.saveInteractiveAttempt = async function(attempt) {
+      if (!currentStudent || !currentStudent.id) throw new Error('بيانات الطالب غير متاحة. سجّل الدخول مرة أخرى.');
+      const record = {
+        studentId: currentStudent.id,
+        studentName: String(currentStudent.name || ''),
+        studentPhone: String(currentStudent.phone || ''),
+        grade: String(currentStudent.grade || ''),
+        activity: String(attempt.activity || ''),
+        score: Number(attempt.score || 0),
+        total: Number(attempt.total || 0),
+        percentage: Number(attempt.percentage || 0),
+        answered: Number(attempt.answered || 0),
+        createdAt: Date.now()
+      };
+      await addDoc(collection(db, 'interactive_attempts'), record);
+      return true;
+    };
+
     window.loginStudent = async function() {
       try {
         const phone = document.getElementById('loginPhone').value.trim();
