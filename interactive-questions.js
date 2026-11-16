@@ -330,31 +330,22 @@
   function lessonQuestions(unit, group) {
     const source=group.qs||[], out=[];
     source.slice(0,3).forEach(q=>out.push({type:"mcq",category:q[0],text:q[1],answer:q[2],options:q[3]||[]}));
-    source.slice(0,3).forEach(q=>out.push({type:"fill",category:"Complete",text:"Complete using the word in brackets: "+String(q[1]).replace(/…|\.\.\./g,"________")+" ("+hintFor(q[2])+")",answer:q[2]}));
     const vocab=(unit.vocab||vocabularyBanks[unit.title]||[]).slice(0,10);
     vocab.forEach(v=>out.push({type:"short",category:"معاني الكلمات",text:"Write the Arabic meaning of: "+v[0],answer:[v[1]],maxMarks:1}));
-    out.push({type:"paragraph",category:"Paragraph",text:'Write a paragraph of 40–60 words about: "'+unit.title+'".',answer:"",maxMarks:5});
+    out.push({type:"paragraph",category:"Paragraph",topic:unit.title,text:'Write a paragraph of 40–60 words about: "'+unit.title+'".',answer:"",maxMarks:5});
     return out;
   }
   function unitExamQuestions(unit) {
     const source=unit.groups.flatMap(g=>g.qs||[]), out=[];
     source.slice(0,5).forEach(q=>out.push({type:"mcq",category:q[0],text:q[1],answer:q[2],options:q[3]||[]}));
     const grammar=source.filter(q=>q[0]==="قواعد");
-    const fills=(grammar.length?grammar:source).slice(0,3);
-    fills.forEach(q=>out.push({type:"fill",category:"Complete",text:"Complete using the word in brackets: "+String(q[1]).replace(/…|\.\.\./g,"________")+" ("+hintFor(q[2])+")",answer:q[2]}));
     (grammar.length?grammar:source).slice(0,3).forEach(q=>{
       const wrong=(q[3]||[]).find(x=>x!==q[2])||"wrong";
-      out.push({type:"correct",category:"Correct the mistake",text:"Correct the mistake: "+String(q[1]).replace(/…|\.\.\./g,wrong),answer:q[2]});
+      const incorrectSentence=String(q[1]).replace(/…|\.\.\./g,wrong);
+      const correctSentence=String(q[1]).replace(/…|\.\.\./g,q[2]);
+      out.push({type:"correct",category:"Correct the mistake",text:"Correct the mistake: "+incorrectSentence,answer:correctSentence});
     });
-    if (!activePrimary6) {
-      out.push({type:"short",category:"Situations & Dialogue",text:"Complete: A: What do you think about "+unit.title+"? B: I think it is ______.",answer:["interesting","important","useful","great"]});
-      out.push({type:"short",category:"Situations & Dialogue",text:"Complete: A: Why is "+unit.title+" important? B: Because it helps us ______.",answer:["learn","understand","protect the environment","work together","improve"]});
-    }
-    const passage="This passage is about "+unit.title+". Students can learn new words and ideas about this topic. They should read carefully, think about the information and use what they learn in everyday life. Working hard and sharing ideas can help everyone understand the topic better.";
-    out.push({type:"passage-mcq",category:"Reading Comprehension",passage,text:"What is the passage mainly about?",answer:"learning about "+unit.title.toLowerCase(),options:["learning about "+unit.title.toLowerCase(),"a football match","a shopping trip","a birthday party"]});
-    out.push({type:"passage-short",category:"Reading Comprehension",passage,text:"What should students do after reading?",answer:["think about the information","use what they learn","think about the information and use what they learn"]});
-    out.push({type:"passage-short",category:"Reading Comprehension",passage,text:"How can students understand the topic better?",answer:["working hard and sharing ideas","sharing ideas","working hard"]});
-    out.push({type:"paragraph",category:"Paragraph",text:'Write a paragraph of 60–80 words about: "'+unit.title+'".',answer:"",maxMarks:5});
+    out.push({type:"paragraph",category:"Paragraph",topic:unit.title,text:'Write a paragraph of 60–80 words about: "'+unit.title+'".',answer:"",maxMarks:5});
     return out;
   }
   function storyChapterQuestions(items, chapterTitle) {
@@ -380,7 +371,8 @@
     }else if(u==="term"){
       title="امتحان شامل للترم";
       const all=activeUnits.flatMap(x=>x.groups.flatMap(y=>y.qs||[]));
-      questions=unitExamQuestions({title:"المنهج بالكامل",groups:[{qs:all}]});
+      const paragraphTopic=activeUnits[Math.floor(Math.random()*activeUnits.length)].title;
+      questions=unitExamQuestions({title:paragraphTopic,groups:[{qs:all}]});
     }else{
       const unit=activeUnits[Number(u)];
       if(!unit)return;
@@ -447,7 +439,7 @@
         if (response) answered++;
         const accepted = Array.isArray(q.answer) ? q.answer : [q.answer];
         if (q.type === "paragraph") {
-          const result = gradeParagraph(response, current.title);
+          const result = gradeParagraph(response, q.topic || current.title);
           score += result.score;
           feedback.push((i+1)+". "+result.feedback+" ("+result.score+"/5)");
           ok = result.score >= 3;
@@ -460,7 +452,7 @@
           feedback.push((i+1)+". تقييم إجابة مقالي: "+earned+"/"+q.maxMarks+" — راجع الإجابة مع المدرس.");
         } else if (q.type === "correct") {
           const normalized=normalizeAnswer(response);
-          ok=accepted.some(a=>normalizeAnswer(a)===normalized || normalized.includes(normalizeAnswer(a)));
+          ok=accepted.some(a=>normalizeAnswer(a)===normalized);
         } else {
           const normalized = normalizeAnswer(response);
           ok = accepted.some(a => normalizeAnswer(a) === normalized);
