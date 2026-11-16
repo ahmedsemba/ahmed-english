@@ -280,37 +280,40 @@
         const wrong = (options || []).find(x => x !== answer);
         if (wrong) {
           const useTrue = index % 2 === 0;
-          out.push({
-            type:"truefalse", category,
-            text:prompt.replace(/…|\.\.\./g, useTrue ? answer : wrong),
-            answer:useTrue
-          });
+          out.push({ type:"truefalse", category, text:prompt.replace(/…|\.\.\./g, useTrue ? answer : wrong), answer:useTrue });
         }
-      } else {
-        out.push({ type:"short", category, text:"Write the correct answer: " + prompt, answer });
+      }
+      if (index % 3 === 2) {
+        out.push({ type:"short", category, text:"Write the correct answer: " + prompt.replace(/…|\.\.\./g, "________"), answer });
       }
     });
+
     if (source.length) {
       const firstAnswer = String(source[0][2] || "").trim();
       const words = firstAnswer.split(/\s+/).filter(Boolean);
       if (words.length >= 2 && words.length <= 7) {
-        const shuffled = words.slice().reverse();
-        out.push({ type:"reorder", category:"ترتيب كلمات", text:"Rearrange the words to make the correct answer:", words:shuffled, answer:firstAnswer });
+        out.push({ type:"reorder", category:"ترتيب كلمات", text:"Rearrange the words to make the correct answer:", words:words.slice().reverse(), answer:firstAnswer });
       }
     }
+
     if (addParagraph) {
-      out.push({
-        type:"dialogue", category:"حوار",
-        text:"Complete the dialogue: A: What do you use the internet for? B: I use it to ______.",
-        answer:"learn new things"
-      });
-      const topic = title.includes("الوحدة") ? title.split(" - ")[0] : "the topics you studied this term";
-      out.push({
-        type:"paragraph", category:"Writing",
-        text:'Write a paragraph of 50–70 words about: "' + topic + ' and what you have learned".',
-        answer:"",
-        maxMarks:5
-      });
+      const isGenAlpha = /gen alpha|meet gen alpha/i.test(title);
+      const passage = isGenAlpha
+        ? "Generation Z and Generation Alpha are two young generations. They both grow up in a digital world. They use smartphones and computers every day. They watch videos, play online games and communicate with friends. Technology helps them learn new things and share ideas. However, they should balance screen time with real-life activities."
+        : "People learn about " + title.replace(/\s*[-–].*$/, "") + " in different ways. They can read, ask questions and share ideas with others. Technology can help students find information and practise new skills. Good learners use their time wisely, check information and work together. They should also think carefully and use what they learn in real life.";
+      out.push({ type:"passage-mcq", category:"قطعة وفهم", passage, text:"The passage is mainly about …", answer:isGenAlpha ? "two young generations and technology" : "learning about the unit topic", options:isGenAlpha ? ["two young generations and technology","sports competitions","famous places","healthy food"] : ["learning about the unit topic","a school trip","a football match","a shopping list"] });
+      out.push({ type:"passage-short", category:"قطعة وفهم", passage, text:isGenAlpha ? "What do the two generations use every day?" : "How can students learn about the topic?", answer:isGenAlpha ? ["smartphones and computers","smartphones","computers"] : ["read and ask questions","read","ask questions"] });
+      out.push({ type:"passage-short", category:"قطعة وفهم", passage, text:isGenAlpha ? "What should they balance?" : "What should good learners do with their time?", answer:isGenAlpha ? ["screen time with real life activities","screen time","real life activities"] : ["use their time wisely","use time wisely"] });
+
+      const storyQuestions = activeStory.slice(0, 2);
+      storyQuestions.forEach(q => out.push({ type:"mcq", category:"قصة", text:q[1], answer:q[2], options:q[3] || [] }));
+
+      out.push({ type:"short", category:"حوار", text:"Complete the dialogue. A: What's your favourite digital device? B: My favourite device is a ______.", answer:["tablet","smartphone","computer","laptop","mobile phone"] });
+      out.push({ type:"short", category:"حوار", text:"A: What do you use it for? B: I use it for ______.", answer:["learning","studying","watching videos","communication","doing homework","learning and communication"] });
+      out.push({ type:"short", category:"حوار", text:"A: Do you use it at school? B: ______.", answer:["yes i do","no i dont","sometimes"] });
+
+      const topic = title.replace(/\s*[-–].*$/, "").trim() || "Technology";
+      out.push({ type:"paragraph", category:"Writing", text:'Write a paragraph of 60–80 words about: "' + topic + ' and its importance in our lives".', answer:"", maxMarks:5 });
     }
     return out;
   }
@@ -329,22 +332,24 @@
       isExam = g === "exam";
     }
     current = { title, qs:buildMixedQuestions(source, title, isExam) };
-    selected = {}; submitted = false;
-    $("iqPanel").innerHTML = '<h4>'+esc(title)+'</h4><p class="iq-hint">عدد الأسئلة: '+current.qs.length+' — أجب عن كل الأسئلة ثم اضغط «صحّح إجاباتي».</p>' +
+    submitted = false;
+    $("iqPanel").innerHTML = '<h4>'+esc(title)+'</h4><p class="iq-hint">عدد الأسئلة: '+current.qs.length+' — أجب عن الأسئلة ثم اضغط «صحّح إجاباتي».</p>' +
       current.qs.map((q,i)=>{
         let body = "";
-        if (q.type === "mcq") {
-          body = '<div class="iq-options">'+q.options.map((op,j)=>'<label><input type="radio" name="iq_'+i+'" value="'+j+'"><span>'+esc(op)+'</span></label>').join('')+'</div>';
+        if (q.passage) body += '<div class="iq-passage" style="white-space:pre-line;padding:12px;margin:10px 0;border-radius:10px;background:#172554;color:#fff">'+esc(q.passage)+'</div>';
+        if (q.type === "mcq" || q.type === "passage-mcq") {
+          body += '<div class="iq-options">'+(q.options || []).map((op,j)=>'<label><input type="radio" name="iq_'+i+'" value="'+j+'"><span>'+esc(op)+'</span></label>').join('')+'</div>';
         } else if (q.type === "truefalse") {
-          body = '<div class="iq-options"><label><input type="radio" name="iq_'+i+'" value="true"><span>True</span></label><label><input type="radio" name="iq_'+i+'" value="false"><span>False</span></label></div>';
+          body += '<div class="iq-options"><label><input type="radio" name="iq_'+i+'" value="true"><span>True</span></label><label><input type="radio" name="iq_'+i+'" value="false"><span>False</span></label></div>';
         } else if (q.type === "paragraph") {
-          body = '<textarea class="iq-free-answer" id="iq_answer_'+i+'" rows="6" maxlength="1200" placeholder="Write your paragraph here..."></textarea><small>سيتم تقدير الدرجة آليًا حسب عدد الكلمات والمفردات والقواعد والتنظيم.</small>';
+          body += '<textarea class="iq-free-answer" id="iq_answer_'+i+'" rows="6" maxlength="1200" placeholder="Write your paragraph here..."></textarea><small>التصحيح آلي تقديري، وليس بديلًا عن مراجعة المدرس للمعنى والقواعد.</small>';
         } else if (q.type === "reorder") {
-          body = '<div class="iq-word-bank">'+q.words.map(w=>'<span>'+esc(w)+'</span>').join(' / ')+'</div><input class="iq-free-answer" id="iq_answer_'+i+'" type="text" placeholder="Write the correct sentence">';
+          body += '<div class="iq-word-bank">'+q.words.map(w=>'<span>'+esc(w)+'</span>').join(' / ')+'</div><input class="iq-free-answer" id="iq_answer_'+i+'" type="text" placeholder="Write the correct sentence">';
         } else {
-          body = '<input class="iq-free-answer" id="iq_answer_'+i+'" type="text" placeholder="اكتب إجابتك هنا">';
+          body += '<input class="iq-free-answer" id="iq_answer_'+i+'" type="text" placeholder="اكتب إجابتك هنا">';
         }
-        return '<article class="iq-question"><div class="iq-question-title"><span>'+(i+1)+'.</span> '+esc(q.text)+'</div><small class="iq-type">'+esc(q.category || "سؤال")+' — '+({mcq:"Choose",fill:"Complete",truefalse:"True or False",short:"Short answer",reorder:"Rearrange",paragraph:"Writing"}[q.type] || "")+'</small>'+body+'</article>';
+        const typeLabel = ({mcq:"Choose", "passage-mcq":"Reading – Choose", "passage-short":"Reading – Answer", fill:"Complete", truefalse:"True or False", short:"Short answer", reorder:"Rearrange", paragraph:"Writing"}[q.type] || "");
+        return '<article class="iq-question"><div class="iq-question-title"><span>'+(i+1)+'.</span> '+esc(q.text)+'</div><small class="iq-type">'+esc(q.category || "سؤال")+' — '+typeLabel+'</small>'+body+'</article>';
       }).join('');
     $("iqSubmit").hidden = false; $("iqRetry").hidden = true; $("iqResult").innerHTML = "";
   }
@@ -353,19 +358,22 @@
     return String(value || "").toLowerCase().trim().replace(/[.,!?;:'"()]/g,"").replace(/\s+/g," ");
   }
 
-  function gradeParagraph(value) {
+  function gradeParagraph(value, topic) {
     const text = String(value || "").trim();
     const words = text.split(/\s+/).filter(Boolean);
     if (!words.length) return {score:0, feedback:"لم تكتب فقرة."};
     const lower = text.toLowerCase();
+    const sentences = text.split(/[.!?]+/).filter(x=>x.trim()).length;
+    const topicWords = String(topic || "").toLowerCase().split(/\s+/).filter(x=>x.length > 3);
+    const topicHits = topicWords.filter(x=>lower.includes(x)).length;
     let score = 0;
-    if (words.length >= 35) score += 1;
-    if (words.length >= 50) score += 1;
-    if (/[.!?]/.test(text)) score += 1;
-    if (/\b(and|but|because|also|so|first|finally)\b/i.test(text)) score += 1;
-    if (/\b(is|are|was|were|have|has|can|should|use|uses|helps|help|technology|students|people)\b/i.test(lower)) score += 1;
-    score = Math.min(5, score);
-    return {score, feedback:"عدد الكلمات: "+words.length+". الدرجة تقديرية آليًا من 5، وتركّز على الطول وعلامات الترقيم والروابط وبعض مؤشرات اللغة. راجع المعنى وصحة الجمل بنفسك أو مع المدرس."};
+    if (words.length >= 45 && words.length <= 90) score++;
+    if (topicHits > 0 || /technology|students|people|learning|school|world|digital|generation/i.test(lower)) score++;
+    if (sentences >= 3) score++;
+    if (/\b(and|but|because|also|so|first|finally|however)\b/i.test(lower)) score++;
+    if (/\b(is|are|was|were|have|has|can|should|use|uses|helps|help|do|does|make|makes)\b/i.test(lower) && /[.!?]/.test(text)) score++;
+    const notes = ["الطول: "+words.length+" كلمة","الجمل: "+sentences,"مؤشرات ارتباط بالموضوع: "+(topicHits ? "موجودة" : "محدودة")];
+    return {score:Math.min(5,score), feedback:"الدرجة تقديرية من 5. "+notes.join(" — ")+". التصحيح الآلي لا يستطيع ضمان صحة المعنى أو كل الأخطاء النحوية؛ راجع الفقرة مع المدرس."};
   }
 
   function gradeQuiz() {
@@ -373,33 +381,41 @@
     let score = 0, total = 0, answered = 0;
     const feedback = [];
     current.qs.forEach((q,i)=>{
-      const marks = q.type === "paragraph" ? 5 : 1;
+      const marks = q.maxMarks || 1;
       total += marks;
       let ok = false, response = "";
-      if (q.type === "mcq" || q.type === "truefalse") {
+      if (q.type === "mcq" || q.type === "passage-mcq" || q.type === "truefalse") {
         const chosen = document.querySelector('input[name="iq_'+i+'"]:checked');
         if (chosen) {
           answered++;
           response = chosen.value;
-          ok = q.type === "mcq" ? q.options[Number(chosen.value)] === q.answer : (chosen.value === "true") === q.answer;
+          ok = q.type === "truefalse"
+            ? (chosen.value === "true") === q.answer
+            : q.options[Number(chosen.value)] === q.answer;
         }
       } else {
         const field = $("iq_answer_"+i);
         response = field ? field.value.trim() : "";
         if (response) answered++;
+        const accepted = Array.isArray(q.answer) ? q.answer : [q.answer];
         if (q.type === "paragraph") {
-          const result = gradeParagraph(response);
+          const result = gradeParagraph(response, current.title);
           score += result.score;
           feedback.push((i+1)+". "+result.feedback+" ("+result.score+"/5)");
           ok = result.score >= 3;
-        } else if (q.type === "dialogue") {
-          ok = normalizeAnswer(response) === normalizeAnswer(q.answer);
         } else {
-          ok = normalizeAnswer(response) === normalizeAnswer(q.answer);
+          const normalized = normalizeAnswer(response);
+          ok = accepted.some(a => normalizeAnswer(a) === normalized);
+          if (!ok && q.type === "passage-short") {
+            ok = accepted.some(a => {
+              const target = normalizeAnswer(a);
+              return target.length > 5 && normalized.length > 5 && (normalized.includes(target) || target.includes(normalized));
+            });
+          }
         }
       }
       if (ok && q.type !== "paragraph") score += marks;
-      if (q.type !== "paragraph") feedback.push((i+1)+". "+(ok ? "صحيح" : "الإجابة الصحيحة: "+q.answer));
+      if (q.type !== "paragraph") feedback.push((i+1)+". "+(ok ? "صحيح" : "الإجابة المقبولة: "+(Array.isArray(q.answer) ? q.answer.join(" / ") : q.answer)));
       const fields = document.querySelectorAll('input[name="iq_'+i+'"]');
       fields.forEach(el => { el.disabled = true; const label = el.closest("label"); if (label) label.classList.toggle(ok ? "iq-correct" : "iq-wrong", el.checked); });
       const free = $("iq_answer_"+i);
