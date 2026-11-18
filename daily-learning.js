@@ -399,6 +399,7 @@
           card.dataset.answered = '1';
           answered++;
           const isCorrect = oi === q.a;
+          if (window.PlatformSounds) window.PlatformSounds.playAnswer(isCorrect);
           if (isCorrect) correct++;
           Array.from(options.children).forEach((b, bi) => {
             b.disabled = true;
