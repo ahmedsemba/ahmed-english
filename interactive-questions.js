@@ -497,7 +497,9 @@
           }
         }
       }
-      soundOutcomes.push(!!ok);
+      if ((q.type === "mcq" || q.type === "passage-mcq" || q.type === "truefalse") && response !== "") {
+        soundOutcomes.push(!!ok);
+      }
       if (ok && q.type !== "paragraph" && q.type !== "essay") score += marks;
       if (q.type !== "paragraph" && q.type !== "essay") feedback.push((i+1)+". "+(ok ? "صحيح" : "الإجابة المقبولة: "+(Array.isArray(q.answer) ? q.answer.join(" / ") : q.answer)));
       const fields = document.querySelectorAll('input[name="iq_'+i+'"]');
