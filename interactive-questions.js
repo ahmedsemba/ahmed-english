@@ -353,9 +353,16 @@
     const source=group.qs||[], out=[];
     source.slice(0,3).forEach(q=>out.push({type:"mcq",category:q[0],text:q[1],answer:q[2],options:q[3]||[]}));
     const vocab=(unit.vocab||vocabularyBanks[unit.title]||[]).slice(0,10);
-    vocab.forEach(v=>out.push({type:"short",category:"معاني الكلمات",text:"Write the Arabic meaning of: "+v[0],answer:[v[1]],maxMarks:1}));
+    vocab.forEach(v=>{
+      const distractors=[...new Set(vocab.map(item=>item[1]).filter(value=>value!==v[1]))];
+      const fallback=["معلومة","نشاط","مكان","شخص","طريقة"];
+      while(distractors.length<3) distractors.push(fallback[distractors.length%fallback.length]);
+      const options=[v[1],...distractors.slice(0,3)];
+      for(let j=options.length-1;j>0;j--){const k=Math.floor(Math.random()*(j+1));[options[j],options[k]]=[options[k],options[j]];}
+      out.push({type:"mcq",category:"معاني الكلمات",text:"Choose the correct Arabic meaning of: "+v[0],answer:v[1],options,maxMarks:1});
+    });
     const topic=unit.paragraphTopic || paragraphTopicFor(unit);
-    out.push({type:"paragraph",category:"Paragraph",topic,text:'Write a paragraph of 40–60 words about: "'+topic+'".',answer:"",maxMarks:5});
+    out.push({type:"paragraph",category:"Paragraph",topic,text:'Write a paragraph of 40–60 words about: "'+topic+'".',answer:"",minWords:40,maxWords:60,maxMarks:5});
     return out;
   }
   function unitExamQuestions(unit) {
@@ -369,7 +376,7 @@
       out.push({type:"correct",category:"Correct the mistake",text:"Correct the mistake: "+incorrectSentence,answer:correctSentence});
     });
     const topic=unit.paragraphTopic || paragraphTopicFor(unit);
-    out.push({type:"paragraph",category:"Paragraph",topic,text:'Write a paragraph of 60–80 words about: "'+topic+'".',answer:"",maxMarks:5});
+    out.push({type:"paragraph",category:"Paragraph",topic,text:'Write a paragraph of 60–80 words about: "'+topic+'".',answer:"",minWords:60,maxWords:80,maxMarks:5});
     return out;
   }
   function storyChapterQuestions(items, chapterTitle) {
@@ -422,7 +429,7 @@
     return String(value||"").toLowerCase().trim().normalize("NFD").replace(/[\u064B-\u065F\u0670ـ]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/[.,!?;:'"()]/g,"").replace(/\s+/g," ");
   }
 
-  function gradeParagraph(value, topic) {
+  function gradeParagraph(value, topic, minWords, maxWords) {
     const text = String(value || "").trim();
     const words = text.split(/\s+/).filter(Boolean);
     if (!words.length) return {score:0, feedback:"لم تكتب فقرة."};
@@ -430,16 +437,18 @@
     const sentences = text.split(/[.!?]+/).filter(x=>x.trim()).length;
     const topicWords = String(topic || "").toLowerCase().split(/\s+/).filter(x=>x.length > 3);
     const topicHits = topicWords.filter(x=>lower.includes(x)).length;
+    const min = Number.isFinite(minWords) ? minWords : 40;
+    const max = Number.isFinite(maxWords) ? maxWords : 60;
     let score = 0;
-    if (words.length >= 45 && words.length <= 90) score++;
-    if (topicHits > 0 || /technology|students|people|learning|school|world|digital|generation/i.test(lower)) score++;
+    if (words.length >= min && words.length <= max) score++;
+    if (topicHits > 0 || /\b(technology|students|people|learning|school|world|digital|generation|environment|energy|river|friends|art)\b/i.test(lower)) score++;
     if (sentences >= 3) score++;
     if (/\b(and|but|because|also|so|first|finally|however)\b/i.test(lower)) score++;
     if (/\b(is|are|was|were|have|has|can|should|use|uses|helps|help|do|does|make|makes)\b/i.test(lower) && /[.!?]/.test(text)) score++;
-    const notes = ["الطول: "+words.length+" كلمة","الجمل: "+sentences,"مؤشرات ارتباط بالموضوع: "+(topicHits ? "موجودة" : "محدودة")];
-    return {score:Math.min(5,score), feedback:"الدرجة تقديرية من 5. "+notes.join(" — ")+". التصحيح الآلي لا يستطيع ضمان صحة المعنى أو كل الأخطاء النحوية؛ راجع الفقرة مع المدرس."};
+    const lengthNote = words.length < min ? "أقل من العدد المطلوب" : words.length > max ? "أكثر من العدد المطلوب" : "داخل العدد المطلوب";
+    const notes = ["عدد الكلمات: "+words.length+" ("+lengthNote+")","عدد الجمل: "+sentences,"كلمات مرتبطة بالموضوع: "+(topicHits ? "موجودة" : "لم تظهر بوضوح")];
+    return {score:Math.min(5,score), feedback:"التصحيح الآلي التقديري من 5: "+notes.join(" — ")+". التقييم يفحص مؤشرات عامة فقط، ولا يحكم بدقة على صحة المعنى أو القواعد والإملاء؛ يلزم مراجعة المدرس للتصحيح الكامل."};
   }
-
   function gradeQuiz() {
     if (!current || submitted) return;
     let score = 0, total = 0, answered = 0;
@@ -463,7 +472,7 @@
         if (response) answered++;
         const accepted = Array.isArray(q.answer) ? q.answer : [q.answer];
         if (q.type === "paragraph") {
-          const result = gradeParagraph(response, q.topic || current.title);
+          const result = gradeParagraph(response, q.topic || current.title, q.minWords, q.maxWords);
           score += result.score;
           feedback.push((i+1)+". "+result.feedback+" ("+result.score+"/5)");
           ok = result.score >= 3;
