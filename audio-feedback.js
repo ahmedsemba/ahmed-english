@@ -78,7 +78,7 @@
     const target = event.target && event.target.closest
       ? event.target.closest("button, .tab, .subTab, .gradeTab, .page-nav a, .home-action, .platform-back-button, a[href$='.html']")
       : null;
-    if (!target || target.disabled || target.getAttribute("aria-disabled") === "true") return;
+    if (!target || target.matches(".word-day-audio") || target.disabled || target.getAttribute("aria-disabled") === "true") return;
     playClick();
   }, true);
 
