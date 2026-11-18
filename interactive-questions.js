@@ -452,7 +452,7 @@
   function gradeQuiz() {
     if (!current || submitted) return;
     let score = 0, total = 0, answered = 0;
-    const feedback = [];
+    const feedback = [], soundOutcomes = [];
     current.qs.forEach((q,i)=>{
       const marks = q.maxMarks || 1;
       total += marks;
@@ -497,6 +497,7 @@
           }
         }
       }
+      soundOutcomes.push(!!ok);
       if (ok && q.type !== "paragraph" && q.type !== "essay") score += marks;
       if (q.type !== "paragraph" && q.type !== "essay") feedback.push((i+1)+". "+(ok ? "صحيح" : "الإجابة المقبولة: "+(Array.isArray(q.answer) ? q.answer.join(" / ") : q.answer)));
       const fields = document.querySelectorAll('input[name="iq_'+i+'"]');
@@ -508,6 +509,7 @@
     const message = pct <= 50 ? "معلش حاول تاني" : pct <= 80 ? "حلو اتشطر وذاكر أكتر" : "برافو عليك ممتاز";
     submitted = true;
     $("iqResult").innerHTML = '<div class="iq-score"><strong>نتيجتك التقديرية: '+score+' من '+total+'</strong><span>'+pct+'%</span><p>'+message+'</p><small>أجبت عن '+answered+' من '+current.qs.length+' سؤالًا.</small></div><details class="iq-answers"><summary>مراجعة الإجابات والملاحظات</summary>'+feedback.map(x=>'<p>'+esc(x)+'</p>').join('')+'</details>';
+    if (window.PlatformSounds) window.PlatformSounds.playQuizResult(soundOutcomes, message);
     $("iqSubmit").hidden = true; $("iqRetry").hidden = false;
     if (window.saveInteractiveAttempt) {
       window.saveInteractiveAttempt({ activity:current.title, score, total, percentage:pct, answered })
