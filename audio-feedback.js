@@ -38,14 +38,19 @@
     tone(760, 0.055, 0.018, "sine", 0);
   }
 
+  // Short, bright coin-counting sound for a correct answer (~0.6 seconds).
   function playCorrect() {
-    tone(660, 0.13, 0.035, "sine", 0);
-    tone(880, 0.16, 0.032, "sine", 0.11);
+    tone(1318.5, 0.11, 0.035, "triangle", 0);
+    tone(1760, 0.12, 0.034, "triangle", 0.10);
+    tone(2093, 0.13, 0.032, "sine", 0.21);
+    tone(2637, 0.16, 0.028, "sine", 0.32);
+    tone(2093, 0.10, 0.022, "sine", 0.46);
   }
 
+  // Clear low descending alert for an incorrect answer.
   function playWrong() {
-    tone(310, 0.12, 0.025, "sine", 0);
-    tone(245, 0.14, 0.022, "sine", 0.11);
+    tone(220, 0.18, 0.038, "sawtooth", 0);
+    tone(165, 0.22, 0.034, "sawtooth", 0.16);
   }
 
   function playFinished() {
@@ -84,6 +89,10 @@
   }, true);
 
   window.PlatformSounds = {
+    playAnswer: function (isCorrect) {
+      if (isCorrect) playCorrect();
+      else playWrong();
+    },
     playQuizResult: function (outcomes, message) {
       const results = Array.isArray(outcomes) ? outcomes : [];
       const gap = 0.22;
