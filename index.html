@@ -464,6 +464,14 @@
           <div id="evalDisplay" class="card student-summary-card"></div>
           <div id="certArea"></div>
         </div>
+        <section id="studentAttendanceDisplay" class="student-section-card">
+          <div class="student-section-heading"><span>📅</span><div><h3>موقف الحصص والحضور</h3><p>سجل حضورك وغيابك.</p></div></div>
+          <div id="studentAttendanceHistory"></div>
+        </section>
+        <section class="student-section-card">
+          <div class="student-section-heading"><span>💳</span><div><h3>سجل الدفع</h3><p>آخر حالات الدفع المسجلة لك.</p></div></div>
+          <div id="paymentHistory">جاري تحميل موقف الدفع...</div>
+        </section>
 
         <section class="student-section-card student-live-section">
           <div class="student-section-heading">
@@ -599,6 +607,7 @@
           <span class="subTab" onclick="showAdminTab('students')" id="atab-students">الطلاب</span>
           <span class="subTab" onclick="showAdminTab('homeworks')" id="atab-homeworks">الواجبات</span>
           <span class="subTab" onclick="showAdminTab('materials')" id="atab-materials">الملازم</span>
+          <span class="subTab" onclick="showAdminTab('payments')" id="atab-payments">المدفوعات</span>
           <span class="subTab" onclick="showAdminTab('backup')" id="atab-backup">النسخ الاحتياطي</span>
         </div>
 
@@ -703,6 +712,13 @@
           </div>
         </div>
 
+        <div id="admin-payments" style="display:none">
+          <div class="card" style="background:#0f172a">
+            <h4>💳 طلبات الدفع وسجل المدفوعات</h4>
+            <div id="paymentsAdminList">اضغط على المدفوعات لعرض السجل.</div>
+          </div>
+        </div>
+
         <div id="admin-backup" style="display:none">
           <div class="card" style="background:#0f172a;border:1px solid #10b981">
             <h4>🛡️ النسخ الاحتياطي واستعادة البيانات</h4>
@@ -730,7 +746,7 @@
     }
 
     function showAdminTab(t) {
-      ['lessons', 'schedules', 'students', 'homeworks', 'materials', 'backup'].forEach(function(x) {
+      ['lessons', 'schedules', 'students', 'homeworks', 'materials', 'payments', 'backup'].forEach(function(x) {
         var el = document.getElementById('admin-' + x);
         if (el) el.style.display = (x === t) ? 'block' : 'none';
         var tab = document.getElementById('atab-' + x);
@@ -740,6 +756,7 @@
       if (t === 'homeworks' && window.loadPaperHomeworkAdmin) window.loadPaperHomeworkAdmin();
       if (t === 'schedules' && window.loadSchedulesAdmin) window.loadSchedulesAdmin();
       if (t === 'materials' && window.loadMaterialsAdmin) window.loadMaterialsAdmin();
+      if (t === 'payments' && window.loadPaymentsAdmin) window.loadPaymentsAdmin();
     }
 
     let deferredPrompt;
@@ -1452,6 +1469,8 @@
         document.getElementById('studentSchedule').innerHTML = '<div class="scheduleBox">⏰ ' + data.grade + ': ' + sched + '</div>';
         const monthScore = score10(data, 'eval_month');
         document.getElementById('evalDisplay').innerHTML = '<h4>📊 تقييمك</h4><div>التفاعل: ' + score10(data, 'eval_interaction') + '/10</div><div>الواجب: ' + score10(data, 'eval_homework') + '/10</div><div>امتحان الشهر: ' + monthScore + '/10</div>';
+        const attendanceBox = document.getElementById('studentAttendanceHistory');
+        if (attendanceBox) attendanceBox.innerHTML = attendanceHistoryHtml(data.attendanceByDate);
         document.getElementById('certArea').innerHTML = '';
         if (monthScore >= 9) {
           const today = new Date().toLocaleDateString('ar-EG');
@@ -1459,6 +1478,7 @@
         }
         loadStudentLesson();
         loadStudentRecordedLessons();
+        loadPaymentHistory();
         loadStudentMaterials();
         loadPaperHomeworkStudent();
       } catch (e) { document.getElementById('loginMsg').innerText = 'خطأ: ' + e.message; }
