@@ -425,10 +425,10 @@
   }
 
   function renderGrammar() {
-    const root = document.getElementById('dailyGrammar');
-    if (!root) return;
     const item = grammar[dayIndex(grammar.length)];
     window.currentDailyGrammar = item;
+    const root = document.getElementById('dailyGrammar');
+    if (!root) return;
     root.replaceChildren();
     root.appendChild(make('div','daily-meta','قاعدة اليوم • تتغير تلقائيًا كل يوم'));
     root.appendChild(make('h3','daily-grammar-title',item.title));
