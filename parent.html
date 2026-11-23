@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دخول ولي الأمر | منصة مستر أحمد السيد</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="logo.png">
+  <meta name="theme-color" content="#102a43">
+  <link rel="stylesheet" href="app.css">
+  <script>
+    (function() {
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.add('theme-light');
+      }
+    })();
+  </script>
+</head>
+<body data-page="parent">
+
+  <!-- الشريط العلوي الثابت -->
+  <div class="site-top-bar">
+    <a href="index.html" class="top-back-btn">← العودة للرئيسية</a>
+    <span class="top-page-badge">👨‍👩‍👧 دخول ومتابعة ولي الأمر</span>
+    <div class="top-actions">
+      <button type="button" class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn">☀️</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="tab-parent" class="card">
+      <h3 style="margin-top:0">دخول ولي الأمر</h3>
+      <p style="color:var(--text-muted);font-size:13px;margin:0 0 12px">
+        أدخل رقم الهاتف المسجل به كولي أمر لمتابعة مستوى ابنك/ابنتك الدراسي، درجات التقييم، وسجل الحضور والغياب.
+      </p>
+
+      <input id="parentLoginPhone" type="tel" placeholder="رقم هاتف ولي الأمر المسجل (مثال: 010... أو 011...)" autocomplete="tel">
+      <button type="button" onclick="loginParent()" style="background:linear-gradient(135deg,var(--accent-gold),#d97706);color:#000;font-weight:900">
+        عرض تقرير الطالب 📊
+      </button>
+
+      <div id="parentArea" style="display:none;margin-top:20px"></div>
+    </div>
+  </div>
+
+  <script type="module" src="platform.js"></script>
+</body>
+</html>

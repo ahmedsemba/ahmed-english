@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منصة مستر أحمد السيد انجليزي</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="logo.png">
+  <meta name="theme-color" content="#102a43">
+  <link rel="stylesheet" href="app.css">
+  <script>
+    (function() {
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.add('theme-light');
+      }
+    })();
+  </script>
+</head>
+<body data-page="home">
+
+  <!-- الهيدر الرئيسي -->
+  <header class="main-header">
+    <div class="header-top-controls">
+      <button type="button" class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn">☀️ وضع فاتح</button>
+    </div>
+
+    <a href="index.html" aria-label="الصفحة الرئيسية">
+      <img src="logo.png" class="logo" alt="شعار مستر أحمد السيد" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135755.png'">
+    </a>
+    <h1 class="header-title">منصة مستر أحمد السيد انجليزي</h1>
+    <div class="header-sub">(من الصف الأول الابتدائي للثالث الإعدادي)</div>
+    <div class="header-exp-badge">خبرة 20 عام ⭐</div>
+
+    <div class="header-actions">
+      <button id="installBtn" class="btn-header-install" onclick="installApp()">📲 ثبّت التطبيق</button>
+      <a href="#paymentSection" class="btn-header-pay">💳 طرق الدفع والاشتراك</a>
+    </div>
+  </header>
+
+  <!-- الرسالة التحفيزية اليومية -->
+  <section class="daily-motivation" aria-label="رسالة اليوم">
+    <span aria-hidden="true">✨</span>
+    <strong id="dailyMotivationText">كل يوم خطوة للأمام في تعلّم الإنجليزية</strong>
+  </section>
+
+  <!-- كلمة اليوم (Word of the Day) -->
+  <section class="word-day-wrap" aria-labelledby="wordDayHeading">
+    <div class="word-day-card">
+      <div class="word-day-top">
+        <h2 class="word-day-heading" id="wordDayHeading">Word of the Day</h2>
+        <div class="word-day-date" id="wordDayDate">كلمة اليوم</div>
+      </div>
+      <div class="word-day-main-clean">
+        <div class="word-day-word-row">
+          <div class="word-day-word" id="wordDayWord">Brave</div>
+          <div class="word-day-meaning" id="wordDayMeaning" lang="ar" dir="rtl">شُجاع</div>
+        </div>
+        <button type="button" class="word-day-audio" onclick="speakWordOfDay()">🔊 اسمع نطق الكلمة</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- لوحة الخدمات الرئيسية -->
+  <main class="home-dashboard">
+    <section class="home-welcome">
+      <span class="home-eyebrow">WELCOME TO YOUR ENGLISH JOURNEY</span>
+      <h2>ابدأ رحلتك في تعلّم اللغة الإنجليزية</h2>
+      <p>كل أدواتك التعليمية، متابعة الحصص، حل الواجبات، والتقييمات في مكان واحد بتصميم سهل وسريع من الموبايل أو الكمبيوتر.</p>
+    </section>
+
+    <section class="home-actions" aria-label="أقسام المنصة">
+      <a class="home-action home-action-primary" href="register.html">
+        <span class="home-action-icon">✍️</span>
+        <span><b>سجل الآن</b><small>أنشئ حسابك كطالب جديد</small></span>
+        <span class="home-arrow">←</span>
+      </a>
+
+      <a class="home-action" href="student.html">
+        <span class="home-action-icon">🎓</span>
+        <span><b>دخول الطالب</b><small>حصصك وواجباتك وتقييماتك</small></span>
+        <span class="home-arrow">←</span>
+      </a>
+
+      <a class="home-action" href="parent.html">
+        <span class="home-action-icon">👨‍👩‍👧</span>
+        <span><b>دخول ولي الأمر</b><small>تابع الحضور والدرجات أولاً بأول</small></span>
+        <span class="home-arrow">←</span>
+      </a>
+
+      <a class="home-action" href="materials.html">
+        <span class="home-action-icon">📚</span>
+        <span><b>الملازم المجانية</b><small>مذكرات وشيتات لكل الصفوف</small></span>
+        <span class="home-arrow">←</span>
+      </a>
+
+      <a class="home-action" href="self-learning.html">
+        <span class="home-action-icon">🧠</span>
+        <span><b>علّم نفسك</b><small>تدريب يومي على القراءة والفهم</small></span>
+        <span class="home-arrow">←</span>
+      </a>
+
+      <a class="home-action" href="daily-grammar.html">
+        <span class="home-action-icon">📘</span>
+        <span><b>قاعدة اليوم</b><small>قواعد إنجليزية بشرح مبسط</small></span>
+        <span class="home-arrow">←</span>
+      </a>
+
+      <a class="home-action home-action-admin" href="admin.html">
+        <span class="home-action-icon">🧑‍🏫</span>
+        <span><b>لوحة المستر</b><small>إدارة الطلاب والحصص والمنصة (خاص بالمعلم)</small></span>
+        <span class="home-arrow">←</span>
+      </a>
+    </section>
+
+    <!-- قسم تفاصيل الدفع والاشتراك المنظم -->
+    <section id="paymentSection" class="payment-section-box" aria-label="طرق الدفع والاشتراك">
+      <h3 class="payment-section-title">💰 طرق الدفع والاشتراك</h3>
+      <p class="payment-section-sub">يمكنك سداد الاشتراك الشهري بسهولة عبر تطبيق إنستاباي أو أي محفظة إلكترونية (فودافون كاش / اتصالات كاش / أورنج كاش).</p>
+
+      <div class="payment-methods-grid">
+        <div class="payment-card">
+          <div class="payment-card-info">
+            <span class="payment-card-name">⚡ إنستاباي (InstaPay)</span>
+            <span class="payment-card-num">01116811324</span>
+          </div>
+          <button type="button" class="btn-copy-num" onclick="copyPaymentNumber()">📋 نسخ الرقم</button>
+        </div>
+
+        <div class="payment-card">
+          <div class="payment-card-info">
+            <span class="payment-card-name">📱 اتصالات كاش ومحافظ كاش</span>
+            <span class="payment-card-num">01116811324</span>
+          </div>
+          <button type="button" class="btn-copy-num" onclick="copyPaymentNumber()">📋 نسخ الرقم</button>
+        </div>
+      </div>
+
+      <a href="https://wa.me/201116811324" target="_blank" rel="noopener" class="payment-whatsapp-btn">
+        💬 تأكيد الدفع وإرسال الإيصال عبر واتساب
+      </a>
+    </section>
+  </main>
+
+  <footer style="text-align:center;padding:20px;color:var(--text-muted);font-size:12px">
+    منصة مستر أحمد السيد انجليزي © جميع الحقوق محفوظة
+  </footer>
+
+  <script type="module" src="platform.js"></script>
+  <script src="word-of-day.js" defer></script>
+  <script src="audio-feedback.js" defer></script>
+</body>
+</html>

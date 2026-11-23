@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة المستر | منصة مستر أحمد السيد</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="logo.png">
+  <meta name="theme-color" content="#102a43">
+  <link rel="stylesheet" href="app.css">
+  <script>
+    (function() {
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.add('theme-light');
+      }
+    })();
+  </script>
+</head>
+<body data-page="admin">
+
+  <!-- الشريط العلوي الثابت -->
+  <div class="site-top-bar">
+    <a href="index.html" class="top-back-btn">← العودة للرئيسية</a>
+    <span class="top-page-badge">🧑‍🏫 لوحة تحكم المستر</span>
+    <div class="top-actions">
+      <button type="button" class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn">☀️</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="tab-admin" class="card">
+      <h3 style="margin-top:0">لوحة المستر 🔒</h3>
+
+      <!-- نموذج تسجيل دخول المعلم -->
+      <div id="adminLoginForm">
+        <input id="adminEmail" type="email" placeholder="بريد المعلم الإلكتروني" autocomplete="username">
+        <input id="adminPass" type="password" placeholder="كلمة المرور" autocomplete="current-password">
+        <button type="button" onclick="loginAdmin()">تسجيل الدخول 🔑</button>
+      </div>
+
+      <!-- مساحة الإدارة الكاملة بعد تسجيل الدخول -->
+      <div id="adminArea" style="display:none;margin-top:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+          <span style="font-weight:900;color:var(--accent-teal-light)">مرحباً بك يا مستر أحمد 🌟</span>
+          <button type="button" onclick="logoutAdmin()" class="btn-small" style="background:#64748b;margin:0">تسجيل خروج</button>
+        </div>
+
+        <!-- أزرار التبويب الداخلية -->
+        <div style="margin:12px 0;display:flex;flex-wrap:wrap;gap:4px">
+          <span class="subTab active" onclick="showAdminTab('lessons')" id="atab-lessons">🎥 الحصة المباشرة</span>
+          <span class="subTab" onclick="showAdminTab('recorded')" id="atab-recorded">🎬 الحصص المسجلة</span>
+          <span class="subTab" onclick="showAdminTab('schedules')" id="atab-schedules">⏰ المواعيد</span>
+          <span class="subTab" onclick="showAdminTab('students')" id="atab-students">👦 إدارة الطلاب</span>
+          <span class="subTab" onclick="showAdminTab('homeworks')" id="atab-homeworks">📷 الواجبات والتصحيح</span>
+          <span class="subTab" onclick="showAdminTab('materials')" id="atab-materials">📚 الملازم</span>
+          <span class="subTab" onclick="showAdminTab('payments')" id="atab-payments">💳 المدفوعات</span>
+          <span class="subTab" onclick="showAdminTab('backup')" id="atab-backup">🛡️ النسخ الاحتياطي</span>
+        </div>
+
+        <!-- 1. الحصة المباشرة -->
+        <div id="admin-lessons" class="card" style="background:var(--bg-surface-alt)">
+          <h4>🎥 نشر حصة مباشرة للطلاب</h4>
+          <input id="lessonTitle" placeholder="عنوان الحصة (مثال: مراجعة الوحدة الأولى)">
+          <input id="meetLink" placeholder="رابط Google Meet">
+          <input id="ytLink" placeholder="رابط بث YouTube (اختياري)">
+          <input id="teachmintLink" placeholder="رابط Teachmint (اختياري)">
+          <select id="lessonGrade">
+            <option value="للكل">لجميع الصفوف</option>
+            <option value="الصف الأول الابتدائي">الصف الأول الابتدائي</option>
+            <option value="الصف الثاني الابتدائي">الصف الثاني الابتدائي</option>
+            <option value="الصف الثالث الابتدائي">الصف الثالث الابتدائي</option>
+            <option value="الصف الرابع الابتدائي">الصف الرابع الابتدائي</option>
+            <option value="الصف الخامس الابتدائي">الصف الخامس الابتدائي</option>
+            <option value="الصف السادس الابتدائي">الصف السادس الابتدائي</option>
+            <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+            <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+            <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+          </select>
+          <button type="button" onclick="addLesson()" style="background:#10b981">📢 نشر الحصة والروابط الآن</button>
+          <button type="button" onclick="clearLesson()" style="background:#ef4444;margin-top:6px">⏹️ إنهاء الحصة وإخفاء الروابط</button>
+        </div>
+
+        <!-- 2. الحصص المسجلة -->
+        <div id="admin-recorded" style="display:none" class="card" style="background:var(--bg-surface-alt)">
+          <h4>🎬 إضافة حصة مسجلة جديدة</h4>
+          <p style="color:var(--text-muted);font-size:13px">ضع رابط يوتيوب واسم الدرس. سيظهر الفيديو لطلاب الصف المحدد تلقائياً في حساباتهم.</p>
+          <input id="recordedTitle" placeholder="اسم الدرس أو الموضوع">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div>
+              <label for="recordedUnit" style="font-size:12px;color:var(--text-muted)">الوحدة / القصة</label>
+              <select id="recordedUnit">
+                <option value="">اختر الوحدة</option>
+                <option value="الوحدة 1">الوحدة 1</option>
+                <option value="الوحدة 2">الوحدة 2</option>
+                <option value="الوحدة 3">الوحدة 3</option>
+                <option value="الوحدة 4">الوحدة 4</option>
+                <option value="الوحدة 5">الوحدة 5</option>
+                <option value="الوحدة 6">الوحدة 6</option>
+                <option value="القصة 1">القصة 1</option>
+                <option value="القصة 2">القصة 2</option>
+              </select>
+            </div>
+            <div>
+              <label for="recordedLessonNumber" style="font-size:12px;color:var(--text-muted)">رقم الدرس</label>
+              <select id="recordedLessonNumber">
+                <option value="">اختر الدرس</option>
+                <option value="1">الدرس 1</option>
+                <option value="2">الدرس 2</option>
+                <option value="3">الدرس 3</option>
+                <option value="4">الدرس 4</option>
+                <option value="5">الدرس 5</option>
+              </select>
+            </div>
+          </div>
+          <select id="recordedGrade">
+            <option value="الصف الأول الابتدائي">الصف الأول الابتدائي</option>
+            <option value="الصف الثاني الابتدائي">الصف الثاني الابتدائي</option>
+            <option value="الصف الثالث الابتدائي">الصف الثالث الابتدائي</option>
+            <option value="الصف الرابع الابتدائي">الصف الرابع الابتدائي</option>
+            <option value="الصف الخامس الابتدائي">الصف الخامس الابتدائي</option>
+            <option value="الصف السادس الابتدائي">الصف السادس الابتدائي</option>
+            <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+            <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+            <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+          </select>
+          <input id="recordedYoutubeLink" type="url" placeholder="رابط فيديو الحصة على يوتيوب">
+          <button type="button" id="recordedSaveButton" onclick="addRecordedLesson()" style="background:#10b981">➕ إضافة الحصة المسجلة</button>
+          <button type="button" id="recordedCancelEditButton" onclick="cancelRecordedLessonEdit()" style="background:#64748b;display:none;margin-top:6px">إلغاء التعديل</button>
+          <div id="recordedLessonsAdminList" style="margin-top:14px"></div>
+        </div>
+
+        <!-- 3. المواعيد -->
+        <div id="admin-schedules" style="display:none" class="card">
+          <h4>⏰ مواعيد الحصص لكل صف</h4>
+          <select id="schedGrade">
+            <option value="الصف الأول الابتدائي">الصف الأول الابتدائي</option>
+            <option value="الصف الثاني الابتدائي">الصف الثاني الابتدائي</option>
+            <option value="الصف الثالث الابتدائي">الصف الثالث الابتدائي</option>
+            <option value="الصف الرابع الابتدائي">الصف الرابع الابتدائي</option>
+            <option value="الصف الخامس الابتدائي">الصف الخامس الابتدائي</option>
+            <option value="الصف السادس الابتدائي">الصف السادس الابتدائي</option>
+            <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+            <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+            <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+          </select>
+          <input id="schedTime" placeholder="مثال: السبت والثلاثاء الساعة 5 مساءً">
+          <button type="button" onclick="saveSchedule()" style="background:#10b981">حفظ الموعد 💾</button>
+          <div id="schedulesList" style="margin-top:12px"></div>
+        </div>
+
+        <!-- 4. إدارة الطلاب والدرجات والحضور -->
+        <div id="admin-students" style="display:none">
+          <div class="card" style="margin-bottom:12px">
+            <h4>🔍 بحث وفلترة الطلاب</h4>
+            <input id="studentSearch" placeholder="ابحث باسم الطالب أو رقم الهاتف..." oninput="loadAdminFiltered()">
+            <div id="gradeFilter" style="margin-top:8px"></div>
+            <div id="studentsCounter" style="background:var(--accent-blue);color:#fff;padding:8px 12px;border-radius:8px;margin-top:10px;font-weight:900;text-align:center;font-size:13px"></div>
+          </div>
+          <div id="pendingList"></div>
+          <div id="approvedList"></div>
+          <div id="blockedList"></div>
+        </div>
+
+        <!-- 5. الواجبات الورقية والتصحيح -->
+        <div id="admin-homeworks" style="display:none">
+          <div class="card">
+            <h4>📷 نشر واجب ورقي جديد</h4>
+            <input id="paperTitle" placeholder="عنوان الواجب (مثال: كتاب التدريبات صفحة 25)">
+            <select id="paperGrade">
+              <option value="للكل">لجميع الصفوف</option>
+              <option value="الصف الأول الابتدائي">الصف الأول الابتدائي</option>
+              <option value="الصف الثاني الابتدائي">الصف الثاني الابتدائي</option>
+              <option value="الصف الثالث الابتدائي">الصف الثالث الابتدائي</option>
+              <option value="الصف الرابع الابتدائي">الصف الرابع الابتدائي</option>
+              <option value="الصف الخامس الابتدائي">الصف الخامس الابتدائي</option>
+              <option value="الصف السادس الابتدائي">الصف السادس الابتدائي</option>
+              <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+              <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+              <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+            </select>
+            <button type="button" onclick="publishPaperHomework()" style="background:#0891b2">📢 نشر الواجب للطلاب</button>
+            <hr style="border-color:var(--border-color);margin:16px 0">
+            <h4>📥 تسليمات الطلاب وتصحيح الصور</h4>
+            <input id="paperSubmissionSearch" placeholder="بحث باسم الطالب في التسليمات..." oninput="loadPaperHomeworkAdmin()">
+            <div id="paperHomeworkAdminList" style="margin-top:12px">جاري التحميل...</div>
+          </div>
+        </div>
+
+        <!-- 6. الملازم -->
+        <div id="admin-materials" style="display:none">
+          <div class="card">
+            <h4>📚 إضافة ملزمة أو شيت للتحميل</h4>
+            <input id="matTitle" placeholder="عنوان الملزمة (مثال: مراجعة نهائية ليلة الامتحان)">
+            <input id="matLink" placeholder="رابط Google Drive للملف">
+            <select id="matGrade">
+              <option value="للكل">لجميع الصفوف</option>
+              <option value="الصف الأول الابتدائي">الصف الأول الابتدائي</option>
+              <option value="الصف الثاني الابتدائي">الصف الثاني الابتدائي</option>
+              <option value="الصف الثالث الابتدائي">الصف الثالث الابتدائي</option>
+              <option value="الصف الرابع الابتدائي">الصف الرابع الابتدائي</option>
+              <option value="الصف الخامس الابتدائي">الصف الخامس الابتدائي</option>
+              <option value="الصف السادس الابتدائي">الصف السادس الابتدائي</option>
+              <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+              <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+              <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+            </select>
+            <button type="button" onclick="addMaterial()" style="background:#10b981">💾 إضافة الملزمة</button>
+          </div>
+          <div class="card" style="margin-top:12px">
+            <h4>📋 الملازم المرفوعة</h4>
+            <div id="materialsAdminList">جاري التحميل...</div>
+          </div>
+        </div>
+
+        <!-- 7. المدفوعات -->
+        <div id="admin-payments" style="display:none">
+          <div class="card">
+            <h4>💳 سجل طلبات واشتراكات الطلاب</h4>
+            <div id="paymentsAdminList">جاري التحميل...</div>
+          </div>
+        </div>
+
+        <!-- 8. النسخ الاحتياطي -->
+        <div id="admin-backup" style="display:none">
+          <div class="card" style="border:1px solid #10b981">
+            <h4>🛡️ النسخ الاحتياطي واستعادة البيانات</h4>
+            <p style="font-size:13px;color:var(--text-muted)">
+              ينزل نسخة ملف JSON من جميع مجموعات المنصة (الطلاب، الحصص، الواجبات، التقييمات). احتفظ بالملف كنسخة أمان دورية.
+            </p>
+            <button type="button" onclick="exportPlatformBackup()" style="background:#10b981">⬇️ تنزيل نسخة احتياطية (Backup) الآن</button>
+            <hr style="border-color:var(--border-color);margin:16px 0">
+            <p style="font-size:13px;color:#fbbf24">استعادة البيانات من ملف JSON سابق:</p>
+            <input id="backupRestoreFile" type="file" accept=".json,application/json">
+            <button type="button" onclick="restorePlatformBackup()" style="background:#d97706">♻️ استعادة البيانات من الملف</button>
+            <div id="backupStatus" style="font-size:12px;margin-top:8px;color:var(--text-muted)"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="platform.js"></script>
+</body>
+</html>

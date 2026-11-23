@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دخول الطالب | منصة مستر أحمد السيد</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="logo.png">
+  <meta name="theme-color" content="#102a43">
+  <link rel="stylesheet" href="app.css">
+  <script>
+    (function() {
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.add('theme-light');
+      }
+    })();
+  </script>
+</head>
+<body data-page="student">
+
+  <!-- الشريط العلوي الثابت -->
+  <div class="site-top-bar">
+    <a href="index.html" class="top-back-btn">← العودة للرئيسية</a>
+    <span class="top-page-badge">🎓 دخول الطالب ومساحتي</span>
+    <div class="top-actions">
+      <button type="button" class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn">☀️</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- كارت تسجيل دخول الطالب -->
+    <div id="tab-student" class="card">
+      <h3 style="margin-top:0">دخول الطالب</h3>
+      <p style="color:var(--text-muted);font-size:13px;margin:0 0 10px">اكتب رقم الواتساب المسجل به في المنصة للدخول إلى حصصك وواجباتك.</p>
+      <input id="loginPhone" type="tel" placeholder="رقم الواتساب المسجل (مثال: 01116811324)" autocomplete="tel">
+      <button type="button" onclick="loginStudent()">تسجيل الدخول 🚀</button>
+      <p id="loginMsg" style="color:#ef4444;font-size:13px;font-weight:700;margin-top:8px"></p>
+
+      <!-- منطقة الطالب بعد تسجيل الدخول -->
+      <div id="studentArea" style="display:none;margin-top:20px">
+        <div class="card" style="background:linear-gradient(135deg,var(--bg-surface),var(--bg-surface-alt));border-color:var(--accent-teal)">
+          <span style="color:var(--accent-teal-light);font-size:11px;font-weight:900">مرحباً بك في مساحتك التعليمية</span>
+          <h2 id="welcome" style="margin:6px 0 12px;font-size:22px"></h2>
+          <div id="studentSchedule"></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:12px;margin-bottom:14px">
+          <div id="evalDisplay" class="card" style="margin:0"></div>
+          <div id="certArea"></div>
+        </div>
+
+        <!-- الحصة المباشرة -->
+        <section class="card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <span style="font-size:24px">🎥</span>
+            <div>
+              <h3 style="margin:0">الحصة المباشرة</h3>
+              <small style="color:var(--text-muted)">روابط Google Meet و YouTube الخاصة بحصتك الحالية.</small>
+            </div>
+          </div>
+          <div id="lessonsList"></div>
+        </section>
+
+        <!-- الحصص المسجلة -->
+        <section id="studentRecordedLessons" class="card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <span style="font-size:24px">🎬</span>
+            <div>
+              <h3 style="margin:0">الحصص المسجلة</h3>
+              <small style="color:var(--text-muted)">اختر الوحدة ثم الدرس لعرض الفيديو المطلوب مباشرة.</small>
+            </div>
+          </div>
+
+          <div style="margin-bottom:12px">
+            <label for="studentRecordedUnitFilter" style="font-size:12px;font-weight:800;display:block;margin-bottom:4px">اختر الوحدة أو القصة</label>
+            <select id="studentRecordedUnitFilter" onchange="changeStudentRecordedUnit()">
+              <option value="">-- اختر الوحدة أو القصة --</option>
+              <option value="الوحدة 1">الوحدة الأولى</option>
+              <option value="الوحدة 2">الوحدة الثانية</option>
+              <option value="الوحدة 3">الوحدة الثالثة</option>
+              <option value="الوحدة 4">الوحدة الرابعة</option>
+              <option value="الوحدة 5">الوحدة الخامسة</option>
+              <option value="الوحدة 6">الوحدة السادسة</option>
+              <option value="القصة 1">القصة 1</option>
+              <option value="القصة 2">القصة 2</option>
+            </select>
+
+            <label for="studentRecordedLessonFilter" style="font-size:12px;font-weight:800;display:block;margin:10px 0 4px">اختر الدرس</label>
+            <select id="studentRecordedLessonFilter" disabled onchange="filterStudentRecordedLessons()">
+              <option value="">اختر الوحدة أولاً</option>
+            </select>
+          </div>
+
+          <div id="studentRecordedLessonsList">
+            <div style="text-align:center;padding:12px;color:var(--text-muted)">سجّل الدخول لعرض فيديوهات صفك.</div>
+          </div>
+        </section>
+
+        <!-- الواجب الورقي -->
+        <section class="card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <span style="font-size:24px">📷</span>
+            <div>
+              <h3 style="margin:0">الواجب الورقي</h3>
+              <small style="color:var(--text-muted)">صوّر صفحات الواجب من كشكولك وارفعها للمستر لتصحيحها.</small>
+            </div>
+          </div>
+          <div id="paperHomeworkStudent">جاري تحميل الواجبات المطلوبة...</div>
+        </section>
+
+        <!-- الملازم المرفوعة لصف الطالب -->
+        <section class="card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <span style="font-size:24px">📚</span>
+            <div>
+              <h3 style="margin:0">ملازم وشيتات صفي</h3>
+              <small style="color:var(--text-muted)">المذكرات والشيتات الخاصة بصفك الدراسي للتحميل المباشر.</small>
+            </div>
+          </div>
+          <div id="materialsList">جاري التحميل...</div>
+        </section>
+
+        <!-- تدريبات تفاعلية -->
+        <section id="interactiveQuestions" class="card" style="border:1px solid var(--accent-teal)">
+          <div style="margin-bottom:14px">
+            <span style="font-size:10px;color:var(--accent-teal-light);font-weight:900;letter-spacing:1px">PRACTICE & TESTS</span>
+            <h3 style="margin:4px 0">📝 أسئلة تفاعلية وتدريبات</h3>
+            <p style="color:var(--text-muted);font-size:13px;margin:4px 0">اختبر فهمك لمفردات وقواعد المنهج مع تصحيح فوري ومعرفة نتيجتك.</p>
+          </div>
+
+          <div id="iqUnavailable" class="student-row" style="background:#78350f;color:#fef3c7;display:none"></div>
+
+          <div id="iqControls">
+            <label for="iqUnit" style="font-size:12px;font-weight:800;display:block;margin-bottom:4px">اختر الوحدة</label>
+            <select id="iqUnit">
+              <option value="0">الوحدة الأولى — Gen Alpha</option>
+              <option value="1">الوحدة الثانية — My Digital Footprint</option>
+              <option value="2">الوحدة الثالثة — Facing Challenges</option>
+              <option value="3">الوحدة الرابعة — Art and Expressions</option>
+              <option value="4">الوحدة الخامسة — Around the World</option>
+              <option value="5">الوحدة السادسة — Young Innovators</option>
+              <option value="story">القصة</option>
+              <option value="term">امتحان شامل للترم</option>
+            </select>
+
+            <label for="iqGroup" style="font-size:12px;font-weight:800;display:block;margin:10px 0 4px">اختر الدروس</label>
+            <select id="iqGroup"></select>
+
+            <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+              <button type="button" id="iqStart" style="background:#0f766e;flex:1">ابدأ التدريب 🎯</button>
+              <button type="button" id="iqSubmit" style="background:var(--accent-blue);flex:1" hidden>صحّح إجاباتي ✅</button>
+              <button type="button" id="iqRetry" style="background:#475569;flex:1" hidden>إعادة المحاولة 🔄</button>
+            </div>
+          </div>
+
+          <div id="iqPanel" style="margin-top:14px"></div>
+          <div id="iqResult" style="margin-top:14px"></div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="platform.js"></script>
+  <script src="interactive-questions.js" defer></script>
+  <script src="audio-feedback.js" defer></script>
+</body>
+</html>

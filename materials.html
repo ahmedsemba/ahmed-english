@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الملازم المجانية | منصة مستر أحمد السيد</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="logo.png">
+  <meta name="theme-color" content="#102a43">
+  <link rel="stylesheet" href="app.css">
+  <script>
+    (function() {
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.add('theme-light');
+      }
+    })();
+  </script>
+</head>
+<body data-page="materials">
+
+  <!-- الشريط العلوي الثابت -->
+  <div class="site-top-bar">
+    <a href="index.html" class="top-back-btn">← العودة للرئيسية</a>
+    <span class="top-page-badge">📚 مكتبة الملازم والشيتات المجانية</span>
+    <div class="top-actions">
+      <button type="button" class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn">☀️</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="tab-public-materials" class="card">
+      <h3 style="margin-top:0">الملازم والشيتات المجانية 📖</h3>
+      <p style="color:var(--text-muted);font-size:13px;margin:0 0 16px">
+        اختر صفك الدراسي لتحميل المذكرات والشيتات والمراجعات النهائية مجاناً عبر روابط مباشرة، دون الحاجة لتسجيل حساب.
+      </p>
+
+      <div style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end">
+        <div>
+          <label for="publicMaterialsGrade" style="font-size:12px;font-weight:800;display:block;margin-bottom:4px">الصف الدراسي</label>
+          <select id="publicMaterialsGrade" style="margin:0">
+            <option value="">-- اختر الصف الدراسي --</option>
+            <option value="الصف الأول الابتدائي">الصف الأول الابتدائي</option>
+            <option value="الصف الثاني الابتدائي">الصف الثاني الابتدائي</option>
+            <option value="الصف الثالث الابتدائي">الصف الثالث الابتدائي</option>
+            <option value="الصف الرابع الابتدائي">الصف الرابع الابتدائي</option>
+            <option value="الصف الخامس الابتدائي">الصف الخامس الابتدائي</option>
+            <option value="الصف السادس الابتدائي">الصف السادس الابتدائي</option>
+            <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+            <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+            <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+          </select>
+        </div>
+        <button type="button" onclick="loadPublicMaterials()" style="margin:0;width:auto;min-width:130px;background:var(--accent-teal);color:#042f2e;font-weight:900">
+          عرض الملازم 🔍
+        </button>
+      </div>
+
+      <div id="publicMaterialsList" style="margin-top:16px">
+        <div class="student-row" style="text-align:center;color:var(--text-muted)">
+          من فضلك اختر الصف الدراسي ثم اضغط «عرض الملازم».
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="platform.js"></script>
+</body>
+</html>

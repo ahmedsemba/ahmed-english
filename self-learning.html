@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>علّم نفسك | منصة مستر أحمد السيد</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="logo.png">
+  <meta name="theme-color" content="#102a43">
+  <link rel="stylesheet" href="app.css">
+  <script>
+    (function() {
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.add('theme-light');
+      }
+    })();
+  </script>
+</head>
+<body data-page="self-learning">
+
+  <!-- الشريط العلوي الثابت -->
+  <div class="site-top-bar">
+    <a href="index.html" class="top-back-btn">← العودة للرئيسية</a>
+    <span class="top-page-badge">🧠 علّم نفسك - تدريب يومي</span>
+    <div class="top-actions">
+      <button type="button" class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn">☀️</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="tab-self-learning" class="card">
+      <h3 style="margin-top:0">تدريب القراءة والفهم اليومي 🧠</h3>
+      <p style="color:var(--text-muted);font-size:13px;margin:0 0 16px">
+        اقرأ فقرة اليوم باللغة الإنجليزية بعناية، ثم أجب عن الأسئلة الثلاثة لاختبار استيعابك مع تصحيح فوري.
+      </p>
+
+      <div id="dailyPassage" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <script type="module" src="platform.js"></script>
+  <script src="daily-learning.js" defer></script>
+</body>
+</html>
