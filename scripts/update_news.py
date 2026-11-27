@@ -13,7 +13,7 @@ FEEDS = {
 
 def clean(value):
     value = re.sub(r"<[^>]+>", " ", value or "")
-    return re.sub(r"\\s+", " ", unescape(value)).strip()
+    return re.sub(r"\s+", " ", unescape(value)).strip()
 
 def translate(text):
     if not text:
