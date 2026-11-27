@@ -48,7 +48,7 @@ window.CHAMPIONS_BANK = {
     {name:"المستكشف",desc:"الأزمنة والروابط والمفردات",qs:[
       {t:"mcq",q:"While I … TV, the phone rang.",o:["watch","watched","was watching","am watching"],a:2},
       {t:"fill",q:"Use the correct form: They have lived here … 2020.",a:["since"]},
-      {t:"order",q:"Arrange the words.",w:["because","stayed","ill","was","I","home"],a:["I","stayed","home","because","I","was","ill"]},
+      {t:"order",q:"Arrange the words.",w:["because","stayed","ill","was","I","home","I"],a:["I","stayed","home","because","I","was","ill"]},
       {t:"tf",q:"'Although' can introduce a contrast.",a:true},
       {t:"mcq",q:"A person who designs buildings is an …",o:["architect","artist","accountant","engineer"],a:0}
     ]},
