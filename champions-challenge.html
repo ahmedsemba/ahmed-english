@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تحدي الأبطال | Ahmed English</title><link rel="icon" href="logo.png"><link rel="stylesheet" href="app.css">
+<style>
+.champ-wrap{max-width:820px;margin:22px auto;padding:14px}.champ-hero{background:linear-gradient(135deg,#142b4c,#245b78);color:#fff;border-radius:20px;padding:24px;text-align:center}.champ-hero h1{color:#ffd66b;margin:5px 0}.champ-card{background:var(--bg-surface);border:1px solid var(--border-color);border-radius:16px;padding:16px;margin:14px 0}.champ-level{display:flex;align-items:center;gap:12px;text-align:right}.champ-num{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:var(--bg-surface-alt);font-size:20px;font-weight:900}.champ-btn{width:100%;border:0;border-radius:12px;padding:13px;font-weight:900;background:#0f766e;color:#fff;cursor:pointer}.champ-btn:disabled{opacity:.45;cursor:not-allowed}.champ-opt{display:block;text-align:right;width:100%;padding:12px;margin:8px 0;border:1px solid var(--border-color);border-radius:11px;background:var(--bg-surface-alt);color:var(--text-main);cursor:pointer}.champ-opt.selected{border:2px solid #0f9b83;background:rgba(15,155,131,.12)}.champ-input{width:100%;padding:13px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg-surface);color:var(--text-main);font-size:16px}.champ-stars{font-size:30px;letter-spacing:5px;color:#e6aa24;text-align:center}.champ-progress{height:10px;background:var(--bg-surface-alt);border-radius:20px;overflow:hidden}.champ-progress span{display:block;height:100%;background:#d6a32a}.champ-muted{color:var(--text-muted);font-size:13px}.champ-hidden{display:none!important}@media(max-width:520px){.champ-wrap{padding:10px}.champ-hero{padding:18px}}
+</style>
+</head>
+<body data-page="champions">
+<div class="site-top-bar"><a href="index.html" class="top-back-btn">← العودة للرئيسية</a><span class="top-page-badge">🏆 تحدي الأبطال</span></div>
+<main class="champ-wrap">
+ <section class="champ-hero"><div style="font-size:42px">🏆⭐</div><h1>تحدي الأبطال</h1><p>خطوة وراء خطوة... حتى تصبح بطل الإنجليزية!</p></section>
+ <section id="gradeBox" class="champ-card">
+  <h2>اختر صفك الدراسي وابدأ التحدي</h2>
+  <p class="champ-muted">التحدي متاح للجميع دون تسجيل دخول. اختر صفك لتظهر لك المستويات المناسبة له.</p>
+  <select id="champGradeSelect" class="champ-input" aria-label="اختر الصف الدراسي">
+   <option value="">-- اختر الصف الدراسي --</option>
+   <option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option>
+   <option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option>
+   <option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option>
+  </select>
+  <button id="chooseGradeBtn" class="champ-btn" style="margin-top:12px">ابدأ رحلة الأبطال 🚀</button>
+  <p id="champMsg" role="status" class="champ-muted"></p>
+  <p class="champ-muted">يمكنك إعادة المستوى الذي اجتزته لتحسين نتيجتك، وسيتم الاحتفاظ بأعلى نتيجة على هذا الجهاز.</p>
+ </section>
+>
