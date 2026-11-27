@@ -11,24 +11,17 @@
 <div class="site-top-bar"><a href="index.html" class="top-back-btn">← العودة للرئيسية</a><span class="top-page-badge">🏆 تحدي الأبطال</span></div>
 <main class="champ-wrap">
  <section class="champ-hero"><div style="font-size:42px">🏆⭐</div><h1>تحدي الأبطال</h1><p>خطوة وراء خطوة... حتى تصبح بطل الإنجليزية!</p></section>
- <section id="loginBox" class="champ-card">
-  <h2>أهلاً بك في تحدي الأبطال</h2><p class="champ-muted">اكتب رقم الموبايل المسجل به في المنصة لنتعرف على صفك الدراسي.</p>
-  <input id="champPhone" class="champ-input" type="tel" inputmode="tel" placeholder="رقم الموبايل المسجل">
-  <button id="champLogin" class="champ-btn" style="margin-top:12px">ابدأ التحدي 🚀</button><p id="champMsg" role="status"></p>
-  <p class="champ-muted">هذه نسخة تجريبية تستخدم طريقة التحقق الحالية بالرقم فقط؛ لا تشارك رقمك مع أي شخص.</p>
+ <section id="gradeBox" class="champ-card">
+  <h2>اختر صفك الدراسي وابدأ التحدي</h2>
+  <p class="champ-muted">التحدي متاح للجميع دون تسجيل دخول. اختر صفك لتظهر لك المستويات المناسبة له.</p>
+  <select id="champGradeSelect" class="champ-input" aria-label="اختر الصف الدراسي">
+   <option value="">-- اختر الصف الدراسي --</option>
+   <option>الصف الأول الابتدائي</option><option>الصف الثاني الابتدائي</option><option>الصف الثالث الابتدائي</option>
+   <option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option>
+   <option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option>
+  </select>
+  <button id="chooseGradeBtn" class="champ-btn" style="margin-top:12px">ابدأ رحلة الأبطال 🚀</button>
+  <p id="champMsg" role="status" class="champ-muted"></p>
+  <p class="champ-muted">يمكنك إعادة المستوى الذي اجتزته لتحسين نتيجتك، وسيتم الاحتفاظ بأعلى نتيجة على هذا الجهاز.</p>
  </section>
- <section id="challengeArea" class="champ-hidden">
-  <section class="champ-card"><h2 id="champWelcome"></h2><p id="champGrade" class="champ-muted"></p><div style="display:flex;justify-content:space-between;gap:8px"><b id="champRank"></b><b id="champProgressText"></b></div><div class="champ-progress"><span id="champProgressBar" style="width:0%"></span></div></section>
-  <div id="levelsList"></div>
-  <section id="quizBox" class="champ-card champ-hidden">
-   <div style="display:flex;justify-content:space-between;gap:8px"><b id="quizLevel"></b><span id="quizCount" class="champ-muted"></span></div>
-   <div class="champ-progress" style="margin:12px 0"><span id="quizProgress" style="width:0%"></span></div>
-   <h3 id="questionText"></h3><div id="questionInput"></div>
-   <button id="checkAnswer" class="champ-btn" style="margin-top:12px">تحقق من الإجابة</button><p id="answerFeedback" role="status"></p>
-   <button id="nextQuestion" class="champ-btn champ-hidden" style="margin-top:8px">السؤال التالي ←</button>
-  </section>
-  <section id="finishBox" class="champ-card champ-hidden" style="text-align:center"><div class="champ-stars">⭐⭐⭐</div><h2 id="finishTitle">أحسنت يا بطل!</h2><p id="finishMessage"></p><button id="finishContinue" class="champ-btn">العودة للمستويات</button></section>
- </section>
-</main>
-<script src="champions-challenge.js"></script>
-</body></html>
+>
