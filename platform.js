@@ -346,9 +346,7 @@ async function loadStudentLesson() {
         return;
       }
       html = '<div class="card"><h3>' + l.title + '</h3>' +
-        (l.meetLink ? '<a target="_blank" href="' + l.meetLink + '" style="background:#10b981;display:block;padding:12px;border-radius:10px;color:#fff;text-decoration:none;margin-top:10px;text-align:center;font-weight:800">🎥 دخول Google Meet</a>' : '') +
-        (l.ytLink ? '<a target="_blank" rel="noopener" href="' + l.ytLink + '" style="background:#ef4444;display:block;padding:10px;border-radius:10px;color:#fff;text-decoration:none;margin-top:8px;text-align:center;font-weight:800">▶️ مشاهدة على YouTube</a>' : '') +
-        (l.teachmintLink ? '<a target="_blank" rel="noopener" href="' + l.teachmintLink + '" style="background:#2563eb;display:block;padding:10px;border-radius:10px;color:#fff;text-decoration:none;margin-top:8px;text-align:center;font-weight:800">🎓 الدخول عبر Teachmint</a>' : '') + '</div>';
+        (l.meetLink ? '<a target="_blank" rel="noopener" href="' + l.meetLink + '" style="background:#10b981;display:block;padding:12px;border-radius:10px;color:#fff;text-decoration:none;margin-top:10px;text-align:center;font-weight:800">🎥 دخول Google Meet</a>' : '') + '</div>';
     });
     document.getElementById('lessonsList').innerHTML = html || '<p style="color:var(--text-muted);text-align:center">لا توجد حصة مباشرة نشطة حالياً.</p>';
   } catch (e) { console.log(e); }
@@ -540,6 +538,10 @@ window.loadPaperHomeworkStudent = async function() {
           '<button class="btn-small" style="background:#10b981;width:100%;margin-top:8px" onclick="acknowledgePaperCorrection(\'' + sub.id + '\')">تم ومسح الإشعار</button></div>';
         return;
       }
+      // الواجب غير المصحح يختفي من حساب الطالب بعد 7 أيام من تاريخ نشره.
+      // نتيجة التصحيح لها مدة عرض مستقلة تبدأ من تاريخ التصحيح.
+      const publishedAt = Number(h.created || 0);
+      if (publishedAt && now - publishedAt > WEEK) return;
       if (h.active === false) return;
       shown++;
       html += '<div class="student-row"><b>📷 ' + window.escHtml(h.title || 'واجب ورقي') + '</b><br><small>' + window.escHtml(h.grade || '') + '</small>';
@@ -829,11 +831,9 @@ window.deleteStudent = async function(id) {
 window.addLesson = async function() {
   const title = document.getElementById('lessonTitle').value.trim();
   const meetLink = document.getElementById('meetLink').value.trim();
-  const ytLink = document.getElementById('ytLink')?.value.trim() || '';
-  const teachmintLink = document.getElementById('teachmintLink')?.value.trim() || '';
   const grade = document.getElementById('lessonGrade').value;
   if (!title) { alert('اكتب عنوان الحصة'); return; }
-  await setDoc(doc(db, 'lessons', 'current'), { title, meetLink, ytLink, teachmintLink, grade, created: Date.now() });
+  await setDoc(doc(db, 'lessons', 'current'), { title, meetLink, grade, created: Date.now() });
   window.showToast('✅ تم نشر روابط الحصة بنجاح');
   alert('تم نشر الحصة والروابط بنجاح.');
 };
