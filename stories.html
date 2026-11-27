@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مكتبة القصص الإنجليزية | منصة مستر أحمد السيد</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="logo.png">
+  <meta name="theme-color" content="#102a43">
+  <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="story-library.css">
+</head>
+<body data-page="stories">
+  <div class="site-top-bar">
+    <a href="index.html" class="top-back-btn">← العودة للرئيسية</a>
+    <span class="top-page-badge">📖 مكتبة القصص الإنجليزية</span>
+    <div class="top-actions">
+      <button type="button" class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn">☀️</button>
+    </div>
+  </div>
+
+  <main class="container story-library">
+    <section class="story-welcome">
+      <span class="story-eyebrow">READ • LISTEN • LEARN</span>
+      <h1>اقرأ قصة… وطوّر إنجليزيتك</h1>
+      <p>اختر القصة التي تناسب مستواك، واقرأها أو استمع إليها بصوت إنجليزي.</p>
+    </section>
+
+    <nav class="story-tabs" aria-label="نوع القصص">
+      <button type="button" class="story-tab active" data-category="kids" aria-pressed="true">🧸 قصص للصغار</button>
+      <button type="button" class="story-tab" data-category="older" aria-pressed="false">📚 قصص للكبار</button>
+    </nav>
+
+    <section id="storyListSection">
+      <div class="story-section-heading">
+        <div>
+          <h2 id="storyCategoryTitle">قصص قصيرة للصغار</h2>
+          <p id="storyCategoryDescription">حكايات بسيطة وجمل سهلة مع رسومات توضيحية.</p>
+        </div>
+        <span class="story-count" id="storyCount">10 قصص</span>
+      </div>
+      <div id="storyList" class="story-grid" aria-live="polite"></div>
+    </section>
+
+    <article id="storyReader" class="story-reader" hidden>
+      <button type="button" id="storyBackBtn" class="story-back">← العودة إلى قائمة القصص</button>
+      <div class="reader-cover" id="readerCover" aria-hidden="true">🐰</div>
+      <div class="reader-meta" id="readerMeta">قصة قصيرة</div>
+      <h2 id="readerTitle" class="reader-title"></h2>
+      <p id="readerArabicTitle" class="reader-arabic-title"></p>
+      <div class="reader-controls" aria-label="أدوات الاستماع">
+        <button type="button" id="speakStoryBtn" class="reader-play">🔊 استمع للقصة</button>
+        <button type="button" id="pauseStoryBtn" class="reader-secondary" disabled>⏸ إيقاف مؤقت</button>
+        <button type="button" id="resumeStoryBtn" class="reader-secondary" disabled>▶ استكمال</button>
+        <button type="button" id="stopStoryBtn" class="reader-secondary" disabled>⏹ إيقاف</button>
+      </div>
+      <p id="readerAudioStatus" class="reader-audio-status" aria-live="polite">اضغط «استمع للقصة» لسماع النص باللغة الإنجليزية.</p>
+      <div id="readerText" class="reader-text" lang="en" dir="ltr"></div>
+      <p class="reader-note">💡 حاول أن تقرأ القصة بنفسك أولاً، ثم استمع إليها مرة أخرى لتحسين النطق والاستماع.</p>
+    </article>
+  </main>
+
+  <script type="module" src="platform.js"></script>
+  <script src="story-library.js" defer></script>
+</body>
+</html>
