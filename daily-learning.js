@@ -447,10 +447,23 @@
     root.appendChild(note);
   }
 
+  function scheduleMotivationRefresh() {
+    const now = new Date();
+    const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 1);
+    setTimeout(() => {
+      renderMotivation();
+      scheduleMotivationRefresh();
+    }, Math.max(1000, nextDay.getTime() - now.getTime()));
+  }
+
   function init() {
     renderLearning();
     renderGrammar();
     renderMotivation();
+    scheduleMotivationRefresh();
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) renderMotivation();
+    });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();

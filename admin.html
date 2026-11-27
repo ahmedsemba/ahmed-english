@@ -54,7 +54,6 @@
           <span class="subTab" onclick="showAdminTab('students')" id="atab-students">👦 إدارة الطلاب</span>
           <span class="subTab" onclick="showAdminTab('homeworks')" id="atab-homeworks">📷 الواجبات والتصحيح</span>
           <span class="subTab" onclick="showAdminTab('materials')" id="atab-materials">📚 الملازم</span>
-          <span class="subTab" onclick="showAdminTab('payments')" id="atab-payments">💳 المدفوعات</span>
           <span class="subTab" onclick="showAdminTab('backup')" id="atab-backup">🛡️ النسخ الاحتياطي</span>
         </div>
 
@@ -63,8 +62,6 @@
           <h4>🎥 نشر حصة مباشرة للطلاب</h4>
           <input id="lessonTitle" placeholder="عنوان الحصة (مثال: مراجعة الوحدة الأولى)">
           <input id="meetLink" placeholder="رابط Google Meet">
-          <input id="ytLink" placeholder="رابط بث YouTube (اختياري)">
-          <input id="teachmintLink" placeholder="رابط Teachmint (اختياري)">
           <select id="lessonGrade">
             <option value="للكل">لجميع الصفوف</option>
             <option value="الصف الأول الابتدائي">الصف الأول الابتدائي</option>
@@ -210,14 +207,6 @@
           <div class="card" style="margin-top:12px">
             <h4>📋 الملازم المرفوعة</h4>
             <div id="materialsAdminList">جاري التحميل...</div>
-          </div>
-        </div>
-
-        <!-- 7. المدفوعات -->
-        <div id="admin-payments" style="display:none">
-          <div class="card">
-            <h4>💳 سجل طلبات واشتراكات الطلاب</h4>
-            <div id="paymentsAdminList">جاري التحميل...</div>
           </div>
         </div>
 
