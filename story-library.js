@@ -111,13 +111,15 @@ He learned that effective learning is not always about studying longer. It is of
   function stopSpeech() {
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     activeUtterance = null;
-    setAudioButtons(false);
+    setAudioButtons();
   }
 
-  function setAudioButtons(playing) {
-    document.getElementById('pauseStoryBtn').disabled = !playing;
-    document.getElementById('resumeStoryBtn').disabled = playing || !currentStory;
-    document.getElementById('stopStoryBtn').disabled = !playing && !activeUtterance;
+  function setAudioButtons() {
+    const speaking = 'speechSynthesis' in window && window.speechSynthesis.speaking;
+    const paused = 'speechSynthesis' in window && window.speechSynthesis.paused;
+    document.getElementById('pauseStoryBtn').disabled = !speaking || paused;
+    document.getElementById('resumeStoryBtn').disabled = !paused;
+    document.getElementById('stopStoryBtn').disabled = !speaking && !paused;
   }
 
   function openStory(index) {
@@ -133,7 +135,7 @@ He learned that effective learning is not always about studying longer. It is of
     listSection.hidden = true;
     reader.hidden = false;
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    setAudioButtons(false);
+    setAudioButtons();
   }
 
   function speakStory() {
@@ -153,17 +155,17 @@ He learned that effective learning is not always about studying longer. It is of
     if (englishVoice) activeUtterance.voice = englishVoice;
     activeUtterance.onstart = () => {
       document.getElementById('readerAudioStatus').textContent = '🔊 القصة تُقرأ الآن باللغة الإنجليزية.';
-      setAudioButtons(true);
+      setAudioButtons();
     };
     activeUtterance.onend = () => {
       document.getElementById('readerAudioStatus').textContent = '👏 انتهت قراءة القصة. يمكنك الاستماع إليها مرة أخرى.';
       activeUtterance = null;
-      setAudioButtons(false);
+      setAudioButtons();
     };
     activeUtterance.onerror = () => {
       document.getElementById('readerAudioStatus').textContent = 'تعذر تشغيل الصوت. تأكد من تفعيل الصوت في جهازك وحاول مرة أخرى.';
       activeUtterance = null;
-      setAudioButtons(false);
+      setAudioButtons();
     };
     window.speechSynthesis.speak(activeUtterance);
   }
