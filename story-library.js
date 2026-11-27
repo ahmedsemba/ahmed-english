@@ -77,9 +77,15 @@ He learned that effective learning is not always about studying longer. It is of
   const listSection = document.getElementById('storyListSection');
   const reader = document.getElementById('storyReader');
   const tabs = [...document.querySelectorAll('.story-tab')];
-  let category = 'kids';
+  let category = window.location.hash === '#older' ? 'older' : 'kids';
   let currentStory = null;
   let activeUtterance = null;
+
+  tabs.forEach(tab => {
+    const active = tab.dataset.category === category;
+    tab.classList.toggle('active', active);
+    tab.setAttribute('aria-pressed', String(active));
+  });
 
   const escapeHtml = value => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 
