@@ -1,10 +1,29 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>تحدي الأبطال | Ahmed English</title><link rel="icon" href="logo.png"><link rel="stylesheet" href="app.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تحدي الأبطال | Ahmed English</title>
+<link rel="icon" href="logo.png">
+<link rel="stylesheet" href="app.css">
 <style>
-.champ-wrap{max-width:820px;margin:22px auto;padding:14px}.champ-hero{background:linear-gradient(135deg,#142b4c,#245b78);color:#fff;border-radius:20px;padding:24px;text-align:center}.champ-hero h1{color:#ffd66b;margin:5px 0}.champ-card{background:var(--bg-surface);border:1px solid var(--border-color);border-radius:16px;padding:16px;margin:14px 0}.champ-level{display:flex;align-items:center;gap:12px;text-align:right}.champ-num{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:var(--bg-surface-alt);font-size:20px;font-weight:900}.champ-btn{width:100%;border:0;border-radius:12px;padding:13px;font-weight:900;background:#0f766e;color:#fff;cursor:pointer}.champ-btn:disabled{opacity:.45;cursor:not-allowed}.champ-opt{display:block;text-align:right;width:100%;padding:12px;margin:8px 0;border:1px solid var(--border-color);border-radius:11px;background:var(--bg-surface-alt);color:var(--text-main);cursor:pointer}.champ-opt.selected{border:2px solid #0f9b83;background:rgba(15,155,131,.12)}.champ-input{width:100%;padding:13px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg-surface);color:var(--text-main);font-size:16px}.champ-stars{font-size:30px;letter-spacing:5px;color:#e6aa24;text-align:center}.champ-progress{height:10px;background:var(--bg-surface-alt);border-radius:20px;overflow:hidden}.champ-progress span{display:block;height:100%;background:#d6a32a}.champ-muted{color:var(--text-muted);font-size:13px}.champ-hidden{display:none!important}@media(max-width:520px){.champ-wrap{padding:10px}.champ-hero{padding:18px}}
+.champ-wrap{max-width:820px;margin:22px auto;padding:14px}
+.champ-hero{background:linear-gradient(135deg,#142b4c,#245b78);color:#fff;border-radius:20px;padding:24px;text-align:center}
+.champ-hero h1{color:#ffd66b;margin:5px 0}
+.champ-card{background:var(--bg-surface);border:1px solid var(--border-color);border-radius:16px;padding:16px;margin:14px 0}
+.champ-level{display:flex;align-items:center;gap:12px;text-align:right}
+.champ-num{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:var(--bg-surface-alt);font-size:20px;font-weight:900;flex-shrink:0}
+.champ-btn{width:100%;border:0;border-radius:12px;padding:13px;font-weight:900;background:#0f766e;color:#fff;cursor:pointer}
+.champ-btn:disabled{opacity:.45;cursor:not-allowed}
+.champ-opt{display:block;text-align:right;width:100%;padding:12px;margin:8px 0;border:1px solid var(--border-color);border-radius:11px;background:var(--bg-surface-alt);color:var(--text-main);cursor:pointer}
+.champ-opt.selected{border:2px solid #0f9b83;background:rgba(15,155,131,.12)}
+.champ-input{width:100%;padding:13px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg-surface);color:var(--text-main);font-size:16px}
+.champ-stars{font-size:30px;letter-spacing:5px;color:#e6aa24;text-align:center}
+.champ-progress{height:10px;background:var(--bg-surface-alt);border-radius:20px;overflow:hidden}
+.champ-progress span{display:block;height:100%;background:#d6a32a;width:0}
+.champ-muted{color:var(--text-muted);font-size:13px}
+.champ-hidden{display:none!important}
+@media(max-width:520px){.champ-wrap{padding:10px}.champ-hero{padding:18px}.champ-level{flex-wrap:wrap}.champ-level .champ-btn{width:100%!important}}
 </style>
 </head>
 <body data-page="champions">
@@ -24,4 +43,36 @@
   <p id="champMsg" role="status" class="champ-muted"></p>
   <p class="champ-muted">يمكنك إعادة المستوى الذي اجتزته لتحسين نتيجتك، وسيتم الاحتفاظ بأعلى نتيجة على هذا الجهاز.</p>
  </section>
->
+ <section id="challengeArea" class="champ-hidden">
+  <section class="champ-card">
+   <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+    <div><h2 id="champWelcome">أهلاً بك يا بطل ⭐</h2><div id="champGrade" class="champ-muted"></div></div>
+    <strong id="champRank">نقاطك: 0</strong>
+   </div>
+   <p id="champProgressText" class="champ-muted">0 من 5 مستويات</p>
+   <div class="champ-progress"><span id="champProgressBar"></span></div>
+   <button id="backGrades" class="champ-btn" style="margin-top:14px;background:#64748b">تغيير الصف الدراسي</button>
+  </section>
+  <section id="levelsList"></section>
+  <section id="quizBox" class="champ-card champ-hidden">
+   <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+    <strong id="quizLevel"></strong><span id="quizCount" class="champ-muted"></span>
+   </div>
+   <div class="champ-progress" style="margin:12px 0"><span id="quizProgress"></span></div>
+   <h2 id="questionText"></h2>
+   <div id="questionInput"></div>
+   <p id="answerFeedback" role="status" aria-live="polite"></p>
+   <button id="checkAnswer" class="champ-btn">تحقق من الإجابة</button>
+   <button id="nextQuestion" class="champ-btn champ-hidden">السؤال التالي ←</button>
+  </section>
+  <section id="finishBox" class="champ-card champ-hidden">
+   <div class="champ-stars">★★★★★</div>
+   <h2 id="finishTitle" style="text-align:center"></h2>
+   <p id="finishMessage" style="text-align:center"></p>
+   <button id="finishContinue" class="champ-btn">العودة إلى المستويات</button>
+  </section>
+ </section>
+</main>
+<script src="champions-challenge.js"></script>
+</body>
+</html>
