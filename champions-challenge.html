@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تحدي الأبطال | Ahmed English</title><link rel="icon" href="logo.png"><link rel="stylesheet" href="app.css">
+<style>
+.champ-wrap{max-width:820px;margin:22px auto;padding:14px}.champ-hero{background:linear-gradient(135deg,#142b4c,#245b78);color:#fff;border-radius:20px;padding:24px;text-align:center}.champ-hero h1{color:#ffd66b;margin:5px 0}.champ-card{background:var(--bg-surface);border:1px solid var(--border-color);border-radius:16px;padding:16px;margin:14px 0}.champ-level{display:flex;align-items:center;gap:12px;text-align:right}.champ-num{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:var(--bg-surface-alt);font-size:20px;font-weight:900}.champ-btn{width:100%;border:0;border-radius:12px;padding:13px;font-weight:900;background:#0f766e;color:#fff;cursor:pointer}.champ-btn:disabled{opacity:.45;cursor:not-allowed}.champ-opt{display:block;text-align:right;width:100%;padding:12px;margin:8px 0;border:1px solid var(--border-color);border-radius:11px;background:var(--bg-surface-alt);color:var(--text-main);cursor:pointer}.champ-opt.selected{border:2px solid #0f9b83;background:rgba(15,155,131,.12)}.champ-input{width:100%;padding:13px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg-surface);color:var(--text-main);font-size:16px}.champ-stars{font-size:30px;letter-spacing:5px;color:#e6aa24;text-align:center}.champ-progress{height:10px;background:var(--bg-surface-alt);border-radius:20px;overflow:hidden}.champ-progress span{display:block;height:100%;background:#d6a32a}.champ-muted{color:var(--text-muted);font-size:13px}.champ-hidden{display:none!important}@media(max-width:520px){.champ-wrap{padding:10px}.champ-hero{padding:18px}}
+</style>
+</head>
+<body data-page="champions">
+<div class="site-top-bar"><a href="index.html" class="top-back-btn">← العودة للرئيسية</a><span class="top-page-badge">🏆 تحدي الأبطال</span></div>
+<main class="champ-wrap">
+ <section class="champ-hero"><div style="font-size:42px">🏆⭐</div><h1>تحدي الأبطال</h1><p>خطوة وراء خطوة... حتى تصبح بطل الإنجليزية!</p></section>
+ <section id="loginBox" class="champ-card">
+  <h2>أهلاً بك في تحدي الأبطال</h2><p class="champ-muted">اكتب رقم الموبايل المسجل به في المنصة لنتعرف على صفك الدراسي.</p>
+  <input id="champPhone" class="champ-input" type="tel" inputmode="tel" placeholder="رقم الموبايل المسجل">
+  <button id="champLogin" class="champ-btn" style="margin-top:12px">ابدأ التحدي 🚀</button><p id="champMsg" role="status"></p>
+  <p class="champ-muted">هذه نسخة تجريبية تستخدم طريقة التحقق الحالية بالرقم فقط؛ لا تشارك رقمك مع أي شخص.</p>
+ </section>
+ <section id="challengeArea" class="champ-hidden">
+  <section class="champ-card"><h2 id="champWelcome"></h2><p id="champGrade" class="champ-muted"></p><div style="display:flex;justify-content:space-between;gap:8px"><b id="champRank"></b><b id="champProgressText"></b></div><div class="champ-progress"><span id="champProgressBar" style="width:0%"></span></div></section>
+  <div id="levelsList"></div>
+  <section id="quizBox" class="champ-card champ-hidden">
+   <div style="display:flex;justify-content:space-between;gap:8px"><b id="quizLevel"></b><span id="quizCount" class="champ-muted"></span></div>
+   <div class="champ-progress" style="margin:12px 0"><span id="quizProgress" style="width:0%"></span></div>
+   <h3 id="questionText"></h3><div id="questionInput"></div>
+   <button id="checkAnswer" class="champ-btn" style="margin-top:12px">تحقق من الإجابة</button><p id="answerFeedback" role="status"></p>
+   <button id="nextQuestion" class="champ-btn champ-hidden" style="margin-top:8px">السؤال التالي ←</button>
+  </section>
+  <section id="finishBox" class="champ-card champ-hidden" style="text-align:center"><div class="champ-stars">⭐⭐⭐</div><h2 id="finishTitle">أحسنت يا بطل!</h2><p id="finishMessage"></p><button id="finishContinue" class="champ-btn">العودة للمستويات</button></section>
+ </section>
+</main>
+<script src="champions-challenge.js"></script>
+</body></html>
