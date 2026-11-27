@@ -100,7 +100,7 @@ Object.assign(window.CHAMPIONS_BANK,{
 ]),
 "الصف الرابع الابتدائي":makeGrade([
 ["مفردات ووصف",[M("A place where you borrow books is a …",["library","bakery","station"],0),F("Complete: beau _ iful",["t"]),O("Arrange.",["is","My","friendly","teacher"],["My","teacher","is","friendly"]),M("The opposite of 'noisy' is …",["quiet","busy","strong"],0),T("An elephant is smaller than a mouse.",false)]],
-["Present simple and frequency",[M("My father … to work by car.",["go","goes","going"],1),F("Complete: I usually _ get up at seven.",[" " ," "]),O("Arrange.",["never","is","late","He"],["He","is","never","late"]),M("Which adverb means 'دائماً'?",["Always","Sometimes","Never"],0),T("'Often' tells us how frequently something happens.",true)]],
+["Present simple and frequency",[M("My father … to work by car.",["go","goes","going"],1),F("Complete: I usually g _ t up at seven.",["e"]),O("Arrange.",["never","is","late","He"],["He","is","never","late"]),M("Which adverb means 'دائماً'?",["Always","Sometimes","Never"],0),T("'Often' tells us how frequently something happens.",true)]],
 ["Present continuous and places",[M("Look! The children …",["are running","run","runs"],0),F("Complete: She is w _ tching TV.",["a"]),O("Arrange.",["are","They","playing","outside"],["They","are","playing","outside"]),M("You can see a doctor at a …",["hospital","museum","farm"],0),T("We use am/is/are + verb-ing for actions happening now.",true)]],
 ["Past simple and comparisons",[M("Yesterday, we … a film.",["watch","watched","watching"],1),F("Complete: good → b _ tter",["e"]),O("Arrange.",["than","taller","Ali","is","Omar"],["Ali","is","taller","than","Omar"]),M("The past of 'eat' is …",["eated","ate","eats"],1),T("'More interesting' is a comparative form.",true)]],
 ["التحدي النهائي",[M("Choose: There isn't … milk.",["some","any","many"],1),F("Complete: If it rains, we will s _ ay home.",["t"]),O("Arrange.",["because","stayed","We","tired","were","we","home"],["We","stayed","home","because","we","were","tired"]),M("Which word is a synonym of 'begin'?",["Start","Finish","Close"],0),T("A paragraph usually contains sentences about one main idea.",true)]]
@@ -161,7 +161,7 @@ function renderLevels(){
  const p=progress(),bank=window.CHAMPIONS_BANK[grade];
  const points=p.bestScores.reduce((a,b)=>a+b,0);
  $("champRank").textContent="نقاطك: "+points;
- $("champProgressText").textContent+p.completed.length+" من 5 مستويات";
+ $("champProgressText").textContent=p.completed.length+" من 5 مستويات";
  $("champProgressBar").style.width=(p.completed.length*20)+"%";
  $("levelsList").innerHTML=bank.map((lv,i)=>{
  const done=p.completed.includes(i),open=i===0||p.completed.includes(i-1),best=p.bestScores[i]||0;
