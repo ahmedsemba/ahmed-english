@@ -1,4 +1,71 @@
 {
-  "updated_at": null,
-  "items": []
+  "updated_at": "2026-11-28T04:30:00Z",
+  "items": [
+    {
+      "category": "egypt",
+      "title_en": "Egypt and Qatar discuss regional stability",
+      "summary_en": "Egyptian and Qatari leaders discussed regional issues and ways to support stability during a meeting in Cairo.",
+      "title_ar": "مصر وقطر تبحثان الاستقرار الإقليمي",
+      "summary_ar": "بحث قادة مصر وقطر القضايا الإقليمية وسبل دعم الاستقرار خلال لقاء في القاهرة.",
+      "source": "Al Jazeera",
+      "url": "https://www.aljazeera.com/where/egypt/",
+      "date_label": "28 Nov 2026",
+      "updated_label": "28 Nov 2026"
+    },
+    {
+      "category": "egypt",
+      "title_en": "Egypt follows up on a cargo ship incident near Cuba",
+      "summary_en": "Egypt is following developments after a cargo ship sank near Cuba. The authorities are working to learn more about the Egyptian people affected.",
+      "title_ar": "مصر تتابع حادث غرق سفينة شحن قرب كوبا",
+      "summary_ar": "تتابع مصر التطورات بعد غرق سفينة شحن قرب كوبا، وتعمل الجهات المعنية على معرفة المزيد بشأن المصريين المتأثرين بالحادث.",
+      "source": "SEE News",
+      "url": "https://see.news/category/egypt",
+      "date_label": "27 Nov 2026",
+      "updated_label": "28 Nov 2026"
+    },
+    {
+      "category": "tech",
+      "title_en": "OpenAI and Apple face a new legal dispute",
+      "summary_en": "OpenAI has filed new legal claims against Apple in a dispute about business competition and confidential information. Apple has rejected the accusations.",
+      "title_ar": "خلاف قانوني جديد بين أوبن إيه آي وآبل",
+      "summary_ar": "قدمت أوبن إيه آي مطالبات قانونية جديدة ضد آبل في خلاف يتعلق بالمنافسة التجارية والمعلومات السرية، ورفضت آبل الاتهامات.",
+      "source": "Reuters",
+      "url": "https://www.reuters.com/technology/openai-countersues-apple-stealing-trade-secrets-ft-reports-2026-11-27/",
+      "date_label": "27 Nov 2026",
+      "updated_label": "28 Nov 2026"
+    },
+    {
+      "category": "tech",
+      "title_en": "New rules may slow some AI projects in China",
+      "summary_en": "New United States restrictions on access to advanced computer chips may delay the launch of some artificial intelligence models being developed in China.",
+      "title_ar": "قواعد جديدة قد تؤخر بعض مشروعات الذكاء الاصطناعي في الصين",
+      "summary_ar": "قد تؤدي قيود أمريكية جديدة على الوصول إلى رقائق الحاسوب المتقدمة إلى تأخير إطلاق بعض نماذج الذكاء الاصطناعي التي يجري تطويرها في الصين.",
+      "source": "Financial Express / Reuters",
+      "url": "https://www.financialexpress.com/world-news/us-news/chinas-ai-ambitions-hit-speed-bump-as-us-closes-loopholes-on-chips-and-distillation/4395118/",
+      "date_label": "27 Nov 2026",
+      "updated_label": "28 Nov 2026"
+    },
+    {
+      "category": "football",
+      "title_en": "Nottingham Forest beat Chelsea 3–2",
+      "summary_en": "Nottingham Forest defeated Chelsea 3–2 in the Premier League. Morgan Gibbs-White scored twice for Forest.",
+      "title_ar": "نوتنجهام فورست يهزم تشيلسي 3–2",
+      "summary_ar": "فاز نوتنجهام فورست على تشيلسي بنتيجة 3–2 في الدوري الإنجليزي الممتاز، وسجل مورجان جيبس وايت هدفين لفريقه.",
+      "source": "The Star / Reuters",
+      "url": "https://kr.thestar.com.my/sport/football",
+      "date_label": "28 Nov 2026",
+      "updated_label": "28 Nov 2026"
+    },
+    {
+      "category": "football",
+      "title_en": "Arsenal prepare to face Manchester City",
+      "summary_en": "Arsenal are preparing to host Manchester City in a major Premier League match this weekend. Manager Mikel Arteta says it is still early in the season.",
+      "title_ar": "أرسنال يستعد لمواجهة مانشستر سيتي",
+      "summary_ar": "يستعد أرسنال لاستضافة مانشستر سيتي في مباراة مهمة بالدوري الإنجليزي هذا الأسبوع. وقال المدرب ميكيل أرتيتا إن الوقت ما زال مبكرًا في الموسم.",
+      "source": "The Star / Reuters",
+      "url": "https://kr.thestar.com.my/sport/football",
+      "date_label": "28 Nov 2026",
+      "updated_label": "28 Nov 2026"
+    }
+  ]
 }
