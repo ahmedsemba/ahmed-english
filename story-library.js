@@ -173,6 +173,7 @@ He learned that effective learning is not always about studying longer. It is of
   tabs.forEach(tab => tab.addEventListener('click', () => {
     stopSpeech();
     category = tab.dataset.category;
+    history.replaceState(null, '', '#' + category);
     tabs.forEach(item => {
       const active = item === tab;
       item.classList.toggle('active', active);
