@@ -9,6 +9,7 @@
   <meta name="theme-color" content="#102a43">
   <link rel="stylesheet" href="app.css">
   <link rel="stylesheet" href="assistant-bot.css">
+  <link rel="stylesheet" href="home-info.css">
   <script>
     (function() {
       if (localStorage.getItem('theme') === 'light') {
@@ -158,6 +159,25 @@
     </section>
   </main>
 
+  <section class="home-info-section" aria-label="تاريخ اليوم وطقس القاهرة">
+    <div class="home-info-card home-date-card">
+      <div class="home-info-icon" aria-hidden="true">📅</div>
+      <div class="home-info-copy">
+        <strong>تاريخ اليوم</strong>
+        <time id="homeTodayDate" datetime="">جارٍ تحديد التاريخ...</time>
+      </div>
+    </div>
+    <div class="home-info-card home-weather-card">
+      <div class="home-info-icon" id="homeWeatherIcon" aria-hidden="true">🌤️</div>
+      <div class="home-info-copy">
+        <strong>طقس القاهرة</strong>
+        <div class="home-weather-main"><span id="homeWeatherTemp">--°</span><span id="homeWeatherText">جارٍ تحميل الطقس...</span></div>
+        <small id="homeWeatherDetails">يتم جلب أحدث بيانات الطقس</small>
+      </div>
+    </div>
+    <p class="home-info-updated" id="homeWeatherUpdated">الطقس يتحدث تلقائيًا</p>
+  </section>
+
   <footer style="text-align:center;padding:20px;color:var(--text-muted);font-size:12px">
     منصة مستر أحمد السيد انجليزي © جميع الحقوق محفوظة
   </footer>
@@ -165,6 +185,7 @@
   <script type="module" src="platform.js"></script>
   <script src="daily-learning.js" defer></script>
   <script src="word-of-day.js" defer></script>
+  <script src="home-info.js" defer></script>
   <script src="audio-feedback.js" defer></script>
   <script src="assistant-bot-data.js" defer></script>
   <script src="assistant-bot.js" defer></script>
