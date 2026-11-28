@@ -9,7 +9,6 @@
   <meta name="theme-color" content="#102a43">
   <link rel="stylesheet" href="app.css">
   <link rel="stylesheet" href="assistant-bot.css">
-  <link rel="stylesheet" href="news.css">
   <script>
     (function() {
       if (localStorage.getItem('theme') === 'light') {
@@ -62,11 +61,6 @@
     </div>
   </section>
 
-  <!-- خبر اليوم بالإنجليزية والترجمة العربية -->
-  <section class="daily-news-section" aria-label="خبر اليوم">
-    <div class="daily-news-inner" id="dailyNews"><p class="news-empty">جارٍ تحميل أخبار اليوم...</p></div>
-  </section>
-
   <!-- لوحة الخدمات الرئيسية -->
   <main class="home-dashboard">
     <section class="home-welcome">
@@ -76,6 +70,12 @@
     </section>
 
     <section class="home-actions" aria-label="أقسام المنصة">
+      <a class="home-action home-action-primary" href="news.html">
+        <span class="home-action-icon">📰</span>
+        <span><b>خبر اليوم</b><small>أخبار مصر والعالم والتكنولوجيا وكرة القدم</small></span>
+        <span class="home-arrow">←</span>
+      </a>
+
       <a class="home-action home-action-primary" href="register.html">
         <span class="home-action-icon">✍️</span>
         <span><b>سجل الآن</b><small>أنشئ حسابك كطالب جديد</small></span>
@@ -164,7 +164,6 @@
 
   <script type="module" src="platform.js"></script>
   <script src="daily-learning.js" defer></script>
-  <script src="news.js" defer></script>
   <script src="word-of-day.js" defer></script>
   <script src="audio-feedback.js" defer></script>
   <script src="assistant-bot-data.js" defer></script>

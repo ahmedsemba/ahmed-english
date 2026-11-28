@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>خبر اليوم | منصة مستر أحمد السيد</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="logo.png">
+  <meta name="theme-color" content="#102a43">
+  <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="news.css">
+  <script>
+    (function() {
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.add('theme-light');
+      }
+    })();
+  </script>
+</head>
+<body data-page="daily-news">
+  <div class="site-top-bar">
+    <a href="index.html" class="top-back-btn">← العودة للرئيسية</a>
+    <span class="top-page-badge">📰 خبر اليوم</span>
+    <div class="top-actions">
+      <button type="button" class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn">☀️</button>
+    </div>
+  </div>
+
+  <main class="container" style="max-width:1100px;padding:22px 14px">
+    <section class="daily-news-section" aria-label="أخبار اليوم">
+      <div class="daily-news-inner" id="dailyNews">
+        <p class="news-empty">جارٍ تحميل أخبار اليوم...</p>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="platform.js"></script>
+  <script src="news.js" defer></script>
+</body>
+</html>
